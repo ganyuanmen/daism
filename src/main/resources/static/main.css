@@ -1,0 +1,42 @@
+html,body{padding: 0;margin: 0; width: 100%; height: 100%}
+.popover {
+   max-width: 420px !important;
+}
+#backrefresh{ position: absolute;top: 0; left: 0; width: 100%; height: 100%; display: none; background-color: rgba(127,127,127,0.3); z-index: 9000}
+.frentfresh{z-index: 9001}
+.form-select:focus,.btn:focus,
+.form-control:focus{
+   /* border-color:#fff; */
+   webkit-box-shadow:none;
+   box-shadow:none;
+}
+.noselect {
+   -webkit-touch-callout: none; /* iOS Safari */
+   -webkit-user-select: none; /* Chrome/Safari/Opera */
+   -khtml-user-select: none; /* Konqueror */
+   -moz-user-select: none; /* Firefox */
+   -ms-user-select: none; /* Internet Explorer/Edge */
+   user-select: none; /* Non-prefixed version, currently
+
+  not supported by any browser */
+
+}
+.ga {width: 90px;}
+.gaa {width: 110px;}
+.t{display: inline-block; padding-right: 6px;padding-right: 6px;}
+.t:hover{cursor:pointer; }
+.ac{color: dodgerblue; border-bottom: 2px solid dodgerblue}
+.card{margin-top: 12px !important;}
+.carde{display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 3;
+   overflow: hidden;}
+.nowrap{overflow: hidden;
+   text-overflow:ellipsis;
+   white-space: nowrap;}
+.hmenu{display: flex; align-items: center; justify-content: center;}
+.hitem,.hitem2 {text-align: center; flex:1; }
+.hitem:hover,.hitem2:hover{cursor: pointer;}
+.dw{width: 100px; text-align: left}
+.dw:hover{cursor: pointer; border: 2px solid #b6d4fe; }
+.redText{color: red;}
