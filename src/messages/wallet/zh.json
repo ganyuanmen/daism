@@ -1,0 +1,12 @@
+{
+  "wallet": {
+    "authorizeText":"授权",
+    "noauthorizeText":"未授权",
+    "globalAuthorizationText": "全局授权",
+    "cancelAuthorizationText": "取消授权",
+    "unauthorizedingText": "正在取消授权，请稍等......",
+    "accountText":"登录帐号",
+    "chainText":"网络",
+    "balanceText":"余额"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "index": {
+    "topText":"概述",
+    "topContentText":"道易程原创的价值证明（PoV，Proof of Value）将要带来包含去中心化交易和价格单位制在内的通证经济诸多方面的公共治理策略，也将给dApp带来一个全新的价值治理体系。",
+    "titleText": "什么是道易程？",
+    "titleContentText": "道易程是以太坊通证经济和dApp的公共治理层。价值证明（PoV，Proof of Value）是其独创的治理共识。道易程的使命是以价值为导向，让通证经济得以蓬勃发展，让智能公器（Smart Commons）得以繁衍生息。",
+    "contentText":"什么是价值证明（PoV，Proof of Value）？",
+    "contentText1":"价值证明（PoV，Proof of Value）是道易程原创的治理通证经济和dApp的共识机制。",
+    "contentText2":"道易程的价值证明，继承的是比特币工作量证明（和以太坊权益证明）的治理思想：",
+    "contentText3":"比特币的工作量证明是以奖励为驱动力、以有价劳动即产出真实可靠的账本为协作任务。类似地，道易程的价值证明是也以奖励为驱动力、以通证经济和智能公器（接受价值证明治理的dApp）的发展为核心任务——其使命，是产出有价值的智能公器和良好的通证经济。",
+    "contentText4":"如果你开发了一个dApp，愿意接受道易程价值证明的治理，那么你只需1分钟时间，在道易程上 mint 一个 智能公器（Smart Common），即可。而如果你的dApp是有价值的，那么此后你就可以源源不断地获得奖励。是的，PoV提供的奖励是永续的！",
+    "contentText5":"价值证明的问世表明道易程和比特币、以太坊一样，致力于培育一种超越传统范式的治理模型，为一个充满活力且可持续的去中心化生态系统奠定基础。",
+    "firstUrl":"https://dcn.naturaldao.io/whitepaper/summary",
+    "linkText":"更多"
+  }
+}
+

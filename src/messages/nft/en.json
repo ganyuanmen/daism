@@ -1,0 +1,35 @@
+{
+  "nft": {
+    "mynft":"My NFT",
+    "mytemplate":"My template",
+    "publicTemplate":"Public template",
+    "previewText":"Preview",
+    "readingNft":"Reading NFTs",
+    "myNftText":"My NFT",
+    "noEmptyText":"Cannot be empty!",
+    "nftDescText":"NFT is based on SVG and adopts a segmentation mechanism. The state of NFT (dynamic SVG code) is stored in two segments of SVG code. Generate different NFTs by uploading different NFT states.",
+    "onlyTemplate":"Just a template",
+    "addBtnText":"Add status area",
+    "reduBtnText":"Reduce state area",
+    "upTemplate":"Upload template",
+    "upTemplateandMint":"Upload template and mint NFT",
+    "mynfttemp":"My NFT template",
+    "adminMintText":"This account is not the owner of dApp and cannot mint NFT",
+    "listTest":"List",
+    "nftText":"NFT",
+    "selectDaoText":"Please select the smart public device to which the NFT belongs",
+    "smartCommonText":"smart common",
+    "memberText":"member",
+    "addressCheck":"Starting with 0x-40 characters (consisting of numbers and A-F)",
+    "addMember":"Add members",
+    "batchText":"Batch mint",
+    "delMember":"Delete member",
+    "mintNumberText":"Number of mints per address",
+    "notEmptyText":"Cannot be empty",
+    "checkError":"Data detection failed, please correct it before submitting!",
+    "mintValue":"Please fill in pure numbers greater than 0"
+
+     
+
+  }
+}

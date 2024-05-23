@@ -1,0 +1,15 @@
+.iadd_tokenlist{cursor: pointer; padding: 6px; border-radius: 12px;}
+.iadd_tokenlist:hover{background-color: #E5E2F5;}
+
+
+.iadd_btn{border-radius: 26px;}
+.iadd_btn:hover span{color: white !important;font-weight: bold !important;}
+
+.iadd_find_img{margin-right: -32px; z-index: 999;margin-top: 16px;}
+.iadd_find_img:hover{ cursor: pointer;}
+
+.iadd_find_input{
+    border-radius: 20px !important;flex:1;padding-left: 40px !important; 
+  }
+  
+.iadd_text{display: inline-block; padding:0 4px;color:'#0D111C';font-size:1.2rem;}
