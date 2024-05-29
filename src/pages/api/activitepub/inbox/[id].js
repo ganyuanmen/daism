@@ -4,6 +4,11 @@ import {createAccept} from '../../../../lib/activity'
 import { getUser } from "../../../../lib/mysql/user";
 import {signAndSend} from '../../../../lib/net'
 import {getComment,eventAddReply} from '../../../../lib/mysql/events'
+import { discussionsAddCommont,getOne } from "../../../../lib/mysql/discussion";
+import { eventAddComment,getOne as eventGetOne } from "../../../../lib/mysql/events";
+
+
+
 
 /**
  * 收件箱 接收其它activity 软件推送过来的信息
@@ -17,13 +22,13 @@ export default async function handler(req, res) {
     if(typeof req.body==='string') postbody=JSON.parse(req.body)
     else postbody=req.body 
   } catch (error) {
-    console.info("inbox error ",req.body)
+    console.error("inbox error ",req.body)
     console.error(error)
   }
-  if( process.env.IS_DEBUGGER==='1') { 
-    console.log("-----------inbox post infomation-----------------------------------------------")
-    console.log(postbody)
-    console.log("----------------------------------------------------------")
+  if( process.env.IS_DEBUGGER==='1'  && postbody.type.toLowerCase()!=='delete') { 
+    console.info("-----------inbox post infomation-----------------------------------------------")
+    console.info(postbody)
+    console.info("----------------------------------------------------------")
   }
   if(typeof(postbody)!=='object' || !postbody.type) return res.status(405).json({errMsg:'body json error'})
 
@@ -52,29 +57,60 @@ export default async function handler(req, res) {
     }
   
     if(postbody.type.toLowerCase()==='create')
-    {
+    {  //inReplyTo:
         let replyType=postbody.object.inReplyTo || postbody.object.inReplyToAtomUri || null;
+        console.log("replyType",replyType)
+        //inReplyTo: 'https://test.daism.io/info/discussions/message/5',
+        // inReplyTo: 'https://test.daism.io/info/events/message/2',
+
+
         if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/info/events/reply/`))
         {
-          
-            let content=(new String(postbody.object.content)).toString()
-            let actor= await getFollowerForUrl(postbody.actor)
-            if(actor.length)
-            {
-                let ids=replyType.split('/')
-                let id=ids[ids.length-1]
-                if(id)
-                {       
-                    let commont=await getComment(id)
-                    if(commont.length && commont[0]['is_discussion']===1)
-                    {
-                        let pid=commont[0]['id']
-                        let nick=actor[0]['actor_account']
-                        let avatar=actor[0]['actor_icon']
-                        await eventAddReply({pid,did:'',nick,avatar,content,sendId:postbody.id})
-                    }
-                }
-            }
+          console.log("events/reply")
+          const  {content,actor,id}=await genePost(postbody,replyType)
+          if(id)
+          {       
+              let commont=await getComment(id)
+              if(commont.length && commont[0]['is_discussion']===1)
+              {
+                  let pid=commont[0]['id']
+                  let nick=actor[0]['actor_account']
+                  let avatar=actor[0]['actor_icon']
+                  await eventAddReply({pid,did:'',nick,avatar,content,sendId:postbody.id})
+              }
+          }
+        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/info/discussions/message/`))
+        {
+          console.log("discussions")
+          const  {content,actor,id}=await genePost(postbody,replyType)
+          console.log({content,actor,id})
+          if(id)
+          {       
+              let commont=await getOne(id)
+              console.log('commont',commont)
+              if(commont.length && commont[0]['is_discussion']===1)
+              {
+                  let nick=actor[0]['actor_account']
+                  let avatar=actor[0]['actor_icon']
+                  console.log({id,did:'',nick,avatar,content,sendId:postbody.id})
+                  await discussionsAddCommont({id,did:'',nick,avatar,content,sendId:postbody.id})
+              }
+          }
+        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/info/events/message/`))
+        { 
+          console.log("events")
+          const  {content,actor,id}=await genePost(postbody,replyType)
+          console.log({content,actor,id})
+          if(id)
+          {       
+              let commont=await eventGetOne(id)
+              if(commont.length && commont[0]['is_discussion']===1)
+              {
+                  let nick=actor[0]['actor_account']
+                  let avatar=actor[0]['actor_icon']
+                  await eventAddComment({pid:id,did:'',nick,avatar,content,sendId:postbody.id})
+              }
+          }
         }
     }
   
@@ -85,6 +121,19 @@ export default async function handler(req, res) {
   }
   
 
+  async function genePost(postbody,replyType)
+  {
+    let content=(new String(postbody.object.content)).toString()
+    let actor= await getFollowerForUrl(postbody.actor)
+    let id=0
+    if(actor.length)
+    {
+        let ids=replyType.split('/')
+        let _id=parseInt(ids[ids.length-1])
+        if(_id && Number.isFinite(_id))  id=_id;
+    }
+    return {content,actor,id}
+  }
   
 async function undo(postbody)
 {
@@ -105,35 +154,33 @@ async function follow(postbody,name,domain)
 {
   let actor=await getInboxFromUrl(postbody.actor);
   if( process.env.IS_DEBUGGER==='1') { 
-    console.log("follow get actor:-----------------------------------------------")
-    console.log(actor)
+    console.info("follow get actor:-----------------------------------------------")
+    console.info(actor)
   }
   let user=await getLocalInboxFromUrl(postbody.object)
   if( process.env.IS_DEBUGGER==='1') { 
-    console.log("follow get user:-----------------------------------------------------")
-    console.log(user)
+    console.info("follow get user:-----------------------------------------------------")
+    console.info(user)
   }
   if(!actor.inbox) return  `no found for ${postbody.actor}`;
-  if(user.name!==name || user.domain!==domain) return 'activity error ';
+  if(user.name.toLowerCase()!==name.toLowerCase() || user.domain.toLowerCase()!==domain.toLowerCase()) return 'activity error ';
   let thebody=createAccept(postbody,name,domain);
-  let follow=await getFollower(actor.account,user.account,'id');
+  let follow=await getFollower(actor.account,user.account,'follow_id');
   let localUser=await getUser('account',user.account,'privkey,dao_id')
-  if(follow['id']) { 
+  if(follow['follow_id']) { 
     console.info("已关注"); //已关注
-    signAndSend(actor.inbox,name,domain,thebody,localUser.privkey);
+    await removeFollow(follow['follow_id'])
   } 
-  else
-  {
+ 
     let lok=await saveFollow(actor,user,postbody.id,1,localUser['dao_id']);// 被他人关注 localUser['id']-->daoId
     if(lok)
     {
       console.info("follow save is ok")
       signAndSend(actor.inbox,name,domain,thebody,localUser.privkey);
+      return 'follow handle ok!'
     }  
-    else  
-      return 'server handle error';
-  }
-  return 'follow handle ok!'
+    else  return 'server handle error';
+  
 }
 
 
@@ -142,6 +189,9 @@ async function getLocalInboxFromUrl(url)
 {
   let obj={name:'',domain:'',inbox:'',account:'',url:'',pubkey:'',avatar:''}
   let user=await getUser('account_url',url,'account,avatar,pubkey');
+  if( process.env.IS_DEBUGGER==='1') { 
+    console.info("user",user)
+  }
   if(!user['account']) return obj;
   const [userName,domain]=user.account.split('@');
 

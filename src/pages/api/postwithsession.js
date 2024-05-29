@@ -31,16 +31,19 @@ export default withSession(async (req, res) => {
         let lok=await methods[req.headers.method](req.body)
         if(lok && req.headers.method==='discussionsAdd' && parseInt(req.body.isSend)===1) {
             if( process.env.IS_DEBUGGER==='1') console.info("discussions send --->",[req.body.daoid,lok,req.body.title])
-            send(req.body.daoid,req.body.content,'','discussions',lok,req.body.title) //发送讨论内容
+            send(req.body.daoid,req.body.contentText,'','discussions',lok,`《${req.body.title}》  ${req.body.contentText}`) //发送讨论内容
         } 
         else if(lok && req.headers.method==='eventAddComment'){
             const  eventsObj=await eventGetOne(req.body.pid)
             if(eventsObj[0]['is_send']===1)
             { 
                 if( process.env.IS_DEBUGGER==='1') console.info("eventAddComment send --->",[eventsObj[0]['dao_id'],lok])
-                send(eventsObj[0]['dao_id'],req.body.content,null,'events',lok,req.body.content,true)   
+                send(eventsObj[0]['dao_id'],req.body.contentText,null,'events',lok,req.body.contentText,true)   
             }
         }
+   
+      
+
         else if(lok && (req.headers.method==='newsDel' || req.headers.method==='eventsDel' || req.headers.method==='delSource')) delNewImage(req.body.id,req.headers.method) //删除新闻图片
         res.status(200).json(lok);
     }

@@ -54,29 +54,6 @@ export default function LogoPro({ daoName,daoId,setChangeLogo,delegator,lastPro,
     }
   
 
-//    async function upLogoClick()
-//    {
-//     if(!imgRef.current.getBinary())
-//     {
-//         showError(t('noSelectImgText'))   
-//         return
-//     }
-//     showTip( t('uplogoing') )
-//     console.log("----------------------------------")
-//     console.log(imgRef.current.getBinary())
-//     console.log("----------------------------------")
-//      //svg 已经压缩，后缀名->zip
-//      window.daismDaoapi.DaoLogo.addLogo(daoId,imgRef.current.getBinary(), imgRef.current.getFileType()==='svg'?'zip':imgRef.current.getFileType()).then(() => {
-//         closeTip()
-//         setTimeout(() => {
-//             setLoadding(true) //刷新logo
-//         }, 1000);
-//       }, err => {
-//           console.error(err);closeTip();
-//           showError(tc('errorText')+(err.message?err.message:err));
-//       });
-
-//    }
 
 
     return <> {(lastPro.length && lastPro[0].is_end===0)?<Alert variant="danger" >{t('noComplete')} </Alert>

@@ -4,9 +4,10 @@
     "iadd": "交易",
     "my": "我",
     "info": "社区",
-    "nft":"丰碑",
+    "nft":"荣誉通证",
     "switchLocale": "English",
-    "doc":"文档"
+    "doc":"文档",
+    "profile":"个人资料"
   },
   "Common":{
     "about":"关于",
@@ -48,7 +49,8 @@
     "loginError":"siwe登录失败",
     "networkError":"网络错误，稍后再试!",
     "rejectLogin":"你已经拒绝了签名登录，请从用户的下拉菜单中重新登录",
-    "mustLoginText":"请登录到sepolia 测试网络！"
+    "mustLoginText":"请登录到sepolia 测试网络！",
+    "footerText":"由智能公器 DAism、Enki 和 Honor Tokens 共同提供技术支持"
 
   }
 }

@@ -6,6 +6,7 @@ import {update,getOne} from '../../../lib/mysql/events'
 
 export const config = {
   api: {
+    sizeLimit: '10mb',
     bodyParser: false,
   },
 };

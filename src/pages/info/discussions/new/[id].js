@@ -63,6 +63,7 @@ function NewMain({daoData,user,t,tc}) {
         title:titleText,
         content:textValue,
         did:user.account,
+        contentText:editorRef.current.getText(),
         daoid:daoData.dao_id,
         isSend:sendRef.current.checked?1:0,
         isDiscussion:1})

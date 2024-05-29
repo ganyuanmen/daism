@@ -4,9 +4,10 @@
     "iadd": "DEX",
     "my": "Mine",
     "info": "Communities",
-    "nft": "Monument",
+    "nft": "Honor Tokens",
     "switchLocale": "简体中文",
-    "doc":"Documentation"
+    "doc":"Documentation",
+    "profile":"Profile"
   },
   "Common":{
     "about":"about",
@@ -47,6 +48,7 @@
     "imgUriText":"Image link address",
     "networkError":"Network error, try again later!",
     "rejectLogin":"You have refused to sign in. Please log in again from the user's dropdown menu",
-    "mustLoginText":"Please log in to Sepolia test network!"
+    "mustLoginText":"Please log in to Sepolia test network!",
+    "footerText":"Powered by smart commons DAism, Enki and Honor Tokens."
   }
 }

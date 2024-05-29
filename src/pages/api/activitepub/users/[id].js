@@ -14,6 +14,8 @@ export default async function handler(req, res) {
         }
         else {
             let rejson=createActor(name,process.env.LOCAL_DOMAIN,localUser)
+            console.log('rejson',rejson)
+            console.log(rejson.icon)
             if(rejson.icon.mediaType==='image/svg') rejson.icon.mediaType='image/svg+xml'
             res.setHeader("connection", "close").setHeader('content-type', 'application/activity+json; charset=utf-8').status(200).send(JSON.stringify(rejson));
         }

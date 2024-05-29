@@ -89,7 +89,7 @@ function NewMain({daoData,members,user,t,tc}) {
     formData.append('image', imgstrRef.current.getFile());
     formData.append('fileType',imgstrRef.current.getFileType());
     formData.append('did',user.account);
-    
+    formData.append('contentText',editorRef.current.getText());
     formData.append('isSend',sendRef.current.checked?1:0);
     formData.append('isDiscussion',discussionRef.current.checked?1:0);
     formData.append('startTime',startDateRef.current.getData());

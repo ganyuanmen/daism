@@ -1,5 +1,5 @@
 .pnavbar { position: relative;padding: 0 !important;background-color: #AEAEAF; }
-.pnavactive {background-color: #FFB031; font-weight: bold;} 
+.pnavactive {background-color: #FFB031; font-weight: bold;  border-radius: 6px;} 
 .pnavbar a {
   color: black ;
   text-decoration: none;

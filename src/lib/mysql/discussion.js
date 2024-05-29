@@ -1,4 +1,4 @@
-
+const { v4: uuidv4 } = require("uuid");
 import { getData,execute,getPageData,executeID } from './common';
 
 
@@ -8,10 +8,18 @@ export async function discussionsAdd({daoid,did,title,content,isSend,isDiscussio
     ,[daoid,did,title,content,isSend,isDiscussion]);
 }
 
-export async function discussionsAddCommont({id,did,content})
+export async function discussionsAddCommont({id,did,nick,avatar,content,sendId})
 {
-    return await executeID('INSERT INTO a_discussion_commont (pid,member_address,content) VALUES(?,?,?)'
-    ,[id,did,content]);
+  
+    if(!sendId) sendId=uuidv4()
+    
+    if(avatar)
+        return await executeID("INSERT INTO a_discussion_commont(pid,member_address,member_nick,member_icon,content,send_id) VALUES(?,?,?,?,?,?)"
+        ,[id,did,nick,avatar,content,sendId])
+    else 
+        return await executeID("INSERT INTO a_discussion_commont(pid,member_address,member_nick,content,send_id) VALUES(?,?,?,?,?)"
+        ,[id,did,nick,content,sendId])
+
 }
 
 

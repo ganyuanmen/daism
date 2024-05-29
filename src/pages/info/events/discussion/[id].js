@@ -89,6 +89,8 @@ function Message({eventsData,records,t,tc,statInfo})
                         <Card className='mt-2 daism-title' >
                         <Card.Body>
                             <MessageItem  record={obj} actor={actor}  path='events' replyLevel={1} showTip={showTip} closeTip={closeTip} 
+                              noLink={obj.send_id && obj.send_id.startsWith('http')} 
+                              isrealyImg={obj.send_id && obj.send_id.startsWith('http')}  
                             showClipError={showClipError} t={t} tc={tc} />
                             <Row>
                                 <Col className='Col-auto me-auto' >
@@ -130,8 +132,12 @@ function Commont({actor,eventsData,showTip,closeTip,showClipError,childData,setC
         let res=await client.post('/api/postwithsession','eventAddComment',{
             pid:eventsData.id,
             content:textValue,
+            contentText:editorRef.current.getText(),
+            nick:actor.member_nick,
+            avatar:actor.member_icon,
             did:actor.member_address
         })
+
         if(res.status===200 && !res.data.errMsg) {
            // window.location.reload()
            let curData=childData.slice()

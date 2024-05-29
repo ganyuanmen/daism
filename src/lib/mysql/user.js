@@ -13,6 +13,7 @@ export async function getUser (findFiled,findValue,selectFields) {
   return re.length?re[0]:{};
 }
 
+
 export async function getActor (did) {
   let re=await getData(`select * from a_actor where member_address=?`, [did]);
   return re.length?re[0]:{member_address:did,member_icon:'',member_nick:'',member_desc:''};

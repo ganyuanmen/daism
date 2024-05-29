@@ -67,6 +67,7 @@ function NewMain({daoData,user,t,tc}) {
     formData.append('image', imgstrRef.current.getFile());
     formData.append('fileType',imgstrRef.current.getFileType());
     formData.append('did',user.account);
+    formData.append('contentText',editorRef.current.getText());
 
     fetch(`/api/admin/addnews`, {
       method: 'POST',

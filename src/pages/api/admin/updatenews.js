@@ -5,10 +5,10 @@ import {update,getOne} from '../../../lib/mysql/news'
 
 export const config = {
   api: {
+    sizeLimit: '10mb',
     bodyParser: false,
   },
 };
-
 export default withSession(async (req, res) => {
   if (req.method.toUpperCase()!== 'POST')  return res.status(405).json({errMsg:'Method Not Allowed'})
   const sessionUser = req.session.get('user');

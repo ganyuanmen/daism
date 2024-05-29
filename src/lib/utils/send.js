@@ -7,7 +7,7 @@ import {createMessage} from '../activity/createMessage'
 export function send(daoid,content,fileName,path,messageId,title,isNote=false)  //daoid,content,fileName,'news'
 {
 
-  getUser('dao_id',daoid,'privkey,account').then(localUser=>{
+  getUser('dao_id',daoid,'privkey,Lower(account) account').then(localUser=>{
     try{
         if(!localUser.account) return;
         let strs=localUser.account.split('@') //strs[0]->name strs[1]->domain

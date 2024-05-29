@@ -17,12 +17,12 @@ export default function Aaa() {
         let het_str =ethers.toBeHex(7)
         het_str += ZERO_UINT128;
         let v1= BigInt(het_str)
-        console.log(v1)
+        console.info(v1)
 
         const provider=new ethers.JsonRpcProvider('https://mainnet.infura.io/v3/2e68e4d6017344cd89bab57981783954')
         const result = await provider.send('eth_chainId', []);
-        console.log(result)
-        console.log("------ooooooooooooooooooo--------")
+        console.info(result)
+        console.info("------ooooooooooooooooooo--------")
     }
   
     return (

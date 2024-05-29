@@ -7,6 +7,11 @@ module.exports = {
   output: 'standalone',
 // output: 'export',
 // distDir: 'build'
+experimental: {
+  serverActions: {
+    bodySizeLimit: '20mb',
+  },
+},
 
   async redirects() {
     return [

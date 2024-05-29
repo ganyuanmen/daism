@@ -7,6 +7,8 @@ import ShowImg from '../ShowImg';
 
 const MemberItem = forwardRef((props,ref) => {//props.isrealyImg 真实照片，不是api 
     const{record}=props
+    console.log(['MemberItem',props.isrealyImg,props.noLink])
+
     return (
       
     <div style={{display:'flex',alignItems:'center'}} >

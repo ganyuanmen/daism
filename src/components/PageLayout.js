@@ -6,6 +6,7 @@ import Wallet from './Wallet'
 import Loddingwin from '../components/Loddingwin'
 import ShowTip from '../components/ShowTip'
 import styles from '../styles/pageLayout.module.css'
+
 // import { MetaMaskProvider } from "@metamask/sdk-react";
 
 export default function PageLayout({children}) {
@@ -15,7 +16,7 @@ export default function PageLayout({children}) {
   const otherLocale = locales?.find((cur) => cur !== locale)
   const restoredURL = `?${Object.keys(query).map(key => `${key}=${query[key]}`).join('&')}`;
   const path=`${route}${restoredURL.length>1?restoredURL:''}`
-  
+  const tc = useTranslations('Common')
   return (
     <>
   
@@ -33,7 +34,8 @@ export default function PageLayout({children}) {
                   <Link className={route === '/my' ? styles.pnavactive  : ''}  href="/my">{t('my')}</Link>
                   <Link className={route === '/info' ? styles.pnavactive  : ''}  href="/info">{t('info')}</Link> 
                   <Link className={route === '/nft' ? styles.pnavactive  : ''}  href="/nft">{t('nft')}</Link> 
-                  <a className={route === '/doc' ? styles.pnavactive  : ''} target='_blank'  href={locale==='en'?"/dist_en/index.html":"/dist/index.html"}>{t('doc')}</a> 
+                  <Link className={route === '/docs' ? styles.pnavactive  : ''}  href="/docs">{t('doc')}</Link> 
+                  
                   <div style={{flex:'1'}} ></div>
                 
                  <Wallet /> 
@@ -53,8 +55,9 @@ export default function PageLayout({children}) {
             {children}
         </Container>
         </Container>
-        <footer className="d-flex justify-content-center daism-foot align-items-center " style={{height:'120px',marginTop:'20px'}} >
-            <div className="fs-5">DAISM.io</div>  
+        <footer className="d-flex justify-content-center daism-foot align-items-center flex-column  " style={{height:'120px',marginTop:'20px'}} >
+            <div className="fs-4 mb-2"><strong> DAism.io</strong></div>
+            <div className="fs-5">{tc('footerText')}</div>  
           
         </footer>
         <Loddingwin />

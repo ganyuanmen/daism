@@ -7,6 +7,7 @@ import { saveImage } from "../../../lib/utils";
 
 export const config = {
   api: {
+    sizeLimit: '10mb',
     bodyParser: false,
   },
 };
@@ -21,7 +22,7 @@ export default withSession(async (req, res) => {
   let files
   try {  
       [fields, files] = await form.parse(req);
-      let {daoid,did,title,content,isSend,isDiscussion,startTime,endTime,eventUrl,original,numbers,participate,address,fileType,time_event} = fields
+      let {daoid,did,title,content,isSend,isDiscussion,startTime,endTime,eventUrl,original,numbers,participate,address,fileType,time_event,contentText} = fields
       daoid=daoid[0]
       did=did[0]
       title=title[0]
@@ -37,12 +38,13 @@ export default withSession(async (req, res) => {
       participate=participate[0]
       address=address[0]
       time_event=time_event[0]
+      contentText=contentText[0]
 
       let imgPath=saveImage(files,fileType)
       let insertId= await add(daoid,did,title,content,isSend,isDiscussion,imgPath,startTime,endTime,eventUrl,original,numbers,participate,address,time_event)
       if(insertId && parseInt(isSend)===1) {
         if( process.env.IS_DEBUGGER==='1') console.info("events send --->",[daoid,imgPath,insertId,title])
-        send(daoid,content,imgPath,'events',insertId,title)   
+        send(daoid,contentText,imgPath,'events',insertId,`《${title}》 ${contentText}`)   
         res.status(200).json({msg:'handle ok',id:insertId})
       } else res.status(500).json({errMsg: 'fail'});
   } catch (err) {

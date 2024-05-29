@@ -30,8 +30,7 @@ export default async function handler(req, res) {
     if (req.method.toUpperCase()!== 'GET')  return res.status(405).json({errMsg:'Method Not Allowed'})
   
     try{
-        console.log(req.headers.method)
-        console.log(req.query)
+
         res.status(200).json(await methods[req.headers.method](req.query))
     }
     catch(err)

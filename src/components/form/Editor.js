@@ -19,6 +19,12 @@ const Editor = forwardRef(({title,defaultValue}, ref) => {
     const getData = () => {
       return quillRef.current.value.replaceAll('<p><br></p>','');
     };
+
+    const getText=()=>{
+      const quill = quillRef.current.getEditor(); // 获取 Quill 实例
+      const plainText = quill.getText(); // 获取纯文本内容
+      return plainText.replaceAll("\r",'').replaceAll('\n','');
+    }
     
     const refresh=()=>{setQuillKey(()=>{return quillKey+1})}
     const refreshRef=useRef()
@@ -27,7 +33,8 @@ const Editor = forwardRef(({title,defaultValue}, ref) => {
     useEffect(()=>{ refreshRef.current()},[messageText,tipText])
 
     useImperativeHandle(ref, () => ({
-      getData: getData
+      getData: getData,
+      getText:getText
     }));
 
    

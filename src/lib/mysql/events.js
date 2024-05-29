@@ -92,9 +92,17 @@ export async function getOne(id)
  }
 
 //新增加评论
-export async function eventAddComment({pid,did,content})
+export async function eventAddComment({pid,did,nick,avatar,content,sendId})
 {
-    return await executeID("INSERT INTO a_events_commont (pid,member_address,content) VALUES(?,?,?)",[pid,did,content])
+    // return await executeID("INSERT INTO a_events_commont (pid,member_address,content) VALUES(?,?,?)",[pid,did,content])
+      
+    if(!sendId) sendId=uuidv4()
+    if(avatar)
+        return await executeID("INSERT INTO a_events_commont(pid,member_address,member_nick,member_icon,content,send_id) VALUES(?,?,?,?,?,?)"
+        ,[pid,did,nick,avatar,content,sendId])
+    else 
+        return await executeID("INSERT INTO a_events_commont(pid,member_address,member_nick,content,send_id) VALUES(?,?,?,?,?)"
+        ,[pid,did,nick,content,sendId])
 }
 
 

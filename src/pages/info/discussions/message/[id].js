@@ -75,6 +75,8 @@ function Message({discussionData,chilrenData})
     let res=await client.post('/api/postwithsession','discussionsAddCommont',{
         id:discussionData['id'],
         did:user.account,
+        nick:actor.member_icon,
+        avatar:actor.member_nick,
         content:textValue
     })
     
@@ -105,13 +107,15 @@ function Message({discussionData,chilrenData})
     return <>  
                <Breadcrumb menu={menu} currentPage={discussionData.title} ></Breadcrumb>        
                 <h1>{discussionData['title']}</h1>
-                <MessageItem record={discussionData} actor={actor} replyLevel={0}
-                   path='discussions' showTip={showTip} closeTip={closeTip} showClipError={showClipError} t={t} tc={tc} ></MessageItem>  
+                <MessageItem record={discussionData} actor={actor} replyLevel={0}   
+                path='discussions' showTip={showTip} closeTip={closeTip} showClipError={showClipError} t={t} tc={tc} ></MessageItem>  
                 
                 {
                 
                 childData.map((obj,idx) => (
                     <MessageItem key={idx} record={obj} actor={actor} replyLevel={1}
+                    noLink={obj.send_id && obj.send_id.startsWith('http')} 
+                    isrealyImg={obj.send_id && obj.send_id.startsWith('http')} 
                     showTip={showTip} closeTip={closeTip} showClipError={showClipError} path='discussions' t={t} tc={tc} ></MessageItem>
                     ))
                 }

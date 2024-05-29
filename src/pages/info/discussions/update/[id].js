@@ -61,6 +61,7 @@ function NewMain({discussionData,tc,t}) {
     
     let res=await client.post('/api/postwithsession','discussionsUpdate',{
         id:discussionData.id,
+        daoId:discussionData.dao_id,
         title:titleText,
         content:textValue,
         isSend:sendRef.current.checked?1:0

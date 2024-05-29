@@ -61,6 +61,7 @@
   
   a.dropdown-item {
     color:  #000000  !important;   
+
   }
 
      
@@ -68,6 +69,13 @@
   background-color:#FFB031 ;
   border-radius: 6px;
 }
+    
+.daism-mydao-menu-activedocs >div{
+  background-color:#AEAEAF ;
+  border-radius: 6px;
+}
+
+
 
 .daism-content{
   background-color: white;
