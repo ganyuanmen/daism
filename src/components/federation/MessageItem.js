@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 export default function MessageItem({record,actor,showTip,closeTip,showClipError,path,replyLevel,t,tc,isrealyImg,noLink})  
 { 
     console.log(['MessageItem',isrealyImg,noLink])
-    const administrutor = useSelector((state) => state.valueData.administrutor)
+    const daoAddress = useSelector((state) => state.valueData.daoAddress)
 
     return  <Card className='mb-3'>
             <Card.Body>
@@ -16,7 +16,7 @@ export default function MessageItem({record,actor,showTip,closeTip,showClipError
                     <MemberItem  record={record} isrealyImg={isrealyImg} noLink={noLink} ></MemberItem>
                 </div>
                 <div className='col-auto'>
-                {actor && (actor.member_address===record.member_address || actor.member_address===administrutor) && 
+                {actor && (actor?.member_address?.toLowerCase()===record?.member_address?.toLowerCase() || actor?.member_address?.toLowerCase()===daoAddress['administrator']?.toLowerCase()) && 
                     <EditItem  message={record} showTip={showTip} closeTip={closeTip} 
                     showClipError={showClipError} replyLevel={replyLevel} path={path}  t={t} tc={tc} ></EditItem>
                 }

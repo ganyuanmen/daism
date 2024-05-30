@@ -4,10 +4,11 @@ import MemberItem from './MemberItem';
 import ShowAddress from '../ShowAddress';
 import EditItem from './EditItem';
 import Link from 'next/link';
+import { useSelector} from 'react-redux';
 import { LocationSvg,DateSvg,UserSvg,WebsitSvg } from '../../lib/jssvg/SvgCollection';
 
 export default function EventTitle({eventsData,actor,statInfo,closeTip,showClipError,t,tc,showTip}) {
- 
+    const daoAddress = useSelector((state) => state.valueData.daoAddress)
     let MenuAttch=undefined;
     if (actor && actor.member_address===eventsData.member_address && statInfo.noAudit>0)
         MenuAttch={path:`/info/events/join/${eventsData.id}`,title:`${t('audit')}: ${statInfo.noAudit} ${t('people')}`}
@@ -27,12 +28,12 @@ export default function EventTitle({eventsData,actor,statInfo,closeTip,showClipE
                         <span>{t('participateText')}:{statInfo.amount}</span>{'  '}
                       
 
-                        {eventsData.state===2?<span className='text-secondary'>({t('alreadyEndText')}) </span>
-                        :eventsData.state===1?<span className='text-info'>({t('processingText')}...) </span>
+                        {eventsData?.state===2?<span className='text-secondary'>({t('alreadyEndText')}) </span>
+                        :eventsData?.state===1?<span className='text-info'>({t('processingText')}...) </span>
                         :<Link  href={`/info/events/join/${eventsData.id}`} >({t('I want to participate')})</Link>
                         }
                     </div> 
-                    {actor && actor.member_address===eventsData.member_address && 
+                    {actor && (actor?.member_address?.toLowerCase()===eventsData?.member_address?.toLowerCase() || actor?.member_address?.toLowerCase()===daoAddress['administrator']?.toLowerCase()) && 
                      <EditItem message={eventsData} showTip={showTip}  t={t} tc={tc}
                      closeTip={closeTip} showClipError={showClipError} path='events' replyLevel={0} attach={MenuAttch} />
                      

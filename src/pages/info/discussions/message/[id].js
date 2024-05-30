@@ -19,7 +19,7 @@ export default function MessagePage({discussionData,chilrenData}) {
   return (
     <PageLayout>
       {
-      discussionData.id?<Message discussionData={discussionData} chilrenData={chilrenData}  />
+      discussionData.id?<Message discussionData={discussionData} chilrenData={chilrenData} t={t}  />
       :<>
        <Breadcrumb menu={[]} currentPage='discussions' />
        <ShowErrorBar errStr={t('notDiscussionText')} />
@@ -31,11 +31,11 @@ export default function MessagePage({discussionData,chilrenData}) {
 }
 
 
-function Message({discussionData,chilrenData})
+function Message({discussionData,chilrenData,t})
 {
   
   let tc = useTranslations('Common')
-  let t = useTranslations('ff')
+
     const dispatch = useDispatch();
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
     const editRef=useRef()
@@ -45,16 +45,16 @@ function Message({discussionData,chilrenData})
     
     useEffect(()=>{setChildData(chilrenData)},[chilrenData])
 
-    const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
-    const [isVist,setIsVist]=useState(true)  //是不是游客
-    useEffect(()=>{
-      if(daoActor && daoActor.length) {
-      let _daoData=daoActor.find((detailObj)=>{return parseInt(detailObj.dao_id)===parseInt(discussionData.dao_id)})
-      if(_daoData) setIsVist(false) ; else setIsVist(true);
-      }
-      else setIsVist(true);
+    // const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
+    // const [isVist,setIsVist]=useState(true)  //是不是游客
+    // useEffect(()=>{
+    //   if(daoActor && daoActor.length) {
+    //   let _daoData=daoActor.find((detailObj)=>{return parseInt(detailObj.dao_id)===parseInt(discussionData.dao_id)})
+    //   if(_daoData) setIsVist(false) ; else setIsVist(true);
+    //   }
+    //   else setIsVist(true);
   
-     },[daoActor])
+    //  },[daoActor])
   
 
     function showTip(str){dispatch(setTipText(str))}
@@ -75,8 +75,8 @@ function Message({discussionData,chilrenData})
     let res=await client.post('/api/postwithsession','discussionsAddCommont',{
         id:discussionData['id'],
         did:user.account,
-        nick:actor.member_icon,
-        avatar:actor.member_nick,
+        nick:actor.member_nick,
+        avatar:actor.member_icon,
         content:textValue
     })
     

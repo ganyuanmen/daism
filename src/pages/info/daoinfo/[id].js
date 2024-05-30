@@ -1,5 +1,6 @@
 
 import { useSelector} from 'react-redux';
+import { useEffect, useState } from 'react';
 import ShowErrorBar from '../../../components/ShowErrorBar';
 import { useTranslations } from 'next-intl'
 import { getJsonArray } from '../../../lib/mysql/common';
@@ -16,19 +17,29 @@ export default function DaoInfo({daoData,daoMember,follower,domain}) {
     const t = useTranslations('ff')
     const user = useSelector((state) => state.valueData.user)
 
+    const [member,setMember]=useState([])
+    const [follow,setFollow]=useState([])
+
+    useEffect(()=>{ setMember(daoMember) },[daoMember])
+    useEffect(()=>{ setFollow(follower) },[follower])
+    
+
     return (
         <PageLayout>
             {
-             user.connected<1?<ShowErrorBar errStr={tc('noConnectText')} />
-             :daoData?
+             user.connected<1?<ShowErrorBar errStr={tc('noConnectText')} />:
              <> 
-                <Domain_div record={daoData} loginsiwe={loginsiwe} user={user} domain={domain} tc={tc}  t={t}/>
-                <DaoInfo_div record={daoData} t={t} />
-                <Daomember_div record={daoMember} t={t} dao_manager={daoData.dao_manager}/>
-                <Follower_div record={follower} t={t} />
-            </>
-            :<ShowErrorBar  errStr='fetch data fail!'  />
+                  { daoData.dao_id?<>
+                    <Domain_div record={daoData} loginsiwe={loginsiwe} user={user} domain={domain} tc={tc}  t={t}/>
+                    <DaoInfo_div record={daoData} t={t} />
+                    {daoData && member && member.length>0 &&  <Daomember_div record={member} t={t} dao_manager={daoData.dao_manager}/>}
+                    {follow && follow.length>0 &&  <Follower_div record={follow} t={t} />}
 
+                  </>
+                :<ShowErrorBar errStr={t('notDiscussionText')} />}   
+
+            
+            </>
             }
         </PageLayout>
     );

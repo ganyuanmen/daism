@@ -38,7 +38,7 @@ function Message({newsData})
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
     function showClipError(str){dispatch(setMessageText(str))}
-
+    const daoAddress = useSelector((state) => state.valueData.daoAddress)
     const actor = useSelector((state) => state.valueData.actor) //联邦软件登录帐号
 
     const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
@@ -61,7 +61,7 @@ function Message({newsData})
 
     return <>     <Breadcrumb menu={menu} currentPage={newsData.title} ></Breadcrumb>   
                   <div style={{ position:'relative', textAlign:'center'}} >
-                   <ShowImg path={newsData.top_img} alt='' maxHeight="200px" width="100%" />
+                   <ShowImg path={newsData.top_img} alt='' maxHeight="200px" />
                   </div>     
                 
                 <h1>{newsData['title']}</h1>
@@ -72,7 +72,7 @@ function Message({newsData})
                         <MemberItem record={newsData} />
                     </div>
                     <div className='col-auto'>
-                    {actor && actor.member_address.toLowerCase()===newsData.member_address.toLowerCase() && 
+                    {actor && (actor?.member_address?.toLowerCase()===newsData?.member_address?.toLowerCase() || actor?.member_address?.toLowerCase()===daoAddress['administrator']?.toLowerCase()) && 
                         <EditItem  message={newsData} showTip={showTip} closeTip={closeTip}
                         showClipError={showClipError} replyLevel={0} path='news' t={t} tc={tc}
                         />

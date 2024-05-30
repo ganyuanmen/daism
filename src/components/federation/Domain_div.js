@@ -63,7 +63,7 @@ export default function Domain_div({record,t,tc,loginsiwe,domain,user}) {
               <strong>{t('localDomainText')}</strong>:<strong style={{display:'inline-block',paddingLeft:'12px'}} >{domain}</strong>
             </div>
             <div className='col-auto' >
-                {loginsiwe && record.dao_manager.toLowerCase()===user.account.toLowerCase() &&domain!==record.domain && <Button onClick={()=>{setShow(true)}} >
+                {loginsiwe && user && user.account && record.dao_manager.toLowerCase()===user.account.toLowerCase() &&domain!==record.domain && <Button onClick={()=>{setShow(true)}} >
                         <EditSvg size={18} /> {record.domain?t('editText'):t('bindText')}</Button>}
             </div>
         </div>

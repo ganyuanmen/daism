@@ -84,7 +84,7 @@ function Message({eventsData,records,t,tc,statInfo})
       
         <div className='mt-2' >   
         {childData.length===0 && <ShowErrorBar errStr={t('noCommont')}></ShowErrorBar>} 
-        {childData.map((obj,idx)=>(
+        {childData.length>0 && childData.map((obj,idx)=>(
                     <div key={idx} >
                         <Card className='mt-2 daism-title' >
                         <Card.Body>

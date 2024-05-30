@@ -9,7 +9,7 @@ import { ChatSvg } from '../../../../lib/jssvg/SvgCollection';
 import PageLayout from '../../../../components/PageLayout';
 import { getJsonArray } from '../../../../lib/mysql/common';
 import { useTranslations } from 'next-intl'
-import { useRef,useState,useEffect } from 'react';
+import { useState,useEffect } from 'react';
 import ShowImg from '../../../../components/ShowImg';
 
 //不登录也可以查看
@@ -35,8 +35,8 @@ function Message({eventsData,statInfo,t,tc}) {
     const router = useRouter()
     const actor = useSelector((state) => state.valueData.actor) 
     const dispatch = useDispatch();
-
-    const uref=useRef()
+    
+    // const uref=useRef()
     
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
@@ -69,7 +69,7 @@ function Message({eventsData,statInfo,t,tc}) {
     <>
         <Breadcrumb menu={menu} currentPage={eventsData.title}> </Breadcrumb>
         <div style={{ position:'relative', textAlign:'center'}} >
-            <ShowImg path={eventsData.top_img} alt='' maxHeight="200px" width="100%" />   
+            <ShowImg path={eventsData.top_img} alt='' maxHeight="200px"  />   
         </div>
 
        <EventTitle eventsData={eventsData} actor={actor} showTip={showTip} statInfo={statInfo} closeTip={closeTip} 

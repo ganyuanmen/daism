@@ -10,7 +10,7 @@ export default function Daomember_div({record,t,dao_manager}) {
         <Card className='mb-2  daism-title' >
         <Card.Header>{t('daoMember')}</Card.Header>
         <Card.Body>
-        { record.map((obj,idx)=>(
+        { record.map((obj,idx)=>
                 <div className='row mb-2 p-1' style={{borderBottom:'1px solid gray'}}  key={idx}>
                     <div className='col' >
                             <ShowAddress  address={obj.member_address} ></ShowAddress>
@@ -28,7 +28,7 @@ export default function Daomember_div({record,t,dao_manager}) {
                         {dao_manager.toLowerCase()===obj.member_address.toLowerCase()?<span>{t('daoManagerText')}</span>:<span>{t('originMember')}</span>}
                         </div> 
                 </div>
-            ))
+            )
         }
         </Card.Body>
     </Card>

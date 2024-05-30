@@ -49,6 +49,7 @@
     "networkError":"Network error, try again later!",
     "rejectLogin":"You have refused to sign in. Please log in again from the user's dropdown menu",
     "mustLoginText":"Please log in to Sepolia test network!",
-    "footerText":"Powered by smart commons DAism, Enki and Honor Tokens."
+    "footerText":"Powered by smart commons DAism, Enki and Honor Tokens.",
+    "rmenuText":"Return to Home"
   }
 }

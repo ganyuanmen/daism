@@ -37,7 +37,7 @@ export async function signAndSend(url,name,domain,message,privkey) {
         console.error('Error:', error,(response&&response.body)?response.body:'');
     }
     else {
-      if(process.env.IS_DEBUGGER==='1') console.info('Response:'+(response&&response.statusCode)?response.statusCode:0+(response&&response.body)?response.body:'');
+      if(process.env.IS_DEBUGGER==='1') console.info(`Code:${response?.statusCode}, Response:${response?.body?.error}`);
     }
     });
 }

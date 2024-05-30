@@ -79,7 +79,7 @@ function Message({commontData,replyData,t,tc,statInfo})
 
 
                 {childData.length===0 && <ShowErrorBar errStr={t('noReply')}></ShowErrorBar>} 
-                {childData.map(
+                {childData.length>0 && childData.map(
                     (obj,idx)=>(
                                     <div key={idx} >
                                         <Card className='mt-2 daism-title' >
