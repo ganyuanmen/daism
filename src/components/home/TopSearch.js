@@ -3,7 +3,7 @@ import {Row,Col, Container,Tooltip,OverlayTrigger} from "react-bootstrap"
 import React,{ useRef } from "react"
 import { useTranslations } from 'next-intl'
 import cssStyle from "../../styles/topSearch.module.css"
-import Loadding from "../../components/Loadding"
+import Loadding from "../Loadding"
 
 const TopSearch = React.memo(({orderType,setOrderType,setOrderField,setCurrentPageNum,setSearchText,postStatus,orderIndex, setOrderIndex}) => {
     const t = useTranslations('dao')

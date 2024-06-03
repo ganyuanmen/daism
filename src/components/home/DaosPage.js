@@ -25,7 +25,7 @@ return <>
                         <Row className="mb-3" >
                             
                         <Col className='col-auto d-flex align-items-center'> 
-                        <Link className='daism-a' href={`/${locale}/my/[id]`} as={`/${locale}/my/${record.dao_id}`}>
+                        <Link className='daism-a' href={`/${locale}/mine/[id]`} as={`/${locale}/mine/${record.dao_id}`}>
                             <img alt="" style={{borderRadius:'50%'}} width={64} height={64} src={!record.dao_logo || record.dao_logo.length<12?'/logo.svg':record.dao_logo} />
                             </Link>
                         </Col>

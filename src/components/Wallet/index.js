@@ -42,7 +42,7 @@ function Wallet() {
 
 
     useEffect(() => {
-        if (!window.ethereum) { setShowMetaMask(true); } //提示安装metmask
+        // 
 
         //恢复siwe 登录
         if(providers.length) {

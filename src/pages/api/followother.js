@@ -10,9 +10,7 @@ export default async function handler(req, res) {
    // let re=await getJsonArray('checkdao',[para.daoName,para.daoSymbol,para.creator],true)
 //    /.well-known/webfinger?resource=acct:enki@test.daism.io
    let re=await httpGet(`https://${para.domain}/.well-known/webfinger?resource=acct:${para.account}@${para.domain}`)
-   console.log("----------------------")
-   console.log(re.message.links)
-   console.log("----------------------")
+
 
     let url;
     let type;
@@ -41,9 +39,6 @@ export default async function handler(req, res) {
     // if(re.code!==200) return obj;
     re=re.message
   
-    console.log("----====================")
-    console.log(re)
-    console.log("----====================")
 
     let followjson={
   '@context': 'https://www.w3.org/ns/activitystreams',
@@ -52,9 +47,7 @@ export default async function handler(req, res) {
   actor: 'https://test.daism.io/api/activitepub/users/enki',
   object: re.id
 }
-console.log("222222222222222222222222222222222222222222222222222222222222")
-console.log(followjson)
-console.log("222222222222222222222222222222222222222222222222222222222222")
+
 
 const localUser= await getUser('dao_id',2,'privkey,LOWER(account) account')
  

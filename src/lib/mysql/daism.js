@@ -1,5 +1,13 @@
-import { getData,executeID,getPageData } from './common';
+import { getData,executeID,getPageData,getJsonArray } from './common';
 
+
+
+
+
+export async function getReplyList({id})
+{
+    return  await getJsonArray('ecrview',[id]);
+}
 
 export async function addSource(did,url)
 {
@@ -43,6 +51,15 @@ export async function getAddLogo({daoid})
     let re= await getData('SELECT * FROM v_addlogo WHERE dao_id=? and is_use=0',[daoid]);
     return re || []
 }
+
+
+//修改dapp地址对应 version
+export async function getDappVersion({daoid})
+{
+    let re= await getData('SELECT * FROM v_createversion WHERE dao_id=? order by dao_version',[daoid]);
+    return re || []
+}
+
 
 //我的nft模板
 export async function getMyTemplate({did})

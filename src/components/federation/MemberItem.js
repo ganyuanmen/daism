@@ -7,7 +7,8 @@ import ShowImg from '../ShowImg';
 
 const MemberItem = forwardRef((props,ref) => {//props.isrealyImg 真实照片，不是api 
     const{record}=props
-    console.log(['MemberItem',props.isrealyImg,props.noLink])
+
+    console.log(record)
 
     return (
       
@@ -38,7 +39,7 @@ function LinkImg({noLink,did,locale, children})
 {
     if(noLink) return children
     else 
-    return  <Link className='daism-a' href={`/info/actor/[id]`} as={`/info/actor/${did}`} >
+    return  <Link className='daism-a' href={`/enki/actor/[id]`} as={`/enki/actor/${did}`} >
                     {children}
             </Link>
 }

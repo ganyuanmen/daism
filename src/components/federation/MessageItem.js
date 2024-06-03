@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 export default function MessageItem({record,actor,showTip,closeTip,showClipError,path,replyLevel,t,tc,isrealyImg,noLink})  
 { 
-    console.log(['MessageItem',isrealyImg,noLink])
+
     const daoAddress = useSelector((state) => state.valueData.daoAddress)
 
     return  <Card className='mb-3'>

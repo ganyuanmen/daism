@@ -30,10 +30,12 @@ export default function PageLayout({children}) {
             <Navbar.Collapse >
                 <Nav style={{width:'100%'}} className="d-flex align-items-center p-0 m-0 ">
                   <Link className={route === '/' ? styles.pnavactive  : ''}  href="/">{t('iadd')}</Link>
-                  <Link className={route === '/home' ? styles.pnavactive : ''}  href="/home">{t('home')}</Link> 
-                  <Link className={route === '/my' ? styles.pnavactive  : ''}  href="/my">{t('my')}</Link>
-                  <Link className={route === '/info' ? styles.pnavactive  : ''}  href="/info">{t('info')}</Link> 
-                  <Link className={route === '/nft' ? styles.pnavactive  : ''}  href="/nft">{t('nft')}</Link> 
+                  <Link className={route === '/sc' ? styles.pnavactive : ''}  href="/sc">{t('home')}</Link> 
+                  <Link className={route === '/mine' ? styles.pnavactive  : ''}  href="/mine">{t('my')}</Link>
+                  <Link className={route === '/enki' ? styles.pnavactive  : ''}  href="/enki">{t('info')}</Link> 
+                  <Link className={route === '/ht' ? styles.pnavactive  : ''}  href="/ht">{t('nft')}</Link> 
+                  <a className={route === '/daism' ? styles.pnavactive  : ''} target='_blank'  href={locale==='en'?"https://pig.daism.io/en/":"https://pig.daism.io/zh/"}>{t('daism')}</a> 
+
                   <Link className={route === '/docs' ? styles.pnavactive  : ''}  href="/docs">{t('doc')}</Link> 
                   
                   <div style={{flex:'1'}} ></div>

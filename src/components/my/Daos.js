@@ -38,7 +38,7 @@ function DaosPage({daosData,user,t,tc})
             <Card.Body>
                 {daosData.data.map((obj,idx)=>(
 
-                    <Link key={idx} className='daism-a' href={`/${locale}/my/[id]`} as={`/${locale}/my/${obj.dao_id}`}>
+                    <Link key={idx} className='daism-a' href={`/${locale}/mine/[id]`} as={`/${locale}/mine/${obj.dao_id}`}>
                 
                     <Row  className='mb-3 p-1'  style={{borderBottom:'1px solid gray'}} >
                         <Col className='col-auto me-auto' >

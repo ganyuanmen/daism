@@ -85,7 +85,12 @@
     "selectImgText":"选择图片",
     "alreadydays":"已过期",
     "completeText":"已完成",
-    "noCompletetext":"未完成"
+    "noCompletetext":"未完成",
+    "versionText":"版本",
+    "upgradeText":"升级记录",
+    "dateText":"日期",
+    "addressText":"地址",
+    "lastVersion":"版本号"
 
   }
 }

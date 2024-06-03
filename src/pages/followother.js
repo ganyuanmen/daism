@@ -18,12 +18,12 @@ export default function FollowOther() {
    function fff()
    {
     let _account=accountRef.current.getData();
-    console.log(_account)
+    
     let str=_account.split('@')
     let _name=str[0]
     let _domain=str[1]
     fetch(`/api/followother?account=${_name}&domain=${_domain}`).then(e=>{
-        console.log(e)
+
     })
     
 

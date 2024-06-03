@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 import { ethers } from 'ethers';
 import PageLayout from '../components/PageLayout';
 
-// const info_abi=require('../lib/contract/data/info.json')
+
 
 
 

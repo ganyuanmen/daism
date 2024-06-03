@@ -32,7 +32,7 @@ function TokensPage({tokensData,t})
                 {tokensData.data.map((obj,idx)=>(
                     <Row key={idx} className='mb-3 p-1'  style={{borderBottom:'1px solid gray'}} >
                         <Col>
-                        <Link className='daism-a' href={`/${locale}/my/[id]`} as={`/${locale}/my/${obj.dao_id}`}>
+                        <Link className='daism-a' href={`/${locale}/mine/[id]`} as={`/${locale}/mine/${obj.dao_id}`}>
                             <img height={32} width={32} alt='' src={obj.dao_logo?obj.dao_logo:'/logo.svg'} style={{borderRadius:'50%'}} />{'  '}<b>{obj.dao_symbol}</b>
                             </Link>
                         </Col>

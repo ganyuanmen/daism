@@ -13,7 +13,7 @@ export default function Breadcrumb({menu,currentPage}) {
     return (
         <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-                <li className="breadcrumb-item"><Link href={`/${locale}/info`}>Community</Link></li>
+                <li className="breadcrumb-item"><Link href={`/${locale}/enki`}>Community</Link></li>
                 {menu.map((obj, idx) => (
                     <li key={'Breadcrumb'+idx} className="breadcrumb-item"><Link href={`/${locale}${obj.url}`}><span style={bstyle} >{obj.title}</span></Link></li>
                     ))

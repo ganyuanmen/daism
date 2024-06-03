@@ -87,7 +87,12 @@
     "selectImgText":"Select Picture",
     "alreadydays":"Expired",
     "completeText":"Completed",
-    "noCompletetext":"Incomplete"
+    "noCompletetext":"Incomplete",
+    "versionText":"Version",
+    "upgradeText":"Upgrade Record",
+    "dateText":"Date",
+    "addressText":"address",
+    "lastVersion":"Version num"
 
   }
 }

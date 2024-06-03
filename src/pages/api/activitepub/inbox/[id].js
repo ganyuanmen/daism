@@ -59,14 +59,14 @@ export default async function handler(req, res) {
     if(postbody.type.toLowerCase()==='create')
     {  //inReplyTo:
         let replyType=postbody.object.inReplyTo || postbody.object.inReplyToAtomUri || null;
-        console.log("replyType",replyType)
-        //inReplyTo: 'https://test.daism.io/info/discussions/message/5',
-        // inReplyTo: 'https://test.daism.io/info/events/message/2',
+
+        //inReplyTo: 'https://test.daism.io/enki/discussions/message/5',
+        // inReplyTo: 'https://test.daism.io/enki/events/message/2',
 
 
-        if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/info/events/reply/`))
+        if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/enki/events/reply/`))
         {
-          console.log("events/reply")
+
           const  {content,actor,id}=await genePost(postbody,replyType)
           if(id)
           {       
@@ -79,28 +79,25 @@ export default async function handler(req, res) {
                   await eventAddReply({pid,did:'',nick,avatar,content,sendId:postbody.id})
               }
           }
-        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/info/discussions/message/`))
+        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/enki/discussions/message/`))
         {
-          console.log("discussions")
           const  {content,actor,id}=await genePost(postbody,replyType)
-          console.log({content,actor,id})
           if(id)
           {       
               let commont=await getOne(id)
-              console.log('commont',commont)
               if(commont.length && commont[0]['is_discussion']===1)
               {
                   let nick=actor[0]['actor_account']
                   let avatar=actor[0]['actor_icon']
-                  console.log({id,did:'',nick,avatar,content,sendId:postbody.id})
+
                   await discussionsAddCommont({id,did:'',nick,avatar,content,sendId:postbody.id})
               }
           }
-        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/info/events/message/`))
+        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/enki/events/message/`))
         { 
-          console.log("events")
+
           const  {content,actor,id}=await genePost(postbody,replyType)
-          console.log({content,actor,id})
+
           if(id)
           {       
               let commont=await eventGetOne(id)

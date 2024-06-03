@@ -53,8 +53,7 @@ export async function signAndSend(url,name,domain,message,privkey) {
         else 
         if( process.env.IS_DEBUGGER==='1')
         { 
-          console.log("get from :"+url+"-----------------------------------------------------")
-          console.log(response.body)
+        
         }
         resolve({code:response.statusCode,message:response.body});
          // res.status(200).json();

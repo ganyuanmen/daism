@@ -25,16 +25,16 @@ export default function User({user,daoAddress,loginsiwe,t,...props}) {
     switch(eventKey)
     {
         case "1":
-           router.push(`/my/walletinfo`, { scroll: false })
+           router.push(`/mine/walletinfo`, { scroll: false })
         break;
         case "2":
-          router.push(`/info/actor`, { scroll: false })
+          router.push(`/enki/actor`, { scroll: false })
           break;
         case "3":
-          router.push(`/info/mydao`, { scroll: false })
+          router.push(`/enki/mydao`, { scroll: false })
         break;
         case "4":
-           router.push(`/my/dividend`, { scroll: false })
+           router.push(`/mine/dividend`, { scroll: false })
            break;
         case "5":
         case "7":

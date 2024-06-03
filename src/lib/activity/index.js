@@ -39,7 +39,7 @@ export function createActor(name,domain,user) {
   //   'type': 'Person',
   //   'preferredUsername': `${userName}`,
   //   'name': `${userName}`,
-  //   'url': `https://${domain}/info/visit/${account.id}`,
+  //   'url': `https://${domain}/enki/visit/${account.id}`,
   //   'inbox': `https://${domain}/api/activitepub/inbox/${userName}`,
   //   'outbox': `https://${domain}/api/activitepub/outbox/${userName}`,
   //   'followers': `https://${domain}/api/activitepub/followers/${userName}`,
@@ -93,7 +93,7 @@ export function createActor(name,domain,user) {
           {
               "rel": "http://webfinger.net/rel/profile-page",
               "type": "text/html",
-              "href": `https://${domain}/info/visit/${dao_id}`
+              "href": `https://${domain}/enki/visit/${dao_id}`
           },
           {
               'rel': 'self',

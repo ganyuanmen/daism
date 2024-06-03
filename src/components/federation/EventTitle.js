@@ -11,7 +11,7 @@ export default function EventTitle({eventsData,actor,statInfo,closeTip,showClipE
     const daoAddress = useSelector((state) => state.valueData.daoAddress)
     let MenuAttch=undefined;
     if (actor && actor.member_address===eventsData.member_address && statInfo.noAudit>0)
-        MenuAttch={path:`/info/events/join/${eventsData.id}`,title:`${t('audit')}: ${statInfo.noAudit} ${t('people')}`}
+        MenuAttch={path:`/enki/events/join/${eventsData.id}`,title:`${t('audit')}: ${statInfo.noAudit} ${t('people')}`}
 
 
     return (
@@ -30,7 +30,7 @@ export default function EventTitle({eventsData,actor,statInfo,closeTip,showClipE
 
                         {eventsData?.state===2?<span className='text-secondary'>({t('alreadyEndText')}) </span>
                         :eventsData?.state===1?<span className='text-info'>({t('processingText')}...) </span>
-                        :<Link  href={`/info/events/join/${eventsData.id}`} >({t('I want to participate')})</Link>
+                        :<Link  href={`/enki/events/join/${eventsData.id}`} >({t('I want to participate')})</Link>
                         }
                     </div> 
                     {actor && (actor?.member_address?.toLowerCase()===eventsData?.member_address?.toLowerCase() || actor?.member_address?.toLowerCase()===daoAddress['administrator']?.toLowerCase()) && 

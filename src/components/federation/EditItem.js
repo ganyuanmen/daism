@@ -29,7 +29,7 @@ export default function EditItem({message,showTip,closeTip,showClipError,path,re
         switch(eventKey)
         {
             case "1":
-              router.push(`/info/${path}/update/${message.id}`, { scroll: false })
+              router.push(`/enki/${path}/update/${message.id}`, { scroll: false })
             break;
             case "2":
               setShow(true)
