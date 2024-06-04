@@ -14,7 +14,7 @@ let t = useTranslations('ff')
   return (
     <Rmenu>
       {
-      newsData.id?<Message newsData={newsData} />
+      newsData?.id?<Message newsData={newsData} />
       :<ShowErrorBar errStr={t('noNewsExist')} /> 
       }
     </Rmenu>
@@ -35,21 +35,18 @@ function Message({newsData})
                 
                 <h1>{newsData['title']}</h1>
                 <Card>
-                <Card.Body>
-                <div className='row' >
+                  <Card.Header>
+                  <div className='row' >
                     <div className='col-auto me-auto' >
                         <MemberItem record={newsData} />
                     </div>
-                    <div className='col-auto'>
-                    
+                    <div className='col-auto d-flex align-items-center '>
+                    {newsData.createtime}
                     </div>
                 </div>
-                </Card.Body>
-                </Card>
-                <div>{newsData.createTime}</div>
-                <Card>
+                  </Card.Header>
                 <Card.Body>
-                    <div dangerouslySetInnerHTML={{__html: newsData.content}}></div>
+                <div dangerouslySetInnerHTML={{__html: newsData.content}}></div>
                 </Card.Body>
                 </Card>
             </>

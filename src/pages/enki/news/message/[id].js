@@ -18,7 +18,7 @@ let t = useTranslations('ff')
   return (
     <PageLayout>
       {
-      newsData.id?<Message newsData={newsData} />
+      newsData?.id?<Message newsData={newsData} />
       :<>
        <Breadcrumb menu={[]} currentPage='news' />
        <ShowErrorBar errStr={t('noNewsExist')} />
@@ -66,27 +66,26 @@ function Message({newsData})
                 
                 <h1>{newsData['title']}</h1>
                 <Card>
-                <Card.Body>
-                <div className='row' >
+                  <Card.Header>
+                  <div className='row' >
                     <div className='col-auto me-auto' >
                         <MemberItem record={newsData} />
                     </div>
-                    <div className='col-auto'>
-                    {actor && (actor?.member_address?.toLowerCase()===newsData?.member_address?.toLowerCase() || actor?.member_address?.toLowerCase()===daoAddress['administrator']?.toLowerCase()) && 
+                    <div className='col-auto d-flex align-items-center'>
+                    {actor && (actor?.member_address?.toLowerCase()===newsData?.member_address?.toLowerCase()) && 
                         <EditItem  message={newsData} showTip={showTip} closeTip={closeTip}
                         showClipError={showClipError} replyLevel={0} path='news' t={t} tc={tc}
                         />
                     }
+                    {newsData.createtime}
                     </div>
                 </div>
-                </Card.Body>
-                </Card>
-                <div>{newsData.createTime}</div>
-                <Card>
+                  </Card.Header>
                 <Card.Body>
-                    <div dangerouslySetInnerHTML={{__html: newsData.content}}></div>
+                <div dangerouslySetInnerHTML={{__html: newsData.content}}></div>
                 </Card.Body>
                 </Card>
+
             </>
 }
 

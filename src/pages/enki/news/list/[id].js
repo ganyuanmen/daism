@@ -6,7 +6,7 @@ import Loadding from '../../../../components/Loadding';
 import { useTranslations } from 'next-intl'
 import Breadcrumb from '../../../../components/Breadcrumb';
 import ListItem from '../../../../components/federation/ListItem';
-import Wecome from '../../../../components/federation/Wecome';
+// import Wecome from '../../../../components/federation/Wecome';
 import { AddSvg } from '../../../../lib/jssvg/SvgCollection';
 import PageItem from '../../../../components/PageItem';
 import useInfoList from '../../../../hooks/useInfoList';
@@ -14,13 +14,16 @@ import PageLayout from '../../../../components/PageLayout';
 import { getJsonArray } from '../../../../lib/mysql/common';
 
 
-export default function ListsPage({daoData}) {
+export default function ListsPage({daoDataServer}) {
   const t = useTranslations('ff')
   const tc = useTranslations('Common')
+  const [daoData,setDaoData]=useState([])
   const [currentPageNum, setCurrentPageNum] = useState(1); //当前页
-  const pageData=useInfoList({currentPageNum,pages:20,daoid:daoData.dao_id,method:'newsPageData'})
-  const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
-  const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
+  const pageData=useInfoList({currentPageNum,pages:10,daoid:daoData.dao_id,method:'newsPageData'})
+  // const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
+  // const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
+
+  useEffect(()=>{setDaoData(daoDataServer)},[daoDataServer])
   
   const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
   const [isVist,setIsVist]=useState(true)  //是不是游客
@@ -31,15 +34,13 @@ export default function ListsPage({daoData}) {
     }
     else setIsVist(true);
 
-   },[daoActor])
+   },[daoActor,daoData])
 
 
   
   return (
     <PageLayout>
-        {user.connected!==1?<ShowErrorBar errStr={tc('noConnectText')} />
-         :!loginsiwe?<Wecome />
-         :<>
+       
            <Breadcrumb menu={[{url:`/enki/visit/${daoData.dao_id}`,title:daoData.dao_name}]} currentPage='news' ></Breadcrumb>
            {!isVist && <Link className="btn btn-primary" href={`/enki/news/new/[id]`} as={`/enki/news/new/${daoData.dao_id}`} > <AddSvg size={20} />{t('createNews')} </Link>}
             { pageData.rows.length?
@@ -51,8 +52,7 @@ export default function ListsPage({daoData}) {
               :pageData.status==='succeeded' ? <ShowErrorBar errStr={tc('noDataText')} />
               :<Loadding />
             }
-          </>
-        }  
+        
     </PageLayout>  
   );
 }
@@ -79,7 +79,7 @@ export const getServerSideProps = async ({ req, res,locale,query }) => {
         ...require(`../../../../messages/shared/${locale}.json`),
         ...require(`../../../../messages/federation/${locale}.json`),
       },
-      daoData:await getJsonArray('daodata2',[query.id],true)
+      daoDataServer:await getJsonArray('daodata2',[query.id],true)
     }
   }
 }

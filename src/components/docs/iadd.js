@@ -1,8 +1,7 @@
 
 
 export default function IADDS1({t,locale}) {
-  
-    console.log(locale)
+
     return ( 
      <div>
         <h3><strong>{t('i0')} </strong></h3>

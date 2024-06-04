@@ -1,12 +1,15 @@
 import { useState,useRef } from 'react';
 import { useSelector} from 'react-redux';
 import MessageItem from './MessageItem';
-import { Modal,Button,Row,Col} from 'react-bootstrap';
+import { Modal,Button,Row,Col, Card} from 'react-bootstrap';
 import { useEffect } from 'react';
 import {client} from '../../lib/api/client'
 import Loadding from '../Loadding';
 import { Up,Down,ReplySvg } from '../../lib/jssvg/SvgCollection';
 import Editor from '../form/Editor';
+import MemberItem from './MemberItem';
+import EditItem from './EditItem';
+import TimesItem from './TimesItem';
 
 export default function EventDuscussion({record,showTip,closeTip,showClipError,t,tc}){
 
@@ -75,11 +78,27 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
    
     return (
         <>
-            <MessageItem  record={record} actor={actor}  path='events' replyLevel={1} showTip={showTip} closeTip={closeTip} 
-                              noLink={record.send_id && record.send_id.startsWith('http')} 
-                              isrealyImg={record.send_id && record.send_id.startsWith('http')}  
-                            showClipError={showClipError} t={t} tc={tc} />
-      
+        <Card className='mb-3'>
+        <Card.Header>
+        <div className='row'  >
+                <div className='col-auto me-auto' >
+                    <MemberItem  record={record} isrealyImg={record.send_id && record.send_id.startsWith('http')} noLink={record.send_id && record.send_id.startsWith('http')} ></MemberItem>
+                </div>
+                <div className='col-auto d-flex align-items-center '>
+                {actor && (actor?.member_address?.toLowerCase()===record?.member_address?.toLowerCase() ) && 
+                    <EditItem  message={record} showTip={showTip} closeTip={closeTip} 
+                    showClipError={showClipError} replyLevel={1} path='events'  t={t} tc={tc} ></EditItem>
+                }
+                <TimesItem times={record.times} t={t} ></TimesItem>
+                </div>
+            </div>
+        </Card.Header>
+            <Card.Body>
+           
+           
+            <div style={{paddingTop:'16px',paddingLeft:'4px'}} dangerouslySetInnerHTML={{__html: record.content}}></div>
+            </Card.Body>
+            <Card.Footer>
             <Row>
                     <Col className='Col-auto me-auto' >
                     {record.reply_count>0 && <Button size='sm' onClick={e=>setShow(!show)}  variant='light'>{t('replyText')}:{record.reply_count} {show?<Up size={16} />:<Down size={16} /> }</Button>}
@@ -89,7 +108,7 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
                     </Col>
             </Row>
            
-               { show && <div className='mt-3'  style={{paddingLeft:"20px"}} >
+               { show && <div className='mt-3'  style={{paddingLeft:"60px"}} >
                 {pending?<Loadding />:
                 
                 <>
@@ -110,6 +129,15 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
                 </>}
                 </div>
                 }
+            </Card.Footer>
+            </Card>
+
+            {/* <MessageItem  record={record} actor={actor}  path='events' replyLevel={1} showTip={showTip} closeTip={closeTip} 
+                              noLink={record.send_id && record.send_id.startsWith('http')} 
+                              isrealyImg={record.send_id && record.send_id.startsWith('http')}  
+                            showClipError={showClipError} t={t} tc={tc} /> */}
+      
+           
 
              <Modal  className='daism-title' show={showWin} onHide={(e) => {setShowWin(false)}} >
                 <Modal.Header closeButton></Modal.Header>

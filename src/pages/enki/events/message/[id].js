@@ -3,7 +3,7 @@ import EventTitle from '../../../../components/federation/EventTitle';
 import ShowErrorBar from '../../../../components/ShowErrorBar';
 import { Card,Button,Row,Col} from 'react-bootstrap';
 import {setTipText,setMessageText} from '../../../../data/valueData'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import Breadcrumb from '../../../../components/Breadcrumb';
 // import { ChatSvg } from '../../../../lib/jssvg/SvgCollection';
 import { ReplySvg } from '../../../../lib/jssvg/SvgCollection';
@@ -14,18 +14,21 @@ import Editor from '../../../../components/form/Editor';
 import { useState,useEffect,useRef } from 'react';
 import ShowImg from '../../../../components/ShowImg';
 import { client } from '../../../../lib/api/client';
-
+import Loginsign from '../../../../components/Loginsign';
 import EventDuscussion from '../../../../components/federation/EventDuscussion';
+import Loadding from '../../../../components/Loadding';
+import PageItem from '../../../../components/PageItem';
+import useDiscusionList from "../../../../hooks/useDiscusionList"
 
 //不登录也可以查看
-export default function MessagePage({eventsData,statInfo,records}) {
+export default function MessagePage({eventsData,statInfo}) {
 
     let tc = useTranslations('Common')
     let t = useTranslations('ff')
     return (
     <PageLayout>
         {
-        eventsData.id?<Message eventsData={eventsData} statInfo={statInfo} t={t} tc={tc} records={records} />
+        eventsData?.id?<Message eventsData={eventsData} statInfo={statInfo} t={t} tc={tc} />
         :<>
         <Breadcrumb menu={[]} currentPage='events' />
         <ShowErrorBar errStr={t('noEventsExist')} />
@@ -36,31 +39,32 @@ export default function MessagePage({eventsData,statInfo,records}) {
     );
 }
 
-function Message({eventsData,statInfo,t,tc,records}) {
-    const router = useRouter()
+function Message({eventsData,statInfo,t,tc}) {
+    const user = useSelector((state) => state.valueData.user) //钱包用户信息
     const actor = useSelector((state) => state.valueData.actor) 
     const dispatch = useDispatch();
     const [childData,setChildData]=useState([])
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
-    // const uref=useRef()
+    const [currentPageNum, setCurrentPageNum] = useState(1); //当前页
+    const pageData=useDiscusionList({currentPageNum,pid:eventsData.id,pages:10,method:'ecviewPageData'})
     
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
     function showClipError(str){dispatch(setMessageText(str))}
-
+    // const [childData,setChildData]=useState([])
     // const [menu,setMenu]=useState([])
     const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
-    const [isVist,setIsVist]=useState(true)  //是不是游客
-    useEffect(()=>{
-      if(daoActor && daoActor.length) {
-      let _daoData=daoActor.find((detailObj)=>{return parseInt(detailObj.dao_id)===parseInt(eventsData.dao_id)})
-      if(_daoData) setIsVist(false) ; else setIsVist(true);
-      }
-      else setIsVist(true);
+    // const [isVist,setIsVist]=useState(true)  //是不是游客
+    // useEffect(()=>{
+    //   if(daoActor && daoActor.length) {
+    //   let _daoData=daoActor.find((detailObj)=>{return parseInt(detailObj.dao_id)===parseInt(eventsData.dao_id)})
+    //   if(_daoData) setIsVist(false) ; else setIsVist(true);
+    //   }
+    //   else setIsVist(true);
   
-     },[daoActor])
+    //  },[daoActor])
   
-     useEffect(()=>{setChildData(records)},[records])
+    useEffect(()=>{ if(pageData && pageData.rows) setChildData(pageData.rows) },[pageData])
    
     // const openDiscussion=()=>{
     //     router.push(`/enki/events/discussion/${eventsData.id}`, { scroll: false })
@@ -78,38 +82,40 @@ function Message({eventsData,statInfo,t,tc,records}) {
         <div style={{ position:'relative', textAlign:'center'}} >
             <ShowImg path={eventsData.top_img} alt='' maxHeight="200px"  />   
         </div>
-
-       <EventTitle eventsData={eventsData} actor={actor} showTip={showTip} statInfo={statInfo} closeTip={closeTip} 
-       showClipError={showClipError}  t={t} tc={tc} />
-
+        <h1>{eventsData.title}</h1>
         <Card className="mb-3" >
+            <Card.Header>
+            <EventTitle eventsData={eventsData} actor={actor} loginsiwe={loginsiwe} showTip={showTip} statInfo={statInfo} closeTip={closeTip} 
+       showClipError={showClipError}  t={t} tc={tc} />
+            </Card.Header>
         <Card.Body>
             <div dangerouslySetInnerHTML={{__html: eventsData.content}}></div>
         </Card.Body>
         </Card>
      
-       {/* <Button variant='light' onClick={openDiscussion} > <ChatSvg size={64} /> </Button> */}
+        {childData.length?
+                  <>
+                    {childData.map((obj,idx) => (
+                            <EventDuscussion key={idx} record={obj} showTip={showTip} closeTip={closeTip} showClipError={showClipError} t={t} tc={tc}  />
+                    ))
+                    }
+                    <PageItem records={pageData.total} pages={pageData.pages} currentPageNum={currentPageNum} setCurrentPageNum={setCurrentPageNum} postStatus={pageData.status} />
+                  </>
+                  :pageData.status==='failed'?<ShowErrorBar errStr={pageData.error} />
+                  :pageData.status==='succeeded' ? <ShowErrorBar errStr={tc('noDataText')} />
+                  :<Loadding />
+        }
 
-       <div className='mt-2' >   
-        {childData.length===0 && <ShowErrorBar errStr={t('noCommont')}></ShowErrorBar>} 
-        {childData.length>0 && childData.map((obj,idx)=>(
-                    <div key={idx} >
-                        <Card className='mt-2 daism-title' >
-                        <Card.Body>
-                            <EventDuscussion record={obj} showTip={showTip} closeTip={closeTip} showClipError={showClipError} t={t} tc={tc}  />
-                        </Card.Body>
-                        </Card>
-                    </div>
-                ))
-            }
 
-            {loginsiwe && eventsData.is_discussion===1 &&  
-                <Commont eventsData={eventsData} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} setChildData={setChildData}
-                    childData={childData} t={t} tc={tc} >  
-                </Commont>
-            }
-    </div>
       
+    {eventsData.is_discussion===1 && <> {
+                loginsiwe?<Commont eventsData={eventsData} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} setChildData={setChildData}
+                    childData={childData} t={t} tc={tc} >  
+                </Commont>:
+                <Loginsign user={user} tc={tc} />
+                }
+                </>
+            }
     </>
     );
 }
@@ -187,7 +193,7 @@ export const getServerSideProps = async ({ req, res,locale,query }) => {
         },
         eventsData,
         statInfo,
-        records:await getJsonArray('ecview',[query.id]),
+        // records:await getJsonArray('ecview',[query.id]),
       }
     }
   }

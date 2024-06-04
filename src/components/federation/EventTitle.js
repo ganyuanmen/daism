@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useSelector} from 'react-redux';
 import { LocationSvg,DateSvg,UserSvg,WebsitSvg } from '../../lib/jssvg/SvgCollection';
 
-export default function EventTitle({eventsData,actor,statInfo,closeTip,showClipError,t,tc,showTip}) {
+export default function EventTitle({eventsData,actor,loginsiwe,statInfo,closeTip,showClipError,t,tc,showTip}) {
     const daoAddress = useSelector((state) => state.valueData.daoAddress)
     let MenuAttch=undefined;
     if (actor && actor.member_address===eventsData.member_address && statInfo.noAudit>0)
@@ -16,35 +16,29 @@ export default function EventTitle({eventsData,actor,statInfo,closeTip,showClipE
 
     return (
        <>
-        <h1>{eventsData.title}</h1>
-        <Card className='mb-2' >
-        <Card.Body>
-            <div className="row" >
+     
+            <div className="row mb-2" >
                 <div className="col-auto me-auto " >
                     <MemberItem record={eventsData} />
                 </div>
-                <div className="col-auto" >
+                <div className='col-auto d-flex align-items-center '>
                     <div style={{textAlign:'center',width:'100%'}} >
                         <span>{t('participateText')}:{statInfo.amount}</span>{'  '}
                       
 
                         {eventsData?.state===2?<span className='text-secondary'>({t('alreadyEndText')}) </span>
                         :eventsData?.state===1?<span className='text-info'>({t('processingText')}...) </span>
-                        :<Link  href={`/enki/events/join/${eventsData.id}`} >({t('I want to participate')})</Link>
+                        :<>{loginsiwe && <Link  href={`/enki/events/join/${eventsData.id}`} >({t('I want to participate')})</Link>}</>
                         }
                     </div> 
-                    {actor && (actor?.member_address?.toLowerCase()===eventsData?.member_address?.toLowerCase() || actor?.member_address?.toLowerCase()===daoAddress['administrator']?.toLowerCase()) && 
+                    {actor && (actor?.member_address?.toLowerCase()===eventsData?.member_address?.toLowerCase() ) && 
                      <EditItem message={eventsData} showTip={showTip}  t={t} tc={tc}
                      closeTip={closeTip} showClipError={showClipError} path='events' replyLevel={0} attach={MenuAttch} />
                      
                     }
                 </div>  
             </div>
-        </Card.Body>
-        </Card>
-
-        <Card className='mb-2' >
-        <Card.Body>
+     
             <div className="row" >
                 <div className="col-auto me-auto " >
                     <div><DateSvg size={24} /> <strong>{t('timesText')}：</strong> {t('fromText')}{'  '}{eventsData.start_time} {t('toText')}{'  '}{eventsData.end_time} </div>
@@ -55,8 +49,7 @@ export default function EventTitle({eventsData,actor,statInfo,closeTip,showClipE
                     <div><WebsitSvg size={24} /> <strong>{t('urlText')}:</strong> {eventsData.event_url}</div>
                 </div>
             </div>
-        </Card.Body>
-        </Card>
+      
            
        </>
 

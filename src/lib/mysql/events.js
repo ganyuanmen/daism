@@ -171,3 +171,10 @@ export async function eventsPageData({ps,pi,daoid})
     let re= await getPageData('events',ps,pi,'id','desc',`dao_id=${daoid}`);
     return re 
 }
+
+//评论
+export async function ecviewPageData({ps,pi,pid})
+{
+    let re= await getPageData('ecview',ps,pi,'id','asc',`pid=${pid}`);
+    return re 
+}

@@ -8,7 +8,6 @@ import ShowImg from '../ShowImg';
 const MemberItem = forwardRef((props,ref) => {//props.isrealyImg 真实照片，不是api 
     const{record}=props
 
-    console.log(record)
 
     return (
       

@@ -75,3 +75,9 @@ export async function discussionPageData({ps,pi,daoid})
     return re 
 }
 
+//讨论回复
+export async function dcviewPageData({ps,pi,pid})
+{
+    let re= await getPageData('dcview',ps,pi,'id','asc',`pid=${pid}`);
+    return re 
+}

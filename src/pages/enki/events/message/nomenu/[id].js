@@ -2,74 +2,71 @@
 import EventTitle from '../../../../../components/federation/EventTitle';
 import ShowErrorBar from '../../../../../components/ShowErrorBar';
 import { Card} from 'react-bootstrap';
-// import { useRouter } from 'next/navigation'
-// import { ChatSvg } from '../../../../../lib/jssvg/SvgCollection';
 import { getJsonArray } from '../../../../../lib/mysql/common';
 import { useTranslations } from 'next-intl'
-import ShowImg from '../../../../../components/ShowImg';
-import Rmenu from '../../../../../components/Rmenu';
 import { useState,useEffect } from 'react';
+import ShowImg from '../../../../../components/ShowImg';
 import EventDuscussion from '../../../../../components/federation/EventDuscussion';
+import Loadding from '../../../../../components/Loadding';
+import PageItem from '../../../../../components/PageItem';
+import useDiscusionList from "../../../../../hooks/useDiscusionList"
+import Rmenu from '../../../../../components/Rmenu';
 
-//查看
-export default function MessagePage({eventsData,statInfo,records}) {
+//不登录也可以查看
+export default function MessagePage({eventsData,statInfo}) {
 
     let tc = useTranslations('Common')
     let t = useTranslations('ff')
     return (
     <Rmenu>
         {
-        eventsData.id?<Message eventsData={eventsData} statInfo={statInfo} t={t} tc={tc} records={records} />
-        : <ShowErrorBar errStr={t('noEventsExist')} />       
+        eventsData?.id?<Message eventsData={eventsData} statInfo={statInfo} t={t} tc={tc} />
+        : <ShowErrorBar errStr={t('noEventsExist')} />        
         }
     </Rmenu>
     );
 }
 
-function Message({eventsData,statInfo,t,tc,records}) {
+function Message({eventsData,statInfo,t,tc}) {
+ 
     const [childData,setChildData]=useState([])
-    // const router = useRouter()
-    // const openDiscussion=()=>{
-    //     router.push(`/enki/events/discussion/nomenu/${eventsData.id}`, { scroll: false })
-    // }
-  
-    useEffect(()=>{setChildData(records)},[records])
+    const [currentPageNum, setCurrentPageNum] = useState(1); //当前页
+    const pageData=useDiscusionList({currentPageNum,pid:eventsData.id,pages:10,method:'ecviewPageData'})
+    useEffect(()=>{ if(pageData && pageData.rows) setChildData(pageData.rows) },[pageData])
+   
+ 
+
     return ( 
     <>
-     
         <div style={{ position:'relative', textAlign:'center'}} >
-            <ShowImg path={eventsData.top_img} alt='' maxHeight="200px" />   
+            <ShowImg path={eventsData.top_img} alt='' maxHeight="200px"  />   
         </div>
-
-       <EventTitle eventsData={eventsData}  statInfo={statInfo}  t={t} tc={tc} />
-
+        <h1>{eventsData.title}</h1>
         <Card className="mb-3" >
+            <Card.Header>
+            <EventTitle eventsData={eventsData} statInfo={statInfo}  t={t} tc={tc} />
+            </Card.Header>
         <Card.Body>
             <div dangerouslySetInnerHTML={{__html: eventsData.content}}></div>
         </Card.Body>
         </Card>
      
-       {/* <Button variant='light' onClick={openDiscussion} > <ChatSvg size={64} /> </Button> */}
-       <div className='mt-2' >   
-        {childData.length===0 && <ShowErrorBar errStr={t('noCommont')}></ShowErrorBar>} 
-        {childData.length>0 && childData.map((obj,idx)=>(
-                    <div key={idx} >
-                        <Card className='mt-2 daism-title' >
-                        <Card.Body>
-                            <EventDuscussion record={obj}  t={t} tc={tc}  />
-                        </Card.Body>
-                        </Card>
-                    </div>
-                ))
-            }
+        {childData.length?
+                  <>
+                    {childData.map((obj,idx) => (
+                            <EventDuscussion key={idx} record={obj}  t={t} tc={tc}  />
+                    ))
+                    }
+                    <PageItem records={pageData.total} pages={pageData.pages} currentPageNum={currentPageNum} setCurrentPageNum={setCurrentPageNum} postStatus={pageData.status} />
+                  </>
+                  :pageData.status==='failed'?<ShowErrorBar errStr={pageData.error} />
+                  :pageData.status==='succeeded' ? <ShowErrorBar errStr={tc('noDataText')} />
+                  :<Loadding />
+        }
 
-        
-    </div>
-      
     </>
     );
 }
-
 
 
 export const getServerSideProps = async ({ req, res,locale,query }) => {
@@ -91,8 +88,7 @@ export const getServerSideProps = async ({ req, res,locale,query }) => {
         },
         eventsData,
         statInfo,
-        records:await getJsonArray('ecview',[query.id]),
-
+        // records:await getJsonArray('ecview',[query.id]),
       }
     }
   }

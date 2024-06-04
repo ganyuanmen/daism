@@ -10,16 +10,19 @@ import Editor from '../../../../components/form/Editor'
 import MessageItem from '../../../../components/federation/MessageItem';
 import { SendSvg } from '../../../../lib/jssvg/SvgCollection';
 import PageLayout from '../../../../components/PageLayout';
-
+import Loginsign from '../../../../components/Loginsign';
+import useDiscusionList from "../../../../hooks/useDiscusionList"
+import Loadding from '../../../../components/Loadding';
+import PageItem from '../../../../components/PageItem';
 
 //不登录也可以查看
-export default function MessagePage({discussionData,chilrenData}) {
+export default function MessagePage({discussionData}) {
   let t = useTranslations('ff')
   
   return (
     <PageLayout>
       {
-      discussionData.id?<Message discussionData={discussionData} chilrenData={chilrenData} t={t}  />
+      discussionData?.id?<Message discussionData={discussionData} t={t}  />
       :<>
        <Breadcrumb menu={[]} currentPage='discussions' />
        <ShowErrorBar errStr={t('notDiscussionText')} />
@@ -31,19 +34,20 @@ export default function MessagePage({discussionData,chilrenData}) {
 }
 
 
-function Message({discussionData,chilrenData,t})
+function Message({discussionData,t})
 {
   
-  let tc = useTranslations('Common')
-
-    const dispatch = useDispatch();
-    const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
-    const editRef=useRef()
-    const actor = useSelector((state) => state.valueData.actor) 
-    const user = useSelector((state) => state.valueData.user) 
-    const [childData,setChildData]=useState([])
+  const tc = useTranslations('Common')
+  const [currentPageNum, setCurrentPageNum] = useState(1); //当前页
+  const pageData=useDiscusionList({currentPageNum,pid:discussionData.id,pages:20,method:'dcviewPageData'})
+  const dispatch = useDispatch();
+  const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
+  const editRef=useRef()
+  const actor = useSelector((state) => state.valueData.actor) 
+  const user = useSelector((state) => state.valueData.user) 
+   const [childData,setChildData]=useState([])
     
-    useEffect(()=>{setChildData(chilrenData)},[chilrenData])
+   useEffect(()=>{ if(pageData && pageData.rows) setChildData(pageData.rows) },[pageData])
 
     // const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
     // const [isVist,setIsVist]=useState(true)  //是不是游客
@@ -57,9 +61,9 @@ function Message({discussionData,chilrenData,t})
     //  },[daoActor])
   
 
-    function showTip(str){dispatch(setTipText(str))}
-    function closeTip(){dispatch(setTipText(''))}
-    function showClipError(str){dispatch(setMessageText(str))}
+  function showTip(str){dispatch(setTipText(str))}
+  function closeTip(){dispatch(setTipText(''))}
+  function showClipError(str){dispatch(setMessageText(str))}
     
    
   async function submit()
@@ -81,6 +85,8 @@ function Message({discussionData,chilrenData,t})
     })
     
     if(res.status===200) {
+      // window.location.reload()
+      //  let curData=childData.slice()
        let curData=childData.slice()
        curData.push({
 			id:res.data,
@@ -90,9 +96,9 @@ function Message({discussionData,chilrenData,t})
 			member_nick:actor.member_nick,
 			content:textValue,
 			createtime:new Date().toLocaleString(),
-			times:'0_minute'})
-			
-       setChildData(curData)      
+			times:'0_minute'});
+      			
+    setChildData(curData)      
     }
     else {
         showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
@@ -109,22 +115,29 @@ function Message({discussionData,chilrenData,t})
                 <h1>{discussionData['title']}</h1>
                 <MessageItem record={discussionData} actor={actor} replyLevel={0}   
                 path='discussions' showTip={showTip} closeTip={closeTip} showClipError={showClipError} t={t} tc={tc} ></MessageItem>  
-                
-                {
-                
-                childData.map((obj,idx) => (
+                {childData.length?
+                  <>
+                    {childData.map((obj,idx) => (
                     <MessageItem key={idx} record={obj} actor={actor} replyLevel={1}
                     noLink={obj.send_id && obj.send_id.startsWith('http')} 
                     isrealyImg={obj.send_id && obj.send_id.startsWith('http')} 
                     showTip={showTip} closeTip={closeTip} showClipError={showClipError} path='discussions' t={t} tc={tc} ></MessageItem>
                     ))
+                    }
+                    <PageItem records={pageData.total} pages={pageData.pages} currentPageNum={currentPageNum} setCurrentPageNum={setCurrentPageNum} postStatus={pageData.status} />
+                  </>
+                  :pageData.status==='failed'?<ShowErrorBar errStr={pageData.error} />
+                  :pageData.status==='succeeded' ? <ShowErrorBar errStr={tc('noDataText')} />
+                  :<Loadding />
                 }
-                {loginsiwe && <>
+
+                {loginsiwe ? <>
                 <div className='mb-3' style={{backgroundColor:'white'}} >
                     <Editor  ref={editRef} title={t('myReplyText')}  ></Editor>
                 </div>
                  <button type="button" onClick={submit} className="btn btn-primary"><SendSvg size={16} /> {t('replyText')}</button>
                 </>
+                :<Loginsign user={user} tc={tc} />
                 }
             </>
 }
@@ -138,7 +151,7 @@ export const getServerSideProps = async ({ req, res,locale,query }) => {
           ...require(`../../../../messages/federation/${locale}.json`)
         },
         discussionData:await getJsonArray('dview',[query.id],true),
-        chilrenData:await getJsonArray('dcview',[query.id])
+        // chilrenData:await getJsonArray('dcview',[query.id])
       }
     }
   }
