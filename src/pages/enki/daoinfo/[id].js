@@ -35,9 +35,6 @@ export default function DaoInfo({daoData,daoMember,follower,domain}) {
 
                   </>
                 :<ShowErrorBar errStr={t('notDiscussionText')} />}   
-
-            
-         
         </PageLayout>
     );
 }

@@ -49,6 +49,7 @@
     "smarcommondesc4":"默认值的修改：通过提案的方式修改。",
     "dividendAddress":"分红地址",
     "dividendAmount":"数量",
-    "dividendTime":"时间"
+    "dividendTime":"时间",
+    "logoAlertText":"由于gas费用过高 建议使用2k以下的logo"
   }
 }

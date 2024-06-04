@@ -75,12 +75,12 @@ export default function User({user,daoAddress,loginsiwe,t,...props}) {
         <Modal.Header closeButton>About </Modal.Header>
         <Modal.Body  >
           <div className='d-flex justify-content-start align-items-center' >
-            <Image src="/enki.png" style={{borderRadius:'50%'}}  width={64}  height={64}  alt="Dasim"    /> 
+            <Image src="/enki.svg" style={{borderRadius:'50%'}}  width={64}  height={64}  alt="Dasim"    /> 
             <span style={{fontSize:"42px",marginLeft:"30px",fontWeight:"bold" }} >  EnKi</span>
          </div>
         <hr/>
         <div className='mb-3 mt-3' >
-         <strong>  Version:1.0 </strong>
+         <strong>  Version:0.1 </strong>
         </div>
         </Modal.Body>
     </Modal>

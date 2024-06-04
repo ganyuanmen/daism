@@ -223,7 +223,7 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
                 </Form.Control.Feedback>
             </InputGroup>
             <DaismImg  ref={imgRef} title='logo'  maxSize={10480} fileTypes='svg,jpg,jpeg,png,gif,webp,zip' />
-            <Alert>由于gas费用过高 建议使用2k以下的logo </Alert>
+            <Alert>{t('logoAlertText')} </Alert>
            
             {/* 第一个成员地址 */}
             <InputGroup hasValidation className="mb-0">

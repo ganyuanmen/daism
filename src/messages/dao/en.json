@@ -60,7 +60,7 @@
     "changeDescText":"Update description",
     "changeStrategyText":"Update strategy",
     "newManagerText":"New Manager",
-    "newCreatroText":"New Creator",
+    "newCreatroText":"New dApp address",
     "alreadyManagerText":"Already administrator",
     "alreadyCreatorText":"Already the creator",
     "passRateText":"The voting approval rate can only be 0-100",

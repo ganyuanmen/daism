@@ -49,7 +49,8 @@
     "smarcommondesc4":"Default value modification: Modify through proposal.",
     "dividendAddress":"Dividend address",
     "dividendAmount":"amount",
-    "dividendTime":"time"
+    "dividendTime":"time",
+    "logoAlertText":"Due to the high cost of gas, it is recommended to use a logo of less than 2k"
      
   }
 }

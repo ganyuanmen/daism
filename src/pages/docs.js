@@ -8,13 +8,17 @@ import IADDS1 from '../components/docs/iadd';
 import Common1 from '../components/docs/common';
 import My1 from '../components/docs/my';
 import Commutis1 from '../components/docs/commutis1';
+import PROFILE1 from '../components/docs/profile';
+import HONOR1 from '../components/docs/honor';
 
 
 
 
-export default function Docs() {
+
+export default function Docs({locale}) {
     const [activeTab, setActiveTab] = useState(0);
     const t = useTranslations('Navigation')
+    const tt = useTranslations('Docs')
     const ar=[t('iadd'),t('home'),t('my'),t('info'),t('nft'),t('profile'),]
     
 
@@ -43,10 +47,12 @@ export default function Docs() {
                 </div>
 
                     <div className="p-5 col-md-9 " style={{borderLeft:'3px solid #AEAEAF'}} >
-                    {activeTab === 0 && <IADDS1 t={t} />}
-                    {activeTab === 1 && <Common1 t={t} />}
-                    {activeTab === 2 && <My1 t={t} />}
-                    {activeTab === 3 && <Commutis1 t={t} />}
+                    {activeTab === 0 && <IADDS1 t={useTranslations('iadd')} locale={locale} />}
+                    {activeTab === 1 && <Common1 t={useTranslations('smartcommon')} locale={locale} />}
+                    {activeTab === 2 && <My1 t={useTranslations('mine')} locale={locale} />}
+                    {activeTab === 3 && <Commutis1 t={useTranslations('commuty')} locale={locale} />}
+                    {activeTab === 4 && <HONOR1  t={useTranslations('honor')} locale={locale} />}
+                    {activeTab === 5 && <PROFILE1 t={useTranslations('profile')} locale={locale}/>}
 
                     </div>
                
@@ -63,7 +69,9 @@ export const getStaticProps  = ({ req, res,locale }) => {
         props: {
             messages: {
             ...require(`../messages/shared/${locale}.json`),
-            }
+            ...require(`../messages/docs/${locale}.json`),
+            },
+            locale
             }
         }
     }

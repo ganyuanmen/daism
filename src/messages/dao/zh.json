@@ -58,7 +58,7 @@
     "changeDescText":"更改描述",
     "changeStrategyText":"更改策略",
     "newManagerText":"新的管理者",
-    "newCreatroText":"新的创建者",
+    "newCreatroText":"新的dApp地址",
     "alreadyManagerText":"已经是管理员",
     "alreadyCreatorText":"已经是创建者",
     "passRateText":"投票通过率只能是0-100",
