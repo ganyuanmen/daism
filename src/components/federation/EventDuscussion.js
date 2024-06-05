@@ -17,7 +17,7 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
 
     const [replyData,setReplyData]=useState([]) //数据集合
     const [show,setShow]=useState(false)  // 是否显示
-    const [status,setStatus]=useState('loadding')
+    const [status,setStatus]=useState('')
     const [total,setTotal]=useState(0) //总回复数
     const [errors,setErrors]=useState('') //
     const [isFirst,setIsFirst]=useState(true)  //是否首次打开
