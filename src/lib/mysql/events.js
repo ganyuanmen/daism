@@ -178,3 +178,13 @@ export async function ecviewPageData({ps,pi,pid})
     let re= await getPageData('ecview',ps,pi,'id','asc',`pid=${pid}`);
     return re 
 }
+
+
+//评论回复
+export async function ecrviewPageData({ps,pi,pid})
+{
+    let re= await getPageData('ecrview',ps,pi,'id','asc',`pid=${pid}`);
+    return re 
+}
+
+

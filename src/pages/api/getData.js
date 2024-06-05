@@ -1,7 +1,7 @@
 import {getReplyList, getDappVersion, getDividend,getDappOwner,getProsData,getMyTemplate,getMynft, getTemplate, getEditLogo,getDaoVote,getLastPro,getAddLogo, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail } from "../../lib/mysql/daism";
 import {discussionPageData,dcviewPageData} from '../../lib/mysql/discussion'
 import {newsPageData} from '../../lib/mysql/news'
-import { eventsPageData,ecviewPageData } from "../../lib/mysql/events";
+import { eventsPageData,ecviewPageData,ecrviewPageData } from "../../lib/mysql/events";
 const methods={
     getDaosData,  //dao列表
     getPrice,  //gas平均单价  
@@ -31,6 +31,7 @@ const methods={
     eventsPageData,  //event 分页 活动列表
     dcviewPageData, //讨论回复
     ecviewPageData, //活动评论
+    ecrviewPageData, //活动评论回复
 
 }
 

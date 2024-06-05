@@ -10,32 +10,64 @@ import Editor from '../form/Editor';
 import MemberItem from './MemberItem';
 import EditItem from './EditItem';
 import TimesItem from './TimesItem';
+import ShowErrorBar from '../ShowErrorBar';
 
 export default function EventDuscussion({record,showTip,closeTip,showClipError,t,tc}){
+    const [showWin,setShowWin]=useState(false) //回复窗口显示
 
-    const [replyData,setReplyData]=useState([])
-    const [show,setShow]=useState(false)
-    const [showWin,setShowWin]=useState(false)
-    const [pending,setPending]=useState(false)
+    const [replyData,setReplyData]=useState([]) //数据集合
+    const [show,setShow]=useState(false)  // 是否显示
+    const [status,setStatus]=useState('loadding')
+    const [total,setTotal]=useState(0) //总回复数
+    const [errors,setErrors]=useState('') //
+    const [isFirst,setIsFirst]=useState(true)  //是否首次打开
+    const [currentPageNum, setCurrentPageNum] = useState(1); //当前页
+
     const editorRef=useRef()
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
     const actor = useSelector((state) => state.valueData.actor) 
+    useEffect(()=>{
+        let ignore = false;
+        if(show && record.reply_count>0 && isFirst)  //首次下载
+        {
+            setStatus('loadding')
+            client.get(`/api/getData?ps=10&pi=${currentPageNum}&pid=${record.id}`,'ecrviewPageData').then(res =>{ 
+                setIsFirst(false)
+                if (!ignore) {
+                    if (res.status===200) {
+                        setTotal(()=>total+res.data.total)
+                        setCurrentPageNum(()=>currentPageNum+1)
+                        setStatus("succeeded")
+                        setErrors('')
+                        setReplyData(()=>replyData.concat(res.data.rows))
+                    }
+                    else { 
+                        setStatus("failed")
+                        setErrors(res.statusText)
+                    }
+                }
+            });
+        }
+        return () => {ignore = true}
+       },[show,isFirst])
 
-   useEffect(()=>{
-    let ignore = false;
-    if(show && record.reply_count>0)
-    {
-        setPending(true)
-        client.get(`/api/getData?id=${record.id}`,'getReplyList').then(res =>{ 
-            setPending(false)
-            if (!ignore) 
-            if (res.status===200) setReplyData(res.data)
-           
+    function get_data(){
+        console.log("total",total)
+        setStatus('loadding')
+        client.get(`/api/getData?ps=10&pi=${currentPageNum}&pid=${record.id}`,'ecrviewPageData').then(res =>{ 
+                if (res.status===200) {
+                    setCurrentPageNum(()=>currentPageNum+1)
+                    setStatus("succeeded")
+                    setErrors('')
+                    setReplyData(()=>replyData.concat(res.data.rows))
+                }
+                else { 
+                    setStatus("failed")
+                    setErrors(res.statusText)
+                }
+            
         });
     }
-    return () => {ignore = true}
-   },[show,setReplyData,record.reply_count])
-
 
    const submit=async ()=>{
 
@@ -57,18 +89,21 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
 
     if(res.status===200) {
         record.reply_count++
-       let curData=replyData.slice()
-       curData.push({
-            id:res.data,
-            pid:record.id,
-            member_address:actor.member_address,
-            member_icon:actor.member_icon,
-            member_nick:actor.member_nick,
-            content:textValue,
-            createtime:new Date().toLocaleString(),
-            times:'0_minute'})
-            
-        setReplyData(curData)      
+        setShow(true)
+        let curData=replyData.slice()
+        curData.push({
+                id:res.data,
+                pid:record.id,
+                member_address:actor.member_address,
+                member_icon:actor.member_icon,
+                member_nick:actor.member_nick,
+                content:textValue,
+                createtime:new Date().toLocaleString(),
+                times:'0_minute'})
+                
+        setReplyData(curData)  
+        setTotal(()=>total+1)  
+         
     }
     else 
         showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg}`)
@@ -98,7 +133,7 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
            
             <div style={{paddingTop:'16px',paddingLeft:'4px'}} dangerouslySetInnerHTML={{__html: record.content}}></div>
             </Card.Body>
-            <Card.Footer>
+          {(record.reply_count>0 || loginsiwe) && <Card.Footer>
             <Row>
                     <Col className='Col-auto me-auto' >
                     {record.reply_count>0 && <Button size='sm' onClick={e=>setShow(!show)}  variant='light'>{t('replyText')}:{record.reply_count} {show?<Up size={16} />:<Down size={16} /> }</Button>}
@@ -109,13 +144,11 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
             </Row>
            
                { show && <div className='mt-3'  style={{paddingLeft:"60px"}} >
-                {pending?<Loadding />:
-                
-                <>
+              
                     {replyData.length>0 && replyData.map(
                         (obj,idx)=>(
                                     
-                                <MessageItem  key={idx} record={obj} actor={actor} 
+                                <MessageItem  key={obj.id} record={obj} actor={actor} 
                                 noLink={obj.send_id && obj.send_id.startsWith('http')} 
                                 isrealyImg={obj.send_id && obj.send_id.startsWith('http')}  
                                 path='events' replyLevel={2} 
@@ -126,10 +159,14 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
                             )
                         )
                     }
-                </>}
+                    {replyData.length<total && <div><Button size='sm' onClick={get_data}  variant='light'>fetch more ...</Button></div>}
+                    {status==='loadding'?<Loadding />:
+                    status==='failed' && <ShowErrorBar errStr={errors} />
+                    }
+             
                 </div>
                 }
-            </Card.Footer>
+            </Card.Footer>}
             </Card>
 
             {/* <MessageItem  record={record} actor={actor}  path='events' replyLevel={1} showTip={showTip} closeTip={closeTip} 

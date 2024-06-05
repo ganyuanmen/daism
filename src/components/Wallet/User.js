@@ -12,14 +12,14 @@ export default function User({user,daoAddress,loginsiwe,t,...props}) {
   
   const loginRef=useRef()
   const router = useRouter();
-  const [admin,setAdmin]=useState(false) //是否是超级管理员
+  // const [admin,setAdmin]=useState(false) //是否是超级管理员
   const [show,setShow]=useState(false)
 
   const actor = useSelector((state) => state.valueData.actor)
    
-  useEffect(() => {
-   setAdmin(daoAddress.administrator?.toLowerCase()===user.account?.toLowerCase())
-  }, [user.account,daoAddress]);
+  // useEffect(() => {
+  //  setAdmin(daoAddress.administrator?.toLowerCase()===user.account?.toLowerCase())
+  // }, [user.account,daoAddress]);
 
   const handleSelect = (eventKey) =>{ 
     switch(eventKey)

@@ -8,7 +8,7 @@ import { useSelector} from 'react-redux';
 import { LocationSvg,DateSvg,UserSvg,WebsitSvg } from '../../lib/jssvg/SvgCollection';
 
 export default function EventTitle({eventsData,actor,loginsiwe,statInfo,closeTip,showClipError,t,tc,showTip}) {
-    const daoAddress = useSelector((state) => state.valueData.daoAddress)
+    // const daoAddress = useSelector((state) => state.valueData.daoAddress)
     let MenuAttch=undefined;
     if (actor && actor.member_address===eventsData.member_address && statInfo.noAudit>0)
         MenuAttch={path:`/enki/events/join/${eventsData.id}`,title:`${t('audit')}: ${statInfo.noAudit} ${t('people')}`}

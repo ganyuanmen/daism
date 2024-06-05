@@ -8,7 +8,7 @@ import {setTipText,setMessageText} from '../../../../data/valueData'
 import { getJsonArray } from '../../../../lib/mysql/common';
 import Breadcrumb from '../../../../components/Breadcrumb';
 import PageLayout from '../../../../components/PageLayout';
-import { useState,useEffect } from 'react';
+// import { useState,useEffect } from 'react';
 import ShowImg from '../../../../components/ShowImg'
 
 //不登录也可以查看
@@ -38,19 +38,19 @@ function Message({newsData})
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
     function showClipError(str){dispatch(setMessageText(str))}
-    const daoAddress = useSelector((state) => state.valueData.daoAddress)
+    // const daoAddress = useSelector((state) => state.valueData.daoAddress)
     const actor = useSelector((state) => state.valueData.actor) //联邦软件登录帐号
 
-    const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
-    const [isVist,setIsVist]=useState(true)  //是不是游客
-    useEffect(()=>{
-      if(daoActor && daoActor.length) {
-      let _daoData=daoActor.find((detailObj)=>{return parseInt(detailObj.dao_id)===parseInt(newsData.dao_id)})
-      if(_daoData) setIsVist(false) ; else setIsVist(true);
-      }
-      else setIsVist(true);
+    // const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
+    // const [isVist,setIsVist]=useState(true)  //是不是游客
+    // useEffect(()=>{
+    //   if(daoActor && daoActor.length) {
+    //   let _daoData=daoActor.find((detailObj)=>{return parseInt(detailObj.dao_id)===parseInt(newsData.dao_id)})
+    //   if(_daoData) setIsVist(false) ; else setIsVist(true);
+    //   }
+    //   else setIsVist(true);
   
-     },[daoActor])
+    //  },[daoActor])
   
   
      const menu=[ 

@@ -1,7 +1,7 @@
 import { useSelector,useDispatch} from 'react-redux';
 import EventTitle from '../../../../components/federation/EventTitle';
 import ShowErrorBar from '../../../../components/ShowErrorBar';
-import { Card,Button,Row,Col} from 'react-bootstrap';
+import { Card,Button} from 'react-bootstrap';
 import {setTipText,setMessageText} from '../../../../data/valueData'
 // import { useRouter } from 'next/navigation'
 import Breadcrumb from '../../../../components/Breadcrumb';
@@ -53,7 +53,7 @@ function Message({eventsData,statInfo,t,tc}) {
     function showClipError(str){dispatch(setMessageText(str))}
     // const [childData,setChildData]=useState([])
     // const [menu,setMenu]=useState([])
-    const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
+    // const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
     // const [isVist,setIsVist]=useState(true)  //是不是游客
     // useEffect(()=>{
     //   if(daoActor && daoActor.length) {
