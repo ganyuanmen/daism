@@ -26,6 +26,29 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
     const editorRef=useRef()
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
     const actor = useSelector((state) => state.valueData.actor) 
+    
+   function findRecord(_id){
+        let lok=false
+        for(let i=0;i<replyData.length;i++)
+        {
+            if(replyData[i].id===_id){
+                lok=true;
+                break;
+            }
+        }
+        return lok
+    }
+
+    function geneAr(_ar)
+    {
+        let reAr=[]
+        _ar.forEach(e=>{
+            if(!findRecord(e.id)) reAr.push(e)
+        })
+
+        return replyData.concat(reAr)
+    }
+
     useEffect(()=>{
         let ignore = false;
         if(show && record.reply_count>0 && isFirst)  //首次下载
@@ -39,7 +62,7 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
                         setCurrentPageNum(()=>currentPageNum+1)
                         setStatus("succeeded")
                         setErrors('')
-                        setReplyData(()=>replyData.concat(res.data.rows))
+                        setReplyData(geneAr(res.data.rows))
                     }
                     else { 
                         setStatus("failed")
@@ -59,7 +82,7 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
                     setCurrentPageNum(()=>currentPageNum+1)
                     setStatus("succeeded")
                     setErrors('')
-                    setReplyData(()=>replyData.concat(res.data.rows))
+                    setReplyData(geneAr(res.data.rows))
                 }
                 else { 
                     setStatus("failed")
@@ -89,7 +112,7 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
 
     if(res.status===200) {
         record.reply_count++
-        setShow(true)
+      
         let curData=replyData.slice()
         curData.push({
                 id:res.data,
@@ -102,7 +125,8 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
                 times:'0_minute'})
                 
         setReplyData(curData)  
-        setTotal(()=>total+1)  
+        if(total>0) setTotal(()=>total+1)  
+        setShow(true)
          
     }
     else 
