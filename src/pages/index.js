@@ -51,7 +51,7 @@ export default function IADD() {
         }
 
         let timeObj
-        if(daismAddress.Commulate) {
+        if(daismAddress?.Commulate) {
            if(user.connected===1 && window.loginProvider){
             setComulate(new ethers.Contract(daismAddress['Commulate'], commulate_abi, window.loginProvider))
             setUtoken(new ethers.Contract(daismAddress['UnitToken'], uToken_abi, window.loginProvider))

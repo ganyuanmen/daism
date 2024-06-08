@@ -66,15 +66,14 @@ function Wallet() {
                 }
             }
 
-
             let _address=window.sessionStorage.getItem("daoAddress")
             if(_address) {
                 let _daoaddress=JSON.parse(_address)
                 dispatch(setDaoAddress(_daoaddress))
-
-                 if(window.sessionStorage.getItem("isLogin")==='1') connectWalletRef.current(providerRef.current, _daoaddress)
+                if(window.sessionStorage.getItem("isLogin")==='1') connectWalletRef.current(providerRef.current, _daoaddress)
             }
-            else {    
+            else 
+            {    
                 fetch("/api/siwe/administrutor").then(async res=>{
                     if(res.status===200)
                     {
@@ -82,6 +81,25 @@ function Wallet() {
                         dispatch(setDaoAddress(_daoaddress))
                         window.sessionStorage.setItem("daoAddress",JSON.stringify(_daoaddress))
                         if(window.sessionStorage.getItem("isLogin")==='1') connectWalletRef.current(providerRef.current,_daoaddress)
+                    } 
+                })
+            }
+        }
+        else 
+        {
+            let _address=window.sessionStorage.getItem("daoAddress")
+            if(_address) {
+                let _daoaddress=JSON.parse(_address)
+                dispatch(setDaoAddress(_daoaddress))
+            }
+            else 
+            {    
+                fetch("/api/siwe/administrutor").then(async res=>{
+                    if(res.status===200)
+                    {
+                        let _daoaddress=await res.json();
+                        dispatch(setDaoAddress(_daoaddress))
+                        window.sessionStorage.setItem("daoAddress",JSON.stringify(_daoaddress))
                     } 
                 })
             }

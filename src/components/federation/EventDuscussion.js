@@ -1,6 +1,7 @@
 import { useState,useRef } from 'react';
 import { useSelector} from 'react-redux';
 import MessageItem from './MessageItem';
+import MessageItemmin from './MessageItemmin';
 import { Modal,Button,Row,Col, Card} from 'react-bootstrap';
 import { useEffect } from 'react';
 import {client} from '../../lib/api/client'
@@ -75,7 +76,7 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
        },[show,isFirst])
 
     function get_data(){
-        console.log("total",total)
+
         setStatus('loadding')
         client.get(`/api/getData?ps=10&pi=${currentPageNum}&pid=${record.id}`,'ecrviewPageData').then(res =>{ 
                 if (res.status===200) {
@@ -167,12 +168,12 @@ export default function EventDuscussion({record,showTip,closeTip,showClipError,t
                     </Col>
             </Row>
            
-               { show && <div className='mt-3'  style={{paddingLeft:"60px"}} >
+               { show && <div className='mt-3'  >
               
                     {replyData.length>0 && replyData.map(
                         (obj,idx)=>(
                                     
-                                <MessageItem  key={obj.id} record={obj} actor={actor} 
+                                <MessageItemmin  key={obj.id} record={obj} actor={actor} 
                                 noLink={obj.send_id && obj.send_id.startsWith('http')} 
                                 isrealyImg={obj.send_id && obj.send_id.startsWith('http')}  
                                 path='events' replyLevel={2} 
