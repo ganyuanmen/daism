@@ -40,7 +40,7 @@ function LinkImg({noLink,daoid, children})
 
     if(noLink) return children
     else 
-    return  <Link className='daism-a' href={`/${locale}/enki/daoinfo/[id]`} as={`/${locale}/enki/daoinfo/${daoid}`}>
+    return  <Link className='daism-a' href={`/${locale}/communities/daoinfo/[id]`} as={`/${locale}/communities/daoinfo/${daoid}`}>
                     {children}
             </Link>
 }

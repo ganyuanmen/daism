@@ -30,13 +30,13 @@ export default function PageLayout({children}) {
             <Navbar.Collapse >
                 <Nav style={{width:'100%'}} className="d-flex align-items-center p-0 m-0 ">
                   <Link className={route === '/' ? styles.pnavactive  : ''}  href="/">{t('iadd')}</Link>
-                  <Link className={route === '/sc' ? styles.pnavactive : ''}  href="/sc">{t('home')}</Link> 
-                  <Link className={route === '/enki' ? styles.pnavactive  : ''}  href="/enki">{t('info')}</Link> 
-                  <Link className={route === '/ht' ? styles.pnavactive  : ''}  href="/ht">{t('nft')}</Link> 
-                  <Link className={route === '/mine' ? styles.pnavactive  : ''}  href="/mine">{t('my')}</Link>
-                 
-                  <a className={route === '/docs' ? styles.pnavactive  : ''} target='_blank'  href={locale==='en'?"https://learn.daism.io/docs/exchange.html":"https://learn.daism.io/zh/docs/exchange.html"}>{t('doc')}</a> 
-                  <a className={route === '/daism' ? styles.pnavactive  : ''} target='_blank'  href={locale==='en'?"https://pig.daism.io/en/":"https://pig.daism.io/zh/"}>{t('daism')}</a>  
+                  <Link className={route === '/smartcommons' ? styles.pnavactive : ''}  href="/smartcommons">{t('home')}</Link> 
+                  <Link className={route === '/communities' ? styles.pnavactive  : ''}  href="/communities">{t('info')}</Link> 
+                  <Link className={route === '/honortokens' ? styles.pnavactive  : ''}  href="/honortokens">{t('nft')}</Link> 
+                  <Link className={route === '/workroom' ? styles.pnavactive  : ''}  href="/workroom">{t('my')}</Link>
+                  
+                  <a className={route === '/docs' ? styles.pnavactive  : ''} target='_blank' href={locale==='en'?"https://learn.daism.io/docs.html":"https://learn.daism.io/zh/docs.html"}>{t('doc')}</a> 
+                  <a className={route === '/daism' ? styles.pnavactive  : ''} target='_blank'  href={locale==='en'?"https://learn.daism.io":"https://learn.daism.io/zh"} >{t('daism')}</a>  
                   <div style={{flex:'1'}} ></div>
                 
                  <Wallet /> 

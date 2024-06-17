@@ -3,7 +3,7 @@ export function createMessage(userName,domain,text,fileName,path,messageId,title
     let d=new Date();    
     let type=isNote?'reply':'message';
     let noteMessage = {
-      'id': `https://${domain}/enki/${path}/${type}/nomenu/${messageId}`,
+      'id': `https://${domain}/communities/${path}/${type}/nomenu/${messageId}`,
       'actor': `https://${domain}/api/activitepub/users/${userName}`,
       'attributedTo':`https://${domain}/api/activitepub/users/${userName}`,
     // 'type': isNote?'Note':'Article',
@@ -28,7 +28,7 @@ export function createMessage(userName,domain,text,fileName,path,messageId,title
     }
     let createMessage = {
       '@context': 'https://www.w3.org/ns/activitystreams',
-      'id': `https://${domain}/enki/${path}/${type}/nomenu/${messageId}/activity`,
+      'id': `https://${domain}/communities/${path}/${type}/nomenu/${messageId}/activity`,
       'type': 'Create',
       'published': d.toISOString(),
       'actor': `https://${domain}/api/activitepub/users/${userName}`,

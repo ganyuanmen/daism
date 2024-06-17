@@ -8,7 +8,7 @@ export default function ListItem({record,path,t}) {
    
     return (
             
-        <Link  style={{textDecoration:'none',color:'black'}} href={`/enki/${path}/message/[id]`} as={`/enki/${path}/message/${record.id}`} >
+        <Link  style={{textDecoration:'none',color:'black'}} href={`/communities/${path}/message/[id]`} as={`/communities/${path}/message/${record.id}`} >
             <Card className="mb-2 mt-1 daism-title" >
             <Card.Body>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}} >

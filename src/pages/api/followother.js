@@ -44,7 +44,7 @@ export default async function handler(req, res) {
   '@context': 'https://www.w3.org/ns/activitystreams',
   id: 'https://test.daism.io/'+uuidv4(),
   type: 'Follow',
-  actor: 'https://test.daism.io/api/activitepub/users/enki',
+  actor: 'https://test.daism.io/api/activitepub/users/communities',
   object: re.id
 }
 

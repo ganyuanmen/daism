@@ -43,10 +43,10 @@ export default function MainItem({daoid,path,data,t,isVist}) {
                    {'  '} {cardData[path].title}
                 </div>
                 <div>
-                   {!isVist &&  <Link  className="btn btn-primary"  href={`/${locale}/enki/${path}/new/[id]`} as={`/${locale}/enki/${path}/new/${daoid}`}  ><AddSvg size={20} />  {cardData[path].newTitle}</Link>  }
+                   {!isVist &&  <Link  className="btn btn-primary"  href={`/${locale}/communities/${path}/new/[id]`} as={`/${locale}/communities/${path}/new/${daoid}`}  ><AddSvg size={20} />  {cardData[path].newTitle}</Link>  }
                 </div>
                 <div>
-                    <Link  href={`/${locale}/enki/${path}/list/[id]`} as={`/${locale}/enki/${path}/list/${daoid}`} style={aStyle} > <FindSvg /> {t('serachText')}... </Link>
+                    <Link  href={`/${locale}/communities/${path}/list/[id]`} as={`/${locale}/communities/${path}/list/${daoid}`} style={aStyle} > <FindSvg /> {t('serachText')}... </Link>
                 </div>
             </Card.Header>
             <Card.Body style={{minHeight:'220px'}} >
@@ -54,14 +54,14 @@ export default function MainItem({daoid,path,data,t,isVist}) {
                 path==='events'?  
                 <div className="d-flex justify-content-start align-items-start flex-wrap mb-3 g-3" >
                     {data.map((obj,idx)=>(
-                        <Link className="daism-a"  style={aStyle} key={path+idx} href={`/${locale}/enki/events/message/[id]`}  as={`/${locale}/enki/events/message/${obj.id}`}  >
+                        <Link className="daism-a"  style={aStyle} key={path+idx} href={`/${locale}/communities/events/message/[id]`}  as={`/${locale}/communities/events/message/${obj.id}`}  >
                         <EventItem  record={obj} t={t} ></EventItem>
                         </Link>
                     ))}      
                 </div> :     
 
                 data.map((obj,idx)=>(
-                    <Link key={path+idx}  style={aStyle}  href={`/${locale}/enki/${path}/message/[id]` }  as={`/${locale}/enki/${path}/message/${obj.id}`} >
+                    <Link key={path+idx}  style={aStyle}  href={`/${locale}/communities/${path}/message/[id]` }  as={`/${locale}/communities/${path}/message/${obj.id}`} >
                     <div className="row mb-1 p-1 border " >
                             <div className="col-auto me-auto d-inline-flex align-items-center" >
                             {obj.member_icon?<ShowImg path={obj.member_icon} alt="" width="32px" height="32px"  borderRadius='50%' />

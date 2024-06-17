@@ -25,16 +25,16 @@ export default function User({user,daoAddress,loginsiwe,t,...props}) {
     switch(eventKey)
     {
         case "1":
-           router.push(`/mine/walletinfo`, { scroll: false })
+           router.push(`/workroom/walletinfo`, { scroll: false })
         break;
         case "2":
-          router.push(`/enki/actor`, { scroll: false })
+          router.push(`/communities/actor`, { scroll: false })
           break;
         case "3":
-          router.push(`/enki/mydao`, { scroll: false })
+          router.push(`/communities/mydao`, { scroll: false })
         break;
         case "4":
-           router.push(`/mine/dividend`, { scroll: false })
+           router.push(`/workroom/dividend`, { scroll: false })
            break;
         case "5":
         case "7":
@@ -75,7 +75,7 @@ export default function User({user,daoAddress,loginsiwe,t,...props}) {
         <Modal.Header closeButton>About </Modal.Header>
         <Modal.Body  >
           <div className='d-flex justify-content-start align-items-center' >
-            <Image src="/enki.svg" style={{borderRadius:'50%'}}  width={64}  height={64}  alt="Dasim"    /> 
+            <Image src="/communities.svg" style={{borderRadius:'50%'}}  width={64}  height={64}  alt="Dasim"    /> 
             <span style={{fontSize:"42px",marginLeft:"30px",fontWeight:"bold" }} >  EnKi</span>
          </div>
         <hr/>

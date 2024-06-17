@@ -54,11 +54,16 @@ export default function ProDetail({obj,t}){
 
 function Logs({obj,t})
 {
-   
+    function svgToBase(svgCode) {
+	    const utf8Bytes = new window.TextEncoder().encode(svgCode);
+	    return 'data:image/svg+xml;base64,' +window.btoa(String.fromCharCode.apply(null, utf8Bytes));
+	  }
+
+    
     if(obj.pro_type===0)
         return <div>{t('delMember')} :{obj.account}</div>
-    // else if(obj.pro_type===1)
-        // return <div><img width={32} height={32} src={ologo?ologo:'/logo.svg'} alt=''/> <span style={{display:'inline-block',padding:"4px 12px"}} >-to-</span> <img width={32} height={32} src={clogo} alt='' /></div>
+     else if(obj.pro_type===1)
+         return <img width={32} height={32} src={svgToBase(obj.imgstr)}  alt=''/> 
     else if(obj.pro_type===2)
         return <div>{obj.dao_desc}</div>
     else if(obj.pro_type===3)

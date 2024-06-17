@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     }
     else
     { 
-        res.redirect(`/enki/daoinfo/nomenu/${localUser['dao_id']}`)
+        res.redirect(`/communities/daoinfo/nomenu/${localUser['dao_id']}`)
     }
 
   }

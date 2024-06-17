@@ -22,7 +22,7 @@ export default function Domain_div({record,t,tc,loginsiwe,domain,user}) {
         setShow(false)
         showTip(t('submittingText'))   
         let re=await window.daismDaoapi.Domain.daoId2Domain(record.dao_id);
-        if(re===domain){ 
+        if(re && re===domain){ 
             showClipError(t('domainbindText'))
             closeTip()
             return

@@ -60,11 +60,11 @@ export default async function handler(req, res) {
     {  //inReplyTo:
         let replyType=postbody.object.inReplyTo || postbody.object.inReplyToAtomUri || null;
 
-        //inReplyTo: 'https://test.daism.io/enki/discussions/message/5',
-        // inReplyTo: 'https://test.daism.io/enki/events/message/2',
+        //inReplyTo: 'https://test.daism.io/communities/discussions/message/5',
+        // inReplyTo: 'https://test.daism.io/communities/events/message/2',
 
 
-        if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/enki/events/reply/`))
+        if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/communities/events/reply/`))
         {
 
           const  {content,actor,id}=await genePost(postbody,replyType)
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
                   await eventAddReply({pid,did:'',nick,avatar,content,sendId:postbody.id})
               }
           }
-        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/enki/discussions/message/`))
+        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/communities/discussions/message/`))
         {
           const  {content,actor,id}=await genePost(postbody,replyType)
           if(id)
@@ -93,7 +93,7 @@ export default async function handler(req, res) {
                   await discussionsAddCommont({id,did:'',nick,avatar,content,sendId:postbody.id})
               }
           }
-        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/enki/events/message/`))
+        }else  if(replyType && replyType.toLowerCase().startsWith(`https://${process.env.LOCAL_DOMAIN}/communities/events/message/`))
         { 
 
           const  {content,actor,id}=await genePost(postbody,replyType)

@@ -38,7 +38,7 @@ function LinkImg({noLink,did,locale, children})
 {
     if(noLink) return children
     else 
-    return  <Link className='daism-a' href={`/enki/actor/[id]`} as={`/enki/actor/${did}`} >
+    return  <Link className='daism-a' href={`/communities/actor/[id]`} as={`/communities/actor/${did}`} >
                     {children}
             </Link>
 }
