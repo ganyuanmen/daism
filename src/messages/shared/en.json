@@ -2,12 +2,12 @@
   "Navigation": {
     "home": "Smart Commons",
     "iadd": "DEX",
-    "my": "Mine",
     "info": "Communities",
     "nft": "Honor Tokens",
+    "my": "Workroom",
     "switchLocale": "简体中文",
     "doc":"Documentation",
-    "daism":"The Pig",
+    "daism":"Learn",
     "profile":"Profile"
   },
   "Common":{

@@ -1,4 +1,4 @@
-import {getReplyList, getDappVersion, getDividend,getDappOwner,getProsData,getMyTemplate,getMynft, getTemplate, getEditLogo,getDaoVote,getLastPro,getAddLogo, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail } from "../../lib/mysql/daism";
+import {getReplyList, getDappVersion, getDividend,getDappOwner,getProsData,getMyTemplate,getMynft, getTemplate,getDaoVote,getLastPro, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail } from "../../lib/mysql/daism";
 import {discussionPageData,dcviewPageData} from '../../lib/mysql/discussion'
 import {newsPageData} from '../../lib/mysql/news'
 import { eventsPageData,ecviewPageData,ecrviewPageData } from "../../lib/mysql/events";
@@ -14,11 +14,9 @@ const methods={
     // getMyApps, //我的app
     getMyTokens, //我和tokens
     getMyDaoDetail, //dao 详细信息
-    getAddLogo,  //获取未使用logo_id
     getLastPro, //最后一条提案
     getDaoVote, //提案内容
     getTemplate,// 所有公共模板
-    getEditLogo, //修改的logo与原logo
     getMynft,//我的nft
     getDappOwner, //dapp owner
     getMyTemplate, //我的NFT模板

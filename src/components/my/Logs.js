@@ -40,7 +40,7 @@ export default function Logs({user,tx_url,t,tc}) {
                                 <Col>{obj.title}</Col>
                                 <Col>{t('inputText')}:{obj.in_str}</Col>
                                 <Col>{t('outputText')}:{obj.out_str}</Col>
-                                <Col>{obj.swap_time}</Col>
+                                <Col>{obj.swap_time}(UTC+8)</Col>
                             </Row>
                         </Card.Body> 
                         </Card>

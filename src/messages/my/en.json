@@ -50,6 +50,9 @@
     "dividendAddress":"Dividend address",
     "dividendAmount":"amount",
     "dividendTime":"time",
+    "batchText":"mint Honor Tokens",
+    "mintNumberText":"Number of mints per member",
+    "mintValue":"Please fill in pure numbers greater than 0 but less than 4",
     "logoAlertText":"Due to the high cost of gas, it is recommended to use a logo of less than 2k"
      
   }

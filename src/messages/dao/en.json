@@ -79,7 +79,7 @@
     "seachText": "Search project name/administrator address",
     "byTimeText": "By time",
     "byNameText": "By name",
-    "createTimeText": "Creation time",
+    "createTimeText": "blockNumber",
     "coinPriceText": "Coin price",
     "rankingText": "Market value ranking",
     "byRankingtext": "By ranking",

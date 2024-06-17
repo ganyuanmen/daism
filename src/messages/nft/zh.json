@@ -24,7 +24,7 @@
     "addMember":"增加成员",
     "batchText":"批量mint",
     "delMember":"删除成员",
-    "mintNumberText":"每个地址 mint 数量",
+    "mintNumberText":"每个成员 mint 数量",
     "mintValue":"请填入大于0的纯数字",
     "notEmptyText":"不能为空",
     "checkError":"数据检测失败，请纠正后再提交！"

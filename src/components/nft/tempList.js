@@ -34,7 +34,7 @@ export default function TempList({tempData,user,t,tc,showError,closeTip,showTip}
                             <img style={{borderRadius:'50%'}}  alt="" width={32} height={32} src={obj.dao_logo?obj.dao_logo:'/logo.svg'} />
                             {'  '}<b>{obj.dao_name}(Valuation Token: {obj.dao_symbol})</b>
                         </Col>
-                        <Col className='col-auto' ><b>{obj._time}</b></Col>
+                        <Col className='col-auto' ><b>{obj._time}(UTC+8)</b></Col>
                         <Col className='col-auto' style={{width:'140px'}} ><b>ID: {obj.template_id}</b>{obj.is_public?'(public)':'(private)'}</Col>
                         <Col className='col-auto' > <Button  size="sm" variant="info" onClick={e=>{setNftText(JSON.parse(obj.templatesvg)[0].join(''));setShow(true); }}  >
                             <FindSvg size={24} />  {t('previewText')} </Button> </Col>

@@ -125,6 +125,10 @@ const DaismImg = forwardRef(({title,maxSize,fileTypes,...props}, ref) => {
                 });
             reader.readAsDataURL(file)
         }
+
+        if(type[0] === 'zip'){
+
+        }
     }
 
     const triggerClick = (event) => {

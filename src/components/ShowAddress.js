@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
  * 地址显示，有提示，能复制
  * @returns 
  */
-export default function ShowAddress({copyText, address}) {
+export default function ShowAddress({address,isb=false}) {  //isb 字体是否加粗
     const t = useTranslations('Common')
     const [show, setShow] = useState(false); //显示提示
     const target = useRef(null);
@@ -23,7 +23,7 @@ export default function ShowAddress({copyText, address}) {
 
     return (
        <>
-            <span >{getAccount()}</span> {' '}
+            <span >{isb?<b>{getAccount()}</b>:getAccount()} </span> {' '}
             
             <img alt=''  width={20} height={20}
                 data-address={address}  

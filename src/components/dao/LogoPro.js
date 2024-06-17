@@ -1,25 +1,19 @@
 
-import { useRef,useState } from 'react';
+import { useRef } from 'react';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 import DaismImg from '../../components/form/DaismImg';
 import Alert from 'react-bootstrap/Alert';
 import { useDispatch} from 'react-redux';
 import {setTipText,setMessageText} from '../../data/valueData'
-import { EditSvg,UploadSvg } from '../../lib/jssvg/SvgCollection';
+import { EditSvg } from '../../lib/jssvg/SvgCollection';
 import { useTranslations } from 'next-intl'
-import useLogoID from '../../hooks/useLogoID';
 
 /**
  * 图片提案修改器
  */
 export default function LogoPro({ daoName,daoId,setChangeLogo,delegator,lastPro,setRefresh }) {
     const t = useTranslations('dao')
-    const tc = useTranslations('Common')
-    const [loadding,setLoadding]=useState(true)
-    
-    const data=useLogoID(daoId,loadding,setLoadding);
-  
+    const tc = useTranslations('Common') 
 
     const dispatch = useDispatch();
     function showError(str){dispatch(setMessageText(str))}
@@ -29,19 +23,22 @@ export default function LogoPro({ daoName,daoId,setChangeLogo,delegator,lastPro,
 
     async function changeLogoClick()
     {
-        if(!imgRef.current.getBinary())
+        const imgbase64=imgRef.current.getData()
+        if(!imgbase64)
         {
             showError(t('noSelectImgText'))   
             return
         }
+        const imgstr =window.atob(imgbase64.split(',')[1]);
 
         setChangeLogo(false)
         showTip( t('submitingProText'))
         
         let uplogoid='0x0000000000000000000000000000000000000003'
       
+
         window.daismDaoapi.Dao.addProposal(delegator,uplogoid,1,parseInt(new Date().getTime()/1000),0,0,'',
-        imgRef.current.getFileType()==='svg'?'zip':imgRef.current.getFileType(),imgRef.current.getBinary()).then(() => {
+        'svg',imgstr).then(() => {
             closeTip()
             showError(t("uploadPro"))
             setRefresh(true)
@@ -59,7 +56,7 @@ export default function LogoPro({ daoName,daoId,setChangeLogo,delegator,lastPro,
     return <> {(lastPro.length && lastPro[0].is_end===0)?<Alert variant="danger" >{t('noComplete')} </Alert>
                 :<>{lastPro.length && lastPro[0].is_end===1 && lastPro[0].cool_time<0?<Alert variant="danger" >{t('noCooling')} </Alert>:
                     <>
-                        <DaismImg  ref={imgRef} title={`${t('uploadText')} logo`}  maxSize={10480} fileTypes='svg,jpg,jpeg,png,gif,webp,zip' />
+                        <DaismImg  ref={imgRef} title={`${t('uploadText')} logo`}  maxSize={10480} fileTypes='svg' />
                         <Button variant='primary'  className='mb-2' onClick={changeLogoClick} ><EditSvg size={20} />  {t('changeLogoProText')}</Button>
                     
                         

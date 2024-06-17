@@ -1,7 +1,7 @@
 import withSession from "../../../lib/session";
 import { SiweMessage } from "siwe";
 import { getJsonArray } from "../../../lib/mysql/common";
-import { redis_set } from "../../../lib/redis";
+// import { redis_set } from "../../../lib/redis";
 
 export default withSession(async (req, res) => {
   if (req.method === 'POST') {
@@ -14,7 +14,7 @@ export default withSession(async (req, res) => {
         await siweMessage.verify({ signature });
         req.session.set('user', {did:siweMessage.address })
         await req.session.save()
-        await redis_set(siweMessage.address,process.env.LOCAL_DOMAIN,1800);
+        // await redis_set(siweMessage.address,process.env.LOCAL_DOMAIN,1800);
         const _actor=await getJsonArray('actor',[siweMessage.address])
         res.status(200).json({
           daoActor:await getJsonArray('daoactor',[siweMessage.address]), //dao帐号列表

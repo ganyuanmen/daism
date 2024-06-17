@@ -45,7 +45,7 @@ function DaosPage({daosData,user,t,tc})
                             <img style={{borderRadius:'50%'}}  alt="" width={32} height={32} src={obj.dao_logo?obj.dao_logo:'/logo.svg'} />
                             {'  '}<b>{obj.dao_name}(Valuation Token: {obj.dao_symbol})</b>
                         </Col>
-                        <Col className='col-auto' ><b>{obj.dao_time}</b></Col>
+                        <Col className='col-auto' ><b>{obj.dao_time}(UTC-8)</b></Col>
                         <Col className='col-auto' ><b>ID: {obj.dao_id}</b></Col>
                         <Col className='col-auto' ><b> {obj.dao_manager.toLowerCase()===user.account.toLowerCase()? t('managerText'): t('originalText')}</b></Col>
                     </Row>

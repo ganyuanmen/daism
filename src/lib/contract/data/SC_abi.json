@@ -129,9 +129,9 @@
             "type": "string"
           },
           {
-            "internalType": "bytes",
+            "internalType": "string",
             "name": "fileContent",
-            "type": "bytes"
+            "type": "string"
           }
         ],
         "internalType": "struct File",
@@ -148,6 +148,19 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "buildTime",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

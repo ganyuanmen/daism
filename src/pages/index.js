@@ -69,6 +69,8 @@ export default function IADD() {
                 providerRef.current.getFeeData().then(feeData=>{
                     setGasePrice(parseFloat(ethers.formatUnits(feeData.gasPrice,'gwei')))
                     setPriorty(parseFloat(ethers.formatUnits(feeData.maxPriorityFeePerGas,'gwei')))
+                },err=>{
+                    console.error(err)
                 })
             }
 

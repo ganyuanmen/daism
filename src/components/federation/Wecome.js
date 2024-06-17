@@ -23,6 +23,7 @@ export default function Wecome() {
                         <li>{t('federationWecomeText4')}</li>
                         <li>{t('federationWecomeText5')}</li>
                         <li>{t('federationWecomeText6')}</li>
+                        <li>{t('federationWecomeText7')}</li>
                     </ul>
                 </div >
                 <div style={{paddingLeft:'30px',fontSize:'2em',paddingBottom:'30px'}}  >

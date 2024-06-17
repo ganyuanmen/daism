@@ -24,7 +24,7 @@
     "addMember":"Add members",
     "batchText":"Batch mint",
     "delMember":"Delete member",
-    "mintNumberText":"Number of mints per address",
+    "mintNumberText":"Number of mints per member",
     "notEmptyText":"Cannot be empty",
     "checkError":"Data detection failed, please correct it before submitting!",
     "mintValue":"Please fill in pure numbers greater than 0"

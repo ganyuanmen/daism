@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Col, Row,Button,Modal } from 'react-bootstrap';
 import { EventsSvg  } from "../../lib/jssvg/SvgCollection"
 import useProDetail from '../../hooks/useProDetail';
-import { client } from '../../lib/api/client';
+// import { client } from '../../lib/api/client';
 
 
 
@@ -54,28 +54,11 @@ export default function ProDetail({obj,t}){
 
 function Logs({obj,t})
 {
-    const [ologo,setOlogo]=useState('')
-    const [clogo,setClogo]=useState('')
-    useEffect(()=>{
-        if(obj.dividendRights===1)
-        {
-            let ignore = false;
-            client.get(`/api/getData?imgid=${parseInt(obj.account.substring(3))}&daoid=${obj.dao_id}`,'getEditLogo').then(res =>{ 
-                if (!ignore) 
-                    if (res.status===200 && res.data.length)
-                    {
-                        setClogo(res.data[0].clogo)
-                        setOlogo(res.data[0].ologo)
-                    }
-            });
-            return () => {ignore = true}
-        }
-    },[])
-
+   
     if(obj.pro_type===0)
         return <div>{t('delMember')} :{obj.account}</div>
-    else if(obj.pro_type===1)
-        return <div><img width={32} height={32} src={ologo?ologo:'/logo.svg'} alt=''/> <span style={{display:'inline-block',padding:"4px 12px"}} >-to-</span> <img width={32} height={32} src={clogo} alt='' /></div>
+    // else if(obj.pro_type===1)
+        // return <div><img width={32} height={32} src={ologo?ologo:'/logo.svg'} alt=''/> <span style={{display:'inline-block',padding:"4px 12px"}} >-to-</span> <img width={32} height={32} src={clogo} alt='' /></div>
     else if(obj.pro_type===2)
         return <div>{obj.dao_desc}</div>
     else if(obj.pro_type===3)

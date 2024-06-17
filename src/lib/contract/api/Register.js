@@ -55,7 +55,7 @@ const JSZip= require('jszip')
               {
                 "components": [
                   {"internalType": "string","name": "fileType","type": "string"},
-                  {"internalType": "bytes","name": "fileContent","type": "bytes"}
+                  {"internalType": "string","name": "fileContent","type": "string"}
                 ],
                 "internalType": "struct File",
                 "name": "_logo",

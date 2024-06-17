@@ -2,12 +2,12 @@
   "Navigation": {
     "home": "智能公器",
     "iadd": "交易",
-    "my": "我",
     "info": "社区",
     "nft":"荣誉通证",
+    "my": "工作室",
     "switchLocale": "English",
     "doc":"文档",
-    "daism":"猪年",
+    "daism":"学习",
     "profile":"个人资料"
   },
   "Common":{

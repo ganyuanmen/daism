@@ -7,7 +7,8 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useDispatch} from 'react-redux';
 import DaismImg from '../form/DaismImg';
 import {setTipText,setMessageText} from '../../data/valueData'
-import { Alert } from 'react-bootstrap';
+const abi=require('../../lib/contract/data/ThreeDapp_abi.json')
+
 /**
  * dao注册模块
  * user 用户信息
@@ -19,10 +20,14 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
     const [errorDaoSymbol, setErrorDaoSymbol] = useState(false) //代币符号错误标记
     const [errorFirrstName, setErrorFirrstName] = useState(false) //第一个成员名称错误标记
     const [errorFirrstVote, setErrorFirrstVote] = useState(false) //第一个成员票权错误标记
+    const [errorPerNumber, setErrorPerNumber] = useState(false) //每个成员mint数量 
+    
+
     const [createName,setCreateName]=useState(false)  //creator 已存在
     const [errcontract,setErrcontract]=useState(false)  //creator 非法合约地址
     const [daoName,setDaoName]=useState(false)  //dao_name 已存在
     const [daoSymbol,setDaoSymbol]=useState(false)  //dao_symbol 已存在
+    const [batch,setBatch]=useState(false) //是否同时mint NFT批量
 
         const dispatch = useDispatch();
         function showTip(str){dispatch(setTipText(str))}
@@ -55,6 +60,13 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
          _temp=form.org_firstvote.value.trim(); //第一个成员票权
         if(!_temp || !checkNum(_temp) || parseInt(_temp)<4 || parseInt(_temp)>10000 ) {_err=_err+1; setErrorFirrstVote(true);}
 
+        if(batch) {
+        _temp=form.per_number.value.trim(); //第一个成员票权
+        if(!_temp || !checkNum(_temp) || parseInt(_temp)>3 ) {_err=_err+1; setErrorPerNumber(true);}
+        }
+
+        
+
         //第二成员开始的地址和票权检测
         addAr.forEach(v=>{
             _temp=form['org_firstName' + v.index].value.trim();
@@ -74,38 +86,43 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
         event.preventDefault();
         event.stopPropagation();
       
-        if (!myCheck(form)) showErrorTip(t('checkError'));
-        else {
-            if(!imgRef.current.getBinary())
-            {
-                showErrorTip(t('noSelectImgText'))   
-                return
-            }
-            showTip(tc("blockchainText3"))
-            // 后台检测dao名称和符号是否有重名
-            fetch(`/api/checkdao?daoName=${form.createdao_name.value.trim()}&daoSymbol=${form.createdao_sysmobl.value.trim()}&creator=${form.createdao_manager.value.trim()}&t=${(new Date()).getTime()}`)
-            .then(async function (response) {
-                if(response.status===200)
-                {
-                    let re=await response.json();
-                    if(!re.creator && !re.dao_name && !re.dao_symbol){
-                        //生成成员名称和票权的数组
-                        let members = [form.org_firstName.value.trim()];
-                        let votes = [form.org_firstvote.value.trim()];
-                        addAr.forEach(v=>{
-                            members.push(form['org_firstName' + v.index].value.trim());
-                            votes.push(form['org_firstvote' + v.index].value.trim())
-                        })
-                        let daoinfo=[
-                            form.createdao_name.value.trim(), 
-                            form.createdao_sysmobl.value.trim(),
-                            form.createdao_dsc.value.trim(),
-                            form.createdao_manager.value.trim() ,
-                            1
-                        ]
+        if (!myCheck(form)) {
+            showErrorTip(t('checkError'));
+            return;
+        }
 
-                        window.daismDaoapi.Register.createSC(daoinfo,members,votes,imgRef.current.getBinary(), 
-                        imgRef.current.getFileType()==='svg'?'zip':imgRef.current.getFileType()).then(re => {
+        const imgbase64=imgRef.current.getData()
+        if(!imgbase64)
+        {
+            showErrorTip(t('noSelectImgText'))   
+            return
+        }
+        showTip(tc("blockchainText3"))
+        // 后台检测dao名称和符号是否有重名
+        fetch(`/api/checkdao?daoName=${form.createdao_name.value.trim()}&daoSymbol=${form.createdao_sysmobl.value.trim()}&creator=${form.createdao_manager.value.trim()}&t=${(new Date()).getTime()}`)
+        .then(async function (response) {
+            if(response.status===200)
+            {
+                const imgstr =window.atob(imgbase64.split(',')[1]);
+                let re=await response.json();
+                if(!re.creator && !re.dao_name && !re.dao_symbol){
+                    //生成成员名称和票权的数组
+                    let members = [form.org_firstName.value.trim()];
+                    let votes = [form.org_firstvote.value.trim()];
+                    addAr.forEach(v=>{
+                        members.push(form['org_firstName' + v.index].value.trim());
+                        votes.push(form['org_firstvote' + v.index].value.trim())
+                    })
+                    
+                    if(batch){  //同时mint nft
+                       window.daismDaoapi.ThreeDapp.mintScAndNFT(
+                        form.createdao_manager.value.trim() ,
+                        form.createdao_name.value.trim(),
+                        form.createdao_sysmobl.value.trim(),
+                        form.createdao_dsc.value.trim(),
+                        user.account,members,votes,imgstr,
+                        form.per_number.value.trim())
+                        .then(e=>{
                             setTimeout(() => {
                                 closeTip()
                                 setShow(false)  //关闭窗口
@@ -125,32 +142,65 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
                                 showErrorTip(tc('errorText') + (err.message ? err.message : err));
                             }
                         });
-                    } else 
-                    {
-                        if(re.creator){
-                            setCreateName(true)
-                            setErrorManager(true)
-                        }
-                        if(re.dao_name){
-                            setDaoName(true)
-                            setErrorDaoName(true)
-                        }
-                        if(re.dao_symbol){
-                            setDaoSymbol(true)
-                            setErrorDaoSymbol(true)
-                        }
-                        closeTip()
-                        showErrorTip(t('checkError'))
-                    }
-                }else showErrorTip(t('errorDataText'));
 
-               
-                }) //检查重名错误处理
-            .catch(function (error) {
-                showErrorTip(t('errorDataText'));
-                console.error(error);
-            })
-        }
+
+                    } else   //只mint smart common
+                    {
+                        let daoinfo=[
+                            form.createdao_name.value.trim(), 
+                            form.createdao_sysmobl.value.trim(),
+                            form.createdao_dsc.value.trim(),
+                            form.createdao_manager.value.trim() ,
+                            1
+                        ]
+
+                    window.daismDaoapi.Register.createSC(daoinfo,members,votes,imgstr,'svg').then(re => {
+                        setTimeout(() => {
+                            closeTip()
+                            setShow(false)  //关闭窗口
+                            setRefresh(true)  //刷新dao列表
+                        }, 1000);
+                    }, err => {
+                        closeTip();
+                        if(err.message && (err.message.includes('bad address') || err.message.includes('sender must be contract')))
+                        {
+                            setErrcontract(true)
+                            setCreateName(false)
+                            setErrorManager(true)
+                            showErrorTip("invalidAddress")
+                        }
+                        else {
+                            console.error(err);
+                            showErrorTip(tc('errorText') + (err.message ? err.message : err));
+                        }
+                    });
+                }
+                } else 
+                {
+                    if(re.creator){
+                        setCreateName(true)
+                        setErrorManager(true)
+                    }
+                    if(re.dao_name){
+                        setDaoName(true)
+                        setErrorDaoName(true)
+                    }
+                    if(re.dao_symbol){
+                        setDaoSymbol(true)
+                        setErrorDaoSymbol(true)
+                    }
+                    closeTip()
+                    showErrorTip(t('checkError'))
+                }
+            }else showErrorTip(t('errorDataText'));
+
+            
+            }) //检查重名错误处理
+        .catch(function (error) {
+            showErrorTip(t('errorDataText'));
+            console.error(error);
+        })
+    
 
         
         event.preventDefault();
@@ -193,12 +243,7 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
                 <span>{t('addressCheck')}</span>}
                 </Form.Control.Feedback>
             </InputGroup>
-             <div>
-                <ul>
-                    <li>{t('mintdesc1')}</li>
-                    <li>{t('montdesc2')}</li>
-                </ul>
-            </div>
+          
              {/* 名称 */}
             <InputGroup hasValidation className="mb-2">
                 <InputGroup.Text style={stylea}>{t('nameText')}</InputGroup.Text>
@@ -208,7 +253,6 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
                 placeholder={t('nameText')} defaultValue='' />
                 <Form.Control.Feedback type="invalid">
                 {daoName?<span>{t('alreadyUsed')} </span>:<span>{t('nameCheck')}</span>}
-                
                 </Form.Control.Feedback>
             </InputGroup>
             {/* 代币符号 */}
@@ -221,9 +265,7 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
                 <Form.Control.Feedback type="invalid">
                 {daoSymbol?<span>{t('tokenUsed')} </span>:<span>{t('nameCheck')}</span>}
                 </Form.Control.Feedback>
-            </InputGroup>
-            <DaismImg  ref={imgRef} title='logo'  maxSize={10480} fileTypes='svg,jpg,jpeg,png,gif,webp,zip' />
-            <Alert>{t('logoAlertText')} </Alert>
+            </InputGroup>       
            
             {/* 第一个成员地址 */}
             <InputGroup hasValidation className="mb-0">
@@ -249,9 +291,7 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
                     {t('voteValue')}
                 </Form.Control.Feedback>
             </InputGroup>
-            <div className='mb-2' >
-            {t('voteDesc')}
-            </div>
+          
             {/* 动态增加删除成员 */}
             {addAr.map((placement, idx) => (
                 <div key={'org_'+idx} >
@@ -279,23 +319,35 @@ export default function DaoForm({ user,setRefresh,t,tc,setShow}) {
                 </div>
             ))}
 
-         
+        <DaismImg  ref={imgRef} title='logo'  maxSize={10240} fileTypes='svg' />
                 {/* dao描述 */}
             <FloatingLabel className="mb-2" controlId="createdao_dsc" label={t('desctext')}>
                 <Form.Control as="textarea"   
                     placeholder={t('desctext')}
                     style={{ height: '160px' }} />
             </FloatingLabel>
-                <div className='mb-2' >
-                   {t('smarcommondesc1')}：
-                   <ul>
+            <Form.Check type="switch"  id="batch-switch" checked={batch} onChange={e=>{setBatch(e.currentTarget.checked)}} label={t('batchText')} />
+           
+           {batch && <InputGroup hasValidation className="mb-2">
+                        <InputGroup.Text style={{width:"240px"}} >{t('mintNumberText')}</InputGroup.Text>
+                        <FormControl id='per_number'   
+                        isInvalid={errorPerNumber?true: false}  type="text" placeholder="1"  
+                        onFocus={e=>{setErrorPerNumber(false)}}     defaultValue="1" />
+                        <Form.Control.Feedback type="invalid"> {t('mintValue')} </Form.Control.Feedback>
+            </InputGroup>}
+           
+            <div  className='mb-2 mt-3'>
+                <ul>
+                    <li>{t('logoAlertText')};</li>
+                    <li>{t('mintdesc1')}</li>
+                    <li>{t('montdesc2')}</li>
                     <li>{t('smarcommondesc2')}</li>
                     <li>{t('smarcommondesc3')}</li>
-                   </ul>
-                   {t('smarcommondesc4')}
-                </div>
-
-                
+                    <li> {t('smarcommondesc4')}</li>
+                    <li>{t('voteDesc')}</li>
+                </ul>
+            </div>
+        
             <div className="d-grid gap-2">
                 <Button type="submit">mint {t('smartcommon')}</Button>
             </div>

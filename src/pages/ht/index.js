@@ -1,7 +1,7 @@
 import {Container,Row,Col,Card} from 'react-bootstrap';
 import { useSelector,useDispatch } from 'react-redux';
 import ShowErrorBar from '../../components/ShowErrorBar';
-import { SwapSvg,TokenSvg,Honor } from '../../lib/jssvg/SvgCollection';
+import { SwapSvg,Honor } from '../../lib/jssvg/SvgCollection';
 import PageLayout from '../../components/PageLayout';
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react';
@@ -9,7 +9,7 @@ import Mynft from '../../components/nft/mynft'
 import Mytemplate from '../../components/nft/mytemplate';
 import Templates from '../../components/nft/templates';
 import {setTipText,setMessageText} from '../../data/valueData'
-import Wecome from '../../components/federation/Wecome';
+// import Wecome from '../../components/federation/Wecome';
 
 export default function NFT() {
     const t = useTranslations('nft')
@@ -17,7 +17,7 @@ export default function NFT() {
     const imgAr = [<Honor/>,<SwapSvg/>,<SwapSvg/>] //菜单logo
     const myMenu=[t('mynft'),t('mytemplate'),t('publicTemplate')] //菜单
     const user = useSelector((state) => state.valueData.user) //钱包用户信息
-    const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
+    // const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
     const [activeTab, setActiveTab] = useState(0);
     const dispatch = useDispatch();
     function showError(str){dispatch(setMessageText(str))}
@@ -34,7 +34,7 @@ export default function NFT() {
     return (
         <PageLayout>
         {user.connected<1?<ShowErrorBar errStr={tc('noConnectText')}></ShowErrorBar>
-        :!loginsiwe? <Wecome />
+        // :!loginsiwe? <Wecome />
         :<>
             <Container>
                 <Card className='mb-3' > 

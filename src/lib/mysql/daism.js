@@ -45,12 +45,6 @@ export async function getTemplate({ps,pi})
     return re 
 }
 
-//未使用的logoID
-export async function getAddLogo({daoid})
-{
-    let re= await getData('SELECT * FROM v_addlogo WHERE dao_id=? and is_use=0',[daoid]);
-    return re || []
-}
 
 
 //修改dapp地址对应 version
@@ -117,18 +111,11 @@ export async function getMyDaos({did})
 //我的NFT
 export async function getMynft({did})
 {
-    let re= await getData('select * from v_mynft where to_address=?',[did]);
+    let re= await getData('select * from v_mynft where to_address=? order by _time',[did]);
     return re || []
 }
 
 
-
-//获取修改的logo与原logo
-export async function getEditLogo({imgid,daoid})
-{
-    let re= await getData('SELECT a.clogo,b.ologo FROM (SELECT dao_logo AS clogo FROM t_addlogo WHERE img_id=?) a CROSS JOIN (SELECT dao_logo AS ologo FROM t_dao WHERE dao_id=?) b',[imgid,daoid]);
-    return re || []
-}
 
 //Daodetail
 export async function getMyDaoDetail({daoid})

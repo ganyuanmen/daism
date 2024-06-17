@@ -50,6 +50,9 @@
     "dividendAddress":"分红地址",
     "dividendAmount":"数量",
     "dividendTime":"时间",
+    "batchText":"mint 荣誉通证",
+    "mintValue":"请填入大于0小于4的纯数字",
+    "mintNumberText":"每个成员 mint 数量",
     "logoAlertText":"由于gas费用过高 建议使用2k以下的logo"
   }
 }

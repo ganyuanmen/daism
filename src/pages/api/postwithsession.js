@@ -28,6 +28,12 @@ export default withSession(async (req, res) => {
     const sessionUser = req.session.get('user');
     if (!sessionUser) return res.status(406).json({errMsg:'No wallet signature login'})
     try{
+        let old;
+        if(req.headers.method==='newsDel' || req.headers.method==='eventsDel' || req.headers.method==='delSource') 
+        {
+            old=await getOld(req.headers.method,req.body.id)
+        }
+
         let lok=await methods[req.headers.method](req.body)
         if(lok && req.headers.method==='discussionsAdd' && parseInt(req.body.isSend)===1) {
             if( process.env.IS_DEBUGGER==='1') console.info("discussions send --->",[req.body.daoid,lok,req.body.title])
@@ -41,10 +47,7 @@ export default withSession(async (req, res) => {
                 send(eventsObj[0]['dao_id'],req.body.contentText,null,'events',lok,req.body.contentText,true)   
             }
         }
-   
-      
-
-        else if(lok && (req.headers.method==='newsDel' || req.headers.method==='eventsDel' || req.headers.method==='delSource')) delNewImage(req.body.id,req.headers.method) //删除新闻图片
+        else if(lok && (req.headers.method==='newsDel' || req.headers.method==='eventsDel' || req.headers.method==='delSource')) delNewImage(old) //删除新闻图片
         res.status(200).json(lok);
     }
     catch(err)
@@ -55,21 +58,26 @@ export default withSession(async (req, res) => {
 
 });
 
+async function getOld(method,id){
+    let old
+    if(method==='newsDel')
+        old=await newGetOne(id)
+    else if(method==='eventsDel')
+        old=await eventGetOne(id)
+    else if(method==='delSource') { //删除资源
+        old=await getOneSource(id)
+        let ar=old[0].url.split('/')
+        old[0].top_img=ar[ar.length-1]
+    }
 
-async function delNewImage(id,method)  //删除新闻图片
+    return old;
+
+}
+
+async function delNewImage(old)  //删除新闻图片
 {
-    try{
-        let old
-        if(method==='newsDel')
-            old=await newGetOne(id)
-        else if(method==='eventsDel')
-            old=await eventGetOne(id)
-        else { //删除资源
-            old=await getOneSource(id)
-            let ar=old[0].url.split('/')
-            old[0].top_img=ar[ar.length-1]
-        }
 
-        if(old[0].top_img) delOldImage(old[0].top_img)
+    try{
+        if(old[0]?.top_img) delOldImage(old[0].top_img)
     } catch (err){ console.error(err)}
 }
