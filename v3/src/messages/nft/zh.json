@@ -1,0 +1,34 @@
+ {
+  "nft": {
+    "mynft":"我的荣誉通证",
+    "mytemplate":"我的模板",
+    "publicTemplate":"公共模板",
+    "previewText":"预览",
+    "readingNft":"正在读取荣誉通证......",
+    "myNftText":"我的荣誉通证",
+    "noEmptyText":"事件 不能为空",
+    "nftDescText":"荣誉通证 是基于SVG制作，采用分段机制，荣誉通证的状态（动态的SVG代码）存放于两段SVG代码之中。通过上传不同的荣誉通证状态，生成不同的荣誉通证。",
+    "onlyTemplate":"纯模板",
+    "addBtnText":"增加事件",
+    "reduBtnText":"减少事件",
+    "upTemplate":"上传模板",
+    "upTemplateandMint":"上传模板并mint 荣誉通证",
+    "mynfttemp":"我的荣誉通证模板",
+    "adminMintText":"该帐号不是dApp的所有者,不能mint 荣誉通证",
+    "listTest":"列表",
+    "nftText":"荣誉通证",
+    "selectDaoText":"请选择荣誉通证所属的智能公器",
+    "smartCommonText":"智能公器",
+    "memberText":"成员",
+    "addressCheck":"以0x开头,40个字符(数字和A-F组成)",
+    "addMember":"增加成员",
+    "batchText":"批量mint",
+    "delMember":"删除成员",
+    "mintNumberText":"每个成员 mint 数量",
+    "mintValue":"请填入大于0的纯数字",
+    "eventsDesc":"事件",
+    "checkError":"数据检测失败，请纠正后再提交！"
+
+
+  }
+}

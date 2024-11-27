@@ -1,0 +1,12 @@
+{
+  "wallet": {
+    "authorizeText":"Authorize",
+    "noauthorizeText":"unauthorized",
+    "globalAuthorizationText": "Global Authorization",
+    "cancelAuthorizationText": "Cancel Authorization",
+    "unauthorizedingText": "Revoking authorization, please wait...",
+    "accountText":"Login Account",
+    "chainText":"Network",
+    "balanceText":"balance"
+  }
+}

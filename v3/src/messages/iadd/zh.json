@@ -1,0 +1,27 @@
+{
+  "iadd": {
+    "inputText":"输入",
+    "outputText":"输出",
+    "selectTokenText":"选择通证",
+    "rateText":"兑换比率",
+    "swapText":"兑换",
+    "balanceText":"余额",
+    "unauthorizedText":"未授权！",
+    "authorizeText":"授权",
+    "sellingText":"你正在出售",
+    "receiveText":"你将收到",
+    "transactionFailedText":"或者交易失败",
+    "enter an amount":"请输入兑换数",
+    "Insufficient balance":"余额不足！",
+    "walltSubmitText":"正在使用钱包提交请求......",
+    "selectText":"选择",
+    "seachTokenText":"搜索token",
+    "authorizingText":"正在授权，请稍等......",
+    "transactionText":"IADD交易网络",
+    "notTipText":"不够打赏",
+    "tipText":"打赏",
+    "tipTextE2U":"荣誉通证",
+    "minthonorText":"mint 荣誉通证",
+    "notEnoughTip":"加上打赏，余额不足!"
+  }
+}

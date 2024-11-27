@@ -1,0 +1,27 @@
+{
+  "iadd": {
+    "inputText":"Input",
+    "outputText":"Output",
+    "selectTokenText":"Select token",
+    "rateText":"Exchange rate",
+    "swapText":"Swap",
+    "balanceText":"Balance",
+    "unauthorizedText":"Unauthorized!",
+    "authorizeText":"Authorize",
+    "sellingText":"You are selling",
+    "receiveText":"You will receive",
+    "transactionFailedText":"or transaction failed",
+    "enter an amount":"Enter an amount",
+    "Insufficient balance":"Insufficient balance!",
+    "walltSubmitText":"Submitting request using wallet...",
+    "selectText":"Select",
+    "seachTokenText":"Search token",
+    "authorizingText":"Authorizing, please wait...",
+    "transactionText":"IADD Network",
+    "notTipText":"Not enough to give a tip",
+    "tipText":"give a tip",
+    "tipTextE2U":"Honor Token",
+    "minthonorText":"mint Honor Tokens",
+    "notEnoughTip":"Plus the bonus, the balance is insufficient!"
+  }
+}

@@ -1,0 +1,1241 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      }
+    ],
+    "name": "AddressEmptyCode",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
+    "name": "ERC1967InvalidImplementation",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ERC1967NonPayable",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FailedInnerCall",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidInitialization",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotInitializing",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "UUPSUnauthorizedCallContext",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "slot",
+        "type": "bytes32"
+      }
+    ],
+    "name": "UUPSUnsupportedProxiableUUID",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "input_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "output_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "scId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tipAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isMintNFT",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "ETHToSCToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "version",
+        "type": "uint64"
+      }
+    ],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id_A",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id_B",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "input_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "output_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "scId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tipAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isMintNFT",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "SCTokenToSCTokenEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "input_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "output_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "scId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tipAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isMintNFT",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "SCTokenToUnitTokenEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "input_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "output_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "scId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tipAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isMintNFT",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "UnitTokenToSCToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
+    "name": "Upgraded",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "max_amount_unit_SC",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id_A",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id_B",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_scId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "SCTokenToExactSCToken",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "max_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "unit_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_scId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "SCTokenToExactUnitTokenByTip",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "min_amount_SC_unit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "min_amount_unit_SC",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount_A",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id_A",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id_B",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_scId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "SCTokenToSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "min_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_scId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "SCTokenToUnitTokenByTip",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "UPGRADE_INTERFACE_VERSION",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "daismCommulateAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "daismNFT",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "eip3712Token",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "estimateEthToExactTokenByTip",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "ethAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "estimateEthToSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id_A",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id_B",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "estimateSCTokenToExactSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "unit_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "estimateSCTokenToExactUnitTokenByTip",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount_A",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id_A",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id_B",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "estimateSCTokenToSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "estimateSCTokenToUnitTokenByTip",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "estimateUnitTokenToExactSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "unit_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "estimateUnitTokenToSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_scId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "ethToExactTokenByTip",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "min_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_scId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "ethToSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "iaddAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "iaddAddress_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "daismNFT_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "utokenAddress_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "scTokenAddress_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "commulateAddress_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_initOwner",
+        "type": "address"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unitToken",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "max_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eip3712_token_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_scId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "unitTokenToExactSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "min_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pool_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_scId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tipUtokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "unitTokenToSCTokenByTip",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "upgradeToAndCall",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  }
+]
