@@ -1,5 +1,0 @@
-[
-  "function SCTokenToSCToken(uint256,uint256,uint256) view returns (uint256,uint256)",
-  "function SCTokenToUnitToken(uint256,uint256) view returns (uint256)",
-  "function unitTokenToSCToken(uint256,uint256) view returns (uint256)"
-]

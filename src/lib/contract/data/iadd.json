@@ -1,7 +1,0 @@
-[
-  "function pools(uint256) view returns (uint112 eip3712_supply,uint112 unit_token_supply)",
-  "function ethToSCToken(uint256,uint256,uint256,address) returns (uint256)",
-  "function unitTokenToSCToken(uint256,uint256,uint256,address) returns (uint256)",
-  "function SCTokenToUnitToken(uint256,uint256,uint256,address) returns (uint256)",
-  "function SCTokenToSCToken(uint256,uint256,uint256,uint256,uint256,address) returns (uint256)"
-]

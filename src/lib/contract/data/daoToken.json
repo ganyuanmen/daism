@@ -1,5 +1,0 @@
-[
-  "function allowanceGlobal(address,address) view returns (bool)",
-  "function approveGlobal(address,bool) returns (bool)",
-  "function balanceOf(uint256,address) view returns (uint256)"
-]
