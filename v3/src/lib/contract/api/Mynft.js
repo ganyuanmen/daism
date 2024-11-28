@@ -5,7 +5,7 @@ const nft_abi=require('../data/DAismNFT_abi.json')
 class Mynft {
     
     async mint(dao_id,_addrsss,tipAr) {  
-        console.log(dao_id,_addrsss,tipAr)
+        
         this.genegateContract()
         let result = await this.contract['mint'].send(dao_id,_addrsss,tipAr);
         await result.wait()

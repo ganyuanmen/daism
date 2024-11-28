@@ -1,7 +1,7 @@
 import { Card,Row,Col,Modal,Table  } from 'react-bootstrap';
 import ShowAddress from '../../components/ShowAddress';
 import { useState } from 'react';
-
+import { VitaSvg } from '../../lib/jssvg/SvgCollection';
 
 
 
@@ -16,12 +16,22 @@ export default function Nftlist({mynftData,t})
 	    return 'data:image/svg+xml;base64,' +window.btoa(String.fromCharCode.apply(null, utf8Bytes));
 	  }
 
-    const geneTips=(tips)=>{
-        if(tips && tips.startsWith('[')) {
+    const geneTips=(obj)=>{
+        
+        if(obj._type===2){
+            const regex = /\(UTO([0-9]+)\)/;
+            const match = obj.tips.match(regex);
+            if (match) {
+              const number = match[1];
+             
+            return <span>Tipping(<VitaSvg size={12}/>{number})</span>  
+            }
+        } else if(obj.tips && obj.tips.startsWith('[')) {
             let _json= JSON.parse(tips)
             return _json[0]+'...'
         }
-        return tips
+        
+        return obj.tips
     }
     
     const showwin=(obj)=>{
@@ -49,7 +59,7 @@ export default function Nftlist({mynftData,t})
                     <div className='daism-nowrap'>contract:<ShowAddress address={obj.contract_address} isb={true} /></div> 
                     <div className='daism-nowrap'>time:<b>{obj._time}(UTC+8)</b></div> 
                     <div className='daism-nowrap'>issue: <b>{obj._type!==0?obj.dao_name:'daism.io'}</b></div>
-                    <div className='daism-nowrap'  >events: <b>{geneTips(obj.tips)}</b></div>
+                    <div className='daism-nowrap'  >events: <b>{geneTips(obj)}</b></div>
                     </Card.Body>
                     </Card>
                 </div>

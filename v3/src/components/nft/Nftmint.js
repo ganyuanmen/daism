@@ -64,7 +64,7 @@ export default function Nftmint({closeTip,showTip,showError,t,tc,user})
         allAr.forEach(v=>{
             
             const _temp=form['nft_svg_' + v.index].value.trim();
-            console.log("temp",_temp)
+            
             if(!_temp ) {v.err=true;lok=true;} 
             tipar.push(_temp)
         })

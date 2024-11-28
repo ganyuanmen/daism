@@ -45,7 +45,7 @@ return <>
                         </Row>
                         <Row style={{fontSize:'0.8rem'}} >
                             <Col style={{textAlign:'left'}} className='col-auto' >{t('createTimeText')}： {record.block_num}</Col>
-                            <Col style={{textAlign:'center'}}  className='Col-auto me-auto' >{t('coinPriceText')}： {record.utoken_cost} Vita</Col>
+                            <Col style={{textAlign:'center'}}  className='Col-auto me-auto' >{t('coinPriceText')}： {record.utoken_cost} jeedd</Col>
                             <Col style={{textAlign:'right'}} className='col-auto' >{t('rankingText')}： {record.dao_ranking}</Col>
                         </Row>
                     </Card.Body>

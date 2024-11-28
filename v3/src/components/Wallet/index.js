@@ -103,9 +103,9 @@ function Wallet({env,query,route,otherLocale,tc}) {
         providerRef.current=providerWithInfo    
         setConnecting(true);
         try{
-            console.log('ookk')
+            
             if(providerWithInfo) { //刷新登录
-                console.log("9999999-----999999999")
+                
                 const accounts = await providerWithInfo.provider.request({method: 'eth_requestAccounts' });
                 let tempAccount=accounts?.[0];
                 onChaidChange(providerWithInfo.provider);
@@ -121,7 +121,7 @@ function Wallet({env,query,route,otherLocale,tc}) {
                 window.sessionStorage.setItem("providerinfoname", providerWithInfo.info.name)           
                 dispatch(setUser({connected:1,account:tempAccount,networkName:network.name, chainId:tempChainId}))
                 provider.getBalance(tempAccount).then(_balance=>{setEth(ethers.formatEther(_balance))})
-                console.log('222222222222222',route)
+                
                 if(route==='/' ) getTokens(tempAccount)
                 providerWithInfo.provider.on('accountsChanged', _account=>{switchDisconnect(); window.location.reload();});
             }
@@ -138,9 +138,9 @@ function Wallet({env,query,route,otherLocale,tc}) {
 
     function getTokens(did)
     {
-        console.log(99999999999)
+        
         client.get(`/api/getData?did=${did}`,'getToekn').then(res =>{ 
-            console.log(res)
+            
             if(res.status===200) {
                 dispatch(setTokenList(res.data))
                 dispatch(setTokenFilter(res.data))
