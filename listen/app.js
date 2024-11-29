@@ -281,7 +281,7 @@ function mintBurnEvent()
        let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(data['tokenId'])
        let sql ="INSERT INTO t_nft_swaphonor(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
        try {
-           let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.Daismnftsing.address,`ETH Forging(${data["ethBurn"]})ETH`];
+           let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.Daismnftsing.address,`ETH Forging(${data["ethBurn"]}ETH)`];
            maxData[18] = obj.blockNumber+1n;  //Cache last block number
            executeSql(sql, params); //dao 信息
        } catch (e) {console.error(e);}

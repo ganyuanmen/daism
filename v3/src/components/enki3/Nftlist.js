@@ -83,7 +83,7 @@ export default function Nftlist({mynftData,t})
                         <tr><td style={{ textAlign: 'right' }} >nft time</td><td><b>{nftObj?._time}(UTC+8)</b></td></tr>
                         <tr><td style={{ textAlign: 'right' }} >issue</td><td><b>{nftObj._type!==0?nftObj.dao_name:'daism.io'}</b></td></tr>
                         <tr><td style={{ textAlign: 'right' }} >events</td><td>
-                        <b>{nftObj?.tips}</b>
+                        <b>{geneTips(obj)}</b>
                         {/* {nftObj._type!==0?<b>{nftObj?.tips}</b>:
                         <ul>
                             {JSON.parse(nftObj?.tips).map((text,idx)=><li key={idx} >{text}</li>)}
