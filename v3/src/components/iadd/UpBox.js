@@ -1,12 +1,12 @@
-import { Button, Card, Col,Row } from "react-bootstrap";
+import {  Card, Col,Row } from "react-bootstrap";
 import RecordItem from "./RecordItem";
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import InputBox from "./InputBox";
 // import ethlogo from '../../images/eth.png';
 // import {setTipText,setMessageText} from '../../data/valueData'
 import { OpenWindowButton } from "./OpenWindowButton";
 import React, {useImperativeHandle,useRef,useEffect,useState, forwardRef } from "react";
-import { UnlockSvg,VitaSvg } from "../../lib/jssvg/SvgCollection";
+// import { UnlockSvg,VitaSvg } from "../../lib/jssvg/SvgCollection";
 import Spinner from 'react-bootstrap/Spinner';
 import { useTranslations } from 'next-intl'
 import TipWin from "./TipWin";
@@ -117,13 +117,13 @@ const UpBox = forwardRef(({outobj, downRef,tipRef,statusRef,submitRef,user,gasPr
                 <Row > 
                 <Col className='Col-auto me-auto' >
                     <div style={{color:'#7780A0',fontSize:'14px',display:'flex',alignItems:'center'}}  >
-                        <div >  <VitaSvg size={12} /></div>
+                        <div >  <img src='/vita.svg' width={12} height={14} alt='UTO' /></div>
                         <div style={{paddingTop:'2px'}} >{vita==='loading'?<Spinner animation="border" size="sm" variant="primary" />:<span>{vita}</span>}</div>
                     </div>
                 </Col> 
                 <Col  className="col-auto" >
                      <div style={{color:'#984c0c',fontSize:'14px',display:'flex',alignItems:'center'}}  >
-                    <div >  <VitaSvg size={12} /></div>
+                    <div >  <img src='/vita.svg' width={12} height={14} alt='UTO' /></div>
                     <div style={{paddingTop:'2px',marginRight:'8px'}} ><span ref={tokenPriceRef} ></span></div>
                     </div>
                 </Col>

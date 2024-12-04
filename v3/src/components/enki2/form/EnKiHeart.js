@@ -26,9 +26,9 @@ export default function EnKiHeart({t,tc,currentObj,actor,showTip,closeTip,showCl
                 <div>
                     {data.pid>0?
                         <Button onClick={e=>{submit(0)}}  variant="light">
-                            <span style={{color:'red'}} ><Heart size={24} /></span>  {t('likeText')} {data?.total}
+                            <span style={{color:'red'}} ><Heart size={18} /></span>  {t('likeText')} {data?.total}
                         </Button>
-                    : <Button onClick={e=>submit(1)}  variant="light"><Heart size={24} /> {t('likeText')} {data?.total} </Button>
+                    : <Button onClick={e=>submit(1)}  variant="light"><Heart size={18} /> {t('likeText')} {data?.total} </Button>
                     }
                
                 </div>

@@ -16,18 +16,22 @@ import ShowErrorBar from '../../../components/ShowErrorBar';
 import EnKiFollow from '../../../components/enki2/form/EnKiFollow';
 import EnKiUnFollow from '../../../components/enki2/form/EnKiUnFollow'
 import FollowCollection from '../../../components/enki3/FollowCollection';
-import { getEnv } from '../../../lib/utils/getEnv';
-// import { getOne } from '../../../lib/mysql/message';
+// import { getEnv } from '../../../lib/utils/getEnv';
+import { getEnv,decrypt } from '../../../lib/utils/getEnv';
+import { getOne } from '../../../lib/mysql/message';
+import { getJsonArray } from '../../../lib/mysql/common';
 import Head from 'next/head';
 // import { httpGet } from '../../../lib/net';
 // import { Right,Left } from '../../../lib/jssvg/SvgCollection';
 import Mainself from './Mainself';
 // import { Button, InputGroup, Card } from "react-bootstrap";
 import Message from './Message';
+import CreateMess from './CreateMess';
+import MessagePage from '../../../components/enki2/page/MessagePage';
 /**
  * 个人社区
  */
-export default function me({openObj,env,locale }) {
+export default function me({openObj,env,locale,accountAr }) {
     const [fetchWhere, setFetchWhere] = useState({
         currentPageNum: 0,  //当前页
         daoid: 0,  //此处不用
@@ -57,14 +61,14 @@ export default function me({openObj,env,locale }) {
     const tc = useTranslations('Common')
     const t = useTranslations('ff')
 
-    // function removeUrlParams() {
-    //     setCurrentObj(null);
-    //     if(window.location.href.includes('?d=')) {
-    //         const url = new URL(window.location.href);
-    //         url.search = ''; // 清空所有参数
-    //         window.history.replaceState({}, '', url.href);
-    //     }
-    //   }
+    function removeUrlParams() {
+        setCurrentObj(null);
+        if(window.location.href.includes('?d=')) {
+            const url = new URL(window.location.href);
+            url.search = ''; // 清空所有参数
+            window.history.replaceState({}, '', url.href);
+        }
+      }
 
       useEffect(()=>{ 
         if(openObj.id){
@@ -82,20 +86,20 @@ export default function me({openObj,env,locale }) {
 
     const allHandle=()=>{ //全站
         //account: '' 从本地读取
-        // removeUrlParams()
+        removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 5,account: '' })
         setActiveTab(0);
     }
 
     const homeHandle=()=>{ //首页 
          //account: '' 从本地读取
-        //  removeUrlParams()
+         removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 1,account: actor?.actor_account?actor.actor_account:'' })
         setActiveTab(0);
     }
 
     const createHandle=()=>{ //创建发文
-        // removeUrlParams()
+        removeUrlParams()
         const [name,localdomain]=actor.actor_account.split('@');
         if(env.domain!==localdomain) return showClipError(t('loginDomainText',{domain:localdomain}));
         setCurrentObj(null);
@@ -104,33 +108,33 @@ export default function me({openObj,env,locale }) {
 
     const myPostHandle=()=>{ //我的发文
         //account: '' 从源地读取
-        // removeUrlParams()
+        removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 2,account: actor?.actor_account })
         setActiveTab(0);
     }
  
     const myReceiveHandle=()=>{ //接收到的发文
             //account: '' 从源地读取
-            // removeUrlParams()
+            removeUrlParams()
             setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 4,account: actor?.actor_account })
             setActiveTab(0);
     }
 
     const followManHandle0=()=>{ //我关注谁
-        // removeUrlParams()
+        removeUrlParams()
         setFollowMethod('getFollow0');
         setActiveTab(3);
     }
 
     
     const followManHandle1=()=>{ //谁关注我
-        // removeUrlParams()
+        removeUrlParams()
         setFollowMethod("getFollow1");
         setActiveTab(3);
     }
 
     const myBookHandle=()=>{ //我的书签
-        // removeUrlParams()
+        removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 3,actorid:actor?.id,account: actor?.actor_account })
         setActiveTab(0);
     }
@@ -195,16 +199,19 @@ export default function me({openObj,env,locale }) {
                 </div>
              
                 <div className='sccontent' >
-                     
+                <div style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
+            主页
+        </div>
 
 
-                    {activeTab === 0 ? <Mainself env={env} actor={actor} locale={locale}  t={t} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab}
-                        fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} />
 
-                    :activeTab === 1 ? <MeCreate t={t} tc={tc} actor={actor} addCallBack={allHandle} fetchWhere={fetchWhere}
+                    {activeTab === 0 ? <Mainself env={env} loginsiwe={loginsiwe} actor={actor} locale={locale}  t={t} tc={tc} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab}
+                        fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} replyAddCallBack={allHandle} />
+
+                    :activeTab === 1 ? <CreateMess t={t} tc={tc} actor={actor} addCallBack={allHandle} fetchWhere={fetchWhere} accountAr={accountAr}
                         currentObj={currentObj} afterEditCall={afterEditCall} setActiveTab={setActiveTab} setFetchWhere={setFetchWhere} />
 
-                    :activeTab === 2 ? <Message  path="enkier" locale={locale} t={t} tc={tc} actor={actor} loginsiwe={loginsiwe} env={env}
+                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} t={t} tc={tc} actor={actor} loginsiwe={loginsiwe} env={env}
                         currentObj={currentObj} delCallBack={allHandle} preEditCall={preEditCall} setActiveTab={setActiveTab} />
 
                     :activeTab===3 && <FollowCollection locale={locale} t={t} account={actor?.actor_account} method={followMethod} domain={env.domain} />}
@@ -223,24 +230,25 @@ export default function me({openObj,env,locale }) {
 export const getServerSideProps = async ({ locale,query }) => {
     let openObj={}; 
     const env=getEnv();
-    // if(query.d){
-    //     const [id,sctype,domain]=decrypt(query.d).split(',');
-    //     if(domain==env.domain){
-    //         openObj=await getOne({id,sctype})
-    //     }
-    //     else 
-    //     {
-    //         let response=await httpGet(`https://${domain}/api/getData?id=${id}&sctype=${sctype}`,{'Content-Type': 'application/json',method:'getOne'})
-    //         if(response?.message) openObj=response.message
-    //     }
-    // }
+    const accountAr=await getJsonArray('accountAr',[env?.domain])
+    if(query.d){
+        const [id,sctype,domain]=decrypt(query.d).split(',');
+        if(domain==env.domain){
+            openObj=await getOne({id,sctype})
+        }
+        else 
+        {
+            let response=await httpGet(`https://${domain}/api/getData?id=${id}&sctype=${sctype}`,{'Content-Type': 'application/json',method:'getOne'})
+            if(response?.message) openObj=response.message
+        }
+    }
     return {
         props: {
             messages: {
                 ...require(`../../../messages/shared/${locale}.json`),
                 ...require(`../../../messages/federation/${locale}.json`),
             }, locale
-            ,env,openObj
+            ,env,openObj,accountAr
         }
     }
 }

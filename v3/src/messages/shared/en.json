@@ -60,7 +60,7 @@
     "ofImgText": "images!",
     "fileSizeMax":"File size cannot exceed",
     "dataHandleErrorText":"Data processing failed",
-    "clearText": "Clear",
+    "clearText": "Delete",
     "cancelText":"Cancel",
     "confirmText": "Confirm",
     "noLoginText": "No wallet signature login, please log in from the user's dropdown menu",

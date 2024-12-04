@@ -36,7 +36,7 @@ export default function EnkiMessageMember({t,messageObj,locale})
             <img src={svgToBase(honor[0].tokensvg)} className="honor"  />
             <img src={svgToBase(honor[1].tokensvg)} className="honor"  />
             <img src={svgToBase(honor[2].tokensvg)} className="honor"  />
-            <a className="daism-a btn" target="_blank" href={`/${locale}/honortokens/${messageObj.manager}`} >{t('moreText')}...</a>
+            <a className="daism-a btn"  href={`/${locale}/honortokens/${messageObj.manager}`} >{t('moreText')}...</a>
             </>
         }
         else {

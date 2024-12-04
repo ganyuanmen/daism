@@ -24,11 +24,11 @@ export default function EnKiBookmark({isEdit,t,tc,currentObj,actor,showTip,close
         <>
             {isEdit?
                 <div>
-                    {data.pid>0?
+                    {data?.pid>0?
                         <Button onClick={e=>{submit(0)}}  variant="light">
-                            <span style={{color:'red'}} ><BookTap size={24} /></span>  {t('bookmastText')} {data?.total}
+                            <span style={{color:'red'}} ><BookTap size={18} /></span>  {t('bookmastText')} {data?.total}
                         </Button>
-                    : <Button onClick={e=>submit(1)}  variant="light"><BookTap size={24} /> {t('bookmastText')} {data?.total} </Button>
+                    : <Button onClick={e=>submit(1)}  variant="light"><BookTap size={18} /> {t('bookmastText')} {data?.total} </Button>
                     }
                
                 </div>

@@ -60,7 +60,7 @@
     "ofImgText": "的图片！",
     "fileSizeMax":"文件不能大于",
     "dataHandleErrorText":"数据处理失败",
-    "clearText":"清空",
+    "clearText":"删除",
     "cancelText":"取消",
     "confirmText": "确认",
     "noLoginText":"没有钱包签名登录,请从用户的下拉菜单登录.",

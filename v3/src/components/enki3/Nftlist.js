@@ -24,7 +24,7 @@ export default function Nftlist({mynftData,t})
             if (match) {
               const number = match[1];
              
-            return <span>Tipping(<VitaSvg size={12}/>{number})</span>  
+            return <span>Tipping(<img src='/vita.svg' width={12} height={14} alt='UTO' />{number})</span>  
             }
         } else if(obj.tips && obj.tips.startsWith('[')) {
             let _json= JSON.parse(tips)
@@ -39,7 +39,7 @@ export default function Nftlist({mynftData,t})
        setShow(true)
 
     }
-    let rows=[2,2,5]
+    // let rows=[2,2,5]
     return ( 
             <>  
           <div className='d-flex flex-wrap justify-content-start align-items-center' style={{width:'100%'}}  >
@@ -47,7 +47,8 @@ export default function Nftlist({mynftData,t})
                 <div key={`c_${idx}`} style={{width:'320px'}} >
                     <Card   style={{margin:'10px'}}> 
                     <Card.Body>
-                    <img src={svgToBase(obj.tokensvg)} style={{width:'270px',height:'270px',borderRadius:'50%'}} />
+                    {obj._type>0? <img src={svgToBase(obj.tokensvg)} style={{width:'300px',height:'300px',borderRadius:'50%'}} />
+                    :<span  dangerouslySetInnerHTML={{__html: obj?.tokensvg}}></span>}
                     <div className='daism-nowrap'>owner: <ShowAddress address={obj.to_address} isb={true} /> </div> 
                     <div  >
                     <Row>
@@ -72,7 +73,8 @@ export default function Nftlist({mynftData,t})
                 <Card   style={{margin:'10px'}}> 
                     <Card.Body>
                         <div style={{textAlign:'center'}} >
-                         <img src={svgToBase(nftObj?.tokensvg)} style={{width:'270px',height:'270px',borderRadius:'50%'}} />
+                        {nftObj._type>0? <img src={svgToBase(nftObj.tokensvg)} style={{width:'300px',height:'300px',borderRadius:'50%'}} />
+                    :<span  dangerouslySetInnerHTML={{__html: nftObj?.tokensvg}}></span>}
                         </div>
                         <Table striped bordered hover style={{width:'100%',marginTop:'4px'}} >
                         <tbody>
@@ -83,7 +85,7 @@ export default function Nftlist({mynftData,t})
                         <tr><td style={{ textAlign: 'right' }} >nft time</td><td><b>{nftObj?._time}(UTC+8)</b></td></tr>
                         <tr><td style={{ textAlign: 'right' }} >issue</td><td><b>{nftObj._type!==0?nftObj.dao_name:'daism.io'}</b></td></tr>
                         <tr><td style={{ textAlign: 'right' }} >events</td><td>
-                        <b>{geneTips(obj)}</b>
+                        <b>{geneTips(nftObj)}</b>
                         {/* {nftObj._type!==0?<b>{nftObj?.tips}</b>:
                         <ul>
                             {JSON.parse(nftObj?.tips).map((text,idx)=><li key={idx} >{text}</li>)}

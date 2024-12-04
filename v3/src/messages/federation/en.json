@@ -138,7 +138,19 @@
     "noFounData":"No data found",
     "publishCompany":"Publish Community",
     "moreText":"more",
-    "allPostText":"Site Post"
+    "allPostText":"Site Post",
+    "uploadPitruseText":"Upload image",
+    "uploadVideoText":"Add video",
+    "closeText":"Close",
+    "videoUrlText":"Video URL" ,
+    "titleText":"Video Title",
+    "publicMess":"For everyone",
+    "followMess":"Followers",
+    "someonrMess":"Specific individuals",
+    "publicMess1":"All users inside and outside Enki",
+    "followMess1":"Only for your followers",
+    "someonrMess1":"Select specific user"
 
   }
 }
+

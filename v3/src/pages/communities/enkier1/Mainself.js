@@ -7,7 +7,7 @@ import ShowErrorBar from "../../../components/ShowErrorBar";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Contentdiv from "./Contentdiv";
 
-export default function Mainself({env,path,locale, t,fetchWhere, setFetchWhere,actor,setCurrentObj,setActiveTab }) {
+export default function Mainself({env,loginsiwe,locale,tc,t,fetchWhere, setFetchWhere,actor,setCurrentObj,setActiveTab,replyAddCallBack }) {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [pageNum, setPageNum] = useState(0);
@@ -62,40 +62,38 @@ export default function Mainself({env,path,locale, t,fetchWhere, setFetchWhere,a
     if(!isLoading && hasMore) setFetchWhere({ ...fetchWhere, currentPageNum: pageNum });
   };
 
-    // const footerdiv=()=>{
-    //     if(!isLoading){
-    //         if(err) return <ShowErrorBar errStr={err} />
-    //         if(Array.isArray(data) && data.length==0) return <div className="mt-3" >{t('noFounData')}</div>
-    //         if(!hasMore) return <div style={{textAlign:'center'}} >---{t('emprtyData')}---</div>
+    const footerdiv=()=>{
+        if(!isLoading){
+            if(err) return <ShowErrorBar errStr={err} />
+            if(Array.isArray(data) && data.length==0) return <div className="mt-3" >{t('noFounData')}</div>
+            if(!hasMore) return <div style={{textAlign:'center'}} >---{t('emprtyData')}---</div>
 
 
-    //     }else 
-    //     {
-    //         return <Loadding />
-    //     }
-    // }
+        }else 
+        {
+            return <Loadding />
+        }
+    }
 
     return (
 
         <div className='sccontent'>
-        <div style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
-            主页
-        </div>
-
-        <div>
-        <InfiniteScroll
+   
+            <div>
+                <InfiniteScroll
                     dataLength={data.length}
                     next={fetchMoreData}
                     hasMore={hasMore}
                 >
                     {data.map((obj, idx) => (
-                        <Contentdiv env={env} path={path}  locale={locale} messageObj={obj} key={`${idx}_${obj.id}`} t={t} actor={actor} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} />
+                        <Contentdiv env={env} locale={locale} loginsiwe={loginsiwe} messageObj={obj} key={`${idx}_${obj.id}`}
+                         t={t} tc={tc} actor={actor} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} replyAddCallBack={replyAddCallBack} />
                     ))}
                 </InfiniteScroll> 
-        </div>
-        <div className="mt-3 mb-3" style={{textAlign:'center'}}  >
-                 {/* {footerdiv()} */}
-        </div>
+            </div>
+            <div className="mt-3 mb-3" style={{textAlign:'center'}}  >
+                    {footerdiv()}
+            </div>
         </div>
     
 

@@ -252,3 +252,55 @@
           display: none;
         }
       }
+
+      .messpopup {
+        position: absolute;
+        padding: 10px;
+        z-index: 1300;
+       background-color: white;
+       border: 1px solid gray;
+       border-radius: 5px;
+       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .messoption{
+        padding: 4px;
+        /* margin-bottom: 5px; */
+        cursor: pointer;
+        /* border: 1px solid #ccc; */
+        /* border-radius: 3px; */
+      }
+
+      .messoption:hover {
+        background-color: #e0e0e0;
+      }
+
+     
+.scsidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  }
+  
+  .scsidebar ul li {
+  margin-bottom: 10px;
+  }
+  
+  .scsidebar ul li a {
+  text-decoration: none;
+  color: #333;
+  padding: 5px 10px;
+  display: block;
+  border-radius: 4px;
+  }
+  
+  .scsidebar ul li a:hover {
+  background-color: #ddd;
+  }
+  
+  .scsidebar ul li.scli a:hover {
+  background-color: #ddd;
+  color: blue;
+  font-weight: bold;
+  }
+  

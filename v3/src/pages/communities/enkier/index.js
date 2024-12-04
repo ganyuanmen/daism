@@ -19,12 +19,13 @@ import FollowCollection from '../../../components/enki3/FollowCollection';
 import { getEnv,decrypt } from '../../../lib/utils/getEnv';
 import { getOne } from '../../../lib/mysql/message';
 import Head from 'next/head';
+import { getJsonArray } from '../../../lib/mysql/common';
 import { httpGet } from '../../../lib/net';
 import { Right,Left } from '../../../lib/jssvg/SvgCollection';
 /**
  * 个人社区
  */
-export default function me({openObj,env,locale }) {
+export default function me({openObj,env,locale,accountAr }) {
     const [fetchWhere, setFetchWhere] = useState({
         currentPageNum: 0,  //当前页
         daoid: 0,  //此处不用
@@ -189,7 +190,7 @@ export default function me({openObj,env,locale }) {
                     {activeTab === 0 && <Main env={env} actor={actor} locale={locale} path="enkier" t={t} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab}
                         fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} />}
 
-                    {activeTab === 1 && <MeCreate t={t} tc={tc} actor={actor} addCallBack={allHandle} fetchWhere={fetchWhere}
+                    {activeTab === 1 && <MeCreate t={t} tc={tc} actor={actor} addCallBack={allHandle} fetchWhere={fetchWhere} accountAr={accountAr}
                         currentObj={currentObj} afterEditCall={afterEditCall} setActiveTab={setActiveTab} setFetchWhere={setFetchWhere} />}
 
                     {activeTab === 2 && <MessagePage  path="enkier" locale={locale} t={t} tc={tc} actor={actor} loginsiwe={loginsiwe} env={env}
@@ -207,6 +208,7 @@ export default function me({openObj,env,locale }) {
 export const getServerSideProps = async ({ locale,query }) => {
     let openObj={}; 
     const env=getEnv();
+    const accountAr=await getJsonArray('accountAr',[env?.domain])
     if(query.d){
         const [id,sctype,domain]=decrypt(query.d).split(',');
         if(domain==env.domain){
@@ -224,7 +226,7 @@ export const getServerSideProps = async ({ locale,query }) => {
                 ...require(`../../../messages/shared/${locale}.json`),
                 ...require(`../../../messages/federation/${locale}.json`),
             }, locale
-            ,env,openObj
+            ,env,openObj,accountAr
         }
     }
 }

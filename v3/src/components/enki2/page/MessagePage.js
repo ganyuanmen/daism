@@ -15,6 +15,7 @@ import EnkiShare from "../form/EnkiShare";
 import { client } from "../../../lib/api/client";
 import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import ShowVideo from "../form/ShowVideo";
 /**
  * 单登个发文信息界面 // preEditCall:修改前回调 delCallBack:删除后已刷新
  * isEdit 是否允许修改  
@@ -25,7 +26,7 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
         ,sctype:currentObj.dao_id>0?'sc':''
         ,pid:currentObj.id});
 
-
+ console.log(fetchWhere)
     const daoActor=useSelector((state) => state.valueData.daoActor)
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +36,8 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
     const [total,setTotal]=useState(0);//回复总数
     const [refresh,setRefresh]=useState(false);  //刷新回复总数
     const [replyObj,setReplyObj]=useState(null) //回复内容，用于修改，为null表示新增
-            
+    const [pageNum, setPageNum] = useState(0);
+
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
@@ -86,8 +88,10 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
   
      //选取回复总数  
     useEffect(()=>{
+        console.log("000000")
        let ignore = false;
        client.get(`/api/getData?sctype=${currentObj.dao_id>0?'sc':''}&pid=${currentObj.id}`,'getReplyTotal').then(res =>{ 
+        console.log(res,ignore)
            if (!ignore) 
                if (res.status===200) setTotal(res.data)
          });
@@ -106,6 +110,7 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
                 if(res.status===200){
                     if(Array.isArray(res.data)){
                         setHasMore(res.data.length >= 20);
+                        setPageNum((pageNum) => pageNum + 1)
                         if (fetchWhere.currentPageNum === 0) setData(res.data);
                         else setData([...data, ...res.data]);
                         setErr('');
@@ -133,7 +138,7 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
 
     const fetchMoreData = () => {
         // console.log("reply next------------>",fetchWhere)
-        setFetchWhere({ ...fetchWhere, currentPageNum: fetchWhere.currentPageNum + 1 });
+        setFetchWhere({ ...fetchWhere, currentPageNum: pageNum });
       };
 
     const footerdiv=()=>{
@@ -144,24 +149,22 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
 
     
     return (
-        <div className="mt-3" style={{width:'100%'}}>
-        <div className="mt-2 mb-2" >
        
-        </div>
-            {currentObj?.top_img && 
-             <div className="mt-2 mb-2" style={{ position:'relative', textAlign:'center'}} >
-                <img src={currentObj?.top_img} alit='' style={{maxHeight:'400px'}} />
-            </div>
-            }
-        <h1>{currentObj?.title}</h1>
-        <Card className="mb-3" >
+
+        <Card className=" mt-2 mb-3" >
             <Card.Header>
-                <EnkiMemberItem t={t} messageObj={currentObj} domain={env.domain} actor={actor} locale={locale} delCallBack={delCallBack} preEditCall={preEditCall} showTip={showTip} closeTip={closeTip} showClipError={showClipError} isEdit={isEdit} />
+                <EnkiMemberItem t={t} messageObj={currentObj} domain={env.domain} actor={actor} locale={locale} delCallBack={delCallBack}
+                 preEditCall={preEditCall} showTip={showTip} closeTip={closeTip} showClipError={showClipError} isEdit={isEdit} />
                {/* 活动 */}
                {currentObj?._type===1 && <EventItem t={t} currentObj={currentObj} /> }
             </Card.Header>
         <Card.Body>
             <div ref={contentDiv} dangerouslySetInnerHTML={{__html: currentObj?.content}}></div>
+            {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
+            {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{width:'100%'}} />
+            }
+            {currentObj?.vedio_url && <ShowVideo videoUrl={currentObj.vedio_url} title='' /> 
+            }
         </Card.Body>
         <Card.Footer style={{padding:0}} >
             <div className="d-flex justify-content-between align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:'4px 8px'}}  >
@@ -194,7 +197,7 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
         </Card.Footer>
         </Card>
        
-        </div>
+        
     );
 }
 

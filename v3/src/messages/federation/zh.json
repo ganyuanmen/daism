@@ -138,8 +138,18 @@
     "emprtyData":"没有更多数据了",
     "publishCompany":"发布社区",
     "moreText":"更多",
-    "allPostText":"全站动态"
-
+    "allPostText":"全站动态",
+    "uploadPitruseText":"上传图片",
+    "uploadVideoText":"添加视频",
+    "closeText":"关闭",
+    "videoUrlText":"视频地址" ,
+    "titleText":"视频标题",
+    "publicMess":"公开",
+    "followMess":"关注者",
+    "someonrMess":"特定的人",
+    "publicMess1":"所有 enki 内外的人",
+    "followMess1":"仅限您的关注者",
+    "someonrMess1":"选择特定的人员"
   
 
   }
