@@ -6,8 +6,11 @@ import { client } from "../../../lib/api/client";
 import ShowErrorBar from "../../../components/ShowErrorBar";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Contentdiv from "./Contentdiv";
-
-export default function Mainself({env,loginsiwe,locale,tc,t,fetchWhere, setFetchWhere,actor,setCurrentObj,setActiveTab,replyAddCallBack }) {
+// env={env} loginsiwe={loginsiwe} actor={actor} locale={locale}  t={t} tc={tc} 
+                    // setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
+                    //  replyAddCallBack={allHandle}  delCallBack={allHandle}
+export default function Mainself({env,loginsiwe,actor,locale,t,tc,setCurrentObj,setActiveTab,fetchWhere, setFetchWhere,replyAddCallBack
+    ,delCallBack}) {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [pageNum, setPageNum] = useState(0);
@@ -20,7 +23,7 @@ export default function Mainself({env,loginsiwe,locale,tc,t,fetchWhere, setFetch
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            console.log(fetchWhere)
+            // console.log(fetchWhere)
             if (fetchWhere.currentPageNum === 0) setData([]);
             try {
                 const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&menutype=${fetchWhere.menutype}&daoid=${fetchWhere.daoid}&actorid=${fetchWhere.actorid}&w=${fetchWhere.where}&order=${fetchWhere.order}&eventnum=${fetchWhere.eventnum}&account=${fetchWhere.account}&v=${fetchWhere.v}`, 'messagePageData');
@@ -86,8 +89,8 @@ export default function Mainself({env,loginsiwe,locale,tc,t,fetchWhere, setFetch
                     hasMore={hasMore}
                 >
                     {data.map((obj, idx) => (
-                        <Contentdiv env={env} locale={locale} loginsiwe={loginsiwe} messageObj={obj} key={`${idx}_${obj.id}`}
-                         t={t} tc={tc} actor={actor} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} replyAddCallBack={replyAddCallBack} />
+                        <Contentdiv path='enkier' env={env} locale={locale} loginsiwe={loginsiwe} messageObj={obj} key={obj.id} t={t} tc={tc} actor={actor} 
+                        setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} replyAddCallBack={replyAddCallBack} delCallBack={delCallBack} />
                     ))}
                 </InfiniteScroll> 
             </div>

@@ -25,7 +25,7 @@ const Editor = forwardRef(({currentObj,nums,t,tc,accountAr}, ref) => {
       }
   }
   const [filterData,setFilterData]=useState(accountAr)  //过滤的用户
-  const [selectUser,setSelectUser]=useState(currentObj?.account_at?currentObj.account_at.split(','):[])  //选择的用户
+  const [selectUser,setSelectUser]=useState(currentObj?.account_at?JSON.parse(currentObj.account_at):[])  //选择的用户
   const [searInput,setSearInput]=useState(false)   //显示用户列表窗口
   const [inputValue, setInputValue] = useState(delHtml());  //文本框的值
   const [remainingChars, setRemainingChars] = useState(currentObj?.content? nums-currentObj.content.length:nums); //还余多少字符
@@ -63,7 +63,7 @@ const Editor = forwardRef(({currentObj,nums,t,tc,accountAr}, ref) => {
     getFileType:()=>{return fileType},
     getVedioUrl:()=>{return videoUrl},
     getProperty:()=>{return propertyIndex},
-    getAccount:()=>{return propertyIndex===3?selectUser.join(','):''},
+    getAccount:()=>{return propertyIndex===3?JSON.stringify(selectUser):''},
     notValid:(errorText)=>{setInvalidText(errorText);}
   }));
 
@@ -96,7 +96,6 @@ const Editor = forwardRef(({currentObj,nums,t,tc,accountAr}, ref) => {
   }
   
   const onChange=(e)=>{
-    // console.log(e.target)
     let v=selectRef.current.value.toLowerCase().trim()
     //(e.target.value || e.currentTarget.value).toLowerCase().trim()
     if(v){

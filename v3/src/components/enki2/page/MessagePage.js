@@ -20,13 +20,13 @@ import ShowVideo from "../form/ShowVideo";
  * 单登个发文信息界面 // preEditCall:修改前回调 delCallBack:删除后已刷新
  * isEdit 是否允许修改  
  */
-export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe,env,delCallBack,preEditCall}) { 
+
+export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,currentObj,delCallBack,setActiveTab}) { 
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
         ,sctype:currentObj.dao_id>0?'sc':''
         ,pid:currentObj.id});
 
- console.log(fetchWhere)
     const daoActor=useSelector((state) => state.valueData.daoActor)
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -88,10 +88,8 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
   
      //选取回复总数  
     useEffect(()=>{
-        console.log("000000")
        let ignore = false;
        client.get(`/api/getData?sctype=${currentObj.dao_id>0?'sc':''}&pid=${currentObj.id}`,'getReplyTotal').then(res =>{ 
-        console.log(res,ignore)
            if (!ignore) 
                if (res.status===200) setTotal(res.data)
          });
@@ -154,7 +152,7 @@ export default function MessagePage({path,locale,t,tc,currentObj,actor,loginsiwe
         <Card className=" mt-2 mb-3" >
             <Card.Header>
                 <EnkiMemberItem t={t} messageObj={currentObj} domain={env.domain} actor={actor} locale={locale} delCallBack={delCallBack}
-                 preEditCall={preEditCall} showTip={showTip} closeTip={closeTip} showClipError={showClipError} isEdit={isEdit} />
+                 preEditCall={e=>{setActiveTab(1)}} showTip={showTip} closeTip={closeTip} showClipError={showClipError} isEdit={isEdit} />
                {/* 活动 */}
                {currentObj?._type===1 && <EventItem t={t} currentObj={currentObj} /> }
             </Card.Header>

@@ -26,7 +26,7 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			break;
 		default: //个人
 			if(parseInt(eventnum)===5){ //全站
-				where='where send_type=0';
+				where='where send_type=0 and property_index=1';
 			}
 			else if(parseInt(eventnum)===1) {   //首页，查本地，
 				where=`where actor_account='${account}' or receive_account='${account}'`;

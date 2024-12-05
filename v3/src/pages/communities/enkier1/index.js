@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { useState,useEffect } from "react"
+import { useState,useEffect,useRef } from "react"
 import { useSelector } from 'react-redux';
 import PageLayout from '../../../components/PageLayout'
 import EnkiMember from '../../../components/enki2/form/EnkiMember';
@@ -28,6 +28,7 @@ import Mainself from './Mainself';
 import Message from './Message';
 import CreateMess from './CreateMess';
 import MessagePage from '../../../components/enki2/page/MessagePage';
+import { NavDropdown } from 'react-bootstrap';
 /**
  * 个人社区
  */
@@ -42,7 +43,8 @@ export default function me({openObj,env,locale,accountAr }) {
         order: 'reply_time', //排序
         eventnum: 5  //默认 全站
     });
-    
+    const [leftHidden,setLeftHidden]=useState(false)
+    const [rightHidden,setRightHidden]=useState(false)
     const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
     const [activeTab, setActiveTab] = useState(0);
     const [followMethod,setFollowMethod]=useState('getFollow0') //默认显示我关注谁
@@ -53,6 +55,10 @@ export default function me({openObj,env,locale,accountAr }) {
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
     const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe) //是否签名登录
+    const leftDivRef = useRef(null);
+    const rightDivRef = useRef(null);
+    const parentDivRef = useRef(null);
+
 
     const dispatch = useDispatch();
     function showTip(str) { dispatch(setTipText(str)) }
@@ -76,6 +82,27 @@ export default function me({openObj,env,locale,accountAr }) {
             setActiveTab(2);
         } 
     },[openObj])
+
+    useEffect(() => {
+        const resizeObserver = new ResizeObserver(() => {
+          if (leftDivRef.current) {
+            const style = window.getComputedStyle(leftDivRef.current);
+            const display = style.getPropertyValue('display');
+            setLeftHidden(display === 'none')
+          }
+          if (rightDivRef.current) {
+            const style = window.getComputedStyle(rightDivRef.current);
+            const display = style.getPropertyValue('display');
+            setRightHidden(display === 'none')
+          }
+        });
+    
+        if (parentDivRef.current) {  
+          resizeObserver.observe(parentDivRef.current);
+        }
+    
+        return () => resizeObserver.disconnect();
+      }, []);
 
     // useEffect(()=>{ //登录后跳到主页
     //     if(activeTab==0 && actor?.actor_account)
@@ -141,7 +168,7 @@ export default function me({openObj,env,locale,accountAr }) {
     
     //首页刷新数据 直接跳到我的发文
     // const refreshCallBack = () => { setFetchWhere({ ...fetchWhere, currentPageNum: 0,eventnum:2 }); setActiveTab(0); } 
-    const preEditCall = () => { setActiveTab(1); } //修改前回调
+    // const preEditCall = () => { setActiveTab(1); } //修改前回调
     const afterEditCall=(obj)=>{setCurrentObj(obj);setActiveTab(2);} //修改后回调
 
     useEffect(()=>{
@@ -161,8 +188,8 @@ export default function me({openObj,env,locale,accountAr }) {
         </Head>
         <PageLayout env={env}>
           
-            <div  className='d-flex justify-content-center' style={{position:'sticky',top:'70px'}} >
-                <div className='scsidebar scleft' >
+            <div ref={parentDivRef}  className='d-flex justify-content-center' style={{position:'sticky',top:'70px'}} >
+                <div  ref={leftDivRef} className='scsidebar scleft' >
                     <div className='mb-3' >
                         {actor?.actor_account ? <EnkiMember messageObj={actor} isLocal={true} locale={locale} hw={64} /> : <EnkiAccount t={t} locale={locale} />}
                         {!loginsiwe && <Loginsign user={user} tc={tc} />}
@@ -171,11 +198,8 @@ export default function me({openObj,env,locale,accountAr }) {
                         <li><a href="#" onClick={allHandle} >{t('allPostText')}</a></li>
                         
                         {loginsiwe && actor?.actor_account && <>
-                            <li><a href="#" onClick={homeHandle} >{t('scHomeText')}</a></li>
+                        
                             <li><a href="#" onClick={createHandle} >{t('createPostText')}</a></li>
-                            <li><a href="#" onClick={myPostHandle} >{t('myPostText')}</a></li>
-                            <li><a href="#" onClick={myReceiveHandle} >{t('myReceiveText')}</a></li>
-                            <li><a href="#" onClick={myBookHandle} >{t('myBookText')}</a></li>
                             <li><a href="#" onClick={followManHandle0} >{t('followManText0')}</a></li>
                             <li><a href="#" onClick={followManHandle1} >{t('followManText1')}</a></li>
                             
@@ -199,26 +223,50 @@ export default function me({openObj,env,locale,accountAr }) {
                 </div>
              
                 <div className='sccontent' >
-                <div style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
-            主页
-        </div>
+                <div className='d-flex justify-content-between align-items-center' style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
+                  {leftHidden &&  <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">
+                Another action
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.4">
+                Separated link
+              </NavDropdown.Item>
+            </NavDropdown> } 
+                  <div>主页</div>  
+                  {rightHidden && <NavDropdown title="..." >
+                    <NavDropdown.Item href="#" onClick={homeHandle}>{t('scHomeText')}</NavDropdown.Item>
+                    <NavDropdown.Item href="#" onClick={myBookHandle}>{t('myBookText')}</NavDropdown.Item>
+            
+                    </NavDropdown> } 
+                </div>
 
 
 
-                    {activeTab === 0 ? <Mainself env={env} loginsiwe={loginsiwe} actor={actor} locale={locale}  t={t} tc={tc} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab}
-                        fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} replyAddCallBack={allHandle} />
+                    {activeTab === 0 ? <Mainself env={env} loginsiwe={loginsiwe} actor={actor} locale={locale}  t={t} tc={tc} 
+                    setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
+                     replyAddCallBack={allHandle}  delCallBack={allHandle}  />
 
                     :activeTab === 1 ? <CreateMess t={t} tc={tc} actor={actor} addCallBack={allHandle} fetchWhere={fetchWhere} accountAr={accountAr}
                         currentObj={currentObj} afterEditCall={afterEditCall} setActiveTab={setActiveTab} setFetchWhere={setFetchWhere} />
 
                     :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} t={t} tc={tc} actor={actor} loginsiwe={loginsiwe} env={env}
-                        currentObj={currentObj} delCallBack={allHandle} preEditCall={preEditCall} setActiveTab={setActiveTab} />
+                        currentObj={currentObj} delCallBack={allHandle} setActiveTab={setActiveTab} />
 
                     :activeTab===3 && <FollowCollection locale={locale} t={t} account={actor?.actor_account} method={followMethod} domain={env.domain} />}
 
                 </div>
-                <div className='scsidebar scright' >
-
+                <div ref={rightDivRef} className='scsidebar scright' >
+                <ul >
+                        {loginsiwe && actor?.actor_account && <>
+                            <li><a href="#" onClick={homeHandle} >{t('scHomeText')}</a></li>
+                            <li><a href="#" onClick={myPostHandle} >{t('myPostText')}</a></li>
+                            <li><a href="#" onClick={myReceiveHandle} >{t('myReceiveText')}</a></li>
+                            <li><a href="#" onClick={myBookHandle} >{t('myBookText')}</a></li> 
+                        </>}
+                    </ul>
                 </div>
             </div>
 

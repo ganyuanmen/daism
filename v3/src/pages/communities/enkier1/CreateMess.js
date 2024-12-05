@@ -23,24 +23,24 @@ export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallB
     function closeTip(){dispatch(setTipText(''))}
     function showClipError(str){dispatch(setMessageText(str))}  
 
-    const titleRef=useRef(); //标题
+    // const titleRef=useRef(); //标题
     const editorRef=useRef(); 
-    const imgstrRef=useRef();
+    // const imgstrRef=useRef();
     const discussionRef=useRef();
     const sendRef=useRef();
     const nums=500;
 
-    const transformHTML=(html)=> {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        let result = '';
-        const allNodes = doc.body.childNodes;  
-        allNodes.forEach(node => {
-          if(node.textContent.trim())  result += `<p>${node.textContent.trim()}</p>`;
-        });
+    // const transformHTML=(html)=> {
+    //     const parser = new DOMParser();
+    //     const doc = parser.parseFromString(html, 'text/html');
+    //     let result = '';
+    //     const allNodes = doc.body.childNodes;  
+    //     allNodes.forEach(node => {
+    //       if(node.textContent.trim())  result += `<p>${node.textContent.trim()}</p>`;
+    //     });
       
-        return result;
-    }
+    //     return result;
+    // }
 
     const submit=async ()=>{ 
         const contentText = editorRef.current.getData()
@@ -52,7 +52,7 @@ export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallB
         }
 
            
-        console.log(contentText)
+        // console.log(contentText)
         let geneHTML=contentText.replaceAll('\n','</p><p>')
 
   
@@ -60,7 +60,7 @@ export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallB
         const formData = new FormData();
         formData.append('id', currentObj?currentObj.id:0);  
         formData.append('account',actor.actor_account); //社交帐号
-        formData.append('videoURL',editorRef.current.getVedioUrl());  //视频网址
+        formData.append('vedioURL',editorRef.current.getVedioUrl());  //视频网址
         formData.append('propertyIndex',editorRef.current.getProperty());  //
         formData.append('accountAt',editorRef.current.getAccount());  //@用户
         formData.append('textContent', contentText);  //文本

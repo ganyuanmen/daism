@@ -26,9 +26,8 @@ const ShowVideo = ({ videoUrl,title='' }) => {
       <div className='daism-video-container'  >
         <iframe ref={boxRef} className='daism-iframebox'
           src={videoUrl}
-          frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          referrerpolicy="strict-origin-when-cross-origin" 
+          referrerPolicy="strict-origin-when-cross-origin" 
           allowFullScreen
           title={title}
         ></iframe>

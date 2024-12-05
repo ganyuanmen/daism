@@ -7,24 +7,54 @@ import EnKiBookmark from "../../../components/enki2/form/EnKiBookmark";
 import EnKiHeart from "../../../components/enki2/form/EnKiHeart";
 import EnkiShare from "../../../components/enki2/form/EnkiShare";
 import ShowVideo from "../../../components/enki2/form/ShowVideo";
-import { useRef } from "react";
+import { useRef,useState,useEffect } from "react";
 const crypto = require('crypto');
 
-export default function Contentdiv({env,locale,tc, t,messageObj,actor,setCurrentObj,setActiveTab,loginsiwe,replyAddCallBack}) {
+export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,actor,setCurrentObj,setActiveTab,replyAddCallBack,delCallBack}) {
     
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
     function showClipError(str){dispatch(setMessageText(str))}  
     const contentDiv=useRef()
-   
+    const [isEdit,setIsEdit]=useState(false);
     const encrypt=(text)=>{
       const cipher = crypto.createCipheriv('aes-256-cbc', env.KEY, Buffer.from(env.IV, 'hex'));
       let encrypted = cipher.update(text, 'utf8', 'hex');
       encrypted += cipher.final('hex');
       return encrypted;
     }
-  
+    useEffect(()=>{
+      const checkIsEdit=()=>{  //是否允许修改
+          if(!loginsiwe) return false;
+          if(!actor?.actor_account && !actor?.actor_account?.includes('@')) return false;
+          //远程读取不可修改
+          if(env.domain!=messageObj.actor_account.split('@')[1]) return false;
+          if(messageObj.dao_id>0){  //SC
+              if(path!=='enki') return false; // 不是从我的社区模块进入，不允许修改
+              let _member=daoActor.find((obj)=>{return obj.dao_id===currentObj.dao_id})
+              if(_member){
+                   return true;
+              } 
+          }else { //个人
+              if(path!=='enkier') return false;// 不是从个人社交模块进入，不允许修改
+                //非本地登录
+              if(actor.actor_account.split('@')[1]!=env.domain) return false;
+              if(messageObj.send_type===0){ //本地
+                  if(actor.actor_account===messageObj.actor_account) return true;
+              }else { //接收
+                  if(actor.actor_account===messageObj.receive_account) return true;
+              }
+          }
+          //超级管理员
+          if(actor?.manager?.toLowerCase()==env.administrator.toLowerCase()) return true;
+          return false;
+      }
+
+      setIsEdit(checkIsEdit())
+
+  },[actor,messageObj])
+
     const getDomain=()=>{
       let _account=(messageObj.send_type==0?messageObj.actor_account:messageObj.receive_account);
       return _account.split('@')[1];
@@ -57,10 +87,14 @@ export default function Contentdiv({env,locale,tc, t,messageObj,actor,setCurrent
 
        <div style={{padding:'10px',borderBottom:'1px solid #D9D9E8'}}>
       
-            
-            <EnkiMemberItem messageObj={messageObj} t={t}  domain={env?.domain} isEdit={false} locale={locale} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />    {/* '不检测关注' 不修改不删除 */}
+{/*             
+            <EnkiMemberItem messageObj={messageObj} t={t}  domain={env?.domain} isEdit={false}
+             locale={locale} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />   */}
            
-      
+           <EnkiMemberItem t={t} messageObj={messageObj} domain={env.domain} actor={actor} locale={locale} delCallBack={delCallBack}
+                 preEditCall={e=>{ setCurrentObj(messageObj);setActiveTab(1);}} showTip={showTip} closeTip={closeTip}
+                 showClipError={showClipError} isEdit={isEdit} />
+
             <div className="daism-a mt-2 mb-3" style={{fontWeight:'bold'}}  onClick={handle} >
                 <div ref={contentDiv} dangerouslySetInnerHTML={{__html:messageObj?.content}}></div>
            </div>
