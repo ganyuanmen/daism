@@ -89,6 +89,7 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
      //选取回复总数  
     useEffect(()=>{
        let ignore = false;
+       if(currentObj?.id)
        client.get(`/api/getData?sctype=${currentObj.dao_id>0?'sc':''}&pid=${currentObj.id}`,'getReplyTotal').then(res =>{ 
            if (!ignore) 
                if (res.status===200) setTotal(res.data)
@@ -166,10 +167,10 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
         </Card.Body>
         <Card.Footer style={{padding:0}} >
             <div className="d-flex justify-content-between align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:'4px 8px'}}  >
-                
-                <MessageReply  t={t} tc={tc} actor={actor} currentObj={currentObj} total={total} isEdit={ableReply()}
-                 addReplyCallBack={callBack} replyObj={replyObj} setReplyObj={setReplyObj} domain={env.domain} loginsiwe={loginsiwe}
-                 afterEditcall={afterEditcall} ref={repluBtn} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
+         
+                <MessageReply  ref={repluBtn} t={t} tc={tc} total={total} actor={actor} currentObj={currentObj} isEdit={ableReply()}
+                 addReplyCallBack={callBack} replyObj={replyObj} setReplyObj={setReplyObj} 
+                 afterEditcall={afterEditcall} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
 
                 <EnKiHeart isEdit={ableReply()} t={t} tc={tc} loginsiwe={loginsiwe} actor={actor} currentObj={currentObj} domain={env.domain} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
                 <EnKiBookmark isEdit={ableReply() && actor.actor_account.split('@')[1]==env.domain} t={t} tc={tc} loginsiwe={loginsiwe} actor={actor} currentObj={currentObj} domain={env.domain} showTip={showTip} closeTip={closeTip} showClipError={showClipError}  />

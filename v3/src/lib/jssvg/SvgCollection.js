@@ -357,7 +357,6 @@ export function CheckSvg({size=32}) {
     )
 }
 
-
 export function SetLogoSvg({size=32}) {
     return (         
         <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
@@ -366,8 +365,6 @@ export function SetLogoSvg({size=32}) {
       </svg>
     )
 }
-
-
 
 export function ExcuteSvg({size=32}) {
     return (         
@@ -378,7 +375,6 @@ export function ExcuteSvg({size=32}) {
     )
 }
 
-
 export function ToolsSvg({size=32}) {
     return (         
         <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">     
@@ -387,7 +383,6 @@ export function ToolsSvg({size=32}) {
     )
 }
 
-
 export function UnlockSvg({size=32}) {
     return (         
         <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">     
@@ -395,7 +390,6 @@ export function UnlockSvg({size=32}) {
         </svg>
     )
 }
-
 
 export function UploadSvg({size=32}) {
     return (         
@@ -406,7 +400,6 @@ export function UploadSvg({size=32}) {
     )
 }
 
-
 export function LockSvg({size=32}) {
     return (         
         <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">     
@@ -415,7 +408,6 @@ export function LockSvg({size=32}) {
 
     )
 }
-
 
 export function MemberRemoveSvg({size=32}) {
     return (         
@@ -426,7 +418,6 @@ export function MemberRemoveSvg({size=32}) {
     )
 }
 
-
 export function VitaSvg({size=32}) {
     return (         
         <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 240.69 284.36">     
@@ -436,7 +427,6 @@ export function VitaSvg({size=32}) {
     )
 }
 
-
 export function Honor({size=32}) {
     return (         
         <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512">    
@@ -444,7 +434,6 @@ export function Honor({size=32}) {
         </svg>
     )
 }
-
 
 export function Down({size=32}) {
     return (         
@@ -455,7 +444,6 @@ export function Down({size=32}) {
     )
 }
 
-
 export function Up({size=32}) {
     return (         
         <svg  width={size} height={size}  xmlns="http://www.w3.org/2000/svg" fill="currentColor"  viewBox="0 0 16 16">
@@ -465,7 +453,6 @@ export function Up({size=32}) {
     )
 }
 
-
 export function Paperclip({size=32}) {
     return (         
         <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
@@ -474,15 +461,13 @@ export function Paperclip({size=32}) {
     )
 }
 
-
 export function Home({size=32}) {
     return (         
-        <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg"  fill="currentColor"  viewBox="0 0 16 16">
-        <path d="M5.793 1a1 1 0 0 1 1.414 0l.647.646a.5.5 0 1 1-.708.708L6.5 1.707 2 6.207V12.5a.5.5 0 0 0 .5.5.5.5 0 0 1 0 1A1.5 1.5 0 0 1 1 12.5V7.207l-.146.147a.5.5 0 0 1-.708-.708zm3 1a1 1 0 0 1 1.414 0L12 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l1.854 1.853a.5.5 0 0 1-.708.708L15 8.207V13.5a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 4 13.5V8.207l-.146.147a.5.5 0 1 1-.708-.708zm.707.707L5 7.207V13.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V7.207z"/>
+        <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg"  fill="currentColor"  viewBox="0 -960 960 960">
+        <path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"></path>
         </svg>
     )
 }
-
 
 export function BookTap({size=32}) {
     return (         
@@ -493,7 +478,6 @@ export function BookTap({size=32}) {
     )
 }
 
-
 export function Event({size=32}) {
     return (         
         <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="currentColor"  viewBox="0 0 16 16">
@@ -503,7 +487,6 @@ export function Event({size=32}) {
         </svg>
     )
 }
-
 
 export function Follow({size=32}) {
     return (         
@@ -540,7 +523,6 @@ export function Left({size=32}) {
     )
 }
 
-
 export function PublicMess({size=32}) {
     return (         
         <svg width={size} height={size}  xmlns="http://www.w3.org/2000/svg" fill="currentColor"  viewBox="0 -960 960 960">
@@ -548,7 +530,6 @@ export function PublicMess({size=32}) {
       </svg>
     )
 }
-
 
 export function SomeOne({size=32}) {
     return (         
@@ -558,3 +539,37 @@ export function SomeOne({size=32}) {
     )
 }
 
+export function BackSvg({size=32}) {
+    return (         
+        <svg width={size} height={size}  xmlns="http://www.w3.org/2000/svg" fill="currentColor"  viewBox="0 -960 960 960">
+           <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"></path>
+      </svg>
+    )
+}
+
+export function BookSvg({size=32}) {
+    return (         
+        <svg width={size} height={size}  xmlns="http://www.w3.org/2000/svg" fill="currentColor"  viewBox="0 -960 960 960">
+           <path d="M160-80v-560q0-33 23.5-56.5T240-720h320q33 0 56.5 23.5T640-640v560L400-200 160-80Zm80-121 160-86 160 86v-439H240v439Zm480-39v-560H280v-80h440q33 0 56.5 23.5T800-800v560h-80ZM240-640h320-320Z"></path>
+      </svg>
+    )
+}
+
+
+export function MyPost({size=32}) {
+    return (         
+        <svg width={size} height={size}  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+           <path d="M7 4.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m-.861 1.542 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V7.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V7s1.54-1.274 1.639-1.208M5 9a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z"/>
+           <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/>
+      </svg>
+    )
+}
+
+
+export function ReceiveSvg({size=32}) {
+    return (         
+        <svg width={size} height={size}  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2m0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1M3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>
+      </svg>
+    )
+}

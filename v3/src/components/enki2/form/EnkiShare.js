@@ -50,8 +50,11 @@ export default function EnkiShare({content, locale, currentObj,t,tc})
 
     return(
         <>
-        
-        <Button onClick={e=>setShow(true)}  variant="light"><LocationSvg  size={18} /> {t('shareText')} </Button>
+          <button type="button" onClick={() => {setShow(true)}} className="btn btn-light" data-bs-toggle="tooltip" 
+          data-bs-html="true" title={t('shareText')}>  
+               <LocationSvg  size={18} />
+           </button>
+  
 
         <Modal size="lg" className='daism-title' show={show} onHide={(e) => {setShow(false)}}>
         <Modal.Header closeButton>share </Modal.Header>

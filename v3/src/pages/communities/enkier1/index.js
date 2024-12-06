@@ -5,10 +5,6 @@ import PageLayout from '../../../components/PageLayout'
 import EnkiMember from '../../../components/enki2/form/EnkiMember';
 import EnkiAccount from '../../../components/enki2/form/EnkiAccount';
 import Loginsign from '../../../components/Loginsign';
-// import iaddStyle from '../../../styles/iadd.module.css'
-// import Main from '../../../components/enki2/page/Main';
-import MeCreate from '../../../components/enki2/page/MeCreate';
-// import MessagePage from '../../../components/enki2/page/MessagePage';
 import { useDispatch } from 'react-redux';
 import {setTipText,setMessageText } from '../../../data/valueData'
 import SearchInput from '../../../components/enki2/form/SearchInput'
@@ -16,19 +12,15 @@ import ShowErrorBar from '../../../components/ShowErrorBar';
 import EnKiFollow from '../../../components/enki2/form/EnKiFollow';
 import EnKiUnFollow from '../../../components/enki2/form/EnKiUnFollow'
 import FollowCollection from '../../../components/enki3/FollowCollection';
-// import { getEnv } from '../../../lib/utils/getEnv';
 import { getEnv,decrypt } from '../../../lib/utils/getEnv';
 import { getOne } from '../../../lib/mysql/message';
 import { getJsonArray } from '../../../lib/mysql/common';
 import Head from 'next/head';
-// import { httpGet } from '../../../lib/net';
-// import { Right,Left } from '../../../lib/jssvg/SvgCollection';
 import Mainself from './Mainself';
-// import { Button, InputGroup, Card } from "react-bootstrap";
-import Message from './Message';
 import CreateMess from './CreateMess';
 import MessagePage from '../../../components/enki2/page/MessagePage';
 import { NavDropdown } from 'react-bootstrap';
+import { Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,ReceiveSvg } from '../../../lib/jssvg/SvgCollection';
 /**
  * 个人社区
  */
@@ -43,10 +35,11 @@ export default function me({openObj,env,locale,accountAr }) {
         order: 'reply_time', //排序
         eventnum: 5  //默认 全站
     });
+ 
     const [leftHidden,setLeftHidden]=useState(false)
     const [rightHidden,setRightHidden]=useState(false)
-    const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
-    const [activeTab, setActiveTab] = useState(0);
+    const [currentObj, setCurrentObj] = useState(openObj?.id?openObj:null);  //用户选择的发文对象
+    const [activeTab, setActiveTab] = useState(openObj?.id ? 2 : 0);
     const [followMethod,setFollowMethod]=useState('getFollow0') //默认显示我关注谁
     const [searObj,setSearObj]=useState(null) //查找到帐号的对象
     const [findErr,setFindErr]=useState(false) //搜索帐号没找到
@@ -58,7 +51,7 @@ export default function me({openObj,env,locale,accountAr }) {
     const leftDivRef = useRef(null);
     const rightDivRef = useRef(null);
     const parentDivRef = useRef(null);
-
+  
 
     const dispatch = useDispatch();
     function showTip(str) { dispatch(setTipText(str)) }
@@ -66,7 +59,8 @@ export default function me({openObj,env,locale,accountAr }) {
     function showClipError(str) { dispatch(setMessageText(str)) }
     const tc = useTranslations('Common')
     const t = useTranslations('ff')
-
+    const [topText,setTopText]=useState(t('allPostText'))
+   
     function removeUrlParams() {
         setCurrentObj(null);
         if(window.location.href.includes('?d=')) {
@@ -75,15 +69,66 @@ export default function me({openObj,env,locale,accountAr }) {
             window.history.replaceState({}, '', url.href);
         }
       }
+      
+      const paras={
+        home:'home',
+        mypost:'mypost',
+        myreceive:'myreceive',
+        book:'book',
+        like:'like',
+        all:'all',
+        create:'create',
+        follow0:'follow0',
+        follow1:'follow1',
+        at:'at'
+      }
 
-      useEffect(()=>{ 
-        if(openObj.id){
-            setCurrentObj(openObj);
-            setActiveTab(2);
-        } 
-    },[openObj])
+      const svgs={
+        home:<Home size={24} />,
+        mypost:<MyPost size={24} />,
+        myreceive:<ReceiveSvg size={24} />,   
+        book:<BookSvg size={24} />,
+        like:<Heart size={24} />,
+        all:<PublicMess size={24} />,
+        create:<EditSvg size={24} />,
+        follow0:<Follow size={24} />,
+        follow1:<Follow size={24} />,
+        at:<SomeOne size={24} />
+      
 
+      }
+    
+      const [navIndex,setNavIndex]=useState(paras.all) 
+      const actorRef=useRef();
+
+    
+      useEffect(()=>{
+        if(actor?.id) actorRef.current=actor;
+        if(!openObj?.id){  //不是详情页
+            if(actor?.id) homeHandle(true);
+            else allHandle(true);
+        }
+    },[actor,openObj])
+   
     useEffect(() => {
+        const popStateHandler=(event)=>{
+            // console.log(event)
+            if(event?.state?.id){
+                const url=event.state.id;
+                // console.log(url)
+                if(url===paras.home) homeHandle(false);
+                else if(url===paras.mypost) myPostHandle(false);
+                else if(url===paras.myreceive) myReceiveHandle(false);
+                else if(url===paras.book) myBookHandle(false);
+                else if(url===paras.like) myLikeHandle(false);
+                else if(url===paras.follow0) followManHandle0(false);
+                else if(url===paras.follow1) followManHandle1(false);
+                else if(url===paras.at)  myAtHandle(false);
+                else if(url===paras.all) allHandle(false); 
+                
+            }
+        }
+     
         const resizeObserver = new ResizeObserver(() => {
           if (leftDivRef.current) {
             const style = window.getComputedStyle(leftDivRef.current);
@@ -100,8 +145,12 @@ export default function me({openObj,env,locale,accountAr }) {
         if (parentDivRef.current) {  
           resizeObserver.observe(parentDivRef.current);
         }
-    
-        return () => resizeObserver.disconnect();
+        window.addEventListener('popstate', popStateHandler);
+      
+        return () =>{ 
+            resizeObserver.disconnect();
+            window.removeEventListener('popstate', popStateHandler);
+        }
       }, []);
 
     // useEffect(()=>{ //登录后跳到主页
@@ -111,80 +160,96 @@ export default function me({openObj,env,locale,accountAr }) {
     //     }
     // },[activeTab,actor])
 
-    const allHandle=()=>{ //全站
-        //account: '' 从本地读取
+    const allHandle=(post)=>{ // 公开
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 5,account: '' })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 5,account: '' });
         setActiveTab(0);
+        setTopText(t('allPostText'));setNavIndex(paras.all);
+        if(post) history.pushState({id:paras.all}, tc('enkierTitle'), `#${paras.all}`);
     }
 
-    const homeHandle=()=>{ //首页 
-         //account: '' 从本地读取
-         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 1,account: actor?.actor_account?actor.actor_account:'' })
+    const homeHandle=(post)=>{ //首页
+        removeUrlParams() 
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 1,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' });
         setActiveTab(0);
+        setTopText(t('scHomeText'));setNavIndex(paras.home);
+        if(post) history.pushState({id:paras.home}, tc('enkierTitle'), `#${paras.home}`);
+      
     }
 
-    const createHandle=()=>{ //创建发文
+    const createHandle=(post)=>{ //创建发文
         removeUrlParams()
-        const [name,localdomain]=actor.actor_account.split('@');
+        const [name,localdomain]=actorRef.current.actor_account.split('@');
         if(env.domain!==localdomain) return showClipError(t('loginDomainText',{domain:localdomain}));
         setCurrentObj(null);
         setActiveTab(1);
+        setTopText(t('createPostText'));setNavIndex(paras.create);
+        if(post) history.pushState({id:paras.create}, tc('enkierTitle'), `#${paras.create}`);
+       
     }
 
-    const myPostHandle=()=>{ //我的发文
-        //account: '' 从源地读取
+    const myPostHandle=(post)=>{ //我的发文
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 2,account: actor?.actor_account })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 2,account: actorRef.current?.actor_account })
         setActiveTab(0);
+        setTopText(t('myPostText'));setNavIndex(paras.mypost);
+        if(post) history.pushState({id:paras.mypost}, tc('enkierTitle'), `#${paras.mypost}`);
     }
  
-    const myReceiveHandle=()=>{ //接收到的发文
-            //account: '' 从源地读取
+    const myReceiveHandle=(post)=>{ //接收到的发文
             removeUrlParams()
-            setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 4,account: actor?.actor_account })
+            setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 4,account: actorRef.current?.actor_account })
             setActiveTab(0);
+            setTopText(t('myReceiveText'));setNavIndex(paras.myreceive);
+            if(post) history.pushState({id:paras.myreceive}, tc('enkierTitle'), `#${paras.myreceive}`);
     }
 
-    const followManHandle0=()=>{ //我关注谁
+    const followManHandle0=(post)=>{ //我关注谁
         removeUrlParams()
         setFollowMethod('getFollow0');
         setActiveTab(3);
+        setTopText(t('followManText0'));setNavIndex(paras.follow0);
+        if(post) history.pushState({id:paras.follow0}, tc('enkierTitle'), `#${paras.follow0}`);
     }
 
-    
-    const followManHandle1=()=>{ //谁关注我
+    const followManHandle1=(post)=>{ //谁关注我
         removeUrlParams()
         setFollowMethod("getFollow1");
         setActiveTab(3);
+        setTopText(t('followManText1'));setNavIndex(paras.follow1);
+        if(post) history.pushState({id:paras.follow1}, tc('enkierTitle'), `#${paras.follow1}`);
     }
 
-    const myBookHandle=()=>{ //我的书签
+    const myBookHandle=(post)=>{ //我的书签
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 3,actorid:actor?.id,account: actor?.actor_account })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 3,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
         setActiveTab(0);
+        setTopText(t('bookTapText'));setNavIndex(paras.book);
+        if(post) history.pushState({id:paras.book}, tc('enkierTitle'), `#${paras.book}`);
+    }
+    const myLikeHandle=(post)=>{ //喜欢
+        removeUrlParams()
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 6,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
+        setActiveTab(0);
+        setTopText(t('likeText'));setNavIndex(paras.like);
+         if(post) history.pushState({id:paras.like}, tc('enkierTitle'), `#${paras.like}`);
     }
     
+    const myAtHandle=(post)=>{ //私下提及
+        removeUrlParams()
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 7,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
+        setActiveTab(0);
+        setTopText(t('atSomeOne'));setNavIndex(paras.at);
+        if(post) history.pushState({id:paras.at}, tc('enkierTitle'), `#${paras.at}`);
+    }
     //首页刷新数据 直接跳到我的发文
     // const refreshCallBack = () => { setFetchWhere({ ...fetchWhere, currentPageNum: 0,eventnum:2 }); setActiveTab(0); } 
     // const preEditCall = () => { setActiveTab(1); } //修改前回调
     const afterEditCall=(obj)=>{setCurrentObj(obj);setActiveTab(2);} //修改后回调
 
-    useEffect(()=>{
-        const popStateHandler=(event)=>{
-            if (event?.state?.url==='/communities/enkier1') {
-                setActiveTab(0)
-                allHandle();
-              }
-        }
-        window.addEventListener('popstate', popStateHandler);
-        return () => window.removeEventListener('popstate', popStateHandler);
-    },[])
-
     return (<>
         <Head>
-            <title>{currentObj?.id?currentObj?.title:tc('enkierTitle')}</title>
+            <title>{tc('enkierTitle')}</title>
         </Head>
         <PageLayout env={env}>
           
@@ -195,14 +260,17 @@ export default function me({openObj,env,locale,accountAr }) {
                         {!loginsiwe && <Loginsign user={user} tc={tc} />}
                     </div>
                     <ul >
-                        <li><a href="#" onClick={allHandle} >{t('allPostText')}</a></li>
+                        <li className={navIndex===paras.all?'scli':''} ><span onClick={()=>allHandle(true)} >{svgs.all} {t('allPostText')}</span></li>
                         
                         {loginsiwe && actor?.actor_account && <>
                         
-                            <li><a href="#" onClick={createHandle} >{t('createPostText')}</a></li>
-                            <li><a href="#" onClick={followManHandle0} >{t('followManText0')}</a></li>
-                            <li><a href="#" onClick={followManHandle1} >{t('followManText1')}</a></li>
-                            
+                            <li className={navIndex===paras.create?'scli':''}><span onClick={()=>createHandle(true)} >{svgs.create} {t('createPostText')}</span></li>
+                            {rightHidden &&  <NavItem svgs={svgs} navIndex={navIndex} t={t} paras={paras} homeHandle={homeHandle} myPostHandle={myPostHandle}
+                                        myReceiveHandle={myReceiveHandle} myAtHandle={myAtHandle} myBookHandle={myBookHandle}
+                                        myLikeHandle={myLikeHandle} />}
+                            <li className={navIndex===paras.follow0?'scli':''}><span onClick={()=>followManHandle0(true)} >{svgs.follow0} {t('followManText0')}</span></li>
+                            <li className={navIndex===paras.follow1?'scli':''}><span onClick={()=>followManHandle1(true)} >{svgs.follow1} {t('followManText1')}</span></li>
+                          
                         </>}
                     </ul>
                     {loginsiwe && actor?.actor_account?.includes('@') && env.domain===actor.actor_account.split('@')[1] && <div>
@@ -224,27 +292,29 @@ export default function me({openObj,env,locale,accountAr }) {
              
                 <div className='sccontent' >
                 <div className='d-flex justify-content-between align-items-center' style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
-                  {leftHidden &&  <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
-            </NavDropdown> } 
-                  <div>主页</div>  
-                  {rightHidden && <NavDropdown title="..." >
-                    <NavDropdown.Item href="#" onClick={homeHandle}>{t('scHomeText')}</NavDropdown.Item>
-                    <NavDropdown.Item href="#" onClick={myBookHandle}>{t('myBookText')}</NavDropdown.Item>
+                
+                  <div className='selectText' style={{paddingLeft:'12px'}} >
+                    {activeTab===2 ? <span className='daism-a selectText' onClick={()=>{window.history.go(-1)}} ><BackSvg size={24} />{t('esctext')} </span>
+                    :<>{svgs[navIndex]} {topText}</>}
+                   
+                    </div>  
+                  {leftHidden && <NavDropdown className='daism-a' title="..." >
+                    <NavDropdown.Item ><span onClick={()=>allHandle(true)} >{svgs.all} {t('allPostText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>createHandle(true)} >{svgs.create} {t('createPostText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>homeHandle(true)} >{svgs.home} {t('scHomeText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>myPostHandle(true)} >{svgs.mypost} {t('myPostText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>myReceiveHandle(true)} >{svgs.myreceive} {t('myReceiveText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>myAtHandle(true)} >{svgs.at} {t('atSomeOne')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>myBookHandle(true)} >{svgs.book} {t('bookTapText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>myLikeHandle(true)} >{svgs.like} {t('likeText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>followManHandle0(true)} >{svgs.follow0} {t('followManText0')}</span></NavDropdown.Item>
+                    <NavDropdown.Item ><span onClick={()=>followManHandle1(true)} >{svgs.follow1} {t('followManText1')}</span></NavDropdown.Item>
             
                     </NavDropdown> } 
                 </div>
-
-
-
+                
+                
+  
                     {activeTab === 0 ? <Mainself env={env} loginsiwe={loginsiwe} actor={actor} locale={locale}  t={t} tc={tc} 
                     setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
                      replyAddCallBack={allHandle}  delCallBack={allHandle}  />
@@ -260,12 +330,11 @@ export default function me({openObj,env,locale,accountAr }) {
                 </div>
                 <div ref={rightDivRef} className='scsidebar scright' >
                 <ul >
-                        {loginsiwe && actor?.actor_account && <>
-                            <li><a href="#" onClick={homeHandle} >{t('scHomeText')}</a></li>
-                            <li><a href="#" onClick={myPostHandle} >{t('myPostText')}</a></li>
-                            <li><a href="#" onClick={myReceiveHandle} >{t('myReceiveText')}</a></li>
-                            <li><a href="#" onClick={myBookHandle} >{t('myBookText')}</a></li> 
-                        </>}
+                        {loginsiwe && actor?.actor_account && 
+                        <NavItem svgs={svgs} navIndex={navIndex} t={t} paras={paras} homeHandle={homeHandle} myPostHandle={myPostHandle}
+                        myReceiveHandle={myReceiveHandle} myAtHandle={myAtHandle} myBookHandle={myBookHandle}
+                        myLikeHandle={myLikeHandle} />
+                        }
                     </ul>
                 </div>
             </div>
@@ -301,3 +370,55 @@ export const getServerSideProps = async ({ locale,query }) => {
     }
 }
 
+
+function NavItem({svgs,navIndex,t,paras,homeHandle,myPostHandle,myReceiveHandle,myAtHandle,myBookHandle,myLikeHandle}){
+  return (<>
+        <li className={navIndex===paras.home?'scli':''}><span onClick={()=>homeHandle(true)} >{svgs.home} {t('scHomeText')}</span></li>
+        <li className={navIndex===paras.mypost?'scli':''}><span onClick={()=>myPostHandle(true)} >{svgs.mypost} {t('myPostText')}</span></li>
+        <li className={navIndex===paras.myreceive?'scli':''}><span onClick={()=>myReceiveHandle(true)} >{svgs.myreceive} {t('myReceiveText')}</span></li>
+        <li className={navIndex===paras.at?'scli':''}><span onClick={()=>myAtHandle(true)} >{svgs.at} {t('atSomeOne')}</span></li>
+        <li className={navIndex===paras.book?'scli':''}><span onClick={()=>myBookHandle(true)} >{svgs.book} {t('bookTapText')}</span></li> 
+        <li className={navIndex===paras.like?'scli':''}><span onClick={()=>myLikeHandle(true)} >{svgs.like} {t('likeText')}</span></li> 
+  </>)
+}
+
+
+   
+    // useEffect(()=>{
+    //     const getHeight = () => {
+    //         const totalHeight = document.documentElement.scrollHeight;
+    //         console.log("Total document height:", totalHeight);
+    //       };
+        
+    //       getHeight(); // Get heig
+    //       const moveMouseTo=(x, y)=>{
+    //         const event = new MouseEvent('mousemove', {
+    //           view: window,
+    //           bubbles: true,
+    //           cancelable: true,
+    //           clientX: x,
+    //           clientY: y,
+    //         });
+    //         document.dispatchEvent(event);
+    //       }
+
+      
+    //     const x = parseInt(sessionStorage.getItem('mouseX'));
+    //     const y = parseInt(sessionStorage.getItem('mouseY'));
+    //     console.log("999",x,y)
+    //     if (!isNaN(x) && !isNaN(y)) {
+    //         moveMouseTo(x,y)
+        //   // 模拟 mousemove 事件以近似定位。由于页面布局变化，并非完美。
+        //   const mouseEvent = new MouseEvent('mousemove', {
+        //     clientX: x,
+        //     clientY: y,
+        //     bubbles: true,
+        //     cancelable: true,
+        //   });
+        //   document.dispatchEvent(mouseEvent);
+        //   sessionStorage.removeItem('mouseX');
+        //   sessionStorage.removeItem('mouseY');
+    //     }
+              
+  
+    // },[])

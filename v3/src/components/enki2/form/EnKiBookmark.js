@@ -21,20 +21,11 @@ export default function EnKiBookmark({isEdit,t,tc,currentObj,actor,showTip,close
     //data.pid>0 已点赞
   
     return(
-        <>
-            {isEdit?
-                <div>
-                    {data?.pid>0?
-                        <Button onClick={e=>{submit(0)}}  variant="light">
-                            <span style={{color:'red'}} ><BookTap size={18} /></span>  {t('bookmastText')} {data?.total}
-                        </Button>
-                    : <Button onClick={e=>submit(1)}  variant="light"><BookTap size={18} /> {t('bookmastText')} {data?.total} </Button>
-                    }
-               
-                </div>
-            :<div>{t('bookmastText')} {data?.total}</div>
-            }
-        </>
+        
+         <button type="button" disabled={!isEdit} onClick={() => {submit(data?.pid>0?0:1);}}
+          className="btn btn-light" data-bs-toggle="tooltip" data-bs-html="true" title={t('bookmastText')}>  
+                {data?.pid>0?<span style={{color:'red'}} ><BookTap size={18} /></span>:<BookTap size={18} />}
+                {data?.total}
+            </button>
     );
 }
-

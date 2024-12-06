@@ -7,7 +7,8 @@ import {DateSvg,DeleteSvg,EditSvg,EventsSvg,GroupsSvg,
   ReplySvg,NoSvg,ChatSvg,MyWalletSvg,AccountSvg,Member,MemberVerify,
   ExitSvg,LoginSvg,User1Svg,GasTokenSvg,SwapSvg,TokenSvg,DaoSvg,AppSvg,
 SwapTokenSvg,CheckSvg,SetLogoSvg,ExcuteSvg,ExitWalletSvg,ToolsSvg,UnlockSvg
-,UploadSvg,LockSvg,MemberRemoveSvg,VitaSvg,Honor,Down,Up,Paperclip} from './SvgCollection';
+,UploadSvg,LockSvg,MemberRemoveSvg,VitaSvg,Honor,Down,Up,Paperclip,Home,BookTap,Event,Follow,Heart
+,Right,Left,PublicMess,SomeOne,BackSvg,BookSvg} from './SvgCollection';
   import { Button } from 'react-bootstrap';
 
 
@@ -79,6 +80,17 @@ export default function MyIcon() {
           Down ：<span className={color} ><Down/> </span><br/>
           Up ：<span className={color} ><Up/> </span><br/>
           Paperclip ：<span className={color} ><Paperclip/> </span><br/>
+          Home ：<span className={color} ><Home/> </span><br/>
+          BookTap ：<span className={color} ><BookTap/> </span><br/>
+          Event ：<span className={color} ><Event/> </span><br/>
+          Follow ：<span className={color} ><Follow/> </span><br/>
+          Heart ：<span className={color} ><Heart/> </span><br/>
+          Right ：<span className={color} ><Right/> </span><br/>
+          Left ：<span className={color} ><Left/> </span><br/>
+          PublicMess ：<span className={color} ><PublicMess/> </span><br/>
+          SomeOne ：<span className={color} ><SomeOne/> </span><br/>
+          BackSvg ：<span className={color} ><BackSvg/> </span><br/>
+          BookSvg : <span className={color} ><BookSvg/> </span><br/>
       </>
     );
 }

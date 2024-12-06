@@ -138,7 +138,7 @@
     "noFounData":"No data found",
     "publishCompany":"Publish Community",
     "moreText":"more",
-    "allPostText":"Site Post",
+    "allPostText":"Public Post",
     "uploadPitruseText":"Upload image",
     "uploadVideoText":"Add video",
     "closeText":"Close",
@@ -149,7 +149,9 @@
     "someonrMess":"Specific individuals",
     "publicMess1":"All users inside and outside Enki",
     "followMess1":"Only for your followers",
-    "someonrMess1":"Select specific user"
+    "someonrMess1":"Select specific user",
+    "bookTapText":"My Favorites",
+    "atSomeOne":"In private"
 
   }
 }

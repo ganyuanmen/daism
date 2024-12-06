@@ -97,11 +97,11 @@
     "bookmastText":"收藏",
     "follow":"关注" ,
     "alreadysubmitText":"已提交" ,
-    "likeText":"点赞",
+    "likeText":"喜欢",
     "noEmptygt12":"不能为空或超过12个字符！",
     "registeredText":"已注册，请换另一名称。",
     "nickName":"昵称",
-    "registerText":"注册",
+    "registerText":"注册",   
     "reRegisterText":"重新注册",
     "cancelRegister":"取消关注",
     "noEmptyle4":"不能为空或小于4个字符",
@@ -138,7 +138,7 @@
     "emprtyData":"没有更多数据了",
     "publishCompany":"发布社区",
     "moreText":"更多",
-    "allPostText":"全站动态",
+    "allPostText":"公开嗯文",
     "uploadPitruseText":"上传图片",
     "uploadVideoText":"添加视频",
     "closeText":"关闭",
@@ -149,7 +149,9 @@
     "someonrMess":"特定的人",
     "publicMess1":"所有 enki 内外的人",
     "followMess1":"仅限您的关注者",
-    "someonrMess1":"选择特定的人员"
+    "someonrMess1":"选择特定的人员",
+    "bookTapText":"收藏夹",
+    "atSomeOne":"私下提及"
   
 
   }

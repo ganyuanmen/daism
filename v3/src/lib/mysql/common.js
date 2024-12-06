@@ -1,40 +1,51 @@
-// 导入模块
-const mysql = require('mysql2');
-const fs = require("fs");
+const mysql = require('mysql2/promise'); 
+let promisePool; 
 
-var promisePool
+async function createConnection() {
+  if (promisePool) { // 检查是否已经创建了连接池
+    return promisePool;
+  }
 
-function getConnect() {
-  if(promisePool) return promisePool
-  else return createConnection()
-}
-
-function createConnection() {
-  const pool = mysql.createPool({
+  promisePool = mysql.createPool({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
-    password:process.env.MYSQL_PASSWORD,
+    password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
-    port:process.env.MYSQL_PORT,
+    port: process.env.MYSQL_PORT,
     waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
+    connectionLimit: 20,  // 这个值根据实际情况调整
+    queueLimit: 0,       // 通常设置为0，让队列无限增长，但需要监控连接池状态
     enableKeepAlive: true,
     keepAliveInitialDelay: 0
   });
 
-  promisePool = pool.promise();
+  promisePool.on('error', (err) => {
+    console.error('Database connection error:', err);
+  });
 
-  return promisePool
+  return promisePool;
+}
 
+export async function getData(sql, sqlParams, is_object = false) {
+  const pool = await createConnection(); // 只调用一次 createConnection
+  if (process.env.IS_DEBUGGER === '1') console.info(`getData: ${sql}-->` + sqlParams.join());
+
+  try {
+    const [rows, ] = await pool.query(sql, sqlParams);
+    return is_object ? rows[0] : rows;
+  } catch (error) {
+    console.info(`getData: ${sql}-->` + sqlParams.join());
+    console.error('Database query error:', error); 
+    return is_object ? {} : [];
+  }
 }
 
 //mysql 处理
 export async function execute(sql, sqlParams) {
-  const promisePool=getConnect()
+  const pool = await createConnection(); // 只调用一次 createConnection
   if(process.env.IS_DEBUGGER==='1')  console.info(`execute: ${sql}-->`+sqlParams.join())
   try {
-    const result = await promisePool.execute(sql,sqlParams)
+    const result = await pool.execute(sql,sqlParams)
     return result
   } catch (error) {
     console.info(`execute: ${sql}-->`+sqlParams.join())
@@ -43,15 +54,15 @@ export async function execute(sql, sqlParams) {
   }
 }
 
-
 //mysql 返回自增ID
 export async function executeID(sql, sqlParams) {
-  const promisePool=getConnect()
+  const pool = await createConnection(); // 只调用一次 createConnection
   if(process.env.IS_DEBUGGER==='1')  console.info(`executeID: ${sql}-->`+sqlParams.join())
   try {
-    const result = await promisePool.execute(sql,sqlParams)
+    const result = await pool.execute(sql,sqlParams)
     return result[0].insertId
   } catch (error) {
+    console.info(`executeID: ${sql}-->`+sqlParams.join())
     console.error(error)
     return 0
   }
@@ -60,14 +71,13 @@ export async function executeID(sql, sqlParams) {
 //取mysql数据object_false 只取对象，非数组
 export async function getJsonArray(cid, sqlParams,object_false)
 {
-  const promisePool=getConnect()
-
-  const [rows,] = await promisePool.query("select sqls from aux_tree where id=?",[cid]);
+  const pool = await createConnection(); // 只调用一次 createConnection
+  const [rows,] = await pool.query("select sqls from aux_tree where id=?",[cid]);
   let sql=rows[0].sqls;
 
   if(process.env.IS_DEBUGGER==='1')  console.info(`${cid}--> getJsonArray: ${sql}-->`+sqlParams.join())
   try {
-    const [rows,fields] = await promisePool.query(sql,sqlParams);
+    const [rows,fields] = await pool.query(sql,sqlParams);
     if(rows && rows.length)
     {
       let ar=[]
@@ -82,28 +92,11 @@ export async function getJsonArray(cid, sqlParams,object_false)
     }
     return object_false?{}:[]
   } catch (error) {
+    console.info(`${cid}--> getJsonArray: ${sql}-->`+sqlParams.join())
     console.error(error)
     return  object_false?{}:[]
   }
 }
-
-
-//取mysql数据
-export async function getData(sql, sqlParams,is_object=false)
-{
-  const promisePool=getConnect()
-  if(process.env.IS_DEBUGGER==='1')  console.info(`getData: ${sql}-->`+sqlParams.join())
-  try {
-    const [rows,] = await promisePool.query(sql,sqlParams);
-    return is_object?rows[0]:rows
-  } catch (error) {
-    console.error(error)
-    return is_object?{}:[]
-  }
-  
-}
-
-
 
  /**
   * 获取分页数据
@@ -127,3 +120,15 @@ export async function getData(sql, sqlParams,is_object=false)
  }
 
 
+
+async function gracefulShutdown() {
+  console.log('Shutting down gracefully...');
+  if (promisePool) {
+    await promisePool.end();
+    console.log('Database connection pool closed.');
+  }
+  process.exit(0);
+}
+
+process.on('SIGINT', gracefulShutdown); // Handle Ctrl+C
+process.on('SIGTERM', gracefulShutdown); // Handle kill command

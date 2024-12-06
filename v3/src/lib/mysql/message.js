@@ -25,15 +25,13 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			sctype='sc';
 			break;
 		default: //个人
-			if(parseInt(eventnum)===5){ //全站
-				where='where send_type=0 and property_index=1';
-			}
-			else if(parseInt(eventnum)===1) {   //首页，查本地，
-				where=`where actor_account='${account}' or receive_account='${account}'`;
-			}
-			else if(parseInt(eventnum)===2) where=`where actor_account='${account}'and send_type=0`; //我发布的嗯文
+			if(parseInt(eventnum)===1) where=`where actor_account='${account}' or receive_account='${account}'`; //首页
+			else if(parseInt(eventnum)===2) where=`where actor_account='${account}' and send_type=0`; //我发布的嗯文
 			else if(parseInt(eventnum)===3) where=`where id in(select pid from a_bookmark where account='${account}')`; //我的收藏
 			else if(parseInt(eventnum)===4) where=`where receive_account='${account}'`; //我的接收嗯文
+			else if(parseInt(eventnum)===5)	where='where send_type=0 and property_index=1'; //公开
+			else if(parseInt(eventnum)===6) where=`where id in(select pid from a_heart where account='${account}')`; //喜欢
+			else if(parseInt(eventnum)===7) where=`where receive_account='${account}' and send_type=2`; //@
 			break;
 	}
 	if(w) where=where?`${where} and title like '%${w}%'`:`where title like '%${w}%'`;
@@ -41,6 +39,14 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 	let re=await getData(sql,[]);
 	if(parseInt(menutype)===3 && parseInt(eventnum)===3){ //从sc取出收藏
 		sql=`select * from v_messagesc where id in(select pid from a_bookmarksc where account='${account}') order by ${order} desc limit ${pi*12},12`;
+		const re1=await getData(sql,[]);
+		re=[...re,...re1]
+		re.sort((a, b) => {
+			return b.reply_time.localeCompare(a.reply_time); 
+			// return a.reply_time < b.reply_time; 
+		  });
+	}else if(parseInt(menutype)===3 && parseInt(eventnum)===5){
+		sql=`select * from v_messagesc where id in(select pid from a_heartsc where account='${account}') order by ${order} desc limit ${pi*12},12`;
 		const re1=await getData(sql,[]);
 		re=[...re,...re1]
 		re.sort((a, b) => {
@@ -67,10 +73,9 @@ export async function daoPageData({pi,w})
 //`https://${process.env.LOCAL_DOMAIN}/communities/${sctype}/${id}`--->linkUrl
 export async function insertMessage(account,message_id,pathtype)
 {
-	let sctype=pathtype==='me'?'':'sc';
+	let sctype=pathtype==='enkier'?'':'sc';
 	let re=await getData(`SELECT message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,title,content,top_img FROM v_message${sctype} where message_id=?`
-	,[message_id]);
-	re=re[0]
+	,[message_id],true);
 
 	let linkUrl=`https://${process.env.LOCAL_DOMAIN}/communities/${pathtype}/${message_id}`
 	

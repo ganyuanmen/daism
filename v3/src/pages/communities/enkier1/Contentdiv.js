@@ -8,6 +8,8 @@ import EnKiHeart from "../../../components/enki2/form/EnKiHeart";
 import EnkiShare from "../../../components/enki2/form/EnkiShare";
 import ShowVideo from "../../../components/enki2/form/ShowVideo";
 import { useRef,useState,useEffect } from "react";
+import { client } from "../../../lib/api/client";
+
 const crypto = require('crypto');
 
 export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,actor,setCurrentObj,setActiveTab,replyAddCallBack,delCallBack}) {
@@ -18,12 +20,25 @@ export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,ac
     function showClipError(str){dispatch(setMessageText(str))}  
     const contentDiv=useRef()
     const [isEdit,setIsEdit]=useState(false);
+    const [total,setTotal]=useState(0);//回复总数
     const encrypt=(text)=>{
       const cipher = crypto.createCipheriv('aes-256-cbc', env.KEY, Buffer.from(env.IV, 'hex'));
       let encrypted = cipher.update(text, 'utf8', 'hex');
       encrypted += cipher.final('hex');
       return encrypted;
     }
+
+     //选取回复总数  
+     useEffect(()=>{
+      let ignore = false;
+      if(messageObj?.id)
+      client.get(`/api/getData?sctype=${messageObj.dao_id>0?'sc':''}&pid=${messageObj.id}`,'getReplyTotal').then(res =>{ 
+          if (!ignore) 
+              if (res.status===200) setTotal(res.data)
+        });
+      return () => {ignore = true}
+  },[messageObj])
+
     useEffect(()=>{
       const checkIsEdit=()=>{  //是否允许修改
           if(!loginsiwe) return false;
@@ -75,17 +90,17 @@ export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,ac
       return env.domain === messDomain; //本域名发布，可以回复
   }
 
-  const handle=()=>{
+  const handle=(id)=>{
 
     setCurrentObj(messageObj);
     setActiveTab(2);
-  
+    sessionStorage.setItem("daism-list-id",id)
     history.pushState({ id: messageObj?.id }, `id:${messageObj?.id}`, `?d=${encrypt(`${messageObj.id},${geneType()},${getDomain()}`)}`);
   }
     return (
    
 
-       <div style={{padding:'10px',borderBottom:'1px solid #D9D9E8'}}>
+       <div id={`item-${messageObj.id}`}  style={{padding:'10px',borderBottom:'1px solid #D9D9E8'}}>
       
 {/*             
             <EnkiMemberItem messageObj={messageObj} t={t}  domain={env?.domain} isEdit={false}
@@ -95,7 +110,7 @@ export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,ac
                  preEditCall={e=>{ setCurrentObj(messageObj);setActiveTab(1);}} showTip={showTip} closeTip={closeTip}
                  showClipError={showClipError} isEdit={isEdit} />
 
-            <div className="daism-a mt-2 mb-3" style={{fontWeight:'bold'}}  onClick={handle} >
+            <div className="daism-a mt-2 mb-3" style={{fontWeight:'bold'}}  onClick={()=>handle(messageObj.id)} >
                 <div ref={contentDiv} dangerouslySetInnerHTML={{__html:messageObj?.content}}></div>
            </div>
             {messageObj?.content_link && <div dangerouslySetInnerHTML={{__html: messageObj.content_link}}></div>}

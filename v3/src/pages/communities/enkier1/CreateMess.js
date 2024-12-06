@@ -78,7 +78,6 @@ export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallB
             body: formData
         })
         .then(async response => {
-            debugger
         closeTip()
         let re=await response.json()
         if(re.errMsg) { showClipError(re.errMsg|| 'fail'); return }
@@ -89,7 +88,6 @@ export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallB
         else {  addCallBack.call(this);  } //新增回调
         })
         .catch(error => {
-            debugger
         closeTip()
         showClipError(`${tc('dataHandleErrorText')}!${error}`)
         });   

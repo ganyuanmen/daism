@@ -21,20 +21,29 @@ export default function EnKiHeart({t,tc,currentObj,actor,showTip,closeTip,showCl
     //data.pid>0 已点赞
 
     return(
-        <>
-            {isEdit?
-                <div>
-                    {data.pid>0?
-                        <Button onClick={e=>{submit(0)}}  variant="light">
-                            <span style={{color:'red'}} ><Heart size={18} /></span>  {t('likeText')} {data?.total}
-                        </Button>
-                    : <Button onClick={e=>submit(1)}  variant="light"><Heart size={18} /> {t('likeText')} {data?.total} </Button>
-                    }
-               
-                </div>
-            :<div>{t('likeText')} {data?.total}</div>
-            }
-        </>
+          
+        <button type="button" disabled={!isEdit} onClick={() => {submit(data?.pid>0?0:1);}}
+        className="btn btn-light" data-bs-toggle="tooltip" data-bs-html="true" title={t('likeText')}>  
+              {data?.pid>0?<span style={{color:'red'}} ><Heart size={18} /></span>:<Heart size={18} />}
+              {data?.total}
+          </button>
+       
     );
 }
 
+
+   
+// <>
+// {isEdit?
+//     <div>
+//         {data.pid>0?
+//             <Button onClick={e=>{submit(0)}}  variant="light">
+//                 <span style={{color:'red'}} ><Heart size={18} /></span>  {t('likeText')} {data?.total}
+//             </Button>
+//         : <Button onClick={e=>submit(1)}  variant="light"><Heart size={18} /> {t('likeText')} {data?.total} </Button>
+//         }
+   
+//     </div>
+// :<div>{t('likeText')} {data?.total}</div>
+// }
+// </>

@@ -6,9 +6,7 @@ import { client } from "../../../lib/api/client";
 import ShowErrorBar from "../../../components/ShowErrorBar";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Contentdiv from "./Contentdiv";
-// env={env} loginsiwe={loginsiwe} actor={actor} locale={locale}  t={t} tc={tc} 
-                    // setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
-                    //  replyAddCallBack={allHandle}  delCallBack={allHandle}
+
 export default function Mainself({env,loginsiwe,actor,locale,t,tc,setCurrentObj,setActiveTab,fetchWhere, setFetchWhere,replyAddCallBack
     ,delCallBack}) {
     const [data, setData] = useState([]);
@@ -16,14 +14,30 @@ export default function Mainself({env,loginsiwe,actor,locale,t,tc,setCurrentObj,
     const [pageNum, setPageNum] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [err,setErr]=useState("");
+    
+    const listRef = useRef(null);
     useEffect(()=>{
         if(fetchWhere.currentPageNum===0) setPageNum(0);
     },[fetchWhere])
 
+    useEffect(() => { //数据加载完成后
+        if(data && data.length) {
+            const _id = parseInt(sessionStorage.getItem('daism-list-id'));       
+            if (!isNaN(_id)) {
+            const itemElement = listRef.current.querySelector(`#item-${_id}`);
+            if (itemElement) {
+                itemElement.scrollIntoView({ behavior: 'auto' }); //  smooth 滚动
+                sessionStorage.removeItem('daism-list-id');
+            }else fetchMoreData(); //循环读取数据，直到找到`#item-${_id}
+            }
+           
+        }
+      }, [data]);
+
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            // console.log(fetchWhere)
+            console.log(fetchWhere)
             if (fetchWhere.currentPageNum === 0) setData([]);
             try {
                 const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&menutype=${fetchWhere.menutype}&daoid=${fetchWhere.daoid}&actorid=${fetchWhere.actorid}&w=${fetchWhere.where}&order=${fetchWhere.order}&eventnum=${fetchWhere.eventnum}&account=${fetchWhere.account}&v=${fetchWhere.v}`, 'messagePageData');
@@ -82,14 +96,15 @@ export default function Mainself({env,loginsiwe,actor,locale,t,tc,setCurrentObj,
 
         <div className='sccontent'>
    
-            <div>
+            <div ref={listRef} >
                 <InfiniteScroll
                     dataLength={data.length}
                     next={fetchMoreData}
                     hasMore={hasMore}
                 >
-                    {data.map((obj, idx) => (
-                        <Contentdiv path='enkier' env={env} locale={locale} loginsiwe={loginsiwe} messageObj={obj} key={obj.id} t={t} tc={tc} actor={actor} 
+                    {data.map((obj) => (
+                        <Contentdiv path='enkier' env={env} locale={locale} loginsiwe={loginsiwe} messageObj={obj} 
+                        key={obj.id}  t={t} tc={tc} actor={actor} 
                         setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} replyAddCallBack={replyAddCallBack} delCallBack={delCallBack} />
                     ))}
                 </InfiniteScroll> 

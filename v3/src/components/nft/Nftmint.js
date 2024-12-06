@@ -55,7 +55,6 @@ export default function Nftmint({closeTip,showTip,showError,t,tc,user})
 
 
     const mintsvg=()=>{
-        // debugger;
         let tipar=[]
         const form=document.getElementById("nftform")
         let lok=false  //检查是否为空
