@@ -18,7 +18,7 @@ var server1=new Server();
 
 var maxData = []; // Record the maximum block number that has been listened to
 
-console.log(process.env)
+// console.log(process.env)
 const promisePool = mysql.createPool({
    host: process.env.MYSQL_HOST,
    user: process.env.MYSQL_USER,

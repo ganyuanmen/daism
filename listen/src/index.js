@@ -41,7 +41,6 @@ class DaoApi {
         //daoCreate
         while(this.DaoRegistrar.har.length)
         {
-            console.log("DaoRegistrar",this.DaoRegistrar.har.length)
             let _data=this.DaoRegistrar.har.shift();
             const dao_id=_data.data.data.daoId
             const _info=await this.GetInfos.getDaoInfo(dao_id)  
@@ -75,7 +74,6 @@ class DaoApi {
         //成员变动
         while(this.EventSum.har3.length)
         {
-            console.log("DaoRegistrar",this.EventSum.har3.length)
             let _data=this.EventSum.har3.shift();
             _data.data.data.daoId=await this.DaoRegistrar.proxyTo(_data.data.data['delegator'])
 
@@ -87,7 +85,6 @@ class DaoApi {
         //publishTolen ////NFT
         while(this.DaoToken.har.length)
         {
-            console.log("DaoRegistrar",this.DaoToken.har.length)
             let _data=this.DaoToken.har.shift();
             _data.data.data.timestamp=await utils.getTime(this.web3,_data.data.blockNumber)
             await this.runAsync(_data.fn,_data.data)
@@ -98,7 +95,6 @@ class DaoApi {
 
         while(this.IADD.t2tAr.length)
         {
-            console.log("DaoRegistrar",this.IADD.t2tAr.length)
             let _data=this.IADD.t2tAr.shift();
             _data.data.data.gas=await utils.gas(this.web3,_data.data.transactionHash)
             _data.data.data.swap_time=await utils.getTime(this.web3,_data.data.blockNumber)
@@ -110,7 +106,6 @@ class DaoApi {
 
         while(this.IADD.e2tAr.length)
         {
-            console.log("DaoRegistrar",this.IADD.e2tAr.length)
             let _data=this.IADD.e2tAr.shift();
             _data.data.data.gas=await utils.gas(this.web3,_data.data.transactionHash)
             _data.data.data.swap_time=await utils.getTime(this.web3,_data.data.blockNumber)
@@ -119,7 +114,6 @@ class DaoApi {
         }
         while(this.UnitToken.e2uAr.length)
         {
-            console.log("DaoRegistrar",this.UnitToken.e2uAr.length)
             let _data=this.UnitToken.e2uAr.shift();
 
             let logs=await utils.getCheckEvent_logs(this.ethersProvider,_data.data.transactionHash)
@@ -136,7 +130,6 @@ class DaoApi {
 
          while(this.IADD.t2uAr.length)
          {
-            console.log("DaoRegistrar",this.IADD.t2uAr.length)
              let _data=this.IADD.t2uAr.shift();
              let logs=await utils.getCheckEvent_logs(this.ethersProvider,_data.data.transactionHash)
              let eventData= utils.getCheckEvent_ex(logs,this.eventIface,'SCTokenToSCTokenEvent')
@@ -152,7 +145,6 @@ class DaoApi {
         
          while(this.IADD.u2tAr.length)
          {
-            console.log("DaoRegistrar",this.IADD.u2tAr.length)
              let _data=this.IADD.u2tAr.shift();
           
              let logs=await utils.getCheckEvent_logs(this.ethersProvider,_data.data.transactionHash)
@@ -173,7 +165,6 @@ class DaoApi {
          //addProposal
         while(this.EventSum.har.length)
          {
-            console.log("DaoRegistrar",this.EventSum.har.length)
              let _data=this.EventSum.har.shift();
              const parasObj=await this.web3.eth.getTransaction(_data.data.transactionHash);
              const decodedData = abiDecoder.decodeMethod(parasObj.input)
@@ -188,7 +179,6 @@ class DaoApi {
            //voteEvent
         while(this.EventSum.har1.length)
         {
-            console.log("DaoRegistrar",this.EventSum.har1.length)
             let _data=this.EventSum.har1.shift();
             const parasObj=await this.web3.eth.getTransaction(_data.data.transactionHash);        
             _data.data.data.creator=parasObj.from
@@ -201,7 +191,6 @@ class DaoApi {
         //获取分红
         while(this.EventSum.har2.length)
         {
-            console.log("DaoRegistrar",this.EventSum.har2.length)
             let _data=this.EventSum.har2.shift();
             _data.data.data._time=await utils.getTime(this.web3,_data.data.blockNumber)
             await this.runAsync(_data.fn,_data.data)
@@ -211,7 +200,6 @@ class DaoApi {
         //changeLogo 
         while(this.DaoLogo.har.length)
         {
-            console.log("DaoRegistrar",this.DaoLogo.har.length)
             let _data=this.DaoLogo.har.shift();
             let res=await this.DaoLogo.getLogoByDaoId(_data.data.data.daoId)
             _data.data.data.src=await this.DaoLogo.get_async_file(res.fileContent,_data.data.data.daoId)
