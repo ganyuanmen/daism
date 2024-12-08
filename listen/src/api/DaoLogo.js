@@ -1,7 +1,7 @@
 const abi=require('../abi/SCLogo_abi.json');
 const utils = require("../utils");
 // const JSZip= require('jszip')
-const fs = require('fs');
+const fs = require('node:fs');
 //logo 事件
  class DaoLogo {
 

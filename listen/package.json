@@ -13,10 +13,8 @@
   },
   "dependencies": {
     "abi-decoder": "^2.4.0",
-    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "ethers": "^6.12.1",
-    "fs": "^0.0.1-security",
     "mysql2": "^3.9.1",
     "node-schedule": "^2.1.0",
     "web3": "^4.8.0"

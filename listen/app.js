@@ -1,9 +1,9 @@
 const Server = require("./src/server")
 const schedule =require("node-schedule");
 const daoabi=require('./src/abi/SC_abi.json')
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise'); 
 const dotenv=require('dotenv');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 
 
 dotenv.config();
@@ -19,20 +19,37 @@ var server1=new Server();
 var maxData = []; // Record the maximum block number that has been listened to
 
 console.log(process.env)
-const pool = mysql.createPool({
+const promisePool = mysql.createPool({
    host: process.env.MYSQL_HOST,
    user: process.env.MYSQL_USER,
-   password:process.env.MYSQL_PASSWORD,
+   password: process.env.MYSQL_PASSWORD,
    database: process.env.MYSQL_DATABASE,
-   port:process.env.MYSQL_PORT,
+   port: process.env.MYSQL_PORT,
    waitForConnections: true,
-   connectionLimit: 1,
-   queueLimit: 0,
+   connectionLimit: 1,  // 这个值根据实际情况调整
+   queueLimit: 0,       // 通常设置为0，让队列无限增长，但需要监控连接池状态
    enableKeepAlive: true,
    keepAliveInitialDelay: 0
  });
 
-var promisePool = pool.promise();
+ promisePool.on('error', (err) => {
+   console.error('Database connection error:', err);
+ });
+
+// const pool = mysql.createPool({
+//    host: process.env.MYSQL_HOST,
+//    user: process.env.MYSQL_USER,
+//    password:process.env.MYSQL_PASSWORD,
+//    database: process.env.MYSQL_DATABASE,
+//    port:process.env.MYSQL_PORT,
+//    waitForConnections: true,
+//    connectionLimit: 1,
+//    queueLimit: 0,
+//    enableKeepAlive: true,
+//    keepAliveInitialDelay: 0
+//  });
+
+// var promisePool = pool.promise();
 
 async function daoListenStart() {
 
@@ -43,7 +60,7 @@ async function daoListenStart() {
 }
 
 
-function hand() {
+async function hand() {
     //Obtain the maximum block number that needs to be monitored from the database
    let sql = 'SELECT IFNULL(MAX(block_num),0)+1 s FROM t_dao'  //0 
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_createversion'  //1 dapp 地址改变
@@ -70,7 +87,7 @@ function hand() {
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_nft_swap';  //22 打赏 mint nft
         
 
-   promisePool.query(sql,[]).then((rows)=>{
+        const rows=await promisePool.query(sql,[]);
          rows[0].forEach(element => {maxData.push(element.s>start_block?element.s:start_block)});
          console.log(maxData)
          p("start...........")
@@ -79,12 +96,12 @@ function hand() {
          schedule.scheduleJob("*/5 * * * * *",async() => {
             // const d = new Date().toLocaleString();
             // console.log(d);
-           if(!server1.daoapi.running)  server1.daoapi.run()
+            if(!server1.daoapi.running) server1.daoapi.run();
 
             if (monitor > 15*12 && !server1.daoapi.running) daoListenStart();
             monitor++;  
          });
-      })
+      
 }
 
 
@@ -176,10 +193,13 @@ function token_cost(id, address) {
 
 
   //mysql 处理
-function executeSql(addSql, addSqlParams) {
-   promisePool.execute(addSql,addSqlParams).catch(err=>{
-     console.error('[INSERT ERROR] - ', err.message)
-  })
+async function executeSql(addSql, addSqlParams) {
+   try {
+      await promisePool.execute(addSql,addSqlParams)
+    } catch (err) {
+      console.info(`error for: ${addSql}-->`+addSqlParams.join(),err.message)
+      return 0
+    }
   
 }
 
@@ -653,3 +673,18 @@ function nfttransfer()
 }
 
 
+
+
+
+async function gracefulShutdown() {
+   console.log('Shutting down gracefully...');
+   if (promisePool) {
+     await promisePool.end();
+     console.log('Database connection pool closed.');
+   }
+   process.exit(0);
+ }
+ 
+ process.on('SIGINT', gracefulShutdown); // Handle Ctrl+C
+ process.on('SIGTERM', gracefulShutdown); // Handle kill command
+ 
