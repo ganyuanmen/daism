@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 
 export const config = {
     api: {
-        sizeLimit: '10mb',
+        sizeLimit: '1mb',
         bodyParser: false,
     },
 };
@@ -23,8 +23,9 @@ export default withSession(async (req, res) => {
         const form = formidable({})
         const [fields, files] = await form.parse(req);
         const {vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
-        const imgPath = saveImage(files, fileType[0])
-        let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${imgPath}` : '';
+        const actorName=account[0].split('@')[0];
+        const imgPath = saveImage(files, fileType[0],actorName)
+        let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${actorName}/${imgPath}` : '';
         let sql = '';
         let paras;
         const sctype = daoid ? 'sc' : '';
@@ -50,9 +51,9 @@ export default withSession(async (req, res) => {
             if (insertId) {
                 if (parseInt(isSend[0]) === 1) {
                      if (daoid){
-                        send(account[0],textContent[0], content[0], path, message_id, '', path, 'enki' )
+                        send(account[0],parseInt(typeIndex[0])===0?content[0]:textContent[0], content[0], path, message_id, '', path, 'enki' )
                     }else {
-                        send(account[0],content[0], content[0], path, message_id, '', path,'enkier')
+                        send(account[0],parseInt(typeIndex[0])===0?content[0]:textContent[0], content[0], path, message_id, '', path,'enkier')
                     }    
                 }
                 if(accountAt && accountAt[0]){
@@ -66,11 +67,7 @@ export default withSession(async (req, res) => {
                         await executeID(sql, paras);
                     })
                 }
-
-
-                setTimeout(async () => {  //生成链接卡片
-                    await addLink(content[0], message_id,sctype)
-                }, 1);
+                setTimeout(async () => {await addLink(content[0], message_id,sctype)},1);//生成链接卡片
                 res.status(200).json({ msg: 'handle ok', id: insertId });
             } else res.status(500).json({ errMsg: 'fail' });
         } else { //修改
@@ -97,7 +94,7 @@ export default withSession(async (req, res) => {
                 setTimeout(async () => {  //生成链接卡片
                     await addLink(content[0],rear.message_id,sctype)
                 }, 1);
-                res.status(200).json(await getData(`select * from a_message${sctype} where id=?`, [id[0]],true));
+                res.status(200).json(await getData(`select * from v_message${sctype} where id=?`, [id[0]],true));
             }
             else res.status(500).json({ errMsg: 'save fail' });
 

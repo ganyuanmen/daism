@@ -1,5 +1,5 @@
 import { readImg } from "../../lib/utils";
-import fs from 'fs'
+const fs = require('node:fs');
 export default async function handler(req, res) {
 
    const {path}= req.query

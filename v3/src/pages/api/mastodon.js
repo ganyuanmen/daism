@@ -1,6 +1,6 @@
 import withSession from "../../lib/session";
 import formidable from 'formidable';
-const fs = require('fs');
+const fs = require('node:fs');
 import { getData,execute } from "../../lib/mysql/common";
 
 export const config = {

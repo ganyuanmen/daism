@@ -215,7 +215,7 @@
       border-right: 1px solid #D9D9E8;
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
-      max-width: 700px;
+      max-width: 800px;
 
       
     }
@@ -241,13 +241,13 @@
         width: 255px;
       } 
 
-      @media (max-width: 1439px) {
+      @media (max-width: 1539px) {
         .scright {
           display: none;
         }
       }
 
-      @media (max-width: 995px) {
+      @media (max-width: 1095px) {
         .scleft {
           display: none;
         }

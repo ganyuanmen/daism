@@ -15,13 +15,13 @@ import EnkiShare from "../form/EnkiShare";
 import { client } from "../../../lib/api/client";
 import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import ShowVideo from "../form/ShowVideo";
+import ShowVedio from "../form/ShowVedio";
 /**
- * 单登个发文信息界面 // preEditCall:修改前回调 delCallBack:删除后已刷新
+ * 单登个发文信息界面 //  delCallBack:删除嗯文后回调
  * isEdit 是否允许修改  
  */
 
-export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,currentObj,delCallBack,setActiveTab}) { 
+export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,currentObj,delCallBack,setActiveTab,accountAr}) { 
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
         ,sctype:currentObj.dao_id>0?'sc':''
@@ -33,8 +33,7 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
     const [hasMore, setHasMore] = useState(true);
     const [err,setErr]=useState("");
     const [isEdit,setIsEdit]=useState(false);
-    const [total,setTotal]=useState(0);//回复总数
-    const [refresh,setRefresh]=useState(false);  //刷新回复总数
+    const [replyIndex,setReplyIndex]=useState(-1) //保存修改讨论的数组序号
     const [replyObj,setReplyObj]=useState(null) //回复内容，用于修改，为null表示新增
     const [pageNum, setPageNum] = useState(0);
 
@@ -86,20 +85,26 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
         return env.domain === messDomain; //本域名发布，可以回复
     }
   
-     //选取回复总数  
-    useEffect(()=>{
-       let ignore = false;
-       if(currentObj?.id)
-       client.get(`/api/getData?sctype=${currentObj.dao_id>0?'sc':''}&pid=${currentObj.id}`,'getReplyTotal').then(res =>{ 
-           if (!ignore) 
-               if (res.status===200) setTotal(res.data)
-         });
-       return () => {ignore = true}
-   },[currentObj,refresh])
+    const replyDelCallBack=(index)=>{
+        currentObj.total=currentObj.total-1;
+        data.splice(index, 1); //删除
+        setData([...data])
+         
+    } 
 
-    const callBack=()=>{setFetchWhere({...fetchWhere,currentPageNum:0});setRefresh(!refresh)} //删除、增加回复后后回调
-    const preEditCallBack=(obj)=>{setReplyObj(obj);repluBtn.current.show();} //修改评论 ，弹出窗口
-    const afterEditcall=()=>{setReplyObj(null);callBack();}
+    //修改评论前 ，弹出窗口
+    const preEditCallBack=(obj,reply_index)=>{
+        setReplyObj(obj);
+        setReplyIndex(reply_index)
+        repluBtn.current.show();} 
+    
+    const afterEditcall=(obj)=>{
+        data[replyIndex].content=obj.content;
+        data[replyIndex].top_img=obj.top_img;
+        data[replyIndex].type_index=obj.type_index;
+        data[replyIndex].vedio_url=obj.vedio_url;
+        setData([...data])
+    }  //修改讨论回调
     
     useEffect(() => {
         const fetchData = async () => {
@@ -136,8 +141,7 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
     }, [fetchWhere]);
 
     const fetchMoreData = () => {
-        // console.log("reply next------------>",fetchWhere)
-        setFetchWhere({ ...fetchWhere, currentPageNum: pageNum });
+          setFetchWhere({ ...fetchWhere, currentPageNum: pageNum });
       };
 
     const footerdiv=()=>{
@@ -146,7 +150,11 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
         }
     }
 
-    
+    const addReplyCallBack=(obj)=>{
+        currentObj.total=currentObj.total+1;
+        data.unshift(obj);
+        setData([...data])
+    }
     return (
        
 
@@ -160,16 +168,17 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
         <Card.Body>
             <div ref={contentDiv} dangerouslySetInnerHTML={{__html: currentObj?.content}}></div>
             {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
-            {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{width:'100%'}} />
+            {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{maxWidth:'100%'}} />
             }
-            {currentObj?.vedio_url && <ShowVideo videoUrl={currentObj.vedio_url} title='' /> 
+            {currentObj?.vedio_url && <ShowVedio vedioUrl={currentObj.vedio_url} /> 
             }
         </Card.Body>
         <Card.Footer style={{padding:0}} >
             <div className="d-flex justify-content-between align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:'4px 8px'}}  >
          
-                <MessageReply  ref={repluBtn} t={t} tc={tc} total={total} actor={actor} currentObj={currentObj} isEdit={ableReply()}
-                 addReplyCallBack={callBack} replyObj={replyObj} setReplyObj={setReplyObj} 
+                <MessageReply  ref={repluBtn} t={t} tc={tc} total={currentObj.total} actor={actor} currentObj={currentObj} 
+                 isEdit={ableReply()} accountAr={accountAr}
+                 addReplyCallBack={addReplyCallBack} replyObj={replyObj} setReplyObj={setReplyObj} 
                  afterEditcall={afterEditcall} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
 
                 <EnKiHeart isEdit={ableReply()} t={t} tc={tc} loginsiwe={loginsiwe} actor={actor} currentObj={currentObj} domain={env.domain} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
@@ -188,7 +197,9 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
                     // endMessage={<div style={{textAlign:'center'}} >---{t('emprtyData')}---</div>}
                 >
                     {data.map((obj, idx) => (
-                        <ReplyItem locale={locale} isEdit={ableReply() && actor.actor_account===obj.actor_account } key={obj.id} t={t} paccount={currentObj.actor_account} replyObj={obj} actor={actor} delCallBack={callBack} preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} />
+                        <ReplyItem locale={locale} isEdit={ableReply() && actor.actor_account===obj.actor_account } key={idx} 
+                        t={t} paccount={currentObj.actor_account} replyObj={obj} actor={actor} delCallBack={replyDelCallBack} 
+                        preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
                     ))}
             </InfiniteScroll>
 

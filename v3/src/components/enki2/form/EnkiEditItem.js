@@ -6,7 +6,7 @@ import { client } from "../../../lib/api/client";
 import { useDispatch} from 'react-redux';
 import {setTipText,setMessageText} from '../../../data/valueData';
 
-//type 默认是 嗯文 1-> 是回复 preEditCall 修改前操作  delCallBack 删除后回调  
+//type 默认是 0嗯文 1-> 是回复 preEditCall 修改前操作  delCallBack 删除后回调  
 export default function EnkiEditItem({tc,t,messageObj,delCallBack,preEditCall,sctype,type=0})
 {
     const dispatch = useDispatch();

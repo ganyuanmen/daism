@@ -2,7 +2,7 @@ import withSession from "../../lib/session";
 import { addEipType } from "../../lib/mysql/daism";
 import {messageDel} from '../../lib/mysql/message';
 import { handleHeartAndBook } from "../../lib/mysql/message";
-import { getData } from "../../lib/mysql/common"
+// import { getData } from "../../lib/mysql/common"
 import { broadcast } from "../../lib/net";
 const methods={
     messageDel, //删除
@@ -26,7 +26,7 @@ export default withSession(async (req, res) => {
     catch(err)
     {
         console.error('post:/api/postwithsession:',req.headers.method,req.body,err)
-        res.status(500).json({errMsg: 'fail'});
+        res.status(500).json({errMsg: 'fail'+err.toString()});
     }  
 });
 

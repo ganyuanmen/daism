@@ -44,7 +44,7 @@ export default function PageLayout({children,env}) {
                     <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enki' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enki`} > {t('myCommunity')}</NavDropdown.Item>
                     <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/SC' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/SC`} > {t('publicCommunities')}</NavDropdown.Item>
                     <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enkier' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enkier`} > {t('personalSocial')}</NavDropdown.Item>
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enkier1' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enkier1`} > 个人社交(测试)</NavDropdown.Item>
+                    {/* <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enkier1' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enkier1`} > 个人社交(测试)</NavDropdown.Item> */}
                   </NavDropdown>
 
                   <NavDropdown title={t('college')} id="basic-nav-dropdown2">

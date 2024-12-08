@@ -16,10 +16,8 @@ export function send(account,textContent,content,fileName,message_id,title,imgpa
         
         getFollowers({account:localUser.account}).then(data=>{
             data.forEach(element => {
-              console.log("-----------------------------------------------------",element)
                 try{
                   if(element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
-                    console.log("=============================",element.user_account,message_id,pathtype)
                     insertMessage(element.user_account,message_id,pathtype).then(()=>{})
                   }else {
                     if(element.user_inbox.includes('/api/activitepub/inbox')) //enki

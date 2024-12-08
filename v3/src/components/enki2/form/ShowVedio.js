@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const ShowVideo = ({ videoUrl,title='' }) => {
+const ShowVedio = ({ vedioUrl }) => {
 
   const boxRef = React.useRef(null);
 
@@ -22,18 +22,16 @@ const ShowVideo = ({ videoUrl,title='' }) => {
   }, []);
 
   return (
-
-      <div className='daism-video-container'  >
         <iframe ref={boxRef} className='daism-iframebox'
-          src={videoUrl}
+          src={vedioUrl}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
           referrerPolicy="strict-origin-when-cross-origin" 
           allowFullScreen
-          title={title}
+          // title={title}
         ></iframe>
-      </div>
+
     
   );
 };
 
-export default React.memo(ShowVideo);
+export default React.memo(ShowVedio);

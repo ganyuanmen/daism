@@ -122,10 +122,10 @@ export async function getJsonArray(cid, sqlParams,object_false)
 
 
 async function gracefulShutdown() {
-  console.log('Shutting down gracefully...');
+  console.info('Shutting down gracefully...');
   if (promisePool) {
     await promisePool.end();
-    console.log('Database connection pool closed.');
+    console.info('Database connection pool closed.');
   }
   process.exit(0);
 }

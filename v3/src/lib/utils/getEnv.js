@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require('node:fs');
 const crypto = require('crypto');
 
 export function getEnv()
@@ -33,3 +33,12 @@ export function decrypt(ciphertext) {
   decrypted += decipher.final('utf8');
   return decrypted;
 }
+
+
+export function encrypt(text){
+  const cipher = crypto.createCipheriv('aes-256-cbc', env.KEY, Buffer.from(env.IV, 'hex'));
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+}
+

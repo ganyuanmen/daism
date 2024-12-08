@@ -1,18 +1,19 @@
 
-import EnkiMemberItem from "../../../components/enki2/form/EnkiMemberItem";
+import EnkiMemberItem from "../enki2/form/EnkiMemberItem";
 import {useDispatch} from 'react-redux';
-import { setTipText, setMessageText } from '../../../data/valueData'
-import MessageReply from "../../../components/enki2/form/MessageReply";
-import EnKiBookmark from "../../../components/enki2/form/EnKiBookmark";
-import EnKiHeart from "../../../components/enki2/form/EnKiHeart";
-import EnkiShare from "../../../components/enki2/form/EnkiShare";
-import ShowVideo from "../../../components/enki2/form/ShowVideo";
+import { setTipText, setMessageText } from '../../data/valueData'
+import MessageReply from "../enki2/form/MessageReply";
+import EnKiBookmark from "../enki2/form/EnKiBookmark";
+import EnKiHeart from "../enki2/form/EnKiHeart";
+import EnkiShare from "../enki2/form/EnkiShare";
+import ShowVedio from "../enki2/form/ShowVedio";
 import { useRef,useState,useEffect } from "react";
-import { client } from "../../../lib/api/client";
+import { client } from "../../lib/api/client";
 
-const crypto = require('crypto');
+// const crypto = require('crypto');
 
-export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,actor,setCurrentObj,setActiveTab,replyAddCallBack,delCallBack}) {
+export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,actor,setCurrentObj,
+  setActiveTab,replyAddCallBack,delCallBack,afterEditCall,data_index,accountAr}) {
     
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
@@ -21,12 +22,12 @@ export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,ac
     const contentDiv=useRef()
     const [isEdit,setIsEdit]=useState(false);
     const [total,setTotal]=useState(0);//回复总数
-    const encrypt=(text)=>{
-      const cipher = crypto.createCipheriv('aes-256-cbc', env.KEY, Buffer.from(env.IV, 'hex'));
-      let encrypted = cipher.update(text, 'utf8', 'hex');
-      encrypted += cipher.final('hex');
-      return encrypted;
-    }
+    // const encrypt=(text)=>{
+    //   const cipher = crypto.createCipheriv('aes-256-cbc', env.KEY, Buffer.from(env.IV, 'hex'));
+    //   let encrypted = cipher.update(text, 'utf8', 'hex');
+    //   encrypted += cipher.final('hex');
+    //   return encrypted;
+    // }
 
      //选取回复总数  
      useEffect(()=>{
@@ -70,16 +71,16 @@ export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,ac
 
   },[actor,messageObj])
 
-    const getDomain=()=>{
-      let _account=(messageObj.send_type==0?messageObj.actor_account:messageObj.receive_account);
-      return _account.split('@')[1];
-    }
+    // const getDomain=()=>{
+    //   let _account=(messageObj.send_type==0?messageObj.actor_account:messageObj.receive_account);
+    //   return _account.split('@')[1];
+    // }
   
-    const geneType=()=>{
-      if(messageObj?.send_type==1) return ''; //推送的都在message
-      if(parseInt(messageObj?.dao_id)>0) return 'sc'; //sc 发表的
-      return ''; // 默认在message
-    }
+    // const geneType=()=>{
+    //   if(messageObj?.send_type==1) return ''; //推送的都在message
+    //   if(parseInt(messageObj?.dao_id)>0) return 'sc'; //sc 发表的
+    //   return ''; // 默认在message
+    // }
     const ableReply = () => { //是否允许回复，点赞，书签
       if(!loginsiwe) return false;
       if(!actor?.actor_account && !actor?.actor_account?.includes('@')) return false;
@@ -90,13 +91,13 @@ export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,ac
       return env.domain === messDomain; //本域名发布，可以回复
   }
 
-  const handle=(id)=>{
+  // const handle=(id)=>{
 
-    setCurrentObj(messageObj);
-    setActiveTab(2);
-    sessionStorage.setItem("daism-list-id",id)
-    history.pushState({ id: messageObj?.id }, `id:${messageObj?.id}`, `?d=${encrypt(`${messageObj.id},${geneType()},${getDomain()}`)}`);
-  }
+  //   setCurrentObj(messageObj);
+  //   setActiveTab(2);
+  //   sessionStorage.setItem("daism-list-id",id)
+  //   history.pushState({ id: messageObj?.id }, `id:${messageObj?.id}`, `?d=${encrypt(`${messageObj.id},${getDomain()}`)}`);
+  // }
     return (
    
 
@@ -110,19 +111,19 @@ export default function Contentdiv({path,env,locale,loginsiwe,messageObj,t,tc,ac
                  preEditCall={e=>{ setCurrentObj(messageObj);setActiveTab(1);}} showTip={showTip} closeTip={closeTip}
                  showClipError={showClipError} isEdit={isEdit} />
 
-            <div className="daism-a mt-2 mb-3" style={{fontWeight:'bold'}}  onClick={()=>handle(messageObj.id)} >
+            <div className="daism-a mt-2 mb-3" style={{fontWeight:'bold'}}  onClick={()=>afterEditCall.call(this,messageObj)} >
                 <div ref={contentDiv} dangerouslySetInnerHTML={{__html:messageObj?.content}}></div>
            </div>
             {messageObj?.content_link && <div dangerouslySetInnerHTML={{__html: messageObj.content_link}}></div>}
-            {messageObj?.top_img && <img  className="mt-2 mb-2" alt="" src={messageObj.top_img} style={{width:'100%'}} />
+            {messageObj?.top_img && <img  onClick={()=>afterEditCall.call(this,messageObj)} className="daism-a mt-2 mb-2" alt="" src={messageObj.top_img} style={{maxWidth:'100%'}} />
             }
-            {messageObj?.vedio_url && <ShowVideo videoUrl={messageObj.vedio_url} title='' /> 
+            {messageObj?.vedio_url && <ShowVedio vedioUrl={messageObj.vedio_url} /> 
             }
            <div className="d-flex justify-content-between align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:'4px 8px'}}  >
                 
                 <MessageReply  t={t} tc={tc} actor={actor} currentObj={messageObj} total={messageObj.total} isEdit={ableReply()}
-                 addReplyCallBack={replyAddCallBack}  domain={env.domain} loginsiwe={loginsiwe}
-                 showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
+                 addReplyCallBack={replyAddCallBack}  domain={env.domain} loginsiwe={loginsiwe} data_index={data_index}
+                 showTip={showTip} closeTip={closeTip} showClipError={showClipError} accountAr={accountAr} />
 
                 <EnKiHeart isEdit={ableReply()} t={t} tc={tc} loginsiwe={loginsiwe} actor={actor} currentObj={messageObj}
                  domain={env.domain} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />

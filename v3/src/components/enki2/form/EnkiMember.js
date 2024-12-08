@@ -15,7 +15,7 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
 
     return( 
   
-        <div className="d-inline-flex align-items-center" >
+        <div className="d-inline-flex align-items-center"  >
             {isLocal?
             <a href={geneHref()} className="daism-a"  >
                 {messageObj?.avatar?

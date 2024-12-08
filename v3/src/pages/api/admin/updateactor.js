@@ -16,12 +16,13 @@ export default withSession(async (req, res) => {
   const form = formidable({})
   try {
       const [fields, files] = await form.parse(req);
-      let {account,actorDesc,fileType,did } = fields
+      let {account,actorDesc,fileType,did,id } = fields
       account=account[0]
+      const actorName=account.split('@')[0];
       actorDesc=actorDesc[0]
       fileType=fileType[0]
-      let selectImg=saveImage(files,fileType)
-      let path =selectImg?`https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${selectImg}`:'';
+      let selectImg=saveImage(files,fileType,actorName)
+      let path =selectImg?`https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${actorName}/${selectImg}`:'';
       let lok= await updateActor({account,actorDesc,path})
       if(lok) {
         res.status(200).json(await getActor(did[0])); 
@@ -36,7 +37,7 @@ export default withSession(async (req, res) => {
 
   } catch (err) {
       console.error(err);
-      res.status(err.httpCode || 500).json({errMsg: err});
+      res.status(err.httpCode || 500).json({ errMsg: err.toString() });
   }
 });
 

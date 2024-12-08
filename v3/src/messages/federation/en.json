@@ -5,7 +5,7 @@
     "eventArtice":"Event posting",
     "esctext":"return",
     "submitText":"Submit",
-    "videoText":"Video link",
+    "vedioText":"Vedio link",
     "contenValidText":"Content cannot be empty or less than 10 characters",
     "monthText":"Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sept,Oct,Nov,Dec",
     "loginText":"Login",
@@ -139,11 +139,11 @@
     "publishCompany":"Publish Community",
     "moreText":"more",
     "allPostText":"Public Post",
-    "uploadPitruseText":"Upload image",
-    "uploadVideoText":"Add video",
+    "uploadPitruseText":"Add image",
+    "uploadVedioText":"Add vedio",
     "closeText":"Close",
-    "videoUrlText":"Video URL" ,
-    "titleText":"Video Title",
+    "vedioUrlText":"Vedio URL" ,
+    "titleText":"Vedio Title",
     "publicMess":"For everyone",
     "followMess":"Followers",
     "someonrMess":"Specific individuals",
@@ -151,7 +151,9 @@
     "followMess1":"Only for your followers",
     "someonrMess1":"Select specific user",
     "bookTapText":"My Favorites",
-    "atSomeOne":"In private"
+    "atSomeOne":"In private",
+    "shortText":"short article",
+    "longText":"Long article"
 
   }
 }

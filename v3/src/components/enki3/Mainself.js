@@ -1,14 +1,14 @@
 // import { Button, InputGroup, Card } from "react-bootstrap";
-import Loadding from "../../../components/Loadding";
+import Loadding from "../Loadding";
 // import EnkiMessageCard from "../form/EnkiMessageCard";
 import { useEffect, useState, useRef } from "react"
-import { client } from "../../../lib/api/client";
-import ShowErrorBar from "../../../components/ShowErrorBar";
+import { client } from "../../lib/api/client";
+import ShowErrorBar from "../ShowErrorBar";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Contentdiv from "./Contentdiv";
 
-export default function Mainself({env,loginsiwe,actor,locale,t,tc,setCurrentObj,setActiveTab,fetchWhere, setFetchWhere,replyAddCallBack
-    ,delCallBack}) {
+export default function Mainself({env,loginsiwe,actor,locale,t,tc,setCurrentObj,setActiveTab,fetchWhere,
+     setFetchWhere,afterEditCall,delCallBack,accountAr}) {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [pageNum, setPageNum] = useState(0);
@@ -92,6 +92,12 @@ export default function Mainself({env,loginsiwe,actor,locale,t,tc,setCurrentObj,
         }
     }
 
+    const replyAddCallBack=(obj,index)=>{
+        data[index].total=data[index].total+1;
+        setData([...data])
+
+    }
+
     return (
 
         <div className='sccontent'>
@@ -102,10 +108,11 @@ export default function Mainself({env,loginsiwe,actor,locale,t,tc,setCurrentObj,
                     next={fetchMoreData}
                     hasMore={hasMore}
                 >
-                    {data.map((obj) => (
+                    {data.map((obj,idx) => (
                         <Contentdiv path='enkier' env={env} locale={locale} loginsiwe={loginsiwe} messageObj={obj} 
-                        key={obj.id}  t={t} tc={tc} actor={actor} 
-                        setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} replyAddCallBack={replyAddCallBack} delCallBack={delCallBack} />
+                        key={idx}  t={t} tc={tc} actor={actor} afterEditCall={afterEditCall} data_index={idx}
+                        setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} replyAddCallBack={replyAddCallBack} 
+                        delCallBack={delCallBack} accountAr={accountAr} />
                     ))}
                 </InfiniteScroll> 
             </div>

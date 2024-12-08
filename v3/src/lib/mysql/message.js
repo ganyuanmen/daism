@@ -22,10 +22,12 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			if(parseInt(daoid)>0) where=`where dao_id=${daoid}`; //单个dao
 			else if(parseInt(eventnum)===1) where="where _type=1"; //活动
 			else if(parseInt(v)===1) where=`WHERE actor_account IN(SELECT actor_account FROM a_follow WHERE user_account='${account}')`; //我关注的社区
+			else if(parseInt(v)===3) where=`where id in(select pid from a_bookmarksc where account='${account}')`; //我的收藏
+			else if(parseInt(v)===6) where=`where id in(select pid from a_heartsc where account='${account}')`; //喜欢
 			sctype='sc';
 			break;
 		default: //个人
-			if(parseInt(eventnum)===1) where=`where actor_account='${account}' or receive_account='${account}'`; //首页
+			if(parseInt(eventnum)===1) where=`where (send_type=0 and actor_account='${account}') or receive_account='${account}'`; //首页
 			else if(parseInt(eventnum)===2) where=`where actor_account='${account}' and send_type=0`; //我发布的嗯文
 			else if(parseInt(eventnum)===3) where=`where id in(select pid from a_bookmark where account='${account}')`; //我的收藏
 			else if(parseInt(eventnum)===4) where=`where receive_account='${account}'`; //我的接收嗯文
@@ -34,26 +36,26 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			else if(parseInt(eventnum)===7) where=`where receive_account='${account}' and send_type=2`; //@
 			break;
 	}
-	if(w) where=where?`${where} and title like '%${w}%'`:`where title like '%${w}%'`;
+	// if(w) where=where?`${where} and title like '%${w}%'`:`where title like '%${w}%'`;
 	let sql=`select * from v_message${sctype} ${where} order by ${order} desc limit ${pi*12},12`;
 	let re=await getData(sql,[]);
-	if(parseInt(menutype)===3 && parseInt(eventnum)===3){ //从sc取出收藏
-		sql=`select * from v_messagesc where id in(select pid from a_bookmarksc where account='${account}') order by ${order} desc limit ${pi*12},12`;
-		const re1=await getData(sql,[]);
-		re=[...re,...re1]
-		re.sort((a, b) => {
-			return b.reply_time.localeCompare(a.reply_time); 
-			// return a.reply_time < b.reply_time; 
-		  });
-	}else if(parseInt(menutype)===3 && parseInt(eventnum)===5){
-		sql=`select * from v_messagesc where id in(select pid from a_heartsc where account='${account}') order by ${order} desc limit ${pi*12},12`;
-		const re1=await getData(sql,[]);
-		re=[...re,...re1]
-		re.sort((a, b) => {
-			return b.reply_time.localeCompare(a.reply_time); 
-			// return a.reply_time < b.reply_time; 
-		  });
-	}
+	// if(parseInt(menutype)===3 && parseInt(eventnum)===3){ //从sc取出收藏
+	// 	sql=`select * from v_messagesc where id in(select pid from a_bookmarksc where account='${account}') order by ${order} desc limit ${pi*12},12`;
+	// 	const re1=await getData(sql,[]);
+	// 	re=[...re,...re1]
+	// 	re.sort((a, b) => {
+	// 		return b.reply_time.localeCompare(a.reply_time); 
+	// 		// return a.reply_time < b.reply_time; 
+	// 	  });
+	// }else if(parseInt(menutype)===3 && parseInt(eventnum)===5){
+	// 	sql=`select * from v_messagesc where id in(select pid from a_heartsc where account='${account}') order by ${order} desc limit ${pi*12},12`;
+	// 	const re1=await getData(sql,[]);
+	// 	re=[...re,...re1]
+	// 	re.sort((a, b) => {
+	// 		return b.reply_time.localeCompare(a.reply_time); 
+	// 		// return a.reply_time < b.reply_time; 
+	// 	  });
+	// }
 
 	return re; 
 }
@@ -107,7 +109,14 @@ export async function replyPageData({pi,pid,sctype})
 export async function messageDel({id,type,sctype})
 {
     if(type=='0') return await execute(`delete from a_message${sctype} where id=?`,[id]);
-    else return await execute(`delete from a_message${sctype}_commont where id=?`,[id]);
+    else {
+		let re=await getData(`select pid from a_message${sctype}_commont where id=?`,[id],true);
+		if(re.pid){
+			let lok= await execute(`delete from a_message${sctype}_commont where id=?`,[id]);
+			if(lok) await execute(`update a_message${sctype} set total=total-1 where id=? `,[re.pid]);
+			return lok;
+		}else return 0;
+	}
 }
 
 //获取所有已注册的dao
@@ -130,7 +139,7 @@ export async function getHeartAndBook({pid,account,table,sctype})
 //点赞、取消点赞 heart  收藏、取消收藏 bookmark  account:人id pid:嗯文id
 export async function handleHeartAndBook({account,pid,flag,table,sctype})
 {
-    if(flag==0)  return await execute(`delete from a_${table}${sctype} where pid=? and account=?`,[pid,account]);
+    if(flag==0) return await execute(`delete from a_${table}${sctype} where pid=? and account=?`,[pid,account]);
     else return await execute(`insert into a_${table}${sctype}(account,pid) values(?,?)`,[account,pid]);
 }
 

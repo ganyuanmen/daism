@@ -1,23 +1,36 @@
 
-import fs from 'fs';
-
+// import fs from 'fs';
+const fs = require('node:fs');
+// const path = require('node:path');
 const axios = require('axios');
 const cheerio = require('cheerio');
 import { getInboxFromAccount } from '../../lib/mysql/message'
 
-export function saveImage(files,fileType)
+export function saveImage(files,fileType,actorName)
 {
  
   if(files && files.image && files.image[0] && fileType) 
   {
-    
-    const filePath = `./uploads/${files.image[0].newFilename}.${fileType}`  // 指定文件保存路径
+    const directoryPath=actorName?`./uploads/${actorName}`:'./uploads';
+    try {
+      fs.accessSync(directoryPath, fs.constants.F_OK);
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        try {
+          fs.mkdirSync(directoryPath, { recursive: true });
+        } catch (error123) {
+          console.error("mkdir error>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",error123)
+        }
+      } else {
+        console.error("mkdir error99999999999999999999999999999999999", err); 
+      }
+    }
+    const filePath = `${directoryPath}/${files.image[0].newFilename}.${fileType}`  // 指定文件保存路径
     fs.copyFile(files.image[0].filepath, filePath, (error) => {console.error(error)})
     fs.unlink(files.image[0].filepath, (err) => {if (err) console.error('delete file error:', err)})
     return `${files.image[0].newFilename}.${fileType}`
   } else return ''
 }
-
 
 export function delUploadImge(files)
 {
@@ -116,4 +129,6 @@ export  function findFirstURI(html) {
         return null;
       }
     }
+    
+
     
