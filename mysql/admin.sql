@@ -1,17 +1,17 @@
 /*
- Navicat Premium Dump SQL
+ Navicat Premium Data Transfer
 
- Source Server         : qqq
+ Source Server         : mysql
  Source Server Type    : MySQL
- Source Server Version : 80040 (8.0.40)
+ Source Server Version : 80025
  Source Host           : localhost:3306
  Source Schema         : dao_db
 
  Target Server Type    : MySQL
- Target Server Version : 80040 (8.0.40)
+ Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 27/11/2024 12:46:22
+ Date: 12/12/2024 01:32:32
 */
 
 SET NAMES utf8mb4;
@@ -22,9 +22,9 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `a_account`;
 CREATE TABLE `a_account`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `block_num` bigint NULL DEFAULT NULL COMMENT '用于对比更新最后的',
-  `dao_id` int NULL DEFAULT NULL,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `block_num` bigint(0) NULL DEFAULT NULL COMMENT '用于对比更新最后的',
+  `dao_id` int(0) NULL DEFAULT NULL,
   `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称(组帐是对应代币名称)',
   `domain` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '域名',
   `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '管理员地址/个人帐号是钱包地址',
@@ -36,82 +36,62 @@ CREATE TABLE `a_account`  (
   `actor_desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '帐号描述/组帐号是dao描述',
   `createtime` char(19) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '注册时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `acount`(`actor_account` ASC) USING BTREE,
-  UNIQUE INDEX `block_num`(`block_num` ASC) USING BTREE,
-  UNIQUE INDEX `manager`(`dao_id` ASC, `manager` ASC) USING BTREE,
-  UNIQUE INDEX `actor_url`(`actor_url` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_account
--- ----------------------------
+  UNIQUE INDEX `acount`(`actor_account`) USING BTREE,
+  UNIQUE INDEX `block_num`(`block_num`) USING BTREE,
+  UNIQUE INDEX `manager`(`dao_id`, `manager`) USING BTREE,
+  UNIQUE INDEX `actor_url`(`actor_url`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_bookmark
 -- ----------------------------
 DROP TABLE IF EXISTS `a_bookmark`;
 CREATE TABLE `a_bookmark`  (
-  `pid` int NOT NULL COMMENT '发文ID',
+  `pid` int(0) NOT NULL COMMENT '发文ID',
   `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收藏人帐号',
   PRIMARY KEY (`account`, `pid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_bookmark
--- ----------------------------
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_bookmarksc
 -- ----------------------------
 DROP TABLE IF EXISTS `a_bookmarksc`;
 CREATE TABLE `a_bookmarksc`  (
-  `pid` int NOT NULL COMMENT '发文ID',
+  `pid` int(0) NOT NULL COMMENT '发文ID',
   `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收藏帐号',
   PRIMARY KEY (`account`, `pid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_bookmarksc
--- ----------------------------
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_domain
 -- ----------------------------
 DROP TABLE IF EXISTS `a_domain`;
 CREATE TABLE `a_domain`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `daomain` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '域名',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_domain
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_eip_type
 -- ----------------------------
 DROP TABLE IF EXISTS `a_eip_type`;
 CREATE TABLE `a_eip_type`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 类型名称',
   `type_desc` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '类型描述',
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `relay_type` tinyint NULL DEFAULT NULL COMMENT '1 链上确认',
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `relay_type` tinyint(0) NULL DEFAULT NULL COMMENT '1 链上确认',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `type_name`(`type_name` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_eip_type
--- ----------------------------
+  UNIQUE INDEX `type_name`(`type_name`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_follow
 -- ----------------------------
 DROP TABLE IF EXISTS `a_follow`;
 CREATE TABLE `a_follow`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `follow_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '关注ID 唯一',
   `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '被关注帐号',
   `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '被关注url',
@@ -121,51 +101,39 @@ CREATE TABLE `a_follow`  (
   `user_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主动关注帐号url',
   `user_avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主动关注者头像',
   `user_inbox` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主动关注者信箱',
-  `createtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `createtime` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `follow_id`(`follow_id` ASC) USING BTREE,
-  UNIQUE INDEX `idd`(`actor_account` ASC, `user_account` ASC) USING BTREE,
-  INDEX `user_account`(`user_account` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_follow
--- ----------------------------
+  UNIQUE INDEX `follow_id`(`follow_id`) USING BTREE,
+  UNIQUE INDEX `idd`(`actor_account`, `user_account`) USING BTREE,
+  INDEX `user_account`(`user_account`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_heart
 -- ----------------------------
 DROP TABLE IF EXISTS `a_heart`;
 CREATE TABLE `a_heart`  (
-  `pid` int NOT NULL COMMENT '发文ID',
+  `pid` int(0) NOT NULL COMMENT '发文ID',
   `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '点赞人',
   PRIMARY KEY (`account`, `pid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_heart
--- ----------------------------
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_heartsc
 -- ----------------------------
 DROP TABLE IF EXISTS `a_heartsc`;
 CREATE TABLE `a_heartsc`  (
-  `pid` int NOT NULL COMMENT '发文ID',
+  `pid` int(0) NOT NULL COMMENT '发文ID',
   `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '点赞人',
   PRIMARY KEY (`account`, `pid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_heartsc
--- ----------------------------
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_message
 -- ----------------------------
 DROP TABLE IF EXISTS `a_message`;
 CREATE TABLE `a_message`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `message_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发送/接收r的发文ID,唯一',
   `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '钱包地址(接收推送也要有)',
   `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称',
@@ -176,32 +144,34 @@ CREATE TABLE `a_message`  (
   `link_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '链接url',
   `title` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标题',
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '内容',
-  `is_send` tinyint NULL DEFAULT 1 COMMENT '允许推送给关注组',
-  `is_discussion` tinyint NULL DEFAULT 1 COMMENT '允许评论',
+  `is_send` tinyint(0) NULL DEFAULT 1 COMMENT '允许推送给关注组',
+  `is_discussion` tinyint(0) NULL DEFAULT 1 COMMENT '允许评论',
   `top_img` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头部图片url地址',
   `receive_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '',
-  `send_type` tinyint NULL DEFAULT 0 COMMENT '0 本地，1 推送',
-  `createtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `reply_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `send_type` tinyint(0) NULL DEFAULT 0 COMMENT '0 本地，1 推送 2 @',
+  `createtime` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `reply_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `account_at` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `property_index` tinyint(0) NULL DEFAULT 1,
+  `type_index` tinyint(0) NULL DEFAULT 1,
+  `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `total` int(0) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `message_id`(`message_id` ASC, `receive_account` ASC) USING BTREE,
-  INDEX `actor_account`(`actor_account` ASC) USING BTREE,
-  INDEX `send_type`(`send_type` ASC, `receive_account` ASC) USING BTREE,
-  INDEX `dao_id`(`send_type` ASC) USING BTREE,
-  INDEX `receive_account`(`receive_account` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_message
--- ----------------------------
+  UNIQUE INDEX `message_id`(`message_id`, `receive_account`) USING BTREE,
+  INDEX `actor_account`(`actor_account`) USING BTREE,
+  INDEX `send_type`(`send_type`, `receive_account`) USING BTREE,
+  INDEX `receive_account`(`receive_account`) USING BTREE,
+  INDEX `dao_id`(`send_type`, `property_index`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_message_commont
 -- ----------------------------
 DROP TABLE IF EXISTS `a_message_commont`;
 CREATE TABLE `a_message_commont`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pid` int UNSIGNED NULL DEFAULT NULL COMMENT '父ID',
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pid` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '父ID',
   `message_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '回复/接收r的发文ID,唯一',
   `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '钱包地址',
   `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称',
@@ -209,54 +179,56 @@ CREATE TABLE `a_message_commont`  (
   `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
   `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '内容',
-  `createtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `createtime` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `type_index` tinyint(0) NULL DEFAULT 0 COMMENT '0 短，1长',
+  `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `top_img` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `message_id`(`message_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_message_commont
--- ----------------------------
+  UNIQUE INDEX `message_id`(`message_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc
 -- ----------------------------
 DROP TABLE IF EXISTS `a_messagesc`;
 CREATE TABLE `a_messagesc`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `actor_id` int NULL DEFAULT 0 COMMENT '发布帐号ID',
-  `dao_id` bigint NULL DEFAULT 0,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `actor_id` int(0) NULL DEFAULT 0 COMMENT '发布帐号ID',
+  `dao_id` bigint(0) NULL DEFAULT 0,
   `title` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标题',
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '内容',
-  `is_send` tinyint NULL DEFAULT 1 COMMENT '允许推送给关注组',
-  `is_discussion` tinyint NULL DEFAULT 1 COMMENT '允许评论',
+  `is_send` tinyint(0) NULL DEFAULT 1 COMMENT '允许推送给关注组',
+  `is_discussion` tinyint(0) NULL DEFAULT 1 COMMENT '允许评论',
   `top_img` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头部图片url地址',
-  `start_time` datetime NULL DEFAULT NULL COMMENT '活动的开始时间',
-  `end_time` datetime NULL DEFAULT NULL COMMENT '活动的结束时间',
+  `start_time` datetime(0) NULL DEFAULT NULL COMMENT '活动的开始时间',
+  `end_time` datetime(0) NULL DEFAULT NULL COMMENT '活动的结束时间',
   `event_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '活动网站主页',
   `event_address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '活动地址',
-  `time_event` tinyint NULL DEFAULT -1 COMMENT '活动定时活动,星期几',
-  `_type` tinyint NULL DEFAULT 0 COMMENT '0:普通 1:活动',
-  `reply_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '回复时间，用于排序',
-  `createtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `time_event` tinyint(0) NULL DEFAULT -1 COMMENT '活动定时活动,星期几',
+  `_type` tinyint(0) NULL DEFAULT 0 COMMENT '0:普通 1:活动',
+  `reply_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '回复时间，用于排序',
+  `createtime` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `message_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `account_at` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `property_index` tinyint(0) NULL DEFAULT 1,
+  `type_index` tinyint(0) NULL DEFAULT 1,
+  `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `total` int(0) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `_type`(`_type` ASC) USING BTREE,
-  INDEX `dao_id`(`dao_id` ASC) USING BTREE,
-  INDEX `reply_time`(`reply_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_messagesc
--- ----------------------------
+  INDEX `_type`(`_type`) USING BTREE,
+  INDEX `dao_id`(`dao_id`) USING BTREE,
+  INDEX `reply_time`(`reply_time`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc_commont
 -- ----------------------------
 DROP TABLE IF EXISTS `a_messagesc_commont`;
 CREATE TABLE `a_messagesc_commont`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pid` int UNSIGNED NULL DEFAULT NULL COMMENT '父ID',
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pid` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '父ID',
   `message_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '回复/接收r的发文ID,唯一',
   `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '钱包地址',
   `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
@@ -264,14 +236,14 @@ CREATE TABLE `a_messagesc_commont`  (
   `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
   `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '内容',
-  `createtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `createtime` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `type_index` tinyint(0) NULL DEFAULT 0 COMMENT '0 短，1长',
+  `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `top_img` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `message_id`(`message_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of a_messagesc_commont
--- ----------------------------
+  UNIQUE INDEX `message_id`(`message_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for aux_bt
@@ -285,7 +257,7 @@ CREATE TABLE `aux_bt`  (
   `w` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `rt` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`d`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of aux_bt
@@ -314,11 +286,12 @@ CREATE TABLE `aux_tree`  (
   `sqls` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `desc` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of aux_tree
 -- ----------------------------
+INSERT INTO `aux_tree` VALUES ('accountAr', 'select actor_name,avatar from a_account where dao_id=0 and domain=?', NULL);
 INSERT INTO `aux_tree` VALUES ('actor', 'select id,dao_id,actor_name,domain,manager,actor_account,actor_url,avatar,actor_desc from a_account where manager=? and dao_id=0', '地址获帐号/dao_id=0是个人帐号');
 INSERT INTO `aux_tree` VALUES ('actorbyid', 'select id,dao_id,actor_name,domain,manager,actor_account,actor_url,avatar,actor_desc from a_account where id=?', 'id 获个人帐号');
 INSERT INTO `aux_tree` VALUES ('checkdao', 'SELECT a.id,b.dao_name,c.dao_symbol,d.creator FROM (SELECT 1 id) a LEFT JOIN (SELECT dao_name FROM t_dao WHERE dao_name=?) b ON 1=1 LEFT JOIN (SELECT dao_symbol FROM t_dao WHERE dao_symbol=?) c ON 1=1 LEFT JOIN (SELECT creator FROM t_dao WHERE creator=?) d ON 1=1', '检测dao 是否存在');
@@ -329,6 +302,7 @@ INSERT INTO `aux_tree` VALUES ('daomember', 'SELECT a.member_address,b.actor_url
 INSERT INTO `aux_tree` VALUES ('fllower', 'SELECT user_account account,user_url url,user_avatar avatar,user_inbox inbox,createtime,follow_id,id FROM v_follow WHERE actor_account=(SELECT actor_account FROM a_account WHERE dao_id=?)', '按daoid 找谁关注我');
 INSERT INTO `aux_tree` VALUES ('follow0', 'SELECT actor_account account,actor_url url,actor_avatar avatar,actor_inbox inbox,createtime,follow_id,id FROM v_follow WHERE user_account=?', '我关注了谁集合');
 INSERT INTO `aux_tree` VALUES ('follow1', 'SELECT user_account account,user_url url,user_avatar avatar,user_inbox inbox,createtime,follow_id,id FROM v_follow WHERE actor_account=?', '谁关注了我集合');
+INSERT INTO `aux_tree` VALUES ('getFollow', 'select actor_account from a_follow where user_account=?', NULL);
 INSERT INTO `aux_tree` VALUES ('getnft', 'select count(*) as total from t_nft_transfer', NULL);
 INSERT INTO `aux_tree` VALUES ('minttime', 'SELECT TIMESTAMPDIFF(MINUTE, in_time, NOW()) AS minttime FROM t_nft_transfer ORDER BY in_time LIMIT 1', NULL);
 
@@ -339,234 +313,190 @@ DROP TABLE IF EXISTS `t_ad`;
 CREATE TABLE `t_ad`  (
   `id` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_ad
--- ----------------------------
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_changelogo
 -- ----------------------------
 DROP TABLE IF EXISTS `t_changelogo`;
 CREATE TABLE `t_changelogo`  (
-  `dao_id` int NOT NULL COMMENT 'dao id',
-  `block_num` bigint NOT NULL COMMENT '区块号',
-  `dao_time` int NULL DEFAULT NULL COMMENT '时间戳',
-  `logo_id` int NULL DEFAULT NULL,
+  `dao_id` int(0) NOT NULL COMMENT 'dao id',
+  `block_num` bigint(0) NOT NULL COMMENT '区块号',
+  `dao_time` int(0) NULL DEFAULT NULL COMMENT '时间戳',
+  `logo_id` int(0) NULL DEFAULT NULL,
   `dao_logo` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `id` int NOT NULL AUTO_INCREMENT,
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_changelogo
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_createversion
 -- ----------------------------
 DROP TABLE IF EXISTS `t_createversion`;
 CREATE TABLE `t_createversion`  (
-  `block_num` bigint UNSIGNED NOT NULL,
-  `dao_id` int NULL DEFAULT NULL,
+  `block_num` bigint(0) UNSIGNED NOT NULL,
+  `dao_id` int(0) NULL DEFAULT NULL,
   `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `dao_version` int NULL DEFAULT NULL,
-  `_time` int NULL DEFAULT NULL,
-  `id` int NOT NULL AUTO_INCREMENT,
+  `dao_version` int(0) NULL DEFAULT NULL,
+  `_time` int(0) NULL DEFAULT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_createversion
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_dao
 -- ----------------------------
 DROP TABLE IF EXISTS `t_dao`;
 CREATE TABLE `t_dao`  (
-  `dao_id` int NOT NULL COMMENT 'dao ID',
-  `block_num` bigint NULL DEFAULT NULL COMMENT '区块号',
+  `dao_id` int(0) NOT NULL COMMENT 'dao ID',
+  `block_num` bigint(0) NULL DEFAULT NULL COMMENT '区块号',
   `dao_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '名称',
   `dao_symbol` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '代币名称',
   `dao_desc` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
   `dao_manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '管理员地址',
   `dao_logo` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'logo',
   `utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000 COMMENT '币值',
-  `dao_ranking` int NULL DEFAULT 0 COMMENT '排名',
+  `dao_ranking` int(0) NULL DEFAULT 0 COMMENT '排名',
   `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'mint dao的合约地址',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'DAO代理地址',
   `dao_exec` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '执行者',
-  `dao_time` int NULL DEFAULT NULL COMMENT '时间戳',
-  `strategy` int NULL DEFAULT NULL COMMENT '2的16次方',
-  `lifetime` int NULL DEFAULT NULL COMMENT '寿命期（秒）',
-  `cool_time` int NULL DEFAULT NULL COMMENT '冷却时间(秒)',
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `dao_time` int(0) NULL DEFAULT NULL COMMENT '时间戳',
+  `strategy` int(0) NULL DEFAULT NULL COMMENT '2的16次方',
+  `lifetime` int(0) NULL DEFAULT NULL COMMENT '寿命期（秒）',
+  `cool_time` int(0) NULL DEFAULT NULL COMMENT '冷却时间(秒)',
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `dapp_owner` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'dapp 所有者',
   `sctype` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '智能公器类型',
   PRIMARY KEY (`dao_id`) USING BTREE,
-  UNIQUE INDEX `dao_name`(`dao_name` ASC) USING BTREE,
-  UNIQUE INDEX `delegator`(`delegator` ASC) USING BTREE,
-  UNIQUE INDEX `dao_symbol`(`dao_symbol` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_dao
--- ----------------------------
+  UNIQUE INDEX `dao_name`(`dao_name`) USING BTREE,
+  UNIQUE INDEX `delegator`(`delegator`) USING BTREE,
+  UNIQUE INDEX `dao_symbol`(`dao_symbol`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_daoaccount
 -- ----------------------------
 DROP TABLE IF EXISTS `t_daoaccount`;
 CREATE TABLE `t_daoaccount`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `block_num` bigint UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
   `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员地址',
-  `dividendRights` int NULL DEFAULT NULL COMMENT '分红，票权， 0 表示已删除',
-  `dao_id` int NULL DEFAULT NULL,
+  `dividendRights` int(0) NULL DEFAULT NULL COMMENT '分红，票权， 0 表示已删除',
+  `dao_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_daoaccount
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_daodetail
 -- ----------------------------
 DROP TABLE IF EXISTS `t_daodetail`;
 CREATE TABLE `t_daodetail`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `dao_id` int NULL DEFAULT 0 COMMENT 'smart common id',
-  `member_votes` int NULL DEFAULT 0 COMMENT '成员票数',
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `dao_id` int(0) NULL DEFAULT 0 COMMENT 'smart common id',
+  `member_votes` int(0) NULL DEFAULT 0 COMMENT '成员票数',
   `member_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员地址',
-  `member_index` int NULL DEFAULT 0 COMMENT '成员序号,已作废',
-  `member_type` tinyint NULL DEFAULT 1 COMMENT '类型:1原始，0邀请，已作废',
+  `member_index` int(0) NULL DEFAULT 0 COMMENT '成员序号,已作废',
+  `member_type` tinyint(0) NULL DEFAULT 1 COMMENT '类型:1原始，0邀请，已作废',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smartcommon代理地址',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `id`(`dao_id` ASC, `member_address` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_daodetail
--- ----------------------------
+  UNIQUE INDEX `id`(`dao_id`, `member_address`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_domain
 -- ----------------------------
 DROP TABLE IF EXISTS `t_domain`;
 CREATE TABLE `t_domain`  (
-  `block_num` bigint UNSIGNED NOT NULL COMMENT '区块号，用于监听标记',
-  `dao_id` int NULL DEFAULT NULL COMMENT 'smart common id',
+  `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号，用于监听标记',
+  `dao_id` int(0) NULL DEFAULT NULL COMMENT 'smart common id',
   `domain` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '域名',
   `pubkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '公钥',
   `privkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '私钥',
-  `_time` int NULL DEFAULT NULL COMMENT '时间戳',
+  `_time` int(0) NULL DEFAULT NULL COMMENT '时间戳',
   PRIMARY KEY (`block_num`, `domain`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_domain
--- ----------------------------
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_domainsing
 -- ----------------------------
 DROP TABLE IF EXISTS `t_domainsing`;
 CREATE TABLE `t_domainsing`  (
-  `block_num` bigint NOT NULL COMMENT '区块号，用于监听标记',
+  `block_num` bigint(0) NOT NULL COMMENT '区块号，用于监听标记',
   `addr` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '钱包地址',
   `domain` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '域名',
   `nick_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '名称/昵称',
   `pubkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '公钥',
   `privkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '私钥',
-  `_time` int NULL DEFAULT NULL COMMENT '时间戳',
-  `id` int NOT NULL AUTO_INCREMENT,
+  `_time` int(0) NULL DEFAULT NULL COMMENT '时间戳',
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_domainsing
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_e2t
 -- ----------------------------
 DROP TABLE IF EXISTS `t_e2t`;
 CREATE TABLE `t_e2t`  (
-  `block_num` bigint NOT NULL,
+  `block_num` bigint(0) NOT NULL,
   `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `in_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `out_amount` decimal(18, 6) NULL DEFAULT 0.000000,
-  `swap_time` int NULL DEFAULT NULL,
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `swap_time` int(0) NULL DEFAULT NULL,
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
-  `token_id` int NULL DEFAULT NULL,
-  `swap_gas` int NULL DEFAULT 0,
+  `token_id` int(0) NULL DEFAULT NULL,
+  `swap_gas` int(0) NULL DEFAULT 0,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏uto',
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `tran_hash`(`tran_hash` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_e2t
--- ----------------------------
+  UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_eth_utoken
 -- ----------------------------
 DROP TABLE IF EXISTS `t_eth_utoken`;
 CREATE TABLE `t_eth_utoken`  (
-  `block_num` bigint NOT NULL,
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `block_num` bigint(0) NOT NULL,
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `swap_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `swap_time` int NULL DEFAULT NULL,
+  `swap_time` int(0) NULL DEFAULT NULL,
   `swap_eth` decimal(18, 6) NULL DEFAULT 0.000000,
   `swap_utoken` decimal(18, 6) NULL DEFAULT 0.000000,
   `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  `swap_gas` int NULL DEFAULT 0,
-  `id` int NOT NULL AUTO_INCREMENT,
+  `swap_gas` int(0) NULL DEFAULT 0,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `tran_hash`(`tran_hash` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_eth_utoken
--- ----------------------------
+  UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_getdaoutoken
 -- ----------------------------
 DROP TABLE IF EXISTS `t_getdaoutoken`;
 CREATE TABLE `t_getdaoutoken`  (
-  `block_num` bigint UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
+  `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
   `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分红者地址',
   `utoken_amount` decimal(18, 6) NULL DEFAULT NULL COMMENT '分红的utoken',
-  `_time` int NULL DEFAULT NULL,
+  `_time` int(0) NULL DEFAULT NULL,
   `dao_owner` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员地址',
-  `pre_time` int NULL DEFAULT NULL COMMENT '上次取的时间戳',
-  `id` int NOT NULL AUTO_INCREMENT,
+  `pre_time` int(0) NULL DEFAULT NULL COMMENT '上次取的时间戳',
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `block_num`(`block_num` ASC, `delegator` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_getdaoutoken
--- ----------------------------
+  UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_mynft
@@ -574,211 +504,175 @@ CREATE TABLE `t_getdaoutoken`  (
 DROP TABLE IF EXISTS `t_mynft`;
 CREATE TABLE `t_mynft`  (
   `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `token_id` int NOT NULL,
-  `template_id` int NULL DEFAULT NULL,
-  `dao_id` int NULL DEFAULT NULL,
+  `token_id` int(0) NOT NULL,
+  `template_id` int(0) NULL DEFAULT NULL,
+  `dao_id` int(0) NULL DEFAULT NULL,
   `_time` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `block_num` bigint NULL DEFAULT NULL,
+  `block_num` bigint(0) NULL DEFAULT NULL,
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `_type` tinyint NOT NULL DEFAULT 0 COMMENT '0发布时,1其它mint, 2打赏 3mint smart common',
+  `_type` tinyint(0) NOT NULL DEFAULT 0 COMMENT '0发布时,1其它mint, 2打赏 3mint smart common',
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`_type`, `to_address`, `token_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_mynft
--- ----------------------------
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft
 -- ----------------------------
 DROP TABLE IF EXISTS `t_nft`;
 CREATE TABLE `t_nft`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `block_num` bigint UNSIGNED NOT NULL,
-  `dao_id` int NULL DEFAULT NULL,
-  `token_id` int NULL DEFAULT NULL,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `block_num` bigint(0) UNSIGNED NOT NULL,
+  `dao_id` int(0) NULL DEFAULT NULL,
+  `token_id` int(0) NULL DEFAULT NULL,
   `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `_time` int NULL DEFAULT NULL,
+  `_time` int(0) NULL DEFAULT NULL,
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_nft
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_mint
 -- ----------------------------
 DROP TABLE IF EXISTS `t_nft_mint`;
 CREATE TABLE `t_nft_mint`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `block_num` bigint UNSIGNED NOT NULL,
-  `dao_id` int NULL DEFAULT NULL,
-  `token_id` int NULL DEFAULT NULL,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `block_num` bigint(0) UNSIGNED NOT NULL,
+  `dao_id` int(0) NULL DEFAULT NULL,
+  `token_id` int(0) NULL DEFAULT NULL,
   `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `_time` int NULL DEFAULT NULL,
+  `_time` int(0) NULL DEFAULT NULL,
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_nft_mint
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swap
 -- ----------------------------
 DROP TABLE IF EXISTS `t_nft_swap`;
 CREATE TABLE `t_nft_swap`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `block_num` bigint UNSIGNED NOT NULL,
-  `dao_id` int NULL DEFAULT NULL,
-  `token_id` int NULL DEFAULT NULL,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `block_num` bigint(0) UNSIGNED NOT NULL,
+  `dao_id` int(0) NULL DEFAULT NULL,
+  `token_id` int(0) NULL DEFAULT NULL,
   `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `_time` int NULL DEFAULT NULL,
+  `_time` int(0) NULL DEFAULT NULL,
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `utoken` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_nft_swap
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swaphonor
 -- ----------------------------
 DROP TABLE IF EXISTS `t_nft_swaphonor`;
 CREATE TABLE `t_nft_swaphonor`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `block_num` bigint UNSIGNED NOT NULL,
-  `dao_id` int NULL DEFAULT NULL,
-  `token_id` int NULL DEFAULT NULL,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `block_num` bigint(0) UNSIGNED NOT NULL,
+  `dao_id` int(0) NULL DEFAULT NULL,
+  `token_id` int(0) NULL DEFAULT NULL,
   `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `_time` int NULL DEFAULT NULL,
+  `_time` int(0) NULL DEFAULT NULL,
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_nft_swaphonor
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_transfer
 -- ----------------------------
 DROP TABLE IF EXISTS `t_nft_transfer`;
 CREATE TABLE `t_nft_transfer`  (
-  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `block_num` bigint UNSIGNED NULL DEFAULT NULL,
-  `token_id` int NULL DEFAULT NULL,
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `block_num` bigint(0) UNSIGNED NULL DEFAULT NULL,
+  `token_id` int(0) NULL DEFAULT NULL,
   `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `_time` int NULL DEFAULT NULL,
+  `_time` int(0) NULL DEFAULT NULL,
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `in_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `in_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_nft_transfer
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_pro
 -- ----------------------------
 DROP TABLE IF EXISTS `t_pro`;
 CREATE TABLE `t_pro`  (
-  `block_num` bigint UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
+  `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
   `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '提案创建人',
   `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '参数1',
-  `dividendRights` int NULL DEFAULT 0 COMMENT '参数2',
-  `createTime` int NULL DEFAULT 0 COMMENT '参数3',
-  `rights` int NULL DEFAULT 0 COMMENT '参数4',
-  `antirights` int NULL DEFAULT 0 COMMENT '参数5',
+  `dividendRights` int(0) NULL DEFAULT 0 COMMENT '参数2',
+  `createTime` int(0) NULL DEFAULT 0 COMMENT '参数3',
+  `rights` int(0) NULL DEFAULT 0 COMMENT '参数4',
+  `antirights` int(0) NULL DEFAULT 0 COMMENT '参数5',
   `dao_desc` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '参数6',
-  `is_end` tinyint UNSIGNED NULL DEFAULT 0 COMMENT '0未完成 1完成 2 过期',
-  `dao_id` int NULL DEFAULT NULL COMMENT 'smart common id',
-  `strategy` int NULL DEFAULT NULL COMMENT '通过率',
-  `lifetime` int NULL DEFAULT NULL COMMENT '寿命',
-  `cool_time` int NULL DEFAULT NULL COMMENT '冷却时间',
-  `pro_type` tinyint NULL DEFAULT NULL COMMENT '1修改logo,2修改描述,3修改管理者,4 修改类型,7修改策略,5新增成员,6,修改票权,0删除成员',
+  `is_end` tinyint(0) UNSIGNED NULL DEFAULT 0 COMMENT '0未完成 1完成 2 过期',
+  `dao_id` int(0) NULL DEFAULT NULL COMMENT 'smart common id',
+  `strategy` int(0) NULL DEFAULT NULL COMMENT '通过率',
+  `lifetime` int(0) NULL DEFAULT NULL COMMENT '寿命',
+  `cool_time` int(0) NULL DEFAULT NULL COMMENT '冷却时间',
+  `pro_type` tinyint(0) NULL DEFAULT NULL COMMENT '1修改logo,2修改描述,3修改管理者,4 修改类型,7修改策略,5新增成员,6,修改票权,0删除成员',
   `imgstr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `proposalType` tinyint NULL DEFAULT NULL COMMENT '0 为修改strategy\n1 为修改logo\n2 为修改描述\n3 为修改管理员\n4 为修改智能公器类型',
-  `id` int NOT NULL AUTO_INCREMENT,
+  `proposalType` tinyint(0) NULL DEFAULT NULL COMMENT '0 为修改strategy\n1 为修改logo\n2 为修改描述\n3 为修改管理员\n4 为修改智能公器类型',
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `delegator`(`delegator` ASC, `createTime` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_pro
--- ----------------------------
+  UNIQUE INDEX `delegator`(`delegator`, `createTime`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_proexcu
 -- ----------------------------
 DROP TABLE IF EXISTS `t_proexcu`;
 CREATE TABLE `t_proexcu`  (
-  `block_num` bigint UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
+  `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
   `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '提案参数1',
-  `dividendRights` int NULL DEFAULT NULL COMMENT '提案参数2',
-  `_time` int NULL DEFAULT NULL COMMENT '链上时间戳',
-  `proposalType` tinyint NULL DEFAULT NULL,
-  `id` int NOT NULL AUTO_INCREMENT,
+  `dividendRights` int(0) NULL DEFAULT NULL COMMENT '提案参数2',
+  `_time` int(0) NULL DEFAULT NULL COMMENT '链上时间戳',
+  `proposalType` tinyint(0) NULL DEFAULT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `block_num`(`block_num` ASC, `delegator` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_proexcu
--- ----------------------------
+  UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_provote
 -- ----------------------------
 DROP TABLE IF EXISTS `t_provote`;
 CREATE TABLE `t_provote`  (
-  `block_num` bigint UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
+  `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
-  `createTime` int NULL DEFAULT NULL COMMENT '提案时间戳',
+  `createTime` int(0) NULL DEFAULT NULL COMMENT '提案时间戳',
   `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '投票人地址',
-  `antirights` int NULL DEFAULT NULL COMMENT '反对票',
-  `rights` int NULL DEFAULT NULL COMMENT '赞成票',
-  `_time` int NULL DEFAULT NULL COMMENT '链上时间戳',
-  `proposalType` tinyint NULL DEFAULT NULL,
-  `id` int NOT NULL AUTO_INCREMENT,
+  `antirights` int(0) NULL DEFAULT NULL COMMENT '反对票',
+  `rights` int(0) NULL DEFAULT NULL COMMENT '赞成票',
+  `_time` int(0) NULL DEFAULT NULL COMMENT '链上时间戳',
+  `proposalType` tinyint(0) NULL DEFAULT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `block_num`(`block_num` ASC, `delegator` ASC) USING BTREE,
-  INDEX `delegator`(`delegator` ASC, `createTime` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_provote
--- ----------------------------
+  UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE,
+  INDEX `delegator`(`delegator`, `createTime`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_swap
 -- ----------------------------
 DROP TABLE IF EXISTS `t_swap`;
 CREATE TABLE `t_swap`  (
-  `block_num` bigint UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
+  `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
   `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'Etherscan交易hash码',
   `title` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '兑换内容',
   `in_amount` decimal(18, 6) NULL DEFAULT NULL COMMENT '输入数值',
@@ -789,152 +683,124 @@ CREATE TABLE `t_swap`  (
   `out_str` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏uto',
   `tip_str` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '打赏给',
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `tran_hash`(`tran_hash` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_swap
--- ----------------------------
+  UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2t
 -- ----------------------------
 DROP TABLE IF EXISTS `t_t2t`;
 CREATE TABLE `t_t2t`  (
-  `block_num` bigint NOT NULL,
-  `from_dao_id` int NULL DEFAULT NULL,
-  `to_dao_id` int NULL DEFAULT NULL,
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `block_num` bigint(0) NOT NULL,
+  `from_dao_id` int(0) NULL DEFAULT NULL,
+  `to_dao_id` int(0) NULL DEFAULT NULL,
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `from_utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
   `to_utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
   `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `from_token` decimal(18, 6) NULL DEFAULT 0.000000,
   `to_token` decimal(18, 6) NULL DEFAULT 0.000000,
-  `swap_time` int NULL DEFAULT NULL,
+  `swap_time` int(0) NULL DEFAULT NULL,
   `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  `swap_gas` int NULL DEFAULT NULL,
+  `swap_gas` int(0) NULL DEFAULT NULL,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏',
-  `sc_id` int NULL DEFAULT NULL COMMENT '打赏scID',
-  `id` int NOT NULL AUTO_INCREMENT,
+  `sc_id` int(0) NULL DEFAULT NULL COMMENT '打赏scID',
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `tran_hash`(`tran_hash` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_t2t
--- ----------------------------
+  UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2u
 -- ----------------------------
 DROP TABLE IF EXISTS `t_t2u`;
 CREATE TABLE `t_t2u`  (
-  `block_num` bigint NOT NULL,
-  `from_token_id` int NULL DEFAULT NULL,
+  `block_num` bigint(0) NOT NULL,
+  `from_token_id` int(0) NULL DEFAULT NULL,
   `utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
   `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `utoken_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `token_amount` decimal(18, 6) NULL DEFAULT 0.000000,
-  `swap_time` int NULL DEFAULT NULL,
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `swap_time` int(0) NULL DEFAULT NULL,
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  `swap_gas` int NULL DEFAULT 0,
+  `swap_gas` int(0) NULL DEFAULT 0,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏',
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `tran_hash`(`tran_hash` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_t2u
--- ----------------------------
+  UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_token
 -- ----------------------------
 DROP TABLE IF EXISTS `t_token`;
 CREATE TABLE `t_token`  (
-  `dao_id` int NOT NULL COMMENT 'smart common Id',
-  `token_id` int NULL DEFAULT NULL COMMENT '代币 Id',
-  `block_num` bigint NOT NULL COMMENT '区块号 用于监听标记',
-  `dao_time` int NULL DEFAULT NULL COMMENT '链上时间戳',
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '入库时间',
+  `dao_id` int(0) NOT NULL COMMENT 'smart common Id',
+  `token_id` int(0) NULL DEFAULT NULL COMMENT '代币 Id',
+  `block_num` bigint(0) NOT NULL COMMENT '区块号 用于监听标记',
+  `dao_time` int(0) NULL DEFAULT NULL COMMENT '链上时间戳',
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '入库时间',
   PRIMARY KEY (`dao_id`) USING BTREE,
-  UNIQUE INDEX `token_id`(`token_id` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_token
--- ----------------------------
+  UNIQUE INDEX `token_id`(`token_id`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_tokenuser
 -- ----------------------------
 DROP TABLE IF EXISTS `t_tokenuser`;
 CREATE TABLE `t_tokenuser`  (
-  `dao_id` int NULL DEFAULT NULL COMMENT 'smart common id',
-  `token_id` int NOT NULL COMMENT '代币ID',
+  `dao_id` int(0) NULL DEFAULT NULL COMMENT 'smart common id',
+  `token_id` int(0) NOT NULL COMMENT '代币ID',
   `dao_manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'smart common 管理员地址',
   `token_cost` decimal(18, 6) NULL DEFAULT 0.000000 COMMENT '代币余额',
   PRIMARY KEY (`token_id`, `dao_manager`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_tokenuser
--- ----------------------------
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_u2t
 -- ----------------------------
 DROP TABLE IF EXISTS `t_u2t`;
 CREATE TABLE `t_u2t`  (
-  `block_num` bigint NOT NULL,
-  `token_id` int NULL DEFAULT NULL,
+  `block_num` bigint(0) NOT NULL,
+  `token_id` int(0) NULL DEFAULT NULL,
   `utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
   `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `utoken_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `token_amount` decimal(18, 6) NULL DEFAULT 0.000000,
-  `swap_time` int NULL DEFAULT NULL,
-  `_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `swap_time` int(0) NULL DEFAULT NULL,
+  `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  `swap_gas` int NULL DEFAULT 0,
+  `swap_gas` int(0) NULL DEFAULT 0,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏',
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `tran_hash`(`tran_hash` ASC) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_u2t
--- ----------------------------
+  UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_updatedaocreator
 -- ----------------------------
 DROP TABLE IF EXISTS `t_updatedaocreator`;
 CREATE TABLE `t_updatedaocreator`  (
-  `block_num` bigint UNSIGNED NOT NULL,
-  `dao_id` int NULL DEFAULT NULL,
+  `block_num` bigint(0) UNSIGNED NOT NULL,
+  `dao_id` int(0) NULL DEFAULT NULL,
   `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `_time` int NULL DEFAULT NULL,
-  `id` int NOT NULL AUTO_INCREMENT,
+  `_time` int(0) NULL DEFAULT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `block_num`(`block_num` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of t_updatedaocreator
--- ----------------------------
+  INDEX `block_num`(`block_num`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- View structure for v_account
@@ -982,25 +848,25 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_getdaoutoken` AS selec
 -- View structure for v_message
 -- ----------------------------
 DROP VIEW IF EXISTS `v_message`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message` AS select `a_message`.`id` AS `id`,`a_message`.`message_id` AS `message_id`,`a_message`.`manager` AS `manager`,`a_message`.`actor_name` AS `actor_name`,`a_message`.`avatar` AS `avatar`,`a_message`.`actor_account` AS `actor_account`,`a_message`.`actor_url` AS `actor_url`,`a_message`.`title` AS `title`,`a_message`.`content` AS `content`,`a_message`.`is_send` AS `is_send`,`a_message`.`is_discussion` AS `is_discussion`,`a_message`.`top_img` AS `top_img`,`a_message`.`receive_account` AS `receive_account`,`a_message`.`actor_inbox` AS `actor_inbox`,`a_message`.`link_url` AS `link_url`,`b`.`dao_id` AS `dao_id`,`a_message`.`send_type` AS `send_type`,date_format(`a_message`.`createtime`,'%Y-%m-%d %H:%i:%s') AS `createtime`,date_format(`a_message`.`reply_time`,'%Y-%m-%d %H:%i:%s') AS `reply_time`,(case when (timestampdiff(YEAR,`a_message`.`createtime`,now()) > 0) then concat(timestampdiff(YEAR,`a_message`.`createtime`,now()),'_year') when (timestampdiff(MONTH,`a_message`.`createtime`,now()) > 0) then concat(timestampdiff(MONTH,`a_message`.`createtime`,now()),'_month') when (timestampdiff(DAY,`a_message`.`createtime`,now()) > 0) then concat(timestampdiff(DAY,`a_message`.`createtime`,now()),'_day') when (timestampdiff(HOUR,`a_message`.`createtime`,now()) > 0) then concat(timestampdiff(HOUR,`a_message`.`createtime`,now()),'_hour') else concat(timestampdiff(MINUTE,`a_message`.`createtime`,now()),'_minute') end) AS `times`,ifnull(`b`.`id`,0) AS `actor_id` from (`a_message` left join `a_account` `b` on((`a_message`.`actor_account` = `b`.`actor_account`)));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message` AS select `a`.`id` AS `id`,`a`.`message_id` AS `message_id`,`a`.`manager` AS `manager`,`a`.`actor_name` AS `actor_name`,`a`.`avatar` AS `avatar`,`a`.`actor_account` AS `actor_account`,`a`.`actor_url` AS `actor_url`,`a`.`actor_inbox` AS `actor_inbox`,`a`.`link_url` AS `link_url`,`a`.`title` AS `title`,`a`.`content` AS `content`,`a`.`is_send` AS `is_send`,`a`.`is_discussion` AS `is_discussion`,`a`.`top_img` AS `top_img`,`a`.`receive_account` AS `receive_account`,`a`.`send_type` AS `send_type`,`a`.`createtime` AS `createtime`,`a`.`reply_time` AS `reply_time`,`a`.`vedio_url` AS `vedio_url`,`a`.`account_at` AS `account_at`,`a`.`property_index` AS `property_index`,`a`.`type_index` AS `type_index`,`a`.`content_link` AS `content_link`,`a`.`total` AS `total`,`b`.`dao_id` AS `dao_id`,ifnull(`b`.`id`,0) AS `actor_id`,now() AS `currentTime` from (`a_message` `a` left join `a_account` `b` on((`a`.`actor_account` = `b`.`actor_account`)));
 
 -- ----------------------------
 -- View structure for v_message_commont
 -- ----------------------------
 DROP VIEW IF EXISTS `v_message_commont`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message_commont` AS select `a_message_commont`.`id` AS `id`,`a_message_commont`.`pid` AS `pid`,`a_message_commont`.`message_id` AS `message_id`,`a_message_commont`.`manager` AS `manager`,`a_message_commont`.`actor_name` AS `actor_name`,`a_message_commont`.`avatar` AS `avatar`,`a_message_commont`.`actor_account` AS `actor_account`,`a_message_commont`.`actor_url` AS `actor_url`,`a_message_commont`.`content` AS `content`,date_format(`a_message_commont`.`createtime`,'%Y-%m-%d %H:%i:%s') AS `createtime`,(case when (timestampdiff(YEAR,`a_message_commont`.`createtime`,now()) > 0) then concat(timestampdiff(YEAR,`a_message_commont`.`createtime`,now()),'_year') when (timestampdiff(MONTH,`a_message_commont`.`createtime`,now()) > 0) then concat(timestampdiff(MONTH,`a_message_commont`.`createtime`,now()),'_month') when (timestampdiff(DAY,`a_message_commont`.`createtime`,now()) > 0) then concat(timestampdiff(DAY,`a_message_commont`.`createtime`,now()),'_day') when (timestampdiff(HOUR,`a_message_commont`.`createtime`,now()) > 0) then concat(timestampdiff(HOUR,`a_message_commont`.`createtime`,now()),'_hour') else concat(timestampdiff(MINUTE,`a_message_commont`.`createtime`,now()),'_minute') end) AS `times` from `a_message_commont`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message_commont` AS select `a_message_commont`.`id` AS `id`,`a_message_commont`.`pid` AS `pid`,`a_message_commont`.`message_id` AS `message_id`,`a_message_commont`.`manager` AS `manager`,`a_message_commont`.`actor_name` AS `actor_name`,`a_message_commont`.`avatar` AS `avatar`,`a_message_commont`.`actor_account` AS `actor_account`,`a_message_commont`.`actor_url` AS `actor_url`,`a_message_commont`.`content` AS `content`,`a_message_commont`.`createtime` AS `createtime`,`a_message_commont`.`type_index` AS `type_index`,`a_message_commont`.`vedio_url` AS `vedio_url`,`a_message_commont`.`top_img` AS `top_img`,`a_message_commont`.`content_link` AS `content_link`,now() AS `currentTime` from `a_message_commont`;
 
 -- ----------------------------
 -- View structure for v_messagesc
 -- ----------------------------
 DROP VIEW IF EXISTS `v_messagesc`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc` AS select `a`.`id` AS `id`,`a`.`actor_id` AS `actor_id`,`a`.`dao_id` AS `dao_id`,`a`.`title` AS `title`,`a`.`content` AS `content`,`a`.`is_send` AS `is_send`,`a`.`is_discussion` AS `is_discussion`,`a`.`top_img` AS `top_img`,date_format(`a`.`start_time`,'%Y-%m-%d %H:%i:%s') AS `start_time`,date_format(`a`.`end_time`,'%Y-%m-%d %H:%i:%s') AS `end_time`,`a`.`event_url` AS `event_url`,`a`.`event_address` AS `event_address`,`a`.`time_event` AS `time_event`,`a`.`_type` AS `_type`,date_format(`a`.`reply_time`,'%Y-%m-%d %H:%i:%s') AS `reply_time`,date_format(`a`.`createtime`,'%Y-%m-%d %H:%i:%s') AS `createtime`,`b`.`actor_name` AS `actor_name`,`b`.`avatar` AS `avatar`,`b`.`actor_account` AS `actor_account`,`a`.`message_id` AS `message_id`,0 AS `send_type`,`b`.`actor_url` AS `actor_url`,`c`.`manager` AS `manager`,concat('https://',`b`.`domain`,'/api/activitepub/inbox/',`b`.`actor_name`) AS `actor_inbox`,(case when (timestampdiff(YEAR,`a`.`createtime`,now()) > 0) then concat(timestampdiff(YEAR,`a`.`createtime`,now()),'_year') when (timestampdiff(MONTH,`a`.`createtime`,now()) > 0) then concat(timestampdiff(MONTH,`a`.`createtime`,now()),'_month') when (timestampdiff(DAY,`a`.`createtime`,now()) > 0) then concat(timestampdiff(DAY,`a`.`createtime`,now()),'_day') when (timestampdiff(HOUR,`a`.`createtime`,now()) > 0) then concat(timestampdiff(HOUR,`a`.`createtime`,now()),'_hour') else concat(timestampdiff(MINUTE,`a`.`createtime`,now()),'_minute') end) AS `times` from ((`a_messagesc` `a` left join `a_account` `b` on((`a`.`dao_id` = `b`.`dao_id`))) left join `a_account` `c` on((`a`.`actor_id` = `c`.`id`)));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc` AS select `a`.`id` AS `id`,`a`.`actor_id` AS `actor_id`,`a`.`dao_id` AS `dao_id`,`a`.`title` AS `title`,`a`.`content` AS `content`,`a`.`is_send` AS `is_send`,`a`.`is_discussion` AS `is_discussion`,`a`.`top_img` AS `top_img`,`a`.`start_time` AS `start_time`,`a`.`end_time` AS `end_time`,`a`.`event_url` AS `event_url`,`a`.`event_address` AS `event_address`,`a`.`time_event` AS `time_event`,`a`.`_type` AS `_type`,`a`.`reply_time` AS `reply_time`,`a`.`createtime` AS `createtime`,`a`.`message_id` AS `message_id`,`a`.`vedio_url` AS `vedio_url`,`a`.`account_at` AS `account_at`,`a`.`property_index` AS `property_index`,`a`.`type_index` AS `type_index`,`a`.`content_link` AS `content_link`,`a`.`total` AS `total`,concat('https://',`b`.`domain`,'/api/activitepub/inbox/',`b`.`actor_name`) AS `actor_inbox`,`b`.`actor_name` AS `actor_name`,`b`.`avatar` AS `avatar`,`b`.`actor_account` AS `actor_account`,`b`.`actor_url` AS `actor_url`,`c`.`manager` AS `manager`,0 AS `send_type`,now() AS `currentTime` from ((`a_messagesc` `a` left join `a_account` `b` on((`a`.`dao_id` = `b`.`dao_id`))) left join `a_account` `c` on((`a`.`actor_id` = `c`.`id`)));
 
 -- ----------------------------
 -- View structure for v_messagesc_commont
 -- ----------------------------
 DROP VIEW IF EXISTS `v_messagesc_commont`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc_commont` AS select `a_messagesc_commont`.`id` AS `id`,`a_messagesc_commont`.`pid` AS `pid`,`a_messagesc_commont`.`message_id` AS `message_id`,`a_messagesc_commont`.`manager` AS `manager`,`a_messagesc_commont`.`actor_name` AS `actor_name`,`a_messagesc_commont`.`avatar` AS `avatar`,`a_messagesc_commont`.`actor_account` AS `actor_account`,`a_messagesc_commont`.`actor_url` AS `actor_url`,`a_messagesc_commont`.`content` AS `content`,date_format(`a_messagesc_commont`.`createtime`,'%Y-%m-%d %H:%i:%s') AS `createtime`,(case when (timestampdiff(YEAR,`a_messagesc_commont`.`createtime`,now()) > 0) then concat(timestampdiff(YEAR,`a_messagesc_commont`.`createtime`,now()),'_year') when (timestampdiff(MONTH,`a_messagesc_commont`.`createtime`,now()) > 0) then concat(timestampdiff(MONTH,`a_messagesc_commont`.`createtime`,now()),'_month') when (timestampdiff(DAY,`a_messagesc_commont`.`createtime`,now()) > 0) then concat(timestampdiff(DAY,`a_messagesc_commont`.`createtime`,now()),'_day') when (timestampdiff(HOUR,`a_messagesc_commont`.`createtime`,now()) > 0) then concat(timestampdiff(HOUR,`a_messagesc_commont`.`createtime`,now()),'_hour') else concat(timestampdiff(MINUTE,`a_messagesc_commont`.`createtime`,now()),'_minute') end) AS `times` from `a_messagesc_commont`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc_commont` AS select `a_messagesc_commont`.`id` AS `id`,`a_messagesc_commont`.`pid` AS `pid`,`a_messagesc_commont`.`message_id` AS `message_id`,`a_messagesc_commont`.`manager` AS `manager`,`a_messagesc_commont`.`actor_name` AS `actor_name`,`a_messagesc_commont`.`avatar` AS `avatar`,`a_messagesc_commont`.`actor_account` AS `actor_account`,`a_messagesc_commont`.`actor_url` AS `actor_url`,`a_messagesc_commont`.`content` AS `content`,`a_messagesc_commont`.`createtime` AS `createtime`,`a_messagesc_commont`.`type_index` AS `type_index`,`a_messagesc_commont`.`vedio_url` AS `vedio_url`,`a_messagesc_commont`.`top_img` AS `top_img`,`a_messagesc_commont`.`content_link` AS `content_link`,now() AS `currentTime` from `a_messagesc_commont`;
 
 -- ----------------------------
 -- View structure for v_mynft
@@ -1037,7 +903,7 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_tokenuser` AS select `
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `aa`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `aa`()
+CREATE PROCEDURE `aa`()
 BEGIN
 	-- update t_tokenuser set dao_id=2 where token_id=38888888;
 	-- select ROW_COUNT();
@@ -1093,7 +959,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `excuteRank`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `excuteRank`()
+CREATE PROCEDURE `excuteRank`()
 BEGIN
 UPDATE t_dao t1 JOIN (
 SELECT dao_id,  utoken_cost, yy FROM
@@ -1117,7 +983,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `excuteToken`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `excuteToken`(_tokenid int,_address VARCHAR(50),_cost decimal(18,4))
+CREATE PROCEDURE `excuteToken`(_tokenid int,_address VARCHAR(50),_cost decimal(18,4))
 BEGIN
 	declare _daoid int;
 	IF EXISTS(SELECT * FROM t_tokenuser WHERE token_id=_tokenid and dao_manager=_address) THEN 
@@ -1135,7 +1001,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `getAccount`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `getAccount`(did char(42))
+CREATE PROCEDURE `getAccount`(did char(42))
 BEGIN
 	SELECT a.dao_id,a.dao_manager,IFNULL(b.account,'') account FROM t_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id IN(SELECT dao_id FROM t_daodetail
 	 WHERE member_address=did);
@@ -1148,7 +1014,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `get_page`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_page`(_daima VARCHAR(6000),_ps INT,_i INT,_s VARCHAR(6000),_a VARCHAR(4),_w NVARCHAR(6000))
+CREATE PROCEDURE `get_page`(_daima VARCHAR(6000),_ps INT,_i INT,_s VARCHAR(6000),_a VARCHAR(4),_w NVARCHAR(6000))
 BEGIN
 declare _t varchar(20);
 	SELECT t INTO _t FROM aux_bt WHERE d=_daima;
@@ -1175,7 +1041,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `get_price`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_price`()
+CREATE PROCEDURE `get_price`()
 BEGIN
 SELECT AVG(swap_gas) AS price FROM (SELECT * FROM t_e2t ORDER BY block_num DESC  LIMIT 10) a UNION ALL
 SELECT AVG(swap_gas) AS price FROM (SELECT * FROM t_eth_utoken ORDER BY block_num DESC  LIMIT 10) b UNION ALL
@@ -1191,7 +1057,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `get_prolist`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_prolist`(_address char(42))
+CREATE PROCEDURE `get_prolist`(_address char(42))
 BEGIN
 	SELECT a.*,IFNULL(e.block_num,0) yvote 
 	FROM (SELECT * FROM v_pro WHERE is_end=0 AND dao_id IN (SELECT dao_id FROM t_daodetail WHERE member_address=_address)) a LEFT JOIN 
@@ -1205,7 +1071,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_changelogo`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_changelogo`(daoid int,blocknum bigint,daotime int,_logo_id int,_logo varchar(256))
+CREATE PROCEDURE `i_changelogo`(daoid int,blocknum bigint,daotime int,_logo_id int,_logo varchar(256))
 BEGIN
 	if not exists(select * from t_changelogo where block_num=blocknum) then
 	INSERT INTO t_changelogo(dao_id,block_num,dao_time,logo_id,dao_logo) VALUES(daoid,blocknum,daotime,_logo_id,_logo);
@@ -1220,7 +1086,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_daoaccount`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_daoaccount`(_blocknum bigint,_delegator char(42),_account char(42),_dividendRights int,daoId int)
+CREATE PROCEDURE `i_daoaccount`(_blocknum bigint,_delegator char(42),_account char(42),_dividendRights int,daoId int)
 BEGIN
 	if not exists(select * from t_daoaccount where block_num=_blocknum and account=_account) then
 		INSERT INTO t_daoaccount(block_num,delegator,account,dividendRights,dao_id) VALUES(_blocknum,_delegator,_account,_dividendRights,daoId);
@@ -1234,7 +1100,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_daodetail`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_daodetail`(daoid int,daoaddress char(42),daovotes int,daoindex int)
+CREATE PROCEDURE `i_daodetail`(daoid int,daoaddress char(42),daovotes int,daoindex int)
 BEGIN
 	if not exists(select * from t_daodetail where dao_id=daoid and member_address=daoaddress) then
 		INSERT INTO t_daodetail(dao_id,member_address,member_votes,member_index) VALUES(daoid,daoaddress,daovotes,daoindex);
@@ -1249,7 +1115,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_eip_type`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_eip_type`(_type varchar(32),_desc varchar(2000))
+CREATE PROCEDURE `i_eip_type`(_type varchar(32),_desc varchar(2000))
 BEGIN
 	IF NOT exists(SELECT * FROM a_eip_type WHERE type_name=_type) THEN 
 		INSERT INTO a_eip_type(type_name,type_desc) VALUES(_type,_desc);
@@ -1263,7 +1129,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_pro`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_pro`(_blockNum bigint,_delegator char(42),_creator char(42),_account char(42),_dividendRights int,_createTime int,_daodesc varchar(4000),_imgstr text,_proposalType tinyint)
+CREATE PROCEDURE `i_pro`(_blockNum bigint,_delegator char(42),_creator char(42),_account char(42),_dividendRights int,_createTime int,_daodesc varchar(4000),_imgstr text,_proposalType tinyint)
 BEGIN
     
     declare _daoid int;
@@ -1301,7 +1167,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_swap`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_swap`(blocknum bigint,swapaddress char(42),swaptime int,swapeth decimal(18,4),swaputoken decimal(18,6),tranHash char(66),swapgas int)
+CREATE PROCEDURE `i_swap`(blocknum bigint,swapaddress char(42),swaptime int,swapeth decimal(18,4),swaputoken decimal(18,6),tranHash char(66),swapgas int)
 BEGIN
     IF NOT EXISTS(SELECT * FROM t_eth_utoken WHERE block_num=blocknum) THEN
 			INSERT INTO t_eth_utoken(block_num,swap_address,swap_time,swap_eth,swap_utoken,tran_hash,swap_gas) 
@@ -1316,7 +1182,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_t2t`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_t2t`(blocknum bigint,fromdaoid int,todaoid int,fromutokencost decimal(18,6),toutokencost DECIMAL(18,6),
+CREATE PROCEDURE `i_t2t`(blocknum bigint,fromdaoid int,todaoid int,fromutokencost decimal(18,6),toutokencost DECIMAL(18,6),
     fromaddress char(42),toaddress char(42),fromtoken DECIMAL(18,6),totoken DECIMAL(18,6),swaptime int,tranHsh char(66),swapgas int,_tip DECIMAL(18,6),_scid int)
 BEGIN
      IF NOT EXISTS(SELECT * FROM t_t2t WHERE block_num=blocknum) THEN
@@ -1332,7 +1198,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_t2u`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_t2u`(blocknum bigint,fromTokenId int,utokencost decimal(18,6),fromaddress char(42)
+CREATE PROCEDURE `i_t2u`(blocknum bigint,fromTokenId int,utokencost decimal(18,6),fromaddress char(42)
     ,toaddress char(42),utokenamount DECIMAL(18,6),tokenamount DECIMAL(18,6),swaptime int,tranHash char(66),swapgas int,_tip DECIMAL(18,6))
 BEGIN
     IF NOT EXISTS(SELECT * FROM t_t2u WHERE block_num=blocknum) THEN
@@ -1349,7 +1215,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_token`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_token`(daoid int,tokenid int,blocknum bigint,daotime int)
+CREATE PROCEDURE `i_token`(daoid int,tokenid int,blocknum bigint,daotime int)
 BEGIN
 	if not exists(select * from t_token where block_num=blocknum) then
 	INSERT INTO t_token(dao_id,token_id,block_num,dao_time) VALUES(daoid,tokenid,blocknum,daotime);
@@ -1363,7 +1229,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_u2t`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `i_u2t`(blocknum bigint,tokenId int,utokencost decimal(18,6),fromaddress char(42)
+CREATE PROCEDURE `i_u2t`(blocknum bigint,tokenId int,utokencost decimal(18,6),fromaddress char(42)
     ,toaddress char(42),utokenamount DECIMAL(18,6),tokenamount DECIMAL(18,6),swaptime int,tranHash char(66),swapgas int,_tip DECIMAL(18,6))
 BEGIN
     IF NOT EXISTS(SELECT * FROM t_u2t WHERE block_num=blocknum) THEN
@@ -1379,7 +1245,7 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `recover_follow`;
 delimiter ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `recover_follow`(new_account varchar(256),old_account varchar(256))
+CREATE PROCEDURE `recover_follow`(new_account varchar(256),old_account varchar(256))
 BEGIN
     
     declare _user_url varchar(256);
@@ -1424,6 +1290,8 @@ DROP TRIGGER IF EXISTS `delmessage`;
 delimiter ;;
 CREATE TRIGGER `delmessage` AFTER DELETE ON `a_message` FOR EACH ROW BEGIN
 	delete from a_message_commont where pid=old.id;
+	DELETE FROM a_bookmark WHERE pid=old.id;
+	DELETE FROM a_heart WHERE pid=old.id;
     END
 ;;
 delimiter ;
@@ -1434,7 +1302,8 @@ delimiter ;
 DROP TRIGGER IF EXISTS `commont_insert`;
 delimiter ;;
 CREATE TRIGGER `commont_insert` AFTER INSERT ON `a_message_commont` FOR EACH ROW BEGIN
-	update a_message set reply_time=now() where id=new.pid;
+	UPDATE a_message SET reply_time=NOW(),total=total+1 WHERE id=new.pid;
+	
     END
 ;;
 delimiter ;
@@ -1446,6 +1315,8 @@ DROP TRIGGER IF EXISTS `delmessagesc`;
 delimiter ;;
 CREATE TRIGGER `delmessagesc` AFTER DELETE ON `a_messagesc` FOR EACH ROW BEGIN
 	delete from a_messagesc_commont where pid=old.id;
+	DELETE FROM a_bookmarksc WHERE pid=old.id;
+	DELETE FROM a_heartsc WHERE pid=old.id;
     END
 ;;
 delimiter ;
@@ -1456,7 +1327,7 @@ delimiter ;
 DROP TRIGGER IF EXISTS `commontsc_insert`;
 delimiter ;;
 CREATE TRIGGER `commontsc_insert` AFTER INSERT ON `a_messagesc_commont` FOR EACH ROW BEGIN
-	update a_messagesc set reply_time=now() where id=new.pid;
+	UPDATE a_messagesc SET reply_time=NOW(),total=total+1 WHERE id=new.pid;
     END
 ;;
 delimiter ;
