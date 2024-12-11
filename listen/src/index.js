@@ -218,7 +218,7 @@ class DaoApi {
             setTimeout(async function(){
                await callbackFun.call(null,data)
                 resolve('')
-            }, 2000);
+            }, 500);
         });
         return p;            
     }
