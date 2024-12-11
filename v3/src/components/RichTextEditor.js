@@ -5,7 +5,8 @@ const RichTextEditor = ({title,defaultValue,editorRef}) => {
   
   const config = {
     buttons: [
-        'image','source', '|',
+        // 'image',
+        'source', '|',
         'bold', 'italic', 'underline', '|',
         'ul', 'ol', 'brush', 'paragraph', '|',
         'outdent', 'indent', '|',

@@ -2,7 +2,7 @@ import React, {useImperativeHandle,useState,forwardRef} from "react"
 import { SiweMessage } from 'siwe'
 import { useTranslations } from 'next-intl'
 import { useSelector, useDispatch } from 'react-redux';
-import {setMessageText,setTipText,setLoginsiwe,setDaoActor,setActor} from '../data/valueData'
+import {setMessageText,setTipText,setLoginsiwe,setDaoActor,setActor,setMyFollow} from '../data/valueData'
 
 
 const LoginButton = forwardRef((props, ref) => {
@@ -51,9 +51,11 @@ const LoginButton = forwardRef((props, ref) => {
             dispatch(setLoginsiwe(true))
             dispatch(setDaoActor(data.daoActor))
             dispatch(setActor(data.actor))
+            dispatch(setMyFollow(data.myFollow))
             window.sessionStorage.setItem("loginsiwe", "1")
-            // window.sessionStorage.setItem("daoActor", JSON.stringify(data.daoActor))
-            // window.sessionStorage.setItem("actor", JSON.stringify(data.actor))
+            window.sessionStorage.setItem("daoActor", JSON.stringify(data.daoActor))
+            window.sessionStorage.setItem("actor", JSON.stringify(data.actor))
+            window.sessionStorage.setItem("myFollow", JSON.stringify(data.myFollow))
         }
         setSingering(false)
         showLoadding('')

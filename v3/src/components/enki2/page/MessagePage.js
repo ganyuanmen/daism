@@ -1,33 +1,38 @@
-import { Card,Button } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { useState,useEffect, useRef } from 'react';
 import EnkiMemberItem from "../form/EnkiMemberItem";
 import EventItem from "../form/EventItem";
 import MessageReply from '../form/MessageReply'
 import ReplyItem from "../form/ReplyItem";
-import Loadding from "../../Loadding";
 import ShowErrorBar from "../../ShowErrorBar";
-import {useDispatch} from 'react-redux';
-import {setTipText,setMessageText} from '../../../data/valueData';
 import EnKiHeart from "../form/EnKiHeart";
 import EnKiBookmark from "../form/EnKiBookmark";
-import { ExitSvg } from "../../../lib/jssvg/SvgCollection";
 import EnkiShare from "../form/EnkiShare";
 import { client } from "../../../lib/api/client";
 import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ShowVedio from "../form/ShowVedio";
+import EnkiEditItem from "../form/EnkiEditItem";
+import { useTranslations } from 'next-intl'
+
 /**
  * 单登个发文信息界面 //  delCallBack:删除嗯文后回调
- * isEdit 是否允许修改  
+ * @path enki/enkier 能修改，其它不能修改
+ * @locale zh/cn  
+ * @env 环境变量
+ * @currentObj 嗯文对象
+ * @delCallBack 删除嗯文后回调
+ * @setActiveTab 设置主页上的模块
+ * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
+ * @daoData 个人所属的smart common 集合
  */
 
-export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,currentObj,delCallBack,setActiveTab,accountAr}) { 
+export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData}) { 
+  
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
         ,sctype:currentObj.dao_id>0?'sc':''
         ,pid:currentObj.id});
-
-    const daoActor=useSelector((state) => state.valueData.daoActor)
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
@@ -37,34 +42,40 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
     const [replyObj,setReplyObj]=useState(null) //回复内容，用于修改，为null表示新增
     const [pageNum, setPageNum] = useState(0);
 
-    const dispatch = useDispatch();
-    function showTip(str){dispatch(setTipText(str))}
-    function closeTip(){dispatch(setTipText(''))}
-    function showClipError(str){dispatch(setMessageText(str))}  
     const repluBtn=useRef()
     const contentDiv=useRef()
 
+    const actor = useSelector((state) => state.valueData.actor)
+    const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
+    const t = useTranslations('ff')
+
     useEffect(()=>{
-        const checkIsEdit=()=>{  //是否允许修改
+        if(fetchWhere.currentPageNum===0) setPageNum(0);
+    },[fetchWhere])
+
+    useEffect(()=>{
+        const checkIsEdit=()=>{  //是否允许修改 
             if(!loginsiwe) return false;
+            if(!currentObj?.actor_account && !currentObj?.actor_account?.includes('@')) return false;
             if(!actor?.actor_account && !actor?.actor_account?.includes('@')) return false;
             //远程读取不可修改
-            if(env.domain!=currentObj.actor_account.split('@')[1]) return false;
+            if(env.domain!=currentObj?.actor_account?.split('@')[1]) return false;
             if(currentObj.dao_id>0){  //SC
                 if(path!=='enki') return false; // 不是从我的社区模块进入，不允许修改
-                let _member=daoActor.find((obj)=>{return obj.dao_id===currentObj.dao_id})
+                let _member=daoData.find((obj)=>{return obj.dao_id===currentObj.dao_id})
                 if(_member){
                      return true;
                 } 
             }else { //个人
                 if(path!=='enkier') return false;// 不是从个人社交模块进入，不允许修改
                   //非本地登录
-                if(actor.actor_account.split('@')[1]!=env.domain) return false;
+                if(actor?.actor_account?.split('@')[1]!=env.domain) return false;
                 if(currentObj.send_type===0){ //本地
                     if(actor.actor_account===currentObj.actor_account) return true;
-                }else { //接收
-                    if(actor.actor_account===currentObj.receive_account) return true;
                 }
+                // else { //接收
+                //     if(actor.actor_account===currentObj.receive_account) return true;
+                // }
             }
             //超级管理员
             if(actor?.manager?.toLowerCase()==env.administrator.toLowerCase()) return true;
@@ -73,15 +84,15 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
 
         setIsEdit(checkIsEdit())
 
-    },[actor,currentObj])
+    },[actor,currentObj,loginsiwe])
 
     const ableReply = () => { //是否允许回复，点赞，书签
         if(!loginsiwe) return false;
         if(!actor?.actor_account && !actor?.actor_account?.includes('@')) return false;
-
         //发布帐号，用于判断是否本域名
         let _account=currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account;
-        const [name, messDomain] = _account.split('@');
+        if(!_account || !_account?.includes('@'))  return false;
+        const [, messDomain] = _account.split('@');
         return env.domain === messDomain; //本域名发布，可以回复
     }
   
@@ -160,10 +171,9 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
 
         <Card className=" mt-2 mb-3" >
             <Card.Header>
-                <EnkiMemberItem t={t} messageObj={currentObj} domain={env.domain} actor={actor} locale={locale} delCallBack={delCallBack}
-                 preEditCall={e=>{setActiveTab(1)}} showTip={showTip} closeTip={closeTip} showClipError={showClipError} isEdit={isEdit} />
+                <EnkiMemberItem messageObj={currentObj} domain={env.domain} locale={locale} />
                {/* 活动 */}
-               {currentObj?._type===1 && <EventItem t={t} currentObj={currentObj} /> }
+               {currentObj?._type===1 && <EventItem currentObj={currentObj} /> }
             </Card.Header>
         <Card.Body>
             <div ref={contentDiv} dangerouslySetInnerHTML={{__html: currentObj?.content}}></div>
@@ -176,14 +186,16 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
         <Card.Footer style={{padding:0}} >
             <div className="d-flex justify-content-between align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:'4px 8px'}}  >
          
-                <MessageReply  ref={repluBtn} t={t} tc={tc} total={currentObj.total} actor={actor} currentObj={currentObj} 
-                 isEdit={ableReply()} accountAr={accountAr}
+                <MessageReply  ref={repluBtn} currentObj={currentObj} isEdit={ableReply()} accountAr={accountAr}
                  addReplyCallBack={addReplyCallBack} replyObj={replyObj} setReplyObj={setReplyObj} 
-                 afterEditcall={afterEditcall} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
+                 afterEditcall={afterEditcall} />
 
-                <EnKiHeart isEdit={ableReply()} t={t} tc={tc} loginsiwe={loginsiwe} actor={actor} currentObj={currentObj} domain={env.domain} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
-                <EnKiBookmark isEdit={ableReply() && actor.actor_account.split('@')[1]==env.domain} t={t} tc={tc} loginsiwe={loginsiwe} actor={actor} currentObj={currentObj} domain={env.domain} showTip={showTip} closeTip={closeTip} showClipError={showClipError}  />
-              {currentObj.send_type===0 && <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={currentObj} t={t} tc={tc} />}
+                <EnKiHeart isEdit={ableReply()} currentObj={currentObj} />
+                {/* 非注册地登录，不能收藏 */}
+                <EnKiBookmark isEdit={ableReply() && actor.actor_account.split('@')[1]==env.domain} currentObj={currentObj}/>
+              {currentObj.send_type===0 && <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={currentObj} />}
+              <EnkiEditItem isEdit={isEdit} messageObj={currentObj} delCallBack={delCallBack} 
+              preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} /> 
             </div>
             {currentObj?.link_url && <div className="mt-2 mb-2" style={{textAlign:'center'}}>
                     <a target="_blank" href={currentObj?.link_url} >{t('origlText')}......</a>
@@ -197,9 +209,9 @@ export default function MessagePage({path,locale,t,tc,actor,loginsiwe,env,curren
                     // endMessage={<div style={{textAlign:'center'}} >---{t('emprtyData')}---</div>}
                 >
                     {data.map((obj, idx) => (
-                        <ReplyItem locale={locale} isEdit={ableReply() && actor.actor_account===obj.actor_account } key={idx} 
-                        t={t} paccount={currentObj.actor_account} replyObj={obj} actor={actor} delCallBack={replyDelCallBack} 
-                        preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
+                        <ReplyItem  key={idx} locale={locale} isEdit={ableReply() && actor.actor_account===obj.actor_account } 
+                         replyObj={obj} delCallBack={replyDelCallBack} 
+                         preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
                     ))}
             </InfiniteScroll>
 

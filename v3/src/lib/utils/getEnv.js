@@ -21,6 +21,8 @@ export function getEnv()
     _daismAddress['domain']=process.env.LOCAL_DOMAIN
     _daismAddress['KEY']=process.env.KEY
     _daismAddress['IV']=process.env.IV
+    _daismAddress['accountTotal']=process.env.SMART_COMMONS_COUNT  //允许的注册数量
+
   //  process.env.DAIMADDRESS=JSON.stringify(_daismAddress)
 
   return _daismAddress;

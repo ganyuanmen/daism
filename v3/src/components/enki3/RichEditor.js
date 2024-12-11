@@ -1,14 +1,20 @@
 import React, {useImperativeHandle,useRef, forwardRef,useState } from "react";
-
-// import JoditEditor from 'jodit-react';
 import Media from "./Media";
 import SCProperty from "./SCProperty";
 import dynamic from 'next/dynamic';
 
+
 const Richwet = dynamic(() => import('./Richwet'), { ssr: false });
 
-const RichEditor = forwardRef(({currentObj,tc,t,accountAr,actor,showProperty=true}, ref) => {
-    
+
+/**
+ * 长文编辑框
+ * @currentObj 修改的嗯文，新增则为空
+ * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人, 回复不需要指定人，所以不传accountAr
+  */
+
+const RichEditor = forwardRef(({currentObj,accountAr}, ref) => {
+ 
     const mediaRef = useRef(null);
     const editorRef = useRef(null);
     
@@ -45,8 +51,8 @@ const RichEditor = forwardRef(({currentObj,tc,t,accountAr,actor,showProperty=tru
     return (
         <>
            <Richwet defaultValue={currentObj?.content?currentObj.content:''} editorRef={editorRef} />
-           <Media ref={mediaRef} t={t} tc={tc} currentObj={currentObj} >
-              {showProperty &&  <SCProperty ref={propertyRef} t={t} currentObj={currentObj} accountAr={accountAr} actor={actor} >
+           <Media ref={mediaRef} currentObj={currentObj} >
+              {accountAr &&  <SCProperty ref={propertyRef} currentObj={currentObj} accountAr={accountAr} >
                 </SCProperty>}
             </Media>
         </>

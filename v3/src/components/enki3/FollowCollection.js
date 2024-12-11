@@ -5,24 +5,28 @@ import ShowErrorBar from "../ShowErrorBar";
 import { client } from "../../lib/api/client";
 import FollowItem0 from '../../components/enki2/form/FollowItem0'
 import FollowItem1 from '../../components/enki2/form/FollowItem1'
-
+import { useTranslations } from 'next-intl'
+import { useSelector } from 'react-redux';
 /**
  * 关注和被关注列表
- * method: follow0 我关注谁，follow1 谁关注我
+ * @method: follow0 我关注谁，follow1 谁关注我
+ * @domain 本地域名
+ * @locale zh/cn
  */
 
-export default function FollowCollection({t,method,account,domain,locale}) { 
+export default function FollowCollection({method,locale}) { 
   
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [err,setErr]=useState("");
-   
+    const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
+    const t = useTranslations('ff')
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
             setData([]);
             try {
-                const res = await client.get(`/api/getData?account=${account}`,method);
+                const res = await client.get(`/api/getData?account=${actor?.actor_account}`,method);
                 if(res.status===200){
                     if(Array.isArray(res.data)){
                         setData(res.data);
@@ -46,7 +50,7 @@ export default function FollowCollection({t,method,account,domain,locale}) {
 
         return ()=>{setData([])}
     
-    }, [account,method]);
+    }, [actor,method]);
 
     const footerdiv=()=>{
         if(isLoading) return <Loadding /> 
@@ -58,9 +62,9 @@ export default function FollowCollection({t,method,account,domain,locale}) {
     return (
         <div className="mt-3" style={{width:'100%'}}>
             <div>
-                {method==='getFollow0' && Array.isArray(data) && data.map((obj)=> <FollowItem0 locale={locale} domain={domain} key={obj.id} messageObj={obj} t={t} />)}
+                {method==='getFollow0' && Array.isArray(data) && data.map((obj)=> <FollowItem0 key={obj.id} locale={locale} messageObj={obj} isEdit={true} />)}
              
-                {method==='getFollow1' && Array.isArray(data) && data.map((obj)=> <FollowItem1 locale={locale} domain={domain} key={obj.id} messageObj={obj} t={t} />)}
+                {method==='getFollow1' && Array.isArray(data) && data.map((obj)=> <FollowItem1 locale={locale} key={obj.id} messageObj={obj} isEdit={true} />)}
             </div>
 
             {footerdiv()}

@@ -2,8 +2,21 @@ import React, {useImperativeHandle,useState,useRef, forwardRef, useEffect } from
 import editStyle from '../../../styles/editor.module.css'
 import SCProperty from "../../enki3/SCProperty";
 import Media from "../../enki3/Media";
+import { useSelector } from 'react-redux';
+import { useTranslations } from 'next-intl'
 
-const Editor = forwardRef(({currentObj,nums,t,tc,accountAr,actor,showProperty=true }, ref) => {
+/**
+ * 短文格式的 嗯文编辑器
+ * @currentObj 嗯文对象，新增则无
+ * @nums 允许字数
+ * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
+ * @showProperty 显示特定人的选项，回复的编辑中设为false
+ */
+const Editor = forwardRef(({currentObj,nums,accountAr,showProperty=true }, ref) => {
+  const actor = useSelector((state) => state.valueData.actor)
+  const t = useTranslations('ff')
+  const tc = useTranslations('Common')
+
   const delHtml=()=>{
     let temp=(currentObj?.content || '').replaceAll('</p><p>','\n')
     temp=temp.replaceAll('<p>','')

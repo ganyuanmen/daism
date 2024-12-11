@@ -2,11 +2,20 @@ import {Button,Form} from "react-bootstrap";
 import { useRef, useState } from 'react';
 import { useDispatch} from 'react-redux';
 import {setTipText,setMessageText} from '../../data/valueData';
+import { SendSvg,BackSvg } from "../../lib/jssvg/SvgCollection";
 import RichEditor from "./RichEditor";
 import Editor from "../enki2/form/Editor";
-
-//currentObj 有值表示修改
-export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallBack,accountAr,callBack}) {
+import { useTranslations } from 'next-intl'
+import { useSelector } from 'react-redux';
+/**
+ * 个人嗯文编辑
+ * @currentObj 嗯文对象
+ * @afterEditCall 修改嗯文后回调
+ * @addCallBack 增加嗯文后回调
+ * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
+ * @callBack 回退到主页处理 
+ */
+export default function CreateMess({currentObj,afterEditCall,addCallBack,accountAr,callBack}) {
 
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
@@ -18,6 +27,9 @@ export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallB
     const discussionRef=useRef();
     const sendRef=useRef();
     const nums=500;
+    const t = useTranslations('ff')
+    const tc = useTranslations('Common')
+    const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
 
     const getHTML=()=>{
         if(typeIndex===0){
@@ -92,8 +104,8 @@ export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallB
                 <Form.Check inline label={t('longText')} name="group1" type='radio' defaultChecked={typeIndex===1} onClick={e=>
                     {if(e.target.checked) setTypeIndex(1)}}  id='inline-1' />
             </Form>
-        {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} t={t} tc={tc} nums={nums} accountAr={accountAr} actor={actor} />
-        :<RichEditor  ref={richEditorRef} currentObj={currentObj} t={t} tc={tc} accountAr={accountAr} actor={actor} />}
+        {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} accountAr={accountAr} showProperty={true} />
+        :<RichEditor  ref={richEditorRef} currentObj={currentObj} accountAr={accountAr} />}
      
      
             <div className="form-check form-switch  mt-3">
@@ -105,11 +117,10 @@ export default function CreateMess({t,tc,actor,currentObj,afterEditCall,addCallB
                 <label className="form-check-label" htmlFor="isDiscussionbox">{t('sendToFollow')}</label>
             </div>
          
-      
             <div style={{textAlign:'center'}} >
-                <Button  onClick={callBack}  variant="light">  {t('esctext')} </Button> {' '}
-                <Button  onClick={submit}  variant="primary"> {t('submitText')}</Button> 
-            </div>
+              <Button  onClick={callBack}  variant="light"> <BackSvg size={24} />  {t('esctext')} </Button> {' '}
+              <Button onClick={submit} variant="primary"> <SendSvg size={24} /> {t('submitText')}</Button>
+          </div>
       
       </div>
     );

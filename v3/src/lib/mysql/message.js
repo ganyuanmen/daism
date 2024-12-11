@@ -14,16 +14,18 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 	switch(parseInt(menutype))
 	{
 		case 1: //我的社区
-			if(daoid.includes(',')) where=`where dao_id in(${daoid})`;else where=`where dao_id=${daoid}`;
-			if(parseInt(eventnum)===1) where=`${where} and _type=1`;
+			if(parseInt(v)===3) where=`where id in(select pid from a_bookmarksc where account='${account}')`; //我的收藏
+			else if(parseInt(v)===6) where=`where id in(select pid from a_heartsc where account='${account}')`; //喜欢
+			else if(parseInt(v)===1) where=`WHERE actor_account IN(SELECT actor_account FROM a_follow WHERE user_account='${account}')`; //我关注的社区
+			else{ 
+				if(daoid.includes(',')) where=`where dao_id in(${daoid})`;else where=`where dao_id=${daoid}`;
+				if(parseInt(eventnum)===1) where=`${where} and _type=1`;
+			}
 			sctype='sc'
 			break;
 		case 2: //公区社区
 			if(parseInt(daoid)>0) where=`where dao_id=${daoid}`; //单个dao
 			else if(parseInt(eventnum)===1) where="where _type=1"; //活动
-			else if(parseInt(v)===1) where=`WHERE actor_account IN(SELECT actor_account FROM a_follow WHERE user_account='${account}')`; //我关注的社区
-			else if(parseInt(v)===3) where=`where id in(select pid from a_bookmarksc where account='${account}')`; //我的收藏
-			else if(parseInt(v)===6) where=`where id in(select pid from a_heartsc where account='${account}')`; //喜欢
 			sctype='sc';
 			break;
 		default: //个人

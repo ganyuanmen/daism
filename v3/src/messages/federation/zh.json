@@ -7,7 +7,7 @@
     "submitText":"提交",
     "vedioText":"视频链接",
     "contenValidText":"内容不能为空，或小于10个字符",
-    "monthText":"1月,2月,3月,4月,5月,6月,7月,8月,9月,10月,11月,12月]",
+    "monthText":"1月,2月,3月,4月,5月,6月,7月,8月,9月,10月,11月,12月",
     "loginText":"登录",
     "noDaoMemberText":"非SmartCommons成员",
     "year":"年以前",
@@ -153,7 +153,8 @@
     "bookTapText":"收藏夹",
     "atSomeOne":"私下提及",
     "shortText":"短文",
-    "longText":"长文"
+    "longText":"长文",
+    "showmore":"显示更多..."
   
 
   }

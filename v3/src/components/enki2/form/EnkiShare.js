@@ -1,12 +1,18 @@
 import { Button,Modal,Overlay, Tooltip } from "react-bootstrap";
 import { useState,useRef } from "react";
 import { LocationSvg  } from '../../../lib/jssvg/SvgCollection';
+import { useTranslations } from 'next-intl'
 
 /**
  * 分享 显示链接 和 html 内容
+ * content 嗯文文本内容
+ * locale zh/cn
+ * currentObj 嗯文对象
  */
-export default function EnkiShare({content, locale, currentObj,t,tc})
+export default function EnkiShare({content, locale, currentObj})
 {
+    const t = useTranslations('ff')
+    const tc = useTranslations('Common')
     const [show,setShow]=useState(false)
     const [showOver1,setShowOver1]=useState(false)
     const [showOver2,setShowOver2]=useState(false)
@@ -60,8 +66,8 @@ export default function EnkiShare({content, locale, currentObj,t,tc})
         <Modal.Header closeButton>share </Modal.Header>
         <Modal.Body  >
             <div> {t('linkText')}：</div>
-            <div className="d-flex align-items-center justify-content-between mb-3" >
-                <div>{url} </div>
+            <div className="d-flex align-items-center flex-wrap  mb-3" >
+                <div style={{wordWrap: 'break-word', wordBreak: 'break-all'}} >{url} </div>
                 <div><Button variant="light" size="sm"   onClick={(e) => { 
                     if(navigator.clipboard) navigator.clipboard.writeText(url);
                     else return;

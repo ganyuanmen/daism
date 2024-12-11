@@ -1,7 +1,20 @@
 import React, {useImperativeHandle,useRef, forwardRef, useState } from "react";
 import ErrorBar from "../form/ErrorBar";
+import { useTranslations } from 'next-intl'
+import { Button } from "react-bootstrap";
+import { UploadImg } from "../../lib/jssvg/SvgCollection";
 
-const ImgUpload = forwardRef(({maxSize,fileTypes,setFileStr,tc,t,setFileType}, ref) => {
+/**
+ * 图片上传组件
+ * @maxSize 图片允许的最大值 1024*500 指 500k
+ * @fileTypes 允许的文件类型
+ * @setFileStr 设图片的base64码，用于图片的显示
+ * @setFileType 设图片后缀名
+ */
+
+const ImgUpload = forwardRef(({maxSize,fileTypes,setFileStr,setFileType}, ref) => {
+    const t = useTranslations('ff')
+    const tc = useTranslations('Common')
     const imgRef=useRef()
     const fileInputRef = useRef(null);
     const fileTypeRef=useRef('')
@@ -47,11 +60,11 @@ const ImgUpload = forwardRef(({maxSize,fileTypes,setFileStr,tc,t,setFileType}, r
 
     return (
         <>
-            <button onClick={triggerClick} ref={imgRef}  type="button" className="btn btn-light btn-sm" data-bs-toggle="tooltip" data-bs-html="true" title={t('uploadPitruseText')}>  
-                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"  aria-hidden="true"><path d="M360-384h384L618-552l-90 120-66-88-102 136Zm-48 144q-29.7 0-50.85-21.15Q240-282.3 240-312v-480q0-29.7 21.15-50.85Q282.3-864 312-864h480q29.7 0 50.85 21.15Q864-821.7 864-792v480q0 29.7-21.15 50.85Q821.7-240 792-240H312Zm0-72h480v-480H312v480ZM168-96q-29.7 0-50.85-21.15Q96-138.3 96-168v-552h72v552h552v72H168Zm144-696v480-480Z"></path></svg>
-            </button>
+            <Button variant="light" size="sm" onClick={triggerClick} ref={imgRef} title={t('uploadPitruseText')}>  
+               <UploadImg size={24} />
+            </Button>
             <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }}  onChange={fielChange} />
-            <ErrorBar show={invalidText} target={imgRef} placement='left' invalidText={invalidText} ></ErrorBar>
+            <ErrorBar show={invalidText} target={imgRef} placement='left' invalidText={invalidText} />
         </>
     );
 });

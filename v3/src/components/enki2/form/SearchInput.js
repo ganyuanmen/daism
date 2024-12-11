@@ -3,10 +3,17 @@ import { Form, InputGroup } from 'react-bootstrap';
 import {client} from '../../../lib/api/client'
 import { useDispatch} from 'react-redux';
 import {setTipText} from '../../../data/valueData'
-
-const SearchInput = ({t,setSearObj,actor,setFindErr}) => {
+import { useTranslations } from 'next-intl'
+import { useSelector } from 'react-redux';
+/**
+ * 查找帐号进行关注，取关
+ * @setSearObj 设置查找到的用户信息
+ * @setFindErr 设置出错信息 
+ */
+const SearchInput = ({setSearObj,setFindErr}) => {
   const [query, setQuery] = useState('');
-
+  const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
+  const t = useTranslations('ff')
   const dispatch = useDispatch();
   function showTip(str){dispatch(setTipText(str))}
   function closeTip(){dispatch(setTipText(''))}

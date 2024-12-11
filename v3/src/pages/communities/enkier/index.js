@@ -6,7 +6,7 @@ import EnkiMember from '../../../components/enki2/form/EnkiMember';
 import EnkiAccount from '../../../components/enki2/form/EnkiAccount';
 import Loginsign from '../../../components/Loginsign';
 import { useDispatch } from 'react-redux';
-import {setTipText,setMessageText } from '../../../data/valueData'
+import {setMessageText } from '../../../data/valueData'
 import SearchInput from '../../../components/enki2/form/SearchInput'
 import ShowErrorBar from '../../../components/ShowErrorBar';
 import EnKiFollow from '../../../components/enki2/form/EnKiFollow';
@@ -16,6 +16,7 @@ import { getEnv,decrypt } from '../../../lib/utils/getEnv';
 import { encrypt } from '../../../lib/utils/windowjs';
 import { getOne } from '../../../lib/mysql/message';
 import { getJsonArray } from '../../../lib/mysql/common';
+import { httpGet } from '../../../lib/net';
 import Head from 'next/head';
 import Mainself from '../../../components/enki3/Mainself';
 import CreateMess from '../../../components/enki3/CreateMess';
@@ -26,10 +27,14 @@ import { Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,Rec
 
 /**
  * 个人社区
+ * @openObj 查看单个嗯文
+ * @env 环境变量
+ * @locale zh/cn
+ * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  */ 
-export default function me({openObj,env,locale,accountAr }) {
+export default function enkier({openObj,env,locale,accountAr }) {
     const [fetchWhere, setFetchWhere] = useState({
-        currentPageNum: 0,  //当前页
+        currentPageNum: -1,  //当前页 初始不摘取数据
         daoid: 0,  //此处不用
         actorid: 0, account: '',
         where: '', //查询条件
@@ -46,19 +51,13 @@ export default function me({openObj,env,locale,accountAr }) {
     const [followMethod,setFollowMethod]=useState('getFollow0') //默认显示我关注谁
     const [searObj,setSearObj]=useState(null) //查找到帐号的对象
     const [findErr,setFindErr]=useState(false) //搜索帐号没找到
-    // const [big,setBig]=useState(true) //左边缩进按钮控制, 默认左边大
-
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
-    const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
+    
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe) //是否签名登录
     const leftDivRef = useRef(null);
     const rightDivRef = useRef(null);
     const parentDivRef = useRef(null);
-  
-
     const dispatch = useDispatch();
-    function showTip(str) { dispatch(setTipText(str)) }
-    function closeTip() { dispatch(setTipText('')) }
     function showClipError(str) { dispatch(setMessageText(str)) }
     const tc = useTranslations('Common')
     const t = useTranslations('ff')
@@ -97,8 +96,6 @@ export default function me({openObj,env,locale,accountAr }) {
         follow0:<Follow size={24} />,
         follow1:<Follow size={24} />,
         at:<SomeOne size={24} />
-      
-
       }
     
       const [navIndex,setNavIndex]=useState(paras.all) 
@@ -108,8 +105,15 @@ export default function me({openObj,env,locale,accountAr }) {
       useEffect(()=>{
         if(actor?.id) actorRef.current=actor;
         if(!openObj?.id){  //不是详情页
-            if(actor?.id) homeHandle(true);
-            else allHandle(true);
+            if(window.sessionStorage.getItem("loginsiwe")==='1'){
+              setTimeout(() => {
+                homeHandle();
+              }, 200); 
+            }else 
+            {
+                allHandle();
+            }
+          
         }
     },[actor])
    
@@ -154,7 +158,7 @@ export default function me({openObj,env,locale,accountAr }) {
         }
       }, []);
 
-    const allHandle=(post)=>{ // 公开
+    const allHandle=()=>{ // 公开
         removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 5,account: '' });
         setActiveTab(0);
@@ -162,7 +166,7 @@ export default function me({openObj,env,locale,accountAr }) {
         // if(post) history.pushState({id:paras.all}, tc('enkierTitle'), `#${paras.all}`);
     }
 
-    const homeHandle=(post)=>{ //首页
+    const homeHandle=()=>{ //首页
         removeUrlParams() 
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 1,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' });
         setActiveTab(0);
@@ -171,7 +175,7 @@ export default function me({openObj,env,locale,accountAr }) {
       
     }
 
-    const createHandle=(post)=>{ //创建发文
+    const createHandle=()=>{ //创建发文
         removeUrlParams()
         const [name,localdomain]=actorRef.current.actor_account.split('@');
         if(env.domain!==localdomain) return showClipError(t('loginDomainText',{domain:localdomain}));
@@ -184,7 +188,7 @@ export default function me({openObj,env,locale,accountAr }) {
        
     }
 
-    const myPostHandle=(post)=>{ //我的发文
+    const myPostHandle=()=>{ //我的发文
         removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 2,account: actorRef.current?.actor_account })
         setActiveTab(0);
@@ -192,7 +196,7 @@ export default function me({openObj,env,locale,accountAr }) {
         // if(post) history.pushState({id:paras.mypost}, tc('enkierTitle'), `#${paras.mypost}`);
     }
  
-    const myReceiveHandle=(post)=>{ //接收到的发文
+    const myReceiveHandle=()=>{ //接收到的发文
         removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 4,account: actorRef.current?.actor_account })
         setActiveTab(0);
@@ -200,7 +204,7 @@ export default function me({openObj,env,locale,accountAr }) {
         // if(post) history.pushState({id:paras.myreceive}, tc('enkierTitle'), `#${paras.myreceive}`);
     }
 
-    const followManHandle0=(post)=>{ //我关注谁
+    const followManHandle0=()=>{ //我关注谁
         removeUrlParams()
         setFollowMethod('getFollow0');
         setActiveTab(3);
@@ -208,7 +212,7 @@ export default function me({openObj,env,locale,accountAr }) {
         // if(post) history.pushState({id:paras.follow0}, tc('enkierTitle'), `#${paras.follow0}`);
     }
 
-    const followManHandle1=(post)=>{ //谁关注我
+    const followManHandle1=()=>{ //谁关注我
         removeUrlParams()
         setFollowMethod("getFollow1");
         setActiveTab(3);
@@ -216,14 +220,14 @@ export default function me({openObj,env,locale,accountAr }) {
         // if(post) history.pushState({id:paras.follow1}, tc('enkierTitle'), `#${paras.follow1}`);
     }
 
-    const myBookHandle=(post)=>{ //我的书签
+    const myBookHandle=()=>{ //我的书签
         removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 3,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
         setActiveTab(0);
         setTopText(t('bookTapText'));setNavIndex(paras.book);
         // if(post) history.pushState({id:paras.book}, tc('enkierTitle'), `#${paras.book}`);
     }
-    const myLikeHandle=(post)=>{ //喜欢
+    const myLikeHandle=()=>{ //喜欢
         removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 6,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
         setActiveTab(0);
@@ -231,7 +235,7 @@ export default function me({openObj,env,locale,accountAr }) {
         //  if(post) history.pushState({id:paras.like}, tc('enkierTitle'), `#${paras.like}`);
     }
     
-    const myAtHandle=(post)=>{ //私下提及
+    const myAtHandle=()=>{ //私下提及
         removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 7,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
         setActiveTab(0);
@@ -278,8 +282,9 @@ export default function me({openObj,env,locale,accountAr }) {
             <div ref={parentDivRef}  className='d-flex justify-content-center' style={{position:'sticky',top:'70px'}} >
                 <div  ref={leftDivRef} className='scsidebar scleft' >
                     <div className='mb-3' style={{overflow:'hidden'}} >
-                        {actor?.actor_account ? <EnkiMember messageObj={actor} isLocal={true} locale={locale} hw={64} /> : <EnkiAccount t={t} locale={locale} />}
-                        {!loginsiwe && <Loginsign user={user} tc={tc} />}
+                        {actor?.actor_account ? <EnkiMember messageObj={actor} isLocal={true} locale={locale} hw={64} /> : 
+                        <EnkiAccount locale={locale} />}
+                        {!loginsiwe && <Loginsign />}
                     </div>
                     <ul >
                         <li className={navIndex===paras.all?'scli':''} ><span onClick={()=>allHandle(true)} >{svgs.all} {t('allPostText')}</span></li>
@@ -296,12 +301,12 @@ export default function me({openObj,env,locale,accountAr }) {
                         </>}
                     </ul>
                     {loginsiwe && actor?.actor_account?.includes('@') && env.domain===actor.actor_account.split('@')[1] && <div>
-                    <SearchInput setSearObj={setSearObj} setFindErr={setFindErr} actor={actor} t={t} />
+                    <SearchInput setSearObj={setSearObj} setFindErr={setFindErr} />
                     {searObj && <div className='mt-3' >
                         <EnkiMember messageObj={searObj} isLocal={!!searObj.manager} locale={locale} />
                         <div className='mb-3 mt-3'>
-                        {searObj.id>0?<EnKiUnFollow t={t} searObj={searObj} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
-                        :<EnKiFollow  t={t} searObj={searObj} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
+                        {searObj.id>0?<EnKiUnFollow searObj={searObj}  />
+                        :<EnKiFollow searObj={searObj} showText={true} />
                         }
                         </div>
                     </div>
@@ -322,6 +327,7 @@ export default function me({openObj,env,locale,accountAr }) {
                     </div>  
                   {leftHidden && <NavDropdown className='daism-a' title="..." >
                     <NavDropdown.Item ><span onClick={()=>allHandle(true)} >{svgs.all} {t('allPostText')}</span></NavDropdown.Item>
+                    {loginsiwe && actor?.actor_account && <>
                     <NavDropdown.Item ><span onClick={()=>createHandle(true)} >{svgs.create} {t('createPostText')}</span></NavDropdown.Item>
                     <NavDropdown.Item ><span onClick={()=>homeHandle(true)} >{svgs.home} {t('scHomeText')}</span></NavDropdown.Item>
                     <NavDropdown.Item ><span onClick={()=>myPostHandle(true)} >{svgs.mypost} {t('myPostText')}</span></NavDropdown.Item>
@@ -331,25 +337,24 @@ export default function me({openObj,env,locale,accountAr }) {
                     <NavDropdown.Item ><span onClick={()=>myLikeHandle(true)} >{svgs.like} {t('likeText')}</span></NavDropdown.Item>
                     <NavDropdown.Item ><span onClick={()=>followManHandle0(true)} >{svgs.follow0} {t('followManText0')}</span></NavDropdown.Item>
                     <NavDropdown.Item ><span onClick={()=>followManHandle1(true)} >{svgs.follow1} {t('followManText1')}</span></NavDropdown.Item>
-            
+                    </>}
                     </NavDropdown> } 
                 </div>
                 
                 
   
-                    {activeTab === 0 ? <Mainself env={env} loginsiwe={loginsiwe} actor={actor} locale={locale}  t={t} tc={tc} 
-                    setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
-                    delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr} />
+                    {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
+                    fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
+                    delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr} path='enkier' />
 
-                    :activeTab === 1 ? <CreateMess t={t} tc={tc} actor={actor} addCallBack={homeHandle} fetchWhere={fetchWhere} 
-                    accountAr={accountAr} currentObj={currentObj} afterEditCall={afterEditCall} setActiveTab={setActiveTab} 
-                    setFetchWhere={setFetchWhere} callBack={callBack} />
+                    :activeTab === 1 ? <CreateMess addCallBack={homeHandle} accountAr={accountAr} currentObj={currentObj} 
+                    afterEditCall={afterEditCall}  
+                    callBack={callBack} />
 
-                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} t={t} tc={tc} actor={actor} loginsiwe={loginsiwe} 
-                    env={env} currentObj={currentObj} delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr}/>
+                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj} 
+                    delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr}/>
 
-                    :activeTab===3 && <FollowCollection locale={locale} t={t} account={actor?.actor_account} method={followMethod} 
-                    domain={env.domain} />}
+                    :activeTab===3 && <FollowCollection locale={locale}  method={followMethod}/>}
 
                 </div>
                 <div ref={rightDivRef} className='scsidebar scright' >
@@ -383,6 +388,11 @@ export const getServerSideProps = async ({ locale,query }) => {
             if(response?.message) openObj=response.message
         }
     }
+
+    if(openObj?.createtime) openObj.createtime=new Date(openObj.createtime).toJSON();
+    if(openObj?.currentTime) openObj.currentTime=new Date(openObj.currentTime).toJSON();
+    if(openObj?.reply_time) openObj.reply_time=new Date(openObj.reply_time).toJSON();
+
     return {
         props: {
             messages: {

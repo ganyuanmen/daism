@@ -1,7 +1,13 @@
 import { User1Svg } from "../../../lib/jssvg/SvgCollection";
 import ShowAddress from "../../ShowAddress";
 
-//islocal 是否本地帐号， 有钱包地址可以显示 hw 图片宽高，
+/**
+ * 显示用户信息，包括头像，钱包地址，enki 帐号
+ * @messageObj 
+ * @isLocal 是否本地帐号，非本地帐号打开个人信息时，启用新的窗口，凡是enki 和智能公器帐号都是本地帐号
+ * @locale zh/cn 
+ */
+
 export default function EnkiMember({messageObj,isLocal,locale,hw=48})
 {
     const geneHref=()=>{

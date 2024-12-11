@@ -161,7 +161,7 @@ export default function User({user,loginsiwe,t,domain,...props}) {
             </div>
            
           </form>
-          :<><h4>{t('notLoginText')}</h4><br/> <Loginsign user={user} tc={t} /></>}
+          :<><h4>{t('notLoginText')}</h4><br/> <Loginsign /></>}
           
        
         </Modal.Body>

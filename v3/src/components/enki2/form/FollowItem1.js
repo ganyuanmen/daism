@@ -3,42 +3,32 @@
 import EnkiMember from "./EnkiMember"
 import { Row,Col } from "react-bootstrap";
 import EnKiFollow from "./EnKiFollow";
-import {useSelector, useDispatch} from 'react-redux';
-import {setTipText,setMessageText} from '../../../data/valueData';
+import {useSelector} from 'react-redux';
 import { useState,useEffect } from "react";
 import { client } from "../../../lib/api/client";
 
 /**
- * 谁关注我的item  
+* 谁关注我的item   
+* @messageObj  关注者信息
+ * @locale zh/cn
+ * @isEdit 显示关注按钮
  */
-export default function FollowItem1({messageObj,t,domain,locale,isFrom}) {
-    const dispatch = useDispatch();
-    function showTip(str){dispatch(setTipText(str))}
-    function closeTip(){dispatch(setTipText(''))}
+export default function FollowItem1({messageObj,locale,isEdit}) {
+    
     const[data,setData]=useState(messageObj)
-    const [isFollow,setIsFollow]=useState(true); //是否已关注
-
-    function showClipError(str){dispatch(setMessageText(str))}  
     const actor = useSelector((state) => state.valueData.actor)
-    // const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
+    const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
+    const myFollow = useSelector((state) => state.valueData.myFollow)
 
+    const checkFollow=(obj)=>{
+        const account=obj.actor_account || obj.account;
+        const item=myFollow.find(accountStr=>accountStr===account);
+        return !!item
+
+    }
+ 
+    //获取关注者当前的头像
     useEffect(()=>{
-        let ignore = false; 
-        if(actor?.actor_account && actor?.actor_account.includes('@')){
-            client.get(`/api/getData?actorAccount=${messageObj.account}&userAccount=${actor?.actor_account}`,'getFollow').then(res =>{ 
-                if (!ignore) 
-                    if (res.status===200) setIsFollow(!!res.data.id || domain!=actor.actor_account.split('@')[1])
-                    else console.error(res.statusText)
-            });
-        }else{
-            setIsFollow(true) //没登录，没注册，不允许关注
-        }
-
-        return () => {ignore = true}
-    },[actor])
-
-    useEffect(()=>{
-        // 
         let ignore = false;
         client.get(`/api/getData?url=${messageObj.url}`,'getUserFromUrl').then(res =>{ 
 
@@ -53,13 +43,12 @@ export default function FollowItem1({messageObj,t,domain,locale,isFrom}) {
         return () => {ignore = true}
     },[messageObj])
  
-
     return (
         
             <Row className="d-flex align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:"5px 2px"}}  >
                 <Col><EnkiMember messageObj={data} isLocal={false} hw={32} locale={locale} /></Col>
                 <Col>
-                    {!isFrom && actor?.actor_account && !isFollow && <EnKiFollow  t={t} searObj={messageObj} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
+                    {isEdit && loginsiwe && actor?.actor_account && !checkFollow(messageObj) && <EnKiFollow searObj={messageObj} showText={true} />
                     }
                 </Col>
                 

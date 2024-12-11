@@ -1,9 +1,14 @@
 import { Row,Col } from "react-bootstrap";
 import { LocationSvg,DateSvg,WebsitSvg } from '../../../lib/jssvg/SvgCollection';
+import { useTranslations } from 'next-intl'
 
-//活动附加信息
-export default function EventItem({t,currentObj})
+/**
+ * 活动附加信息
+ * @currentObj 嗯文内容 
+ */
+export default function EventItem({currentObj})
 {
+    const t=useTranslations('ff');
     return(
         <Row className="mt-2" >
             <Col className="col-auto me-auto " >

@@ -1,9 +1,18 @@
 import React, {useImperativeHandle,useRef, forwardRef, useState,useEffect } from "react";
 import { PublicMess,LockSvg,SomeOne } from "../../lib/jssvg/SvgCollection";
 import { InputGroup,Form,Row,Col } from "react-bootstrap";
+import { useSelector } from 'react-redux';
+import { useTranslations } from 'next-intl'
 
-const SCProperty = forwardRef(({children,t,currentObj,accountAr,actor}, ref) => {
-  
+/**
+ * 嗯文编辑时指定给特定的人选择
+ * @currentObj 嗯文对象
+ * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
+ * @children 留有一个插槽 用于放置 剩多少个文字， 把两个组件放在一行上
+ */
+const SCProperty = forwardRef(({children,currentObj,accountAr}, ref) => {
+    const actor = useSelector((state) => state.valueData.actor)
+    const t = useTranslations('ff')
     const div1Ref = useRef(null);  //属性选择窗口
     const div2Ref = useRef(null); //@用户窗口
     const selectRef=useRef() //@输入框
@@ -110,5 +119,3 @@ const SCProperty = forwardRef(({children,t,currentObj,accountAr,actor}, ref) => 
 });
 
 export default React.memo(SCProperty);
-
-// 

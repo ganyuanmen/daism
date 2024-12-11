@@ -1,11 +1,18 @@
 import React, {useImperativeHandle,useRef, forwardRef, useState } from "react";
 import { Modal,Button,InputGroup,Form } from "react-bootstrap";
 import ErrorBar from "../form/ErrorBar";
+import { useTranslations } from 'next-intl'
+import { UploadVedio } from "../../lib/jssvg/SvgCollection";
 
-const VedioUpload = forwardRef(({ vedioUrl,setVedioUrl,tc,t}, ref) => {
+/**
+ * 上传视频链接
+ * @vedioUrl 修改的视频地址，新增为空
+ * @setVedioUrl 设置视频地址，给上层显示视频用
+ */
+const VedioUpload = forwardRef(({ vedioUrl,setVedioUrl}, ref) => {
     const [show,setShow]=useState(false)
     const urlRef=useRef();
-    const titleRef=useRef()
+    const t = useTranslations('ff')
     const [showError,setShowError]=useState(false)
 
     useImperativeHandle(ref, () => ({
@@ -29,13 +36,9 @@ const VedioUpload = forwardRef(({ vedioUrl,setVedioUrl,tc,t}, ref) => {
     }
     return (
         <>
-            <button onClick={e=>{setShow(true)}} type="button" className="btn btn-light btn-sm" data-bs-toggle="tooltip" data-bs-html="true" title={t('uploadVedioText')}>  
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"  viewBox="0 0 16 16">
-                <path d="M6 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0M1 3a2 2 0 1 0 4 0 2 2 0 0 0-4 0"/>
-                <path d="M9 6h.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 7.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 16H2a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm6 8.73V7.27l-3.5 1.555v4.35zM1 8v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1"/>
-                <path d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6M7 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
-            </svg>
-            </button>
+            <Button variant="light" size="sm" onClick={e=>{setShow(true)}}  title={t('uploadVedioText')}>  
+            <UploadVedio size={20} />
+            </Button>
             <Modal size="lg" show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                 <Modal.Title>{t('uploadVedioText')}</Modal.Title>

@@ -4,12 +4,21 @@ import { useRef } from "react";
 import { client } from "../../../lib/api/client";
 import { useSelector,useDispatch} from 'react-redux';
 import {setTipText,setMessageText,setUser,setLoginsiwe} from '../../../data/valueData'
+import { useTranslations } from 'next-intl'
 
-//活动附加信息 re 是否重新注册
-export default function EnKiRigester({t,user,domain,setRegister,re,accountTotal})
+/**
+ * 个人注册帐号
+ * @setRegister 可选，隐藏上层弹出的窗口 
+ * @env 环境变量 
+ */
+
+export default function EnKiRigester({setRegister,env})
 {
     const nameRef=useRef()
     const actor = useSelector((state) => state.valueData.actor) 
+    const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
+    const tc = useTranslations('Common')
+    const t = useTranslations('ff')
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
@@ -24,8 +33,8 @@ export default function EnKiRigester({t,user,domain,setRegister,re,accountTotal}
 
         showTip(t('submittingText'))  
         // actorName='0x'+actorName 
-        let re=await  client.get(`/api/getData?account=0x${actorName}@${domain}`,'getSelfAccount');
-        if(re.data.allTotal>parseInt(accountTotal)){
+        let re=await  client.get(`/api/getData?account=0x${actorName}@${env.domain}`,'getSelfAccount');
+        if(re.data.allTotal>parseInt(env.accountTotal)){
             closeTip()
             showClipError(t('exceedAmount'))
             return;
@@ -33,22 +42,21 @@ export default function EnKiRigester({t,user,domain,setRegister,re,accountTotal}
 
         if(re.status!==200 || re.data.nameTotal>0 )
         {
-            showClipError(`${actorName}@${domain} ${t('registeredText')}`)
+            showClipError(`${actorName}@${env.domain} ${t('registeredText')}`)
             closeTip()
             return
         }
         
         re=await window.daismDaoapi.Domain.addr2Info(user.account);
         if(setRegister) setRegister(false)
-        if(re && re[0]===domain && re[1]==='0x'+actorName){ 
-            showClipError(`${actorName}@${domain} ${t('registeredText')}`)
+        if(re && re[0]===env.domain && re[1]==='0x'+actorName){ 
+            showClipError(`${actorName}@${env.domain} ${t('registeredText')}`)
             closeTip()
             return
         }
     
         //重新设置登录信息
-        window.daismDaoapi.Domain.recordInfo(actorName,domain).then(re => {
-            // dispatch(setActor({...actor,domain,actor_name:actorName,actor_account:`${actorName}@${domain}`,actor_url:`https://${domain}/api/activitepub/users/${actorName}`}))
+        window.daismDaoapi.Domain.recordInfo(actorName,env.domain).then(re => {
             closeTip()
             dispatch(setUser({...user,connected:0,account:'',chainId:0}))
             dispatch(setLoginsiwe(false))
@@ -58,7 +66,7 @@ export default function EnKiRigester({t,user,domain,setRegister,re,accountTotal}
                     fetch(`/api/admin/recover`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ actorName:`0x${actorName}`,domain,oldAccount:actor.actor_account,sctype:'',daoid:0})
+                        body: JSON.stringify({ actorName:`0x${actorName}`,domain:env.domain,oldAccount:actor.actor_account,sctype:'',daoid:0})
                     })
                     .then(async response => {console.info('recover ok') })
             }, 3000);
@@ -74,7 +82,7 @@ export default function EnKiRigester({t,user,domain,setRegister,re,accountTotal}
     return(
         <InputGroup className="mb-3" style={{maxWidth:"400px"}} >
             <Form.Control placeholder={t('nickName')} ref={nameRef} />
-            <InputGroup.Text  >{`@${domain}`}</InputGroup.Text>
+            <InputGroup.Text  >{`@${env.domain}`}</InputGroup.Text>
             <Button variant="outline-secondary" onClick={register}   ><UploadSvg size={24} /> {t('registerText')} </Button>
        </InputGroup>
     );

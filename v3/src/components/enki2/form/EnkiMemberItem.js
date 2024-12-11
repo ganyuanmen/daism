@@ -1,50 +1,102 @@
 import TimesItem from "../../federation/TimesItem";
 import EnkiMember from "./EnkiMember"
-import EnkiEditItem from "./EnkiEditItem"
 import EnKiFollow from "./EnKiFollow";
-import { useState,useEffect } from "react";
+import { useState,useEffect,useRef } from "react";
 import { client } from "../../../lib/api/client";
+import { Button,Overlay,Tooltip } from "react-bootstrap";
+import { useTranslations } from 'next-intl'
+import { useSelector } from 'react-redux';
+import { MoreBtn } from "../../../lib/jssvg/SvgCollection";
 
-import dynamic from 'next/dynamic';
-const EnkiMessageMember = dynamic(() => import('../../enki3/EnkiMessageMember'), { ssr: false });
-
-//isEdit 是否可修改的
-export default function EnkiMemberItem({locale,t,actor,messageObj,domain,delCallBack,preEditCall,showTip,closeTip,showClipError,isEdit}) {
+/**
+ * 显示嗯文头部信息，包括用户头像，荣誉证, 时间
+ * @locale zh/cn 
+ * @messageObj 嗯文对象
+ * @domain 当前服务器域名
+ */
+export default function EnkiMemberItem({locale,messageObj,domain}) {
+    const [honor,setHonor]=useState([])
     const [isFollow,setIsFollow]=useState(true) //默认已关注
-    
+    const myFollow = useSelector((state) => state.valueData.myFollow)
+    const actor = useSelector((state) => state.valueData.actor)
+    const t = useTranslations('ff')
 
     useEffect(() => {
-        let ignore = false; //getFollow, //获某一关注 {actorAccount,userAccount} userAccount 关注  actorAccount
-        if(actor?.actor_account && actor.actor_account.includes('@'))
-        client.get(`/api/getData?actorAccount=${messageObj?.actor_account}&userAccount=${actor?.actor_account}`,'getFollow').then(res =>{  
-          
-            if (!ignore) 
-                if (res.status===200) {  //用户不在注册地登录的，设为已注册，不需要显示关注的按钮
-                    setIsFollow(!!res.data.id || domain!=actor.actor_account.split('@')[1]);
-                }
-                else console.error(res.statusText)
-        });
-        return () => {ignore = true}
-        
-    }, [actor]);
+        let item = myFollow.find(accountStr => accountStr === messageObj.actor_account);
+        //本人不能关注本人，设为已关注 用户不在注册地登录的，设为已注册，不需要显示关注的按钮
+        if(item || actor?.actor_account===messageObj.actor_account || domain!=actor?.actor_account?.split('@')[1]) 
+            setIsFollow(true); else setIsFollow(false);
+    }, [myFollow]);  
 
-  
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            try {
+                const res = await client.get(`/api/getData?did=${messageObj.manager}`,'getMynft');
+                if(res.status===200)
+                    if(Array.isArray(res.data)) setHonor(res.data)
+                 
+            } catch (error) {
+                console.error(error);
+            } 
+        };
+
+        if(messageObj.dao_id==0 && messageObj?.manager) fetchData();
+
+    },[messageObj]) 
  
-
+  //isLocal={messageObj?.actor_id>0} a_messagesc中actor_id 是发布人的id,都大于0，都属本地帐号，
+  //a_message中的actor_id,关联到a_account, 是enki 帐号的都是本地。
     return (
-        <div className="d-flex justify-content-between align-items-center">
-            {(messageObj?.dao_id==0 &&messageObj?.send_type==0 && messageObj?.manager)?<EnkiMessageMember t={t} messageObj={messageObj} locale={locale} />
-            :<EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /> }
-            
-            {actor?.actor_account && !isFollow && messageObj?.actor_account!==actor?.actor_account && 
-            <EnKiFollow t={t} searObj={messageObj} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} /> }
-            
-            <div>
-                {isEdit && <EnkiEditItem messageObj={messageObj}  t={t} delCallBack={delCallBack} preEditCall={preEditCall} sctype={messageObj?.dao_id>0?'sc':''} /> } 
-                <TimesItem times={messageObj?.times} t={t} />
-            </div>
+        <div className="d-flex flex-wrap justify-content-between align-items-center" >
+            <div><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
+            {honor.length>0 && <div><Honor honor={honor} t={t} /> </div>}
+            {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
+            <div><TimesItem currentObj={messageObj} /></div>
         </div>
     );
 }
 
-// checkDomain(messageObj?.actor_account,messageObj?.dao_id) &&
+function Honor({honor,t}){
+
+    const svgToBase=(svgCode)=> {
+	    const utf8Bytes = new window.TextEncoder().encode(svgCode);
+	    return 'data:image/svg+xml;base64,' +window.btoa(String.fromCharCode.apply(null, utf8Bytes));
+	}
+
+    const geneHonor=()=>{
+        const [show, setShow] = useState(false);
+        const target = useRef(null);
+      
+        if(honor.length===3){
+            return <>
+            <img src={svgToBase(honor[0].tokensvg)} className="honor"  />
+            <img src={svgToBase(honor[1].tokensvg)} className="honor"  />
+            <img src={svgToBase(honor[2].tokensvg)} className="honor"  />
+            </>
+        }
+        else if(honor.length>2) {
+            return <>
+            <img src={svgToBase(honor[0].tokensvg)} className="honor"  />
+            <img src={svgToBase(honor[1].tokensvg)} className="honor"  />
+            <Button variant="light" ref={target} onClick={() => setShow(!show)} title={t('moreText')}>
+                <MoreBtn size={24}/>
+            </Button>
+            <Overlay target={target.current} show={show} placement="bottom">
+                {(props) => (
+                <Tooltip id="overlay-example78" {...props}>
+                  { honor.map((obj,idx)=>(<img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  />))}
+                </Tooltip>
+                )}
+            </Overlay>
+            </>
+        }
+        else { //0,1,2
+            return honor.map((obj,idx)=>(<img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  />));
+        }
+    }
+
+    return <>{geneHonor()}</>
+    
+ 
+}

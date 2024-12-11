@@ -3,8 +3,18 @@ import ImgUpload from "./ImgUpload";
 import VedioUpload from "./VedioUpload";
 import { Row,Col } from "react-bootstrap";
 import ShowVedio from "../enki2/form/ShowVedio";
+import { useTranslations } from 'next-intl'
 
-const Media = forwardRef(({children, tc,t,currentObj}, ref) => {
+/**
+ * 包括图片上传和视频上传组件
+ * @currentObj 嗯文对象
+ * @children 留有一个插槽 用于放置 指定人的按钮， 把三个组件放在一行上
+ */
+
+const Media = forwardRef(({children,currentObj}, ref) => {
+    const t = useTranslations('ff')
+    const tc = useTranslations('Common')
+
     const geneType=()=>{
         if(currentObj?.top_img)
           {
@@ -32,9 +42,9 @@ const Media = forwardRef(({children, tc,t,currentObj}, ref) => {
         <Row>
             <Col>{children}</Col>
             <Col className="col-auto" > 
-            <ImgUpload ref={imgRef} currentObj={currentObj} tc={tc} t={t} maxSize={1024*500} fileTypes='svg,jpg,jpeg,png,gif,webp'
+            <ImgUpload ref={imgRef} currentObj={currentObj} maxSize={1024*500} fileTypes='svg,jpg,jpeg,png,gif,webp'
             setFileStr={setFileStr} setFileType={setFileType}/>
-            <VedioUpload tc={tc} t={t} vedioUrl={vedioUrl} setVedioUrl={setVedioUrl} />
+            <VedioUpload vedioUrl={vedioUrl} setVedioUrl={setVedioUrl} />
             </Col>
         </Row>
         <Row className="mt-2" >

@@ -33,7 +33,7 @@ export default function Message({currentObj,locale,env}) {
       </Head>
     
       <PageLayout env={env}>
-        {currentObj?.id? <MessagePage path="noedit" locale={locale} t={t} tc={tc} actor={actor} loginsiwe={loginsiwe}  currentObj={currentObj} env={env} />
+        {currentObj?.id? <MessagePage path="noedit" locale={locale}  currentObj={currentObj} env={env} />
         :<ShowErrorBar errStr={t('noPostingText')} />
         }
         </PageLayout>
@@ -44,6 +44,11 @@ export default function Message({currentObj,locale,env}) {
 export const getServerSideProps =async ({locale,query }) => {
 
   const currentObj=await getOne({id:query.id,sctype:''})
+
+  if(currentObj?.createtime) currentObj.createtime=new Date(currentObj.createtime).toJSON();
+  if(currentObj?.currentTime) currentObj.currentTime=new Date(currentObj.currentTime).toJSON();
+  if(currentObj?.reply_time) currentObj.reply_time=new Date(currentObj.reply_time).toJSON();
+
 
     return {
       props: {

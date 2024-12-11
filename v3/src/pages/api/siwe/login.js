@@ -19,7 +19,8 @@ export default withSession(async (req, res) => {
         const _actor=await getActor(siweMessage.address)
         res.status(200).json({
           daoActor:await getJsonArray('daoactor',[siweMessage.address]), //dao帐号列表
-          actor:_actor    //个人帐号
+          actor:_actor,    //个人帐号
+          myFollow:await getJsonArray('getFollow',[_actor?.actor_account]), //dao帐号列表
       }); 
     } catch(e) {
       res.status(500).json({errMsg: e.message })

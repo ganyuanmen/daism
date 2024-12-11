@@ -5,9 +5,15 @@ import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import EnkiMember from "./EnkiMember";
+import { useTranslations } from 'next-intl'
 
-export default function EnkiAccount({t,locale})
+/**
+ * 显示未注册帐号
+ * @locale zh/cn
+ */
+export default function EnkiAccount({locale})
 {
+    const t=useTranslations('ff')
     const actor = useSelector((state) => state.valueData.actor)
     const target = useRef(null);
     const [show, setShow] = useState(false);

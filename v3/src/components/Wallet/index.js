@@ -7,7 +7,7 @@ import User from './User';
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useSelector, useDispatch } from 'react-redux';
-import {setEthBalance,setDaoActor,setActor,setUser,setTokenList,setTokenFilter,setLoginsiwe,setDaoAddress,setMessageText} from '../../data/valueData'
+import {setEthBalance,setDaoActor,setActor,setUser,setTokenList,setTokenFilter,setLoginsiwe,setMyFollow,setMessageText} from '../../data/valueData'
 import { client } from '../../lib/api/client';
 import LoginButton from '../LoginButton';
 import { useSyncProviders } from '../../hooks/useSyncProviders'
@@ -36,17 +36,17 @@ function Wallet({env,query,route,otherLocale,tc}) {
     const path=`${route}${restoredURL.length>1?restoredURL:''}`
 
      useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await client.get('/api/siwe/getdaoactor?t='+new Date().getTime());
-                if(res.status===200){
-                    dispatch(setDaoActor(res.data.daoActor))
-                    dispatch(setActor(res.data.actor))
-                }
-            } catch (error) {
-                console.error(error);
-            } 
-        };
+        // const fetchData = async () => {
+        //     try {
+        //         const res = await client.get('/api/siwe/getdaoactor?t='+new Date().getTime());
+        //         if(res.status===200){
+        //             dispatch(setDaoActor(res.data.daoActor))
+        //             dispatch(setActor(res.data.actor))
+        //         }
+        //     } catch (error) {
+        //         console.error(error);
+        //     } 
+        // };
 
         if(providers.length) {
             let _name=window.sessionStorage.getItem("providerinfoname")
@@ -65,11 +65,14 @@ function Wallet({env,query,route,otherLocale,tc}) {
                 connectWalletRef.current(providerRef.current)
                 if(window.sessionStorage.getItem("loginsiwe")==='1'){ // //恢复siwe 登录
                     dispatch(setLoginsiwe(true))
-                    fetchData()
-                    // let _dao=window.sessionStorage.getItem("daoActor")
-                    // if(_dao) dispatch(setDaoActor(JSON.parse(_dao)))
-                    // let _actor=window.sessionStorage.getItem("actor")
-                    // if(_actor) dispatch(setActor(JSON.parse(_actor)))
+                   
+                    let _dao=window.sessionStorage.getItem("daoActor")
+                    if(_dao) dispatch(setDaoActor(JSON.parse(_dao)))
+                    let _actor=window.sessionStorage.getItem("actor")
+                    if(_actor) dispatch(setActor(JSON.parse(_actor)))
+                    let _follow=window.sessionStorage.getItem("myFollow")
+                    if(_follow) dispatch(setMyFollow(JSON.parse(_follow)))
+                    // fetchData()
                 }
             }         
         }

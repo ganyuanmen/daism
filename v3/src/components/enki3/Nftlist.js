@@ -1,11 +1,14 @@
 import { Card,Row,Col,Modal,Table  } from 'react-bootstrap';
 import ShowAddress from '../../components/ShowAddress';
 import { useState } from 'react';
-import { VitaSvg } from '../../lib/jssvg/SvgCollection';
 
 
+/**
+ * 荣誉通证列表
+ * @mynftData 荣誉通证数据
+ */
 
-export default function Nftlist({mynftData,t})
+export default function Nftlist({mynftData})
 {
 
     const [show,setShow]=useState(false)

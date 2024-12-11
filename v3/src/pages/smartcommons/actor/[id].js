@@ -51,12 +51,12 @@ export default function MyActor({daoActor,actor,follow0,follow1,locale,env}) {
             <Tabs defaultActiveKey="follow0" className="mb-3 mt-3" >
             <Tab eventKey="follow0" title={t('followingText',{num:follow0.length})}>
               <div>
-                {follow0.map((obj)=> <FollowItem0 key={obj.id} locale={locale} domain={env.domain}  messageObj={obj} t={t} isFrom={true} />)}
+                {follow0.map((obj)=> <FollowItem0 key={obj.id} locale={locale}  messageObj={obj} isEdit={false} />)}
               </div>
             </Tab>
             <Tab eventKey="follow1" title={t('followedText',{num:follow1.length})}>
               <div>
-                {follow1.map((obj)=> <FollowItem1 locale={locale} key={obj.id} domain={env.domain} messageObj={obj} t={t} isFrom={true} />)}
+                {follow1.map((obj)=> <FollowItem1 locale={locale} key={obj.id}  messageObj={obj} isEdit={false} />)}
               </div>
             </Tab>
           </Tabs>

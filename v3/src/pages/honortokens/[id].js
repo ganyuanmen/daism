@@ -22,7 +22,7 @@ export default function honor({currentObj,locale,env}) {
         </Head>
 
       <PageLayout env={env}>
-      <Nftlist mynftData={currentObj} t={t} />
+      <Nftlist mynftData={currentObj} />
       </PageLayout>
       </>         
     )

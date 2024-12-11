@@ -4,14 +4,32 @@ import { Modal, Button,Form } from 'react-bootstrap';
 import { ReplySvg } from '../../../lib/jssvg/SvgCollection';
 import Editor from "./Editor";
 import RichEditor from "../../enki3/RichEditor";
+import { useSelector, useDispatch } from 'react-redux';
+import {setTipText,setMessageText} from '../../../data/valueData';
+import { useTranslations } from 'next-intl'
 
-//addReplyCallBack 新增后的回调 data_index 从列表中新增的列表序号，用于更新前端 reply_index修改列表序号
-//回复按钮 isd 是否允许回复
-const MessageReply = forwardRef(({ t, tc, actor, total, currentObj, addReplyCallBack, afterEditcall,
-     replyObj, setReplyObj, showTip, closeTip, showClipError,isEdit,data_index,accountAr }, ref) => {
+/**
+ * @currentObj 回复的嗯文对象
+ * @addReplyCallBack 新增回复后的数据处理
+ * @afterEditcall修改回复后的数据操作
+ * @replyObj 修改的回复对象
+ * @setReplyObj 新增回复时清空界面的值
+ * @isEdit 是否允许回复
+ * @data_index 嗯文列表的序号，用于直接从嗯文列表中添加回复时，更新回复总数
+ * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
+ */
+
+const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,setReplyObj,
+     replyObj,isEdit,data_index,accountAr }, ref) => {
 
     const [showWin, setShowWin] = useState(false); //回复窗口显示
-
+    const dispatch = useDispatch();
+    function showTip(str){dispatch(setTipText(str))}
+    function closeTip(){dispatch(setTipText(''))}
+    function showClipError(str){dispatch(setMessageText(str))}  
+    const actor = useSelector((state) => state.valueData.actor)
+    const t = useTranslations('ff')
+    const tc = useTranslations('Common')
     const [typeIndex,setTypeIndex]=useState(0)
     const editorRef=useRef(); 
     const richEditorRef=useRef(); 
@@ -88,12 +106,12 @@ const MessageReply = forwardRef(({ t, tc, actor, total, currentObj, addReplyCall
  
     return (
         <>
-            <button type="button" disabled={!(isEdit && currentObj?.is_discussion == 1)} onClick={() => {setShowWin(true);
+            <Button variant="light" disabled={!(isEdit && currentObj?.is_discussion == 1)} onClick={() => {setShowWin(true);
                 if(setReplyObj) setReplyObj(null); //表示新增
-                }} className="btn btn-light" data-bs-toggle="tooltip" data-bs-html="true" title={t('replyText')}>  
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"  aria-hidden="true"><path d="M760-200v-160q0-50-35-85t-85-35H273l144 144-57 56-240-240 240-240 57 56-144 144h367q83 0 141.5 58.5T840-360v160h-80Z"></path></svg>
-                {total}
-            </button>
+                }}  title={t('replyText')}>  
+                <ReplySvg size={24} />
+                {currentObj.total}
+            </Button>
 
             <Modal size='lg' className='daism-title' show={showWin} onHide={(e) => { setShowWin(false) }} >
                 <Modal.Header closeButton></Modal.Header>
@@ -104,8 +122,8 @@ const MessageReply = forwardRef(({ t, tc, actor, total, currentObj, addReplyCall
                     <Form.Check inline label={t('longText')} name="regroup1" type='radio' checked={typeIndex===1} 
                     onChange={e=> {if(e.target.checked) setTypeIndex(1)}}  id='reinline-1' />
                     </Form>
-                    {typeIndex===0?<Editor  ref={editorRef} currentObj={replyObj} t={t} tc={tc} nums={nums} accountAr={accountAr} actor={actor} showProperty={false} />
-                    :<RichEditor  ref={richEditorRef} currentObj={replyObj} t={t} tc={tc} accountAr={accountAr} actor={actor} showProperty={false} />}
+                    {typeIndex===0?<Editor  ref={editorRef} currentObj={replyObj} nums={nums} accountAr={accountAr} showProperty={false} />
+                    :<RichEditor  ref={richEditorRef} currentObj={replyObj} />}
                     <div className='mt-2 mb-2' style={{ textAlign: 'center' }} >
                         <Button onClick={submit} variant="primary"> <ReplySvg size={16} /> {t('replyText')}</Button>
                     </div>

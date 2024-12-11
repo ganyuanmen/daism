@@ -1,6 +1,9 @@
 import React from 'react';
 
-
+/**
+ * 显示视频
+ * @vedioUrl 视频地址
+ */
 const ShowVedio = ({ vedioUrl }) => {
 
   const boxRef = React.useRef(null);

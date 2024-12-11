@@ -2,35 +2,23 @@
 import EnkiMember from "./EnkiMember"
 import { Row,Col } from "react-bootstrap";
 import EnKiUnFollow from './EnKiUnFollow'
-import {useSelector, useDispatch} from 'react-redux';
-import {setTipText,setMessageText} from '../../../data/valueData';
+import {useSelector} from 'react-redux';
 import { useEffect, useState } from "react";
 import { client } from "../../../lib/api/client";
 
 /**
  * 我关注谁的item
+ * @messageObj 关注信息对象
+ * @domain 本地域名
+ * @locale zh/cn
+ * @isEdit 是否显示 取关按钮
  */
-export default function FollowItem0({messageObj,t,domain,locale,isFrom}) {
-    const [isFollow,setIsFollow]=useState(true); //默认已关注，不显示按钮
-    const dispatch = useDispatch();
-    function showTip(str){dispatch(setTipText(str))}
-    function closeTip(){dispatch(setTipText(''))}
-
+export default function FollowItem0({messageObj,locale,isEdit}) {
+    
     const[data,setData]=useState(messageObj)
-
-    function showClipError(str){dispatch(setMessageText(str))}  
-    const actor = useSelector((state) => state.valueData.actor)
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
 
     useEffect(()=>{
-        if(actor?.actor_account && actor?.actor_account.includes('@')){
-            setIsFollow(domain!=actor.actor_account.split('@')[1]); //不是注册在登录，设置已关注
-        }
-
-    },[actor])
-
-    useEffect(()=>{
-        // 
         let ignore = false;
         client.get(`/api/getData?url=${messageObj.url}`,'getUserFromUrl').then(res =>{ 
 
@@ -50,8 +38,8 @@ export default function FollowItem0({messageObj,t,domain,locale,isFrom}) {
         
             <Row className="d-flex align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:"5px 2px"}}  >
                 <Col><EnkiMember messageObj={data} isLocal={false} hw={32} locale={locale} /></Col>
-                {!isFrom && loginsiwe && !isFollow && <Col>
-                    <EnKiUnFollow t={t} searObj={messageObj} actor={actor} showTip={showTip} closeTip={closeTip} showClipError={showClipError} />
+                {isEdit && loginsiwe && <Col>
+                    <EnKiUnFollow searObj={messageObj} />
                 </Col>
                 }
                 <Col>{messageObj.createtime}(UTC+8)</Col>

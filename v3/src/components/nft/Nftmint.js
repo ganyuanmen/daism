@@ -2,12 +2,24 @@
 import { Button,Modal,InputGroup,Form,FormControl } from 'react-bootstrap';
 import useGetDappOwner from "../../hooks/useGetDappOwner"
 import { useState,useEffect } from 'react';
-
+import { useSelector,useDispatch } from 'react-redux';
+import { useTranslations } from 'next-intl'
 import {Honor} from '../../lib/jssvg/SvgCollection'
 
+/**
+ * Mint NFT
+ */
 
-export default function Nftmint({closeTip,showTip,showError,t,tc,user})
+export default function Nftmint({})
 {
+    const t = useTranslations('nft')
+    const tc = useTranslations('Common')
+    const user = useSelector((state) => state.valueData.user) //钱包用户信息
+    const dispatch = useDispatch();
+    function showError(str){dispatch(setMessageText(str))}
+    function showTip(str){dispatch(setTipText(str))}
+    function closeTip(){dispatch(setTipText(''))}
+
     const [show, setShow] = useState(false); //mint nft 窗口
     const [tips,setTips]=useState(1)
     const [batch,setBatch]=useState(false) //是否批量

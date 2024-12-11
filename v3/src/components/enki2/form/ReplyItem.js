@@ -3,8 +3,17 @@ import EnkiMember from "./EnkiMember"
 import EnkiEditItem from "./EnkiEditItem"
 import ShowVedio from "./ShowVedio";
 
-//关注内容 
-export default function ReplyItem({locale,isEdit,t,replyObj,delCallBack,preEditCall,sctype,reply_index}) {
+/**
+ * 回复Item
+ * @locale zh/cn
+ * @isEdit  允许修改
+ * @replyObj 回复内容
+ * @delCallBack 删除回复后回调
+ * @preEditCall 修改回复前调用
+ * @sctype sc:社区嗯文 空：个人嗯文
+ * @reply_index 回复列表中的序号
+ */
+export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCall,sctype,reply_index}) {
 
  const editCallBack=()=>{
     preEditCall.call(this,replyObj,reply_index)
@@ -20,14 +29,13 @@ export default function ReplyItem({locale,isEdit,t,replyObj,delCallBack,preEditC
            <div className="d-flex justify-content-between align-items-center" style={{paddingLeft:"20px"}}  >
                 <EnkiMember messageObj={replyObj} isLocal={false} hw={32} locale={locale} />
                 <div style={{paddingRight:'10px'}}  >
-                    {isEdit && <EnkiEditItem  messageObj={replyObj}  t={t} delCallBack={callBack} 
+                   <EnkiEditItem isEdit={isEdit} messageObj={replyObj} delCallBack={callBack} 
                     preEditCall={editCallBack} type={1} sctype={sctype} />
-                    } 
-                    <TimesItem times={replyObj.times} t={t} />
+                    <TimesItem currentObj={replyObj} />
                 </div>
             </div> 
             <div className="daism-reply-item" style={{paddingBottom:'20px'}} >
-                <div dangerouslySetInnerHTML={{__html: replyObj.content}}></div>
+                <div style={{minHeight:'60px'}} dangerouslySetInnerHTML={{__html: replyObj.content}}></div>
                 {replyObj?.content_link && <div dangerouslySetInnerHTML={{__html: replyObj.content_link}}></div>}
                 {replyObj?.top_img && <img  className="mt-2 mb-2" alt="" src={replyObj.top_img} style={{maxWidth:'100%'}} />
                 }

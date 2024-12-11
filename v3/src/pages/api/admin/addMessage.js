@@ -78,11 +78,11 @@ export default withSession(async (req, res) => {
            
             if (daoid) {     
                 if (_type[0] == '1') { //活动嗯文
-                    sql = "update a_messagesc set _type=1,content=?,is_send=?,is_discussion=?,top_img=?,start_time=?,end_time=?,event_url=?,event_address=?,time_event=? where id=?"
-                    paras= [content[0], isSend[0], isDiscussion[0], path, startTime[0], endTime[0], eventUrl[0], eventAddress[0], time_event[0], id[0]];
+                    sql = "update a_messagesc set property_index=?,type_index=?,vedio_url=?,account_at=?,_type=1,content=?,is_send=?,is_discussion=?,top_img=?,start_time=?,end_time=?,event_url=?,event_address=?,time_event=? where id=?"
+                    paras= [propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],content[0], isSend[0], isDiscussion[0], path, startTime[0], endTime[0], eventUrl[0], eventAddress[0], time_event[0], id[0]];
                 } else {//普通嗯文
-                    sql = "update a_messagesc set _type=0,content=?,is_send=?,is_discussion=?,top_img=?,start_time=NULL,end_time=NULL,event_url=NULL,event_address=NULL,time_event=-1 where id=?";
-                    paras=[ content[0], isSend[0], isDiscussion[0], path, id[0]];
+                    sql = "update a_messagesc set property_index=?,type_index=?,vedio_url=?,account_at=?,_type=0,content=?,is_send=?,is_discussion=?,top_img=?,start_time=NULL,end_time=NULL,event_url=NULL,event_address=NULL,time_event=-1 where id=?";
+                    paras=[propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, id[0]];
                  }
             } else {
                 sql = "update a_message set property_index=?,type_index=?,vedio_url=?,account_at=?,content=?,is_send=?,is_discussion=?,top_img=? where message_id=?";
