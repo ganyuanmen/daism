@@ -23,9 +23,10 @@ export default withSession(async (req, res) => {
         const form = formidable({})
         const [fields, files] = await form.parse(req);
         const {vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
-        const actorName=account[0].split('@')[0];
-        const imgPath = saveImage(files, fileType[0],actorName)
-        let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${actorName}/${imgPath}` : '';
+        // const actorName=account[0].split('@')[0];
+        const _path=new Date().toLocaleDateString().replaceAll('/','');
+        const imgPath = saveImage(files, fileType[0],_path)
+        let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${_path}/${imgPath}` : '';
         let sql = '';
         let paras;
         const sctype = daoid ? 'sc' : '';

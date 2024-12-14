@@ -59,20 +59,13 @@ export function readImg(path,res){
         });
     }
 
-//非a标签中的第一个URI
-export  function findFirstURI(html) {
-      // 正则表达式匹配非 a 标签中的 URI
-      const uriRegex = /(?!<a[^>]*href=["'])(https?:\/\/|www\.)(?:[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?)/g;
-    
-      // 查找第一个匹配的 URI
-      const match = uriRegex.exec(html);
-    
-      if (match) {
-        return match[0];
-      } else {
-        return null;
-      }
-    }
+//非a标签 img 标签中的第一个URI
+export  function findFirstURI(code) {
+  const regex = /(?<!<img[^>]*src=["'])(?<!<a[^>]*href=["'])(https?:\/\/[^\s"'<>)]+)\s*/i;
+  const match = code.match(regex);
+  return match ? match[0] : null;
+  }
+
 
 
     
@@ -110,14 +103,14 @@ export  function findFirstURI(html) {
       
           }
         }
-        const uc=`<a href="${tootUrl}" target="_blank" style="align-items:center;border:1px solid #ccc;font-size:1rem; color: currentColor;border-radius:8px;display:flex;text-decoration:none" >
-        <div style="aspect-ratio:1;flex:0 0 auto;position:relative;width:120px;border-radius:8px 0 0 8px;" >
-            <img src='${image?image:localimg}' alt="" style="background-position:50%;background-size:cover;display:block;height:100%;margin:0;object-fit:cover;width:100%;border-radius:8px 0 0 8px;">
+        const uc=`<a href="${tootUrl}" target="_blank" class="daism-a daism-linka" >
+        <div class="daism-image"  >
+            <img src='${image?image:localimg}' alt="" class='daism-linkimg' >
         </div>
         <div  >
-            <div style="padding:2px 8px 2px 8px" >${targetDomain}</div>
-            <div style="padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;" >${user?user:title}</div>
-            <div style="padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;" > ${content?content:(desc?desc:targetDomain)}</div>	
+            <div class='daism-line0' >${targetDomain}</div>
+            <div class='daism-line1' >${user?user:title}</div>
+            <div class='daism-line2' > ${content?content:(desc?desc:targetDomain)}</div>	
         </div>
         </a>` ;
 

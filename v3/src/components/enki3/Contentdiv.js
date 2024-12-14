@@ -116,7 +116,7 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,
        <div id={`item-${messageObj.id}`}  style={{padding:'10px',borderBottom:'1px solid #D9D9E8'}}>
            <EnkiMemberItem messageObj={messageObj} domain={env.domain} locale={locale} />
 
-            <div style={{position:'relative',fontWeight:'bold'}}  className="daism-a mt-2 mb-3" 
+            <div style={{position:'relative'}}  className="daism-a mt-2 mb-3" 
                 onClick={()=>afterEditCall.call(this,messageObj)} > 
                 <div ref={contentDiv} style={messageObj._type===1?{paddingLeft:'90px',minHeight:'80px',
                     maxHeight: showAll ? 'unset' : '400px', overflow: 'hidden'}

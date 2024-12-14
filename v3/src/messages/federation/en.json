@@ -154,7 +154,8 @@
     "atSomeOne":"In private",
     "shortText":"short article",
     "longText":"Long article",
-    "showmore":"Show more..."
+    "showmore":"Show more...",
+    "uploadImg":"Uploading images..."
 
   }
 }

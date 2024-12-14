@@ -1,12 +1,20 @@
 
 import JoditEditor from 'jodit-react';
+import {setTipText} from '../data/valueData'
+import { useDispatch} from 'react-redux';
+import { useTranslations } from 'next-intl'
 
 const RichTextEditor = ({title,defaultValue,editorRef}) => {
-  
+  const t = useTranslations('ff')
+  const dispatch = useDispatch();
+  // function showError(str){dispatch(setMessageText(str))}
+  function showTip(str){dispatch(setTipText(str))}
+  function closeTip(){dispatch(setTipText(''))}
+
+ 
   const config = {
     buttons: [
-        // 'image',
-        'source', '|',
+      'image','source', '|',
         'bold', 'italic', 'underline', '|',
         'ul', 'ol', 'brush', 'paragraph', '|',
         'outdent', 'indent', '|',
@@ -17,48 +25,39 @@ const RichTextEditor = ({title,defaultValue,editorRef}) => {
          'preview', 'fullsize','eraser'
       ],
       toolbarAdaptive: false,
-    readonly: false, // all options from https://xdsoft.net/jodit/doc/
-    // uploader: {
-    //   insertImageAsBase64URI: true
-    // }
+    readonly: false, 
     uploader:{
-      insertImageAsBase64URI: true,
+      insertImageAsBase64URI: false,
       imagesExtensions: ['jpg', 'png', 'jpeg', 'gif','svg','webp'],
-      // withCredentials: true,
-      // format: 'json',
-      // method: 'POST',
-      // url: '/api/upload',
-      // headers:{encType:'multipart/form-data'},
-      // prepareData: function(formData){
-      //   const fileInput = document.querySelector('input[type="file"]');
-     
-      //   //  data.append('image', data.getAll('files'));
-      //     return formData;
-      // },
+      withCredentials: true,
+      format: 'json',
+      method: 'POST',
+      url: '/api/admin/upload',
+      headers:{encType:'multipart/form-data'},
+      prepareData: function(){
+        showTip(t('uploadImg'))
+      },
    
       isSuccess: function(resp){
           return !resp.error;
       },
       getMsg: function(resp){
-          return resp.msg.join !== undefined ? resp.msg.join(' ') : resp.msg;
+          return '' //resp.msg.join !== undefined ? resp.msg.join(' ') : resp.msg;
       },
       process: function(resp){
           return{
-              files: [resp.data],
-              path: '',
-              baseurl: '',
-              error: resp.error ? 1 : 0,
-              msg: resp.msg
+              path: resp.imageUrl
           };
       },
       defaultHandlerSuccess: function(data, resp){
-          const files = data.files || [];
-          if(files.length){
-              this.selection.insertImage(files[0], null, 250);
+          if(data.path){
+                this.selection.insertImage(data.path);
           }
+          closeTip()
       },
       defaultHandlerError: function(resp){
-          this.events.fire('errorPopap', this.i18n(resp.msg));
+        closeTip()
+          // this.events.fire('errorPopap', this.i18n(resp.msg));
       }
   }
   };

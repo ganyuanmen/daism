@@ -67,7 +67,7 @@ const SCProperty = forwardRef(({children,currentObj,accountAr}, ref) => {
          <Col>
           <button className='btn btn-light'  onClick={e=>{setShowProperty(true)}}>
             {propertyIndex===1?
-            <div className="d-flex align-items-center" ><PublicMess size={24} /> <span>{t('publicMess')}</span> </div>:propertyIndex===2?
+            <div className="d-flex align-items-center" ><PublicMess size={18} /> <span style={{display:'inline-block',paddingLeft:'4px'}} >{t('publicMess')}</span> </div>:propertyIndex===2?
             <div className="d-flex align-items-center" ><LockSvg size={24} /> <span>{t('followMess')}</span></div>:
             <div className="d-flex align-items-center" ><SomeOne size={24} /> <span>{t('someonrMess')}</span></div>
             }
@@ -79,9 +79,9 @@ const SCProperty = forwardRef(({children,currentObj,accountAr}, ref) => {
        
          <div  style={{position:'relative'}}>
             {showProperty && <div ref={div2Ref} className="messpopup" style={{position:'absolute',zIndex:1300}} >
-                <div className="messoption d-flex align-items-center" onClick ={e=>{setPropertyIndex(1);setShowProperty(false);}}><PublicMess  /> <div><b>{t('publicMess')}</b><br/>{t('publicMess1')}</div></div>
-                <div className="messoption d-flex align-items-center" onClick={e=>{setPropertyIndex(2);setShowProperty(false);}}><LockSvg  /> <div><b>{t('followMess')}</b><br/>{t('followMess1')}</div></div>
-                <div className="messoption d-flex align-items-center" onClick={e=>{setPropertyIndex(3);setShowProperty(false);}}><SomeOne  /> <div><b>{t('someonrMess')}</b><br/>{t('someonrMess1')}</div></div>
+                <div className="messoption d-flex align-items-center" onClick ={e=>{setPropertyIndex(1);setShowProperty(false);}}> <PublicMess /> <div style={{paddingLeft:'8px'}} ><b>{t('publicMess')}</b><br/>{t('publicMess1')}</div></div>
+                <div className="messoption d-flex align-items-center" onClick={e=>{setPropertyIndex(2);setShowProperty(false);}}> <LockSvg  /> <div style={{paddingLeft:'8px'}}><b>{t('followMess')}</b><br/>{t('followMess1')}</div></div>
+                <div className="messoption d-flex align-items-center" onClick={e=>{setPropertyIndex(3);setShowProperty(false);}}> <SomeOne  /> <div style={{paddingLeft:'8px'}}><b>{t('someonrMess')}</b><br/>{t('someonrMess1')}</div></div>
             </div>
             }
           </div>

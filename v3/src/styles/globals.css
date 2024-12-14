@@ -321,4 +321,36 @@
 
   }
 
- 
+  .daism-linka{
+    display:flex;
+    align-items:center;
+    border:1px solid #ccc;
+    font-size:1rem; 
+    border-radius:8px;
+  }
+  
+  .daism-linkimg{
+    background-position:50%;
+    background-size:cover;
+    display:block;
+    height:100%;
+    margin:0;
+    object-fit:
+    cover;
+    width:100%;
+    border-radius:8px 0 0 8px;
+  }
+  .daism-image{aspect-ratio:1;flex:0 0 auto;position:relative;width:120px;border-radius:8px 0 0 8px;}
+
+  .daism-line0{
+  padding:2px 8px 2px 8px;
+}
+.daism-line1{
+  padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;overflow: hidden;-webkit-line-clamp: 1;
+}
+
+.daism-line2{
+ padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;
+}
+
+

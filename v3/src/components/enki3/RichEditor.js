@@ -4,7 +4,7 @@ import SCProperty from "./SCProperty";
 import dynamic from 'next/dynamic';
 
 
-const Richwet = dynamic(() => import('./Richwet'), { ssr: false });
+const Richwet = dynamic(() => import('../RichTextEditor'), { ssr: false });
 
 
 /**

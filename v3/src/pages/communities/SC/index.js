@@ -170,9 +170,9 @@ export default function sc({env,locale,accountAr }) {
                     {Array.isArray(daoData) && daoData.length > 0 && <>
                         <div className='d-flex justify-content-between align-items-center' style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
                             <div className='selectText' style={{paddingLeft:'12px'}} >
-                                {activeTab===2 ? <span className='daism-a selectText' onClick={callBack} ><BackSvg size={24} />{t('esctext')} </span>
+                                {activeTab===2 ? <span className='daism-a selectText' onClick={callBack} ><BackSvg size={24} /> {t('esctext')} </span>
                                 :<>{navObj?.svg?navObj.svg:<img src={navObj.avatar} alt={navObj.actor_account} height={24} width={24}/>} 
-                                 {navObj?.text?t(navObj.text):navObj.actor_account}</>}
+                                {' '} {navObj?.text?t(navObj.text):navObj.actor_account}</>}
                             
                             </div>  
                             

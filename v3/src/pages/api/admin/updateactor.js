@@ -16,13 +16,14 @@ export default withSession(async (req, res) => {
   const form = formidable({})
   try {
       const [fields, files] = await form.parse(req);
-      let {account,actorDesc,fileType,did,id } = fields
+      let {account,actorDesc,fileType,did } = fields
       account=account[0]
-      const actorName=account.split('@')[0];
+      // const actorName=account.split('@')[0];
+      const _path=new Date().toLocaleDateString().replaceAll('/','');
       actorDesc=actorDesc[0]
       fileType=fileType[0]
-      let selectImg=saveImage(files,fileType,actorName)
-      let path =selectImg?`https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${actorName}/${selectImg}`:'';
+      let selectImg=saveImage(files,fileType,_path)
+      let path =selectImg?`https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${_path}/${selectImg}`:'';
       let lok= await updateActor({account,actorDesc,path})
       if(lok) {
         res.status(200).json(await getActor(did[0])); 

@@ -22,10 +22,11 @@ export default withSession(async (req, res) => {
    
     const form = formidable({})
     const [fields, files] = await form.parse(req);
-    let {vedioURL,typeIndex,rid,pid,actorid,content,sctype,fileType,account} = fields  //rid 修改ID
-    const actorName=account[0].split('@')[0];
-    const imgPath = saveImage(files, fileType[0],actorName)
-    let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${actorName}/${imgPath}` : '';
+    let {vedioURL,typeIndex,rid,pid,actorid,content,sctype,fileType} = fields  //rid 修改ID
+    // const actorName=account[0].split('@')[0];
+    const _path=new Date().toLocaleDateString().replaceAll('/','');
+    const imgPath = saveImage(files, fileType[0],_path)
+    let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${_path}/${imgPath}` : '';
     if(rid[0]=='0') { //add
       let message_id=uuidv4()
       let rows=await getData("select manager,actor_name,avatar,actor_account,actor_url from a_account where id=?",[actorid[0]])

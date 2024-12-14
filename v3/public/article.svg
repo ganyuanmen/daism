@@ -1,4 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" viewBox="0 0 16 16">
-  <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/>
-  <path d="M2 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="84.19999999999999" height="84.2" viewBox="0 0 84.2 84.2" xml:space="preserve">
+<desc>Created with svelte apps / SVG EDITOR @ 0.82</desc>
+<defs>
+</defs>
+<g transform="matrix(1 0 0 1 42.1 42.1)"  >
+<path style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(192,192,192); fill-rule: nonzero; opacity: 1;"  paint-order="stroke"  transform=" translate(-50, -108.3)" d="M 25 91.7 L 75 91.7 L 75 83.3 L 25 83.3 L 25 91.7 Z M 25 104.2 L 75 104.2 L 75 95.8 L 25 95.8 L 25 104.2 Z M 25 116.7 L 75 116.7 L 75 108.3 L 25 108.3 L 25 116.7 Z M 91.6 74.9 L 91.6 74.9 L 91.6 149.9 L 75 133.3 L 16.6 133.3 Q 13.28 133.3 10.84 130.76 L 10.84 130.76 Q 8.4 128.22 8.4 124.9 L 8.4 124.9 L 8.4 74.9 Q 8.4 71.58 10.84 69.14 L 10.84 69.14 Q 13.28 66.7 16.6 66.7 L 16.6 66.7 L 83.4 66.7 Q 86.72 66.7 89.16 69.14 L 89.16 69.14 Q 91.6 71.58 91.6 74.9 Z" stroke-linecap="round" />
+</g>
 </svg>
