@@ -41,7 +41,7 @@ export default function EnkiShare({content, locale, currentObj})
         <div  >
             <div style="padding:2px 8px 2px 8px" >${localDomain}</div>
             <div style="padding:2px 8px 2px 8px" >${currentObj.actor_name} (${currentObj.actor_account})</div>
-            <div style="padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;" > ${currentObj.title+'\n'+content?.replaceAll('\n','')}</div>	
+            <div style="padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;" > ${content?.replaceAll('\n','')}</div>	
         </div>
         </a>` ;
 

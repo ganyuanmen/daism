@@ -117,13 +117,13 @@ const UpBox = forwardRef(({outobj, downRef,tipRef,statusRef,submitRef,user,gasPr
                 <Row > 
                 <Col className='Col-auto me-auto' >
                     <div style={{color:'#7780A0',fontSize:'14px',display:'flex',alignItems:'center'}}  >
-                        <div >  <img src='/vita.svg' width={12} height={14} alt='UTO' /></div>
+                        <div style={{paddingRight:'4px'}}>jeedd</div>
                         <div style={{paddingTop:'2px'}} >{vita==='loading'?<Spinner animation="border" size="sm" variant="primary" />:<span>{vita}</span>}</div>
                     </div>
                 </Col> 
                 <Col  className="col-auto" >
                      <div style={{color:'#984c0c',fontSize:'14px',display:'flex',alignItems:'center'}}  >
-                    <div >  <img src='/vita.svg' width={12} height={14} alt='UTO' /></div>
+                    <div style={{paddingRight:'4px'}}>jeedd</div>
                     <div style={{paddingTop:'2px',marginRight:'8px'}} ><span ref={tokenPriceRef} ></span></div>
                     </div>
                 </Col>

@@ -13,7 +13,7 @@ export default function SwapWindow({workIndex,show,setShow,selectToken}) {
     const tokenList = useSelector((state) => state.valueData.tokenList)
     const dispatch = useDispatch();
     const ethObj={dao_id:-2,dao_logo:'/eth.png',dao_name:'ETH',dao_symbol:'ETH',delegator:'',token_cost:0,token_id:-2}
-    const utokenObj={dao_id:-1,dao_logo:'/uto.svg',dao_name:'UTOKEN',dao_symbol:'UTOKEN',delegator:'',token_cost:0,token_id:-1}
+    const utokenObj={dao_id:-1,dao_logo:'/vita.svg',dao_name:'UTO',dao_symbol:'UTO',delegator:'',token_cost:0,token_id:-1}
     const t = useTranslations('iadd')
     // useEffect(()=>{dispatch(setTokenFilter(tokenList))},[dispatch,tokenList])
 
@@ -38,8 +38,8 @@ export default function SwapWindow({workIndex,show,setShow,selectToken}) {
                             <span className={iaddStyle.iadd_text} >ETH</span>
                         </Button>}{'   '}
                         <Button className={iaddStyle.iadd_btn} variant="outline-secondary"  onClick={()=>clickSelect(utokenObj)} >
-                            <img alt='' width={24} height={24}  src='/uto.svg' />
-                            <span  className={iaddStyle.iadd_text}>UTOKEN</span>
+                            <img alt='' width={24} height={24}  src='/vita.svg' />
+                            <span  className={iaddStyle.iadd_text}>UTO</span>
                         </Button> 
                         </div>
                     </div>

@@ -73,7 +73,7 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,
               // }
           }
           //超级管理员
-        //   if(actor?.manager?.toLowerCase()==env.administrator.toLowerCase()) return true;
+          if(actor?.manager?.toLowerCase()==env.administrator.toLowerCase()) return true;
           return false;
       }
 

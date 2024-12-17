@@ -60,11 +60,11 @@ export function OpenWindowButton({user,setOutput,workIndex,token,setToken,setBal
         if (obj.token_id === -2) {logoImage = '/eth.png';setTokenPrice('');}
         else if (obj.token_id === -1) {  //utoken
             // if(workIndex===-2 && window.daismDaoapi ){ checkApproveUtoken() } //上窗口
-            logoImage = '/uto.svg';setTokenPrice('');
+            logoImage = '/vita.svg';setTokenPrice('');
         }
         else { //token
             // if(workIndex===-2 && window.daismDaoapi){ checkApproveToken() } //上窗口
-            logoImage = obj.dao_logo ? obj.dao_logo : '/uto.svg';
+            logoImage = obj.dao_logo ? obj.dao_logo : '/vita.svg';
             setBalance('0')
             getPool(obj.token_id) //获单价
             if(window.daismDaoapi) //已登录
@@ -128,7 +128,7 @@ export function OpenWindowButton({user,setOutput,workIndex,token,setToken,setBal
                 
                utoken.getOutputAmount(getEther(1)).then(ethToutokenPrice=>{
                 if (outobj.token_id === -1) { //eth to utoken
-                    props.statusRef.current.setStatus({ratio:`1 ETH = ${fromUtoken(ethToutokenPrice[0])} UTOKEN` })
+                    props.statusRef.current.setStatus({ratio:`1 ETH = ${fromUtoken(ethToutokenPrice[0])} UTO` })
                 } else {  // eth to token
                     if (outobj.token_id) { 
                         comulate.unitTokenToSCToken(ethToutokenPrice[0], outobj.token_id).then(e => {
@@ -141,13 +141,13 @@ export function OpenWindowButton({user,setOutput,workIndex,token,setToken,setBal
             } else if (inobj.token_id === -1) { //utoken to token
                 if (outobj.token_id) {
                     comulate.unitTokenToSCToken(getUtoEther(1), outobj.token_id).then(e => {
-                        props.statusRef.current.setStatus({ratio:`1 UTOKEN = ${fromEther(e)} ${outobj.btext}`})
+                        props.statusRef.current.setStatus({ratio:`1 UTO = ${fromEther(e)} ${outobj.btext}`})
                     })
                 }
             } else if (inobj.token_id) {
                 if (outobj.token_id === -1) {  //token to utoken
                     comulate.SCTokenToUnitToken(getEther(1), inobj.token_id).then(e => {
-                        props.statusRef.current.setStatus({ratio:`1 ${inobj.btext} = ${fromUtoken(e)} UTOKEN`})
+                        props.statusRef.current.setStatus({ratio:`1 ${inobj.btext} = ${fromUtoken(e)} UTO`})
                     })
                 } else {  //token to token
                     if (inobj.token_id && outobj.token_id) {
