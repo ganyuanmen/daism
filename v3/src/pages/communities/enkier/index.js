@@ -276,6 +276,16 @@ export default function enkier({openObj,env,locale,accountAr }) {
     return (<>
         <Head>
             <title>{tc('enkierTitle')}</title>
+            <meta content="article" property="og:type"></meta>
+            <meta content={env.domain} property="og:site_name"></meta>
+            <meta content={tc('enkierTitle')} property="og:title" />
+            <meta content={`https://${env.domain}/${locale}/communities/enkier`} property="og:url" />
+            <meta content={new Date().toISOString()} property="og:published_time" />
+            {/* <meta content={currentObj.actor_account} property="profile:username" /> */}
+            <meta content={tc('enkierTitle')} name='description' />
+            <meta content={tc('enkierTitle')} property="og:description" />
+            <meta content="summary" property="twitter:card"/>
+            <meta content={`https://${env.domain}/logo.svg`}  property="og:image" />
         </Head>
         <PageLayout env={env}>
           

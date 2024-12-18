@@ -32,7 +32,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
         ,sctype:currentObj.dao_id>0?'sc':''
-        ,pid:currentObj.id});
+        ,ppid:currentObj.message_id});
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
@@ -121,7 +121,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&pid=${fetchWhere.pid}&account=${fetchWhere.account}&sctype=${fetchWhere.sctype}`,'replyPageData');
+                const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&ppid=${fetchWhere.ppid}&account=${fetchWhere.account}&sctype=${fetchWhere.sctype}`,'replyPageData');
                 if(res.status===200){
                     if(Array.isArray(res.data)){
                         setHasMore(res.data.length >= 20);

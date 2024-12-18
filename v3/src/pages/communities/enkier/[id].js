@@ -15,14 +15,16 @@ const { parse } = require('node-html-parser');
 export default function Message({currentObj,locale,env}) {
   const router = useRouter();
 
-  let t = useTranslations('ff');
+  const t = useTranslations('ff');
+  const tc = useTranslations('Common');
   const root = parse(currentObj.content);
   const content=root.textContent;
 
     return (
       <>
         <Head>
-        {/* <title>{currentObj?.title}</title> */}
+        <title>{tc('enkierTitle')}</title>
+        <meta content="article" property="og:type"></meta>
         <meta content={`${currentObj.actor_name} (${currentObj.actor_account})`} property="og:title" />
         <meta content={`https://${env.domain}${router.asPath}`} property="og:url" />
         <meta content={new Date().toISOString()} property="og:published_time" />

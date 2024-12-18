@@ -7,28 +7,31 @@ import Head from 'next/head';
 import {useRouter} from 'next/router';
 import PageLayout from '../../../components/PageLayout'
 import { getEnv } from '../../../lib/utils/getEnv';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
+const { parse } = require('node-html-parser');
 /**
  * 社区 单个发文信息
  */
 export default function Message({currentObj,locale,env}) {
   const router = useRouter();
 
-  let t = useTranslations('ff');
-  const tc = useTranslations('Common');
-  const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
-  const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
+  const t = useTranslations('ff');
+  const tc = useTranslations('ff');
+  const root = parse(currentObj.content);
+  const content=root.textContent;
   
     return (
       <>
         <Head>
-        <title>{currentObj?.title}</title>
+        <title>{tc('enkiTitle')}</title>
+        <meta content="article" property="og:type"></meta>
+        <meta content={env.domain} property="og:site_name"></meta>
         <meta content={`${currentObj.actor_name} (${currentObj.actor_account})`} property="og:title" />
         <meta content={`https://${env.domain}${router.asPath}`} property="og:url" />
         <meta content={new Date().toISOString()} property="og:published_time" />
         <meta content={currentObj.actor_account} property="profile:username" />
-        <meta content={currentObj.title} name='description' />
-        <meta content={currentObj.title} property="og:description" />
+        <meta content={content} name='description' />
+        <meta content={content} property="og:description" />
         <meta content="summary" property="twitter:card"/>
         <meta content={currentObj.top_img?currentObj.top_img:currentObj.avatar}  property="og:image" />
       </Head>

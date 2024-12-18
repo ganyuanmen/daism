@@ -99,11 +99,11 @@ export async function getReplyTotal({sctype,pid})
 
 
 //所有回复
-export async function replyPageData({pi,pid,sctype})
+export async function replyPageData({pi,ppid,sctype})
 {
 
-	let sql=`select * from v_message${sctype}_commont where pid=? order by id desc limit ${pi*20},20`
-	let re=await getData(sql,[pid]);
+	let sql=`select * from v_message${sctype}_commont where ppid=? order by id desc limit ${pi*20},20`
+	let re=await getData(sql,[ppid]);
 	return re; 
 }
 

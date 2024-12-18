@@ -269,7 +269,7 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
         <Popover >
           <Popover.Header as="h3">{t('upgradeText')}</Popover.Header>
           <Popover.Body  >
-         {versionData.data.map((obj,idx)=>(
+         {versionData?.data?.map((obj,idx)=>(
              <div key={idx} className='mb-2' style={{borderBottom:'1px solid gray'}}  >
                     <div>{t('dateText')}: {obj._time}</div>
                     <div>{t('addressText')}: <ShowAddress  address={obj.creator} /></div>
@@ -360,7 +360,7 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
 
           
             {
-                record.child.map((obj,idx)=>(
+                record?.child?.map((obj,idx)=>(
                 <Row key={idx}  className='mb-3 p-1' style={bStyle} >
                     <Col><ShowAddress address={obj.member_address}  /> </Col>
                     <Col>{t('memberVoteText')}:{obj.member_votes}</Col>

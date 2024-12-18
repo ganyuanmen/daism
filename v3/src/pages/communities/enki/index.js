@@ -188,7 +188,17 @@ export default function enki({openObj,env,locale,accountAr }) {
 
     return (<>
         <Head>
-            <title>{tc('enkierTitle')}</title>
+            <title>{tc('enkiTitle')}</title>
+            <meta content="article" property="og:type"></meta>
+            <meta content={env.domain} property="og:site_name"></meta>
+            <meta content={tc('enkiTitle')} property="og:title" />
+            <meta content={`https://${env.domain}/${locale}/communities/enki`} property="og:url" />
+            <meta content={new Date().toISOString()} property="og:published_time" />
+            {/* <meta content={currentObj.actor_account} property="profile:username" /> */}
+            <meta content={tc('enkiTitle')} name='description' />
+            <meta content={tc('enkiTitle')} property="og:description" />
+            <meta content="summary" property="twitter:card"/>
+            <meta content={`https://${env.domain}/logo.svg`}  property="og:image" />
         </Head>
         <PageLayout env={env}>
           
