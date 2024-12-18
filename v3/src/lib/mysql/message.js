@@ -112,10 +112,10 @@ export async function messageDel({id,type,sctype})
 {
     if(type=='0') return await execute(`delete from a_message${sctype} where id=?`,[id]);
     else {
-		let re=await getData(`select pid from a_message${sctype}_commont where id=?`,[id],true);
-		if(re.pid){
+		let re=await getData(`select ppid from a_message${sctype}_commont where id=?`,[id],true);
+		if(re.ppid){
 			let lok= await execute(`delete from a_message${sctype}_commont where id=?`,[id]);
-			if(lok) await execute(`update a_message${sctype} set total=total-1 where id=? `,[re.pid]);
+			if(lok) await execute(`update a_message${sctype} set total=total-1 where message_id=? `,[re.ppid]);
 			return lok;
 		}else return 0;
 	}

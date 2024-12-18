@@ -75,6 +75,7 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
         const formData = new FormData();
         formData.append('rid', replyObj ? replyObj.id : 0);  //修改id 
         formData.append('pid', currentObj.id);
+        formData.append('ppid', currentObj.message_id);
         formData.append('content', contentHTML); //，内容
         formData.append('actorid', actor.id); //，回复者id
         // formData.append('account', actor.actor_account); //，回复者id
