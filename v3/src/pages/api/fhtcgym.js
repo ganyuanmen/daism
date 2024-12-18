@@ -9,8 +9,7 @@ export default async function handler(req, res) {
   
     
     const data=await getData("select id,content from a_message",[]);
-    console.log("======================================================================================")
-    console.log("data.length:",data.length)
+  
 
     data.forEach(async element => {
 

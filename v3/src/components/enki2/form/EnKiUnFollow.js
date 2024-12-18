@@ -27,11 +27,10 @@ export default function EnKiUnFollow({searObj}) {
         {
             closeTip()
             setShowBtn(false)
-            let indexToRemove = myFollow.indexOf(account);
-            if (indexToRemove !== -1) {
-                const newMyFollow = [...myFollow.slice(0, indexToRemove), ...myFollow.slice(indexToRemove + 1)];
-                dispatch(setMyFollow(newMyFollow));
-            }
+            const newMyFollow = myFollow.filter(item => item.actor_account?.toLowerCase() !== account?.toLowerCase());
+            window.sessionStorage.setItem("myFollow", JSON.stringify(newMyFollow))
+            dispatch(setMyFollow(newMyFollow));
+            
         }else { 
             showClipError(re.statusText)
             closeTip()

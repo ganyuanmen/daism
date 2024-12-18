@@ -22,7 +22,7 @@ export default function FollowItem1({messageObj,locale,isEdit}) {
 
     const checkFollow=(obj)=>{
         const account=obj.actor_account || obj.account;
-        const item=myFollow.find(accountStr=>accountStr===account);
+        const item=myFollow.find(obj=>obj.actor_account?.toLowerCase()===account?.toLowerCase());
         return !!item
 
     }

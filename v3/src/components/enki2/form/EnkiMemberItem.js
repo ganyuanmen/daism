@@ -22,7 +22,7 @@ export default function EnkiMemberItem({locale,messageObj,domain}) {
     const t = useTranslations('ff')
 
     useEffect(() => {
-        let item = myFollow.find(accountStr => accountStr === messageObj.actor_account);
+        let item = myFollow.find(obj => obj.actor_account?.toLowerCase() === messageObj?.actor_account?.toLowerCase());
         //本人不能关注本人，设为已关注 用户不在注册地登录的，设为已注册，不需要显示关注的按钮
         if(item || actor?.actor_account===messageObj.actor_account || domain!=actor?.actor_account?.split('@')[1]) 
             setIsFollow(true); else setIsFollow(false);

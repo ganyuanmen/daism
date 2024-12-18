@@ -32,7 +32,9 @@ export default function EnKiFollow({searObj,showText=false}) {
         }else { 
             closeTip()
             setShowBtn(false)
-            dispatch(setMyFollow([...myFollow,account]))
+            window.sessionStorage.setItem("myFollow", JSON.stringify([...myFollow, {actor_account:account}]))
+            dispatch(setMyFollow([...myFollow, {actor_account:account}]))
+            
         }
     }
       
