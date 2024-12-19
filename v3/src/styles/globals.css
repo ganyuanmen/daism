@@ -353,4 +353,6 @@
  padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;
 }
 
-
+.daismCard img{
+  max-width: 100%;
+}

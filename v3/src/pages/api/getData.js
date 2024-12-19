@@ -47,7 +47,7 @@ export default async function handler(req, res) {
         //向原帐号所在域名请求，公器的首页和活动，account为空，只向本地获取
         if(req.headers.method==='messagePageData' && req.query.account && req.query.account.includes('@') ){  
            const {pi,menutype,daoid,actorid,w,order,account,eventnum,v}=req.query;
-           const [name,domain]=account.split('@');
+           const [,domain]=account.split('@');
            if(domain===process.env.LOCAL_DOMAIN) //本地
                 res.status(200).json(await methods[req.headers.method](req.query))
            else { //其它域名
@@ -57,17 +57,17 @@ export default async function handler(req, res) {
            }
         }  //向原帐号所在域名请求
         else if(req.headers.method==='replyPageData' && req.query.account && req.query.account.includes('@')) {
-            const {pi,pid,account,sctype}=req.query;
-            const [name,domain]=account.split('@');
+            const {pi,ppid,account,sctype}=req.query;
+            const [,domain]=account.split('@');
             if(domain===process.env.LOCAL_DOMAIN) //本地或smar common 
                  res.status(200).json(await methods[req.headers.method](req.query))
             else { //其它域名
-                 let response=await httpGet(`https://${domain}/api/getData?pi=${pi}&pid=${pid}&sctype=${sctype}&account=`,{'Content-Type': 'application/json',method:'replyPageData'})
+                 let response=await httpGet(`https://${domain}/api/getData?pi=${pi}&ppid=${ppid}&sctype=${sctype}&account=`,{'Content-Type': 'application/json',method:'replyPageData'})
                  if(response?.message) res.status(200).json(response.message)
                  else  res.status(500).json({errMsg: 'fail'});
             }
         }else if((req.headers.method==='getFollow0' || req.headers.method==='getFollow1')  && req.query.account && req.query.account.includes('@')) {
-          const [name,domain]=req.query.account.split('@');
+          const [,domain]=req.query.account.split('@');
           if(domain===process.env.LOCAL_DOMAIN) //本地或smar common 
                res.status(200).json(await methods[req.headers.method](req.query))
           else { //其它域名

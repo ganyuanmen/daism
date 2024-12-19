@@ -16,7 +16,7 @@ export default function Message({currentObj,locale,env}) {
   const router = useRouter();
 
   const t = useTranslations('ff');
-  const tc = useTranslations('ff');
+  const tc = useTranslations('Common');
   const root = parse(currentObj.content);
   const content=root.textContent;
   

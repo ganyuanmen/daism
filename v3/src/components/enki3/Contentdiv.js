@@ -118,7 +118,7 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,
 
             <div style={{position:'relative'}}  className="daism-a mt-2 mb-3" 
                 onClick={()=>afterEditCall.call(this,messageObj)} > 
-                <div ref={contentDiv} style={messageObj._type===1?{paddingLeft:'90px',minHeight:'80px',
+                <div className="daismCard" ref={contentDiv} style={messageObj._type===1?{paddingLeft:'90px',minHeight:'80px',
                     maxHeight: showAll ? 'unset' : '400px', overflow: 'hidden'}
                     :{maxHeight: showAll ? 'unset' : '400px', overflow: 'hidden'}} 
                     dangerouslySetInnerHTML={{__html:messageObj?.content}}>
