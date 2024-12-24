@@ -39,7 +39,7 @@ export default function enki({openObj,env,locale,accountAr }) {
     const [activeTab, setActiveTab] = useState(openObj?.id ? 2 : 0);
     
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
-    const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
+    // const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe) //是否签名登录
     const leftDivRef = useRef(null);
     const rightDivRef = useRef(null);
@@ -243,13 +243,18 @@ export default function enki({openObj,env,locale,accountAr }) {
                             
                             {leftHidden && <NavDropdown className='daism-a' title="..." >
                                 {loginsiwe && actor?.actor_account ? <>
-                                <NavDropdown.Item ><span onClick={()=>createHandle(true)} >{svgs.create} {t('publishText')}</span></NavDropdown.Item>
-                                <NavDropdown.Item ><span onClick={()=>latestHandle(true)} >{svgs.last} {t('latestText')}</span></NavDropdown.Item>
-                                <NavDropdown.Item ><span onClick={()=>eventHandle(true)} >{svgs.event} {t('eventText')}</span></NavDropdown.Item>
-                                <NavDropdown.Item ><span onClick={()=>myFollowHandle(true)} >{svgs.follow} {t('followCommunity')}</span></NavDropdown.Item>
-                                <NavDropdown.Item ><span onClick={()=>myBookHandle(true)} >{svgs.book} {t('bookTapText')}</span></NavDropdown.Item>
-                                <NavDropdown.Item ><span onClick={()=>myLikeHandle(true)} >{svgs.like} {t('likeText')}</span></NavDropdown.Item>
-                                {daoData.map((obj) => <NavDropdown.Item  key={obj.dao_id} ><span onClick={()=>daoSelectHandle(obj)} >{svgs[obj.dao_symbol]} {obj.actor_account}</span></NavDropdown.Item>)}
+                                <NavDropdown.Item className={navObj?.text==='publishText'?'scli':''}><span onClick={()=>createHandle(true)} >{svgs[5].svg} {t('publishText')}</span></NavDropdown.Item>
+                                <NavDropdown.Item className={navObj?.text==='latestText'?'scli':''}><span onClick={()=>latestHandle(true)} >{svgs[0].svg} {t('latestText')}</span></NavDropdown.Item>
+                                <NavDropdown.Item className={navObj?.text==='eventText'?'scli':''}><span onClick={()=>eventHandle(true)} >{svgs[1].svg} {t('eventText')}</span></NavDropdown.Item>
+                                <NavDropdown.Item className={navObj?.text==='followCommunity'?'scli':''}><span onClick={()=>myFollowHandle(true)} >{svgs[2].svg} {t('followCommunity')}</span></NavDropdown.Item>
+                                <NavDropdown.Item className={navObj?.text==='bookTapText'?'scli':''}><span onClick={()=>myBookHandle(true)} >{svgs[3].svg} {t('bookTapText')}</span></NavDropdown.Item>
+                                <NavDropdown.Item className={navObj?.text==='likeText'?'scli':''}><span onClick={()=>myLikeHandle(true)} >{svgs[4].svg} {t('likeText')}</span></NavDropdown.Item>
+                               
+                                {daoData.map((obj) =><NavDropdown.Item key={obj.dao_id} className={navObj?.dao_symbol===obj.dao_symbol?'scli':''}>
+                                <span style={{display:'inline-block',whiteSpace:'nowrap'}}  onClick={()=>daoSelectHandle(obj)} >
+                                    <img src={obj.dao_logo} alt={obj.actor_account} height={24} width={24} />{' '}
+                                  {obj.actor_account}</span>
+                                </NavDropdown.Item>)}
                                </>
                                :<NavDropdown.Item ><ShowErrorBar errStr={t('noRegisterText')} /></NavDropdown.Item>
                                }

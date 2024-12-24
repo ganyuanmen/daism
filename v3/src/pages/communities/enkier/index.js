@@ -336,23 +336,21 @@ export default function enkier({openObj,env,locale,accountAr }) {
                    
                     </div>  
                   {leftHidden && <NavDropdown className='daism-a' title="..." >
-                    <NavDropdown.Item ><span onClick={()=>allHandle(true)} >{svgs.all} {t('allPostText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item  className={navIndex===paras.all?'scli':''}><span onClick={()=>allHandle(true)} >{svgs.all} {t('allPostText')}</span></NavDropdown.Item>
                     {loginsiwe && actor?.actor_account && <>
-                    <NavDropdown.Item ><span onClick={()=>createHandle(true)} >{svgs.create} {t('createPostText')}</span></NavDropdown.Item>
-                    <NavDropdown.Item ><span onClick={()=>homeHandle(true)} >{svgs.home} {t('scHomeText')}</span></NavDropdown.Item>
-                    <NavDropdown.Item ><span onClick={()=>myPostHandle(true)} >{svgs.mypost} {t('myPostText')}</span></NavDropdown.Item>
-                    <NavDropdown.Item ><span onClick={()=>myReceiveHandle(true)} >{svgs.myreceive} {t('myReceiveText')}</span></NavDropdown.Item>
-                    <NavDropdown.Item ><span onClick={()=>myAtHandle(true)} >{svgs.at} {t('atSomeOne')}</span></NavDropdown.Item>
-                    <NavDropdown.Item ><span onClick={()=>myBookHandle(true)} >{svgs.book} {t('bookTapText')}</span></NavDropdown.Item>
-                    <NavDropdown.Item ><span onClick={()=>myLikeHandle(true)} >{svgs.like} {t('likeText')}</span></NavDropdown.Item>
-                    <NavDropdown.Item ><span onClick={()=>followManHandle0(true)} >{svgs.follow0} {t('followManText0')}</span></NavDropdown.Item>
-                    <NavDropdown.Item ><span onClick={()=>followManHandle1(true)} >{svgs.follow1} {t('followManText1')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.create?'scli':''}><span onClick={()=>createHandle(true)} >{svgs.create} {t('createPostText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.home?'scli':''}><span onClick={()=>homeHandle(true)} >{svgs.home} {t('scHomeText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.mypost?'scli':''}><span onClick={()=>myPostHandle(true)} >{svgs.mypost} {t('myPostText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.myreceive?'scli':''}><span onClick={()=>myReceiveHandle(true)} >{svgs.myreceive} {t('myReceiveText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.at?'scli':''}><span onClick={()=>myAtHandle(true)} >{svgs.at} {t('atSomeOne')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.book?'scli':''}><span onClick={()=>myBookHandle(true)} >{svgs.book} {t('bookTapText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.like?'scli':''}><span onClick={()=>myLikeHandle(true)} >{svgs.like} {t('likeText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.follow0?'scli':''}><span onClick={()=>followManHandle0(true)} >{svgs.follow0} {t('followManText0')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.follow1?'scli':''}><span onClick={()=>followManHandle1(true)} >{svgs.follow1} {t('followManText1')}</span></NavDropdown.Item>
                     </>}
                     </NavDropdown> } 
                 </div>
-                
-                
-  
+           
                     {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
                     fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
                     delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr} path='enkier' />

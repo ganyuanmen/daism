@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import PageLayout from '../../../components/PageLayout'
 import { getEnv } from '../../../lib/utils/getEnv';
 import Head from 'next/head';
-import { getJsonArray } from '../../../lib/mysql/common';
+import { getData, getJsonArray } from '../../../lib/mysql/common';
 import EnkiMember from '../../../components/enki2/form/EnkiMember';
 import EnkiAccount from '../../../components/enki2/form/EnkiAccount';
 import Loginsign from '../../../components/Loginsign';
@@ -19,10 +19,10 @@ import {BackSvg,TimeSvg,EventSvg  } from '../../../lib/jssvg/SvgCollection';
 /**
  * 我的社区
  */ 
-export default function sc({env,locale,accountAr }) {
+export default function sc({env,locale,accountAr,openObj }) {
     const [fetchWhere, setFetchWhere] = useState({
         currentPageNum: 0,  //当前页
-        daoid: '',  
+        daoid:openObj?.dao_id?openObj.dao_id:'',  
         actorid: 0, account: '', 
         where: '', //查询条件
         menutype: 2,
@@ -42,16 +42,25 @@ export default function sc({env,locale,accountAr }) {
     const rightDivRef = useRef(null);
     const parentDivRef = useRef(null);
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
-    const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
+    // const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe) //是否签名登录
     const daoActor = useSelector((state) => state.valueData.daoActor)  //dao社交帐号列表
 
-    const [daoData, setDaoData] = useState([]) //所属个人的社区列表
+    const [daoData, setDaoData] = useState([]) //社区列表
     const tc = useTranslations('Common')
     const t = useTranslations('ff')
     
     const svgs=[{svg:<TimeSvg size={24} />,text:'latestText'},{svg:<EventSvg size={24} />,text:'eventText'}];
     const [navObj,setNavObj]=useState(svgs[0])
+
+    function removeUrlParams() {
+        setCurrentObj(null);
+        if(window.location.href.includes('?d=')) {
+            const url = new URL(window.location.href);
+            url.search = ''; // 清空所有参数
+            window.history.replaceState({}, '', url.href);
+        }
+      }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -97,14 +106,20 @@ export default function sc({env,locale,accountAr }) {
         }
       }, []);
 
+      useEffect(()=>{
+        console.log(openObj)
+        if(openObj?.dao_id) setNavObj(openObj)
+      },[openObj])
       
     const latestHandle=()=>{ //最新
+        removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0,daoid:0, order: 'reply_time', account: '', eventnum: 0, where: '' })
         setActiveTab(0);
         setNavObj(svgs[0]);
     }
 
     const eventHandle=()=>{ //活动
+        removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, daoid:0,order: 'id', account: '',eventnum: 1, where: '' })
         setActiveTab(0);
         setNavObj(svgs[1]);
@@ -112,10 +127,11 @@ export default function sc({env,locale,accountAr }) {
 
    
     const daoSelectHandle=(obj)=>{ //选择dao后
-      
+        
         setFetchWhere({ ...fetchWhere, currentPageNum:0,order:'id',eventnum:0,where:'',v:0,daoid:obj.dao_id,account:obj.actor_account});
         setActiveTab(0);
         setNavObj(obj);
+        history.pushState({}, '', `?d=${obj.actor_account}`);
     }
 
     const callBack=()=>{  //回退处理，包括删除
@@ -129,8 +145,6 @@ export default function sc({env,locale,accountAr }) {
         setCurrentObj(messageObj);
         setActiveTab(2);
         sessionStorage.setItem("daism-list-id",messageObj.id)
-      
-        // history.pushState({ id: messageObj?.id }, `id:${messageObj?.id}`, `?d=${encrypt(`${messageObj.id},${getDomain(messageObj)}`,env)}`);
     }
 
 
@@ -186,13 +200,17 @@ export default function sc({env,locale,accountAr }) {
                             
                             </div>  
                             
-                            {leftHidden && <NavDropdown className='daism-a' title="..." >
-                                <NavDropdown.Item ><span onClick={()=>latestHandle(true)} >{svgs.last} {t('latestText')}</span></NavDropdown.Item>
-                                <NavDropdown.Item ><span onClick={()=>eventHandle(true)} >{svgs.event} {t('eventText')}</span></NavDropdown.Item>
-                                {daoData.map((obj) =><span key={obj.dao_id} onClick={()=>daoSelectHandle(obj)} >{svgs[obj.dao_symbol]} {obj.actor_account}</span>)}
+                            {leftHidden && <NavDropdown title="..." >
+                                <NavDropdown.Item className={navObj?.text==='latestText'?'scli':''}><span onClick={()=>latestHandle(true)} >{svgs[0].svg} {t('latestText')}</span></NavDropdown.Item>
+                                <NavDropdown.Item className={navObj?.text==='eventText'?'scli':''}><span onClick={()=>eventHandle(true)} >{svgs[1].svg} {t('eventText')}</span></NavDropdown.Item>
+                                {daoData.map((obj,idx) =><NavDropdown.Item key={`${obj.dao_id}_${idx}`} className={navObj?.dao_id===obj.dao_id?'scli':''}>
+                            <span style={{display:'inline-block',whiteSpace:'nowrap'}}  onClick={()=>daoSelectHandle(obj)} >
+                                <img src={obj.avatar} alt={obj.actor_account} height={24} width={24} />{' '}
+                                {obj.actor_account}</span>
+                            </NavDropdown.Item>)}
                                 </NavDropdown> } 
                         </div>
-
+                     
                         {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} 
                         setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
                         delCallBack={callBack} afterEditCall={afterEditCall}  path='enki' daoData={daoActor} />
@@ -217,15 +235,20 @@ export default function sc({env,locale,accountAr }) {
     )
 }
 
-export const getServerSideProps = async ({ locale }) => {
+export const getServerSideProps = async ({ locale,query }) => {
+    let openObj={}; 
     const env=getEnv();
     const accountAr=await getJsonArray('accountAr',[env?.domain])
+    if(query.d){
+        openObj=await getData("SELECT dao_id,actor_account,avatar FROM a_account WHERE LOWER(actor_account)=?",[query.d.toLowerCase()],true)
+        if(!openObj) openObj={};
+    }
     return {
         props: {
             messages: {
                 ...require(`../../../messages/shared/${locale}.json`),
                 ...require(`../../../messages/federation/${locale}.json`),
-            }, locale,env,accountAr
+            }, locale,env,accountAr,openObj
         }
     }
 }

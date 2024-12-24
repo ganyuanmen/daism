@@ -300,10 +300,11 @@
   cursor: pointer;
   }
   
-  .scsidebar ul li.scli span {
+  .dropdown-menu>a.scli span,.scsidebar ul li.scli span {
     color: #5C4FE6;
  
     }
+
 
   .scsidebar ul li.scli span:hover {
   background-color: #ddd;
