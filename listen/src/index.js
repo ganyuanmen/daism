@@ -10,6 +10,7 @@ const EventSum = require('./api/EventSum');
 const Domain=require("./api/Domain")
 const Daismnft=require("./api/Daismnft")
 const UnitNFT=require("./api/UnitNFT")
+const SatoshiUTOFund=require("./api/SatoshiUTOFund")
 const Daismnftsing=require("./api/Daismnftsing")
 const ethers=require('ethers')
 const utils = require("./utils");
@@ -289,6 +290,11 @@ class DaoApi {
     get UnitNFT() { 
         if (!this.dao_UnitNFT_obj) this.dao_UnitNFT_obj = new UnitNFT(this.web3, this.account,daismAddress['UnitNFT'],this.DaoToken); 
         return this.dao_UnitNFT_obj; 
+    }
+
+    get SatoshiUTOFund() { 
+        if (!this.dao_SatoshiUTOFund_obj) this.dao_SatoshiUTOFund_obj = new SatoshiUTOFund(this.web3, this.account,daismAddress['SatoshiUTOFund']); 
+        return this.dao_SatoshiUTOFund_obj; 
     }
 
     get Daismnftsing() { if (!this.dao_Daismnftsing_obj) this.dao_Daismnftsing_obj = new Daismnftsing(this.web3, this.account,daismAddress['DAismSingleNFT'],this.DaoToken); 

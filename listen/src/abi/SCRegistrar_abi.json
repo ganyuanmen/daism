@@ -321,6 +321,19 @@
   },
   {
     "inputs": [],
+    "name": "SCProxy",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "SCTemplate",
     "outputs": [
       {
@@ -673,6 +686,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "logicManager",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "string",
@@ -796,6 +822,24 @@
       }
     ],
     "name": "setSCLogo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_SCProxy",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_logicManager",
+        "type": "address"
+      }
+    ],
+    "name": "setSCProxyAndLogicManager",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

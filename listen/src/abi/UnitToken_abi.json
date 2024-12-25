@@ -765,19 +765,6 @@
   },
   {
     "inputs": [],
-    "name": "hayekFund",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "highestPriceInHistory",
     "outputs": [
       {
@@ -816,7 +803,7 @@
       },
       {
         "internalType": "address",
-        "name": "_hayekFund",
+        "name": "_satoshiFund",
         "type": "address"
       }
     ],
@@ -902,6 +889,19 @@
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "satoshiFund",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1115,6 +1115,13 @@
         "type": "uint256"
       }
     ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "updateTokenInfo",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },

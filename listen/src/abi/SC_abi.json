@@ -23,7 +23,7 @@
       },
       {
         "internalType": "address",
-        "name": "_hayekFund",
+        "name": "_satoshiFund",
         "type": "address"
       }
     ],
@@ -207,19 +207,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "hayekFund",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address[]",
@@ -362,6 +349,19 @@
   },
   {
     "inputs": [],
+    "name": "proposaler",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "recordBalance",
     "outputs": [
       {
@@ -381,6 +381,19 @@
         "internalType": "uint144",
         "name": "",
         "type": "uint144"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "satoshiFund",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

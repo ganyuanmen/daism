@@ -110,7 +110,7 @@ function daoListen() {
    p('begin listent...')
    
    // addLogoEvent()  
-  // hayek()
+   // SatoshiUTOFund()
   // daofund()
   daoCreate() //创建dao事件处理
   domainsing()  //个人社区帐号建立
@@ -171,14 +171,14 @@ function listen_attach()
 // 开始监听
 hand();
 
-// function hayek()
-// {
-//   daoapi.HayekFund.addRuleEvent(0, undefined);
-//   daoapi.HayekFund.deleteRuleEvent(0, undefined);
-//   daoapi.HayekFund.useRuleEvent(0, undefined);
-//   daoapi.HayekFund.approveEvent(0, undefined);
+function SatoshiUTOFund()
+{
+   server1.daoapi.SatoshiUTOFund.addRuleEvent(0, undefined);
+   // server1.daoapi.SatoshiUTOFund.deleteRuleEvent(0, undefined);
+   // server1.daoapi.SatoshiUTOFund.useRuleEvent(0, undefined);
+   // server1.daoapi.SatoshiUTOFund.approveEvent(0, undefined);
 
-// }
+}
 
 
 
@@ -298,7 +298,8 @@ function mintBurnEvent()
        const {data}=obj
       if(parseInt(data['tokenId'])===0) return;
 
-       let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(data['tokenId'])
+      //  let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(data['tokenId'])
+      let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(3)
        let sql ="INSERT INTO t_nft_swaphonor(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
        try {
            let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.Daismnftsing.address,`ETH Forging(${data["ethBurn"]}ETH)`];
