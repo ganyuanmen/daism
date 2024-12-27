@@ -188,7 +188,7 @@ function Wallet({env,query,route,otherLocale,tc}) {
         <>
         <div className='d-flex justify-content-end align-items-center' style={{minWidth:'300px'}} > 
             <div>
-                {user.connected >0 && <User t={t} loginsiwe={loginsiwe} disconnect={onDisconnect} domain={env.domain} user={user} />}
+                {user.connected >0 && <User t={t} loginsiwe={loginsiwe} disconnect={onDisconnect} env={env} user={user} />}
             </div>
             <div  style={{marginTop:'6px',marginRight:'10px'}}  >
                 {user.connected >0?<ShowAddress  address={user.account} ></ShowAddress>

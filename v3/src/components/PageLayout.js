@@ -41,9 +41,9 @@ export default function PageLayout({children,env}) {
                   <div  className="d-flex flex-row flex-sm-wrap p-0 m-0 ">
                   <Nav.Link className={route === '/workroom' ? 'pnavactive'  : ''}  href={`${locale!='zh'?'':'/zh'}/workroom`} >{t('my')}</Nav.Link>
                   <NavDropdown className={route.startsWith('/communities') ? 'pnavactive'  : ''} title={t('social')} id="basic-nav-dropdown1">   
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enki' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enki?v=1.0.2`} > {t('myCommunity')}</NavDropdown.Item>
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/SC' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/SC?v=1.0.2`} > {t('publicCommunities')}</NavDropdown.Item>
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enkier' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enkier?v=1.0.2`} > {t('personalSocial')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enki' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enki?v=${env.version}`} > {t('myCommunity')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/SC' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/SC?v=${env.version}`} > {t('publicCommunities')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enkier' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enkier?v=${env.version}`} > {t('personalSocial')}</NavDropdown.Item>
                     {/* <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enkier1' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enkier1`} > 个人社交(测试)</NavDropdown.Item> */}
                   </NavDropdown>
 

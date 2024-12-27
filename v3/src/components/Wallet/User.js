@@ -8,7 +8,7 @@ import {setTipText,setMessageText} from '../../data/valueData'
 import { useDispatch,useSelector} from 'react-redux';
 import Loginsign from '../Loginsign';
 
-export default function User({user,loginsiwe,t,domain,...props}) {
+export default function User({user,loginsiwe,t,env,...props}) {
 
   const loginRef=useRef()
   const router = useRouter();
@@ -84,8 +84,8 @@ export default function User({user,loginsiwe,t,domain,...props}) {
     if(!actor?.actor_account && !actor.actor_account?.includes('@')){
       return showError(t('notRegisterEnki'))
     }
-    if(actor.actor_account.split('@')[1]!=domain) {
-      return showError(t('registerDomain',{domain}))
+    if(actor.actor_account.split('@')[1]!=env.domain) {
+      return showError(t('registerDomain',{domain:env.domain}))
     }
 
     const formData = new FormData();
@@ -139,7 +139,7 @@ export default function User({user,loginsiwe,t,domain,...props}) {
          </div>
         <hr/>
         <div className='mb-3 mt-3' >
-         <strong>  Version:0.1 </strong>
+         <strong>  Version:{env.version} </strong>
         </div>
         </Modal.Body>
     </Modal>

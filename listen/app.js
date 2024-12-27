@@ -297,9 +297,7 @@ function mintBurnEvent()
        if(process.env.IS_DEBUGGER==='1') console.log(obj)
        const {data}=obj
       if(parseInt(data['tokenId'])===0) return;
-
-      //  let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(data['tokenId'])
-      let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(3)
+       let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(data['tokenId'])
        let sql ="INSERT INTO t_nft_swaphonor(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
        try {
            let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.Daismnftsing.address,`ETH Forging(${data["ethBurn"]}ETH)`];
@@ -577,8 +575,13 @@ function voteEvent()
          executeSql(sql, params);
          let contract= new server1.web3.eth.Contract(daoabi, data['delegator'], { from: server1.account });
          contract.methods.proposal().call({ from: server1.account }).then(res=>{
+            console.log(res)
             if(parseInt(res.createTime)===0) //Completed
-               executeSql('update t_pro set is_end=1,rights=?,antirights=? where delegator=? and createTime=?',[res.rights,res.antirights,data['delegator'],data['createTime']])
+            {
+               //反对票大于赞成票，不通过,为2
+               const isEnd=parseInt(res.rights)>parseInt(res.antirights)?1:2;
+               executeSql('update t_pro set is_end=?,rights=?,antirights=? where delegator=? and createTime=?',[isEnd,res.rights,res.antirights,data['delegator'],data['createTime']])
+            }
             else
                executeSql('update t_pro set rights=?,antirights=? where delegator=? and createTime=?',[res.rights,res.antirights,data['delegator'],data['createTime']]);
          })
@@ -648,9 +651,9 @@ function accountDividendRight()
    server1.daoapi.EventSum.accountDividendRight(maxData[14],obj => {
        if(process.env.IS_DEBUGGER==='1') console.log(obj);
        const {data}=obj
-       let sql = "call i_daoaccount(?,?,?,?,?)";
+       let sql = "call i_daoaccount(?,?,?,?)";
        try{
-         let params = [obj.blockNumber, data['delegator'],data['account'],data['dividendRights'],data['daoId']];
+         let params = [obj.blockNumber, data['delegator'],data['account'],data['dividendRights']];
          maxData[14] = obj.blockNumber+1n; //Cache last block number
          executeSql(sql, params);
       }catch(e){console.error(e)}

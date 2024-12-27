@@ -37,8 +37,10 @@ class DaoApi {
   
 
     async run() {
+        // if(process.env.IS_DEBUGGER==='1') console.log("begin............................>>>>>:")
         this.running=true
 
+        // if(process.env.IS_DEBUGGER==='1') console.log("DaoRegistrar.har:",this.DaoRegistrar.har.length)
         //daoCreate
         while(this.DaoRegistrar.har.length)
         {
@@ -72,17 +74,18 @@ class DaoApi {
             
         }
 
+        // if(process.env.IS_DEBUGGER==='1') console.log("EventSum.har3:",this.EventSum.har3.length)
         //成员变动
         while(this.EventSum.har3.length)
         {
             let _data=this.EventSum.har3.shift();
-            _data.data.data.daoId=await this.DaoRegistrar.proxyTo(_data.data.data['delegator'])
+            // _data.data.data.daoId=await this.DaoRegistrar.proxyTo(_data.data.data['delegator'])
 
             await this.runAsync(_data.fn,_data.data)
             
         }
         
-
+        // if(process.env.IS_DEBUGGER==='1') console.log("DaoToken.har:",this.DaoToken.har.length)
         //publishTolen ////NFT
         while(this.DaoToken.har.length)
         {
@@ -93,7 +96,7 @@ class DaoApi {
         }
 
 
-
+        // if(process.env.IS_DEBUGGER==='1') console.log("IADD.t2tAr:",this.IADD.t2tAr.length)
         while(this.IADD.t2tAr.length)
         {
             let _data=this.IADD.t2tAr.shift();
@@ -104,7 +107,7 @@ class DaoApi {
         }
         
    
-
+        // if(process.env.IS_DEBUGGER==='1') console.log("IADD.e2tAr:",this.IADD.e2tAr.length)
         while(this.IADD.e2tAr.length)
         {
             let _data=this.IADD.e2tAr.shift();
@@ -113,6 +116,7 @@ class DaoApi {
             await this.runAsync(_data.fn,_data.data)
             
         }
+        // if(process.env.IS_DEBUGGER==='1') console.log("UnitToken.e2uAr:",this.UnitToken.e2uAr.length)
         while(this.UnitToken.e2uAr.length)
         {
             let _data=this.UnitToken.e2uAr.shift();
@@ -129,6 +133,7 @@ class DaoApi {
             
         }
 
+        // if(process.env.IS_DEBUGGER==='1') console.log("IADD.t2uAr:",this.IADD.t2uAr.length)
          while(this.IADD.t2uAr.length)
          {
              let _data=this.IADD.t2uAr.shift();
@@ -144,6 +149,7 @@ class DaoApi {
              }
          }
         
+        //  if(process.env.IS_DEBUGGER==='1') console.log("IADD.u2tAr:",this.IADD.u2tAr.length)
          while(this.IADD.u2tAr.length)
          {
              let _data=this.IADD.u2tAr.shift();
@@ -162,7 +168,7 @@ class DaoApi {
              }
          }
 
-              
+        //  if(process.env.IS_DEBUGGER==='1') console.log("EventSum.har:",this.EventSum.har.length)
          //addProposal
         while(this.EventSum.har.length)
          {
@@ -177,6 +183,7 @@ class DaoApi {
              
          }
 
+        //  if(process.env.IS_DEBUGGER==='1') console.log("EventSum.har1:",this.EventSum.har1.length)
            //voteEvent
         while(this.EventSum.har1.length)
         {
@@ -188,7 +195,7 @@ class DaoApi {
         }
 
     
-        
+        // if(process.env.IS_DEBUGGER==='1') console.log("EventSum.har2:",this.EventSum.har2.length)
         //获取分红
         while(this.EventSum.har2.length)
         {
@@ -198,6 +205,7 @@ class DaoApi {
             
         }
    
+        // if(process.env.IS_DEBUGGER==='1') console.log("DaoLogo.har:",this.DaoLogo.har.length)
         //changeLogo 
         while(this.DaoLogo.har.length)
         {
@@ -218,8 +226,9 @@ class DaoApi {
         var p = new Promise(async function(resolve, reject){
             setTimeout(async function(){
                await callbackFun.call(null,data)
+            //    if(process.env.IS_DEBUGGER==='1') console.log(new Date().toJSON(), "完成:runAsync")
                 resolve('')
-            }, 500);
+            }, 1000);
         });
         return p;            
     }

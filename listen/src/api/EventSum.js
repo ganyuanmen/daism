@@ -91,6 +91,7 @@ class EventSum
         this.execobj5=this.contract.events.AccountDividendRight({filter: {}, fromBlock: maxBlockNumber})
         this.execobj5.on('data',async function (data,_error) {
                 if(!data || !data.returnValues) {utils.log("AccountDividendRight error");throw _error;}
+                
                 _this.har3.push({fn:callbackFun,data:utils.valueFactory(data,{
                     "delegator": data.returnValues['emiter'], 
                     "account":data.returnValues['account'], 

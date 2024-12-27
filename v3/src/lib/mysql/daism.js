@@ -9,7 +9,7 @@ export async function addEipType({_type,_desc})
 //检测帐号是否dao成员
 export async function getIsDaoMember({did,daoid})
 {
-    let re= await getData("SELECT id FROM t_daodetail WHERE dao_id=? AND LOWER(member_address)=?",[daoid,did.toLowerCase()]);
+    let re= await getData("SELECT id FROM v_daodetail WHERE dao_id=? AND LOWER(member_address)=?",[daoid,did.toLowerCase()]);
     return re 
 }
   
@@ -30,7 +30,7 @@ export async function getLogsData({ps,pi,did})
 //历史提案
 export async function getProsData({ps,pi,did,st})
 {
-    let re= await getPageData('pro',ps,pi,'createTime','desc',`is_end=${st} AND dao_id IN (SELECT dao_id FROM t_daodetail WHERE member_address='${did}')`);
+    let re= await getPageData('pro',ps,pi,'createTime','desc',`is_end=${st} AND dao_id IN (SELECT dao_id FROM v_daodetail WHERE member_address='${did}')`);
     return re 
 }
 
@@ -109,7 +109,7 @@ export async function getMyPros({did})
 //我的Daos
 export async function getMyDaos({did})
 {
-    let re= await getData('SELECT * FROM v_dao WHERE dao_id in(select dao_id from t_daodetail where member_address=? and member_type=1) order by dao_id',[did]);
+    let re= await getData('SELECT * FROM v_dao WHERE dao_id in(select dao_id from v_daodetail where member_address=? and member_type=1) order by dao_id',[did]);
     return re || []
 }
 
@@ -126,7 +126,7 @@ export async function getMynft({did})
 export async function getMyDaoDetail({daoid})
 {
     let re= await getData('SELECT * FROM v_dao WHERE dao_id=?',[daoid]);
-    if(re && re.length) re[0].child=await getData('select * from t_daodetail where dao_id=?',[daoid])
+    if(re && re.length) re[0].child=await getData('select * from v_daodetail where dao_id=?',[daoid])
     return re || []
 }
 
@@ -146,7 +146,7 @@ export async function getPrice({})
 export async function getDaoVote({daoId,delegator,createTime}) 
 {
     let sql=` SELECT a.member_address,a.member_votes,IFNULL(b.rights,0) rights,IFNULL(b.antirights,0) antirights FROM 
-    (SELECT * FROM t_daodetail WHERE dao_id=? AND member_type=1) a LEFT JOIN 
+    (SELECT * FROM v_daodetail WHERE dao_id=? AND member_type=1) a LEFT JOIN 
     (SELECT * FROM t_provote WHERE delegator=? AND createTime=?) b ON a.member_address=b.creator`
     let re= await getData(sql,[daoId,delegator,createTime])
     return re || []
