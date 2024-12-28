@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 12/12/2024 01:32:32
+ Date: 28/12/2024 22:49:30
 */
 
 SET NAMES utf8mb4;
@@ -40,7 +40,7 @@ CREATE TABLE `a_account`  (
   UNIQUE INDEX `block_num`(`block_num`) USING BTREE,
   UNIQUE INDEX `manager`(`dao_id`, `manager`) USING BTREE,
   UNIQUE INDEX `actor_url`(`actor_url`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_bookmark
@@ -84,7 +84,7 @@ CREATE TABLE `a_eip_type`  (
   `relay_type` tinyint(0) NULL DEFAULT NULL COMMENT '1 链上确认',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `type_name`(`type_name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_follow
@@ -106,7 +106,7 @@ CREATE TABLE `a_follow`  (
   UNIQUE INDEX `follow_id`(`follow_id`) USING BTREE,
   UNIQUE INDEX `idd`(`actor_account`, `user_account`) USING BTREE,
   INDEX `user_account`(`user_account`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_heart
@@ -163,7 +163,7 @@ CREATE TABLE `a_message`  (
   INDEX `send_type`(`send_type`, `receive_account`) USING BTREE,
   INDEX `receive_account`(`receive_account`) USING BTREE,
   INDEX `dao_id`(`send_type`, `property_index`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_message_commont
@@ -184,9 +184,10 @@ CREATE TABLE `a_message_commont`  (
   `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `top_img` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `ppid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc
@@ -220,7 +221,7 @@ CREATE TABLE `a_messagesc`  (
   INDEX `_type`(`_type`) USING BTREE,
   INDEX `dao_id`(`dao_id`) USING BTREE,
   INDEX `reply_time`(`reply_time`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc_commont
@@ -241,9 +242,10 @@ CREATE TABLE `a_messagesc_commont`  (
   `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `top_img` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `ppid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for aux_bt
@@ -295,10 +297,10 @@ INSERT INTO `aux_tree` VALUES ('accountAr', 'select actor_name,avatar from a_acc
 INSERT INTO `aux_tree` VALUES ('actor', 'select id,dao_id,actor_name,domain,manager,actor_account,actor_url,avatar,actor_desc from a_account where manager=? and dao_id=0', '地址获帐号/dao_id=0是个人帐号');
 INSERT INTO `aux_tree` VALUES ('actorbyid', 'select id,dao_id,actor_name,domain,manager,actor_account,actor_url,avatar,actor_desc from a_account where id=?', 'id 获个人帐号');
 INSERT INTO `aux_tree` VALUES ('checkdao', 'SELECT a.id,b.dao_name,c.dao_symbol,d.creator FROM (SELECT 1 id) a LEFT JOIN (SELECT dao_name FROM t_dao WHERE dao_name=?) b ON 1=1 LEFT JOIN (SELECT dao_symbol FROM t_dao WHERE dao_symbol=?) c ON 1=1 LEFT JOIN (SELECT creator FROM t_dao WHERE creator=?) d ON 1=1', '检测dao 是否存在');
-INSERT INTO `aux_tree` VALUES ('daoactor', 'SELECT a.*,b.actor_account,b.actor_url,b.domain FROM v_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id IN(SELECT dao_id FROM t_daodetail WHERE member_address=?)', '地址->所在的智能化器');
-INSERT INTO `aux_tree` VALUES ('daoactorbyid', 'SELECT a.*,b.actor_account,b.actor_url,b.domain FROM v_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id IN(SELECT dao_id FROM t_daodetail WHERE member_address=(SELECT manager FROM a_account WHERE id=?))', 'id->所在智能公器');
+INSERT INTO `aux_tree` VALUES ('daoactor', 'SELECT a.*,b.actor_account,b.actor_url,b.domain FROM v_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.delegator IN(SELECT delegator FROM t_daodetail WHERE member_address=?)', '地址->所在的智能化器');
+INSERT INTO `aux_tree` VALUES ('daoactorbyid', 'SELECT a.*,b.actor_account,b.actor_url,b.domain FROM v_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.delegator IN(SELECT delegator FROM t_daodetail WHERE member_address=(SELECT manager FROM a_account WHERE id=?))', 'id->所在智能公器');
 INSERT INTO `aux_tree` VALUES ('daodatabyid', 'SELECT a.*,b.actor_account,b.actor_url,b.domain FROM v_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id=?', NULL);
-INSERT INTO `aux_tree` VALUES ('daomember', 'SELECT a.member_address,b.actor_url,b.actor_account,b.avatar FROM t_daodetail a LEFT JOIN (SELECT * FROM a_account WHERE dao_id=0) b ON a.`member_address`=b.manager WHERE a.dao_id=?', 'dao 下所有成员');
+INSERT INTO `aux_tree` VALUES ('daomember', 'SELECT a.member_address,b.actor_url,b.actor_account,b.avatar FROM v_daodetail a LEFT JOIN (SELECT * FROM a_account WHERE dao_id=0) b ON a.`member_address`=b.manager WHERE a.dao_id=?', 'dao 下所有成员');
 INSERT INTO `aux_tree` VALUES ('fllower', 'SELECT user_account account,user_url url,user_avatar avatar,user_inbox inbox,createtime,follow_id,id FROM v_follow WHERE actor_account=(SELECT actor_account FROM a_account WHERE dao_id=?)', '按daoid 找谁关注我');
 INSERT INTO `aux_tree` VALUES ('follow0', 'SELECT actor_account account,actor_url url,actor_avatar avatar,actor_inbox inbox,createtime,follow_id,id FROM v_follow WHERE user_account=?', '我关注了谁集合');
 INSERT INTO `aux_tree` VALUES ('follow1', 'SELECT user_account account,user_url url,user_avatar avatar,user_inbox inbox,createtime,follow_id,id FROM v_follow WHERE actor_account=?', '谁关注了我集合');
@@ -329,7 +331,7 @@ CREATE TABLE `t_changelogo`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_createversion
@@ -344,7 +346,7 @@ CREATE TABLE `t_createversion`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_dao
@@ -390,7 +392,7 @@ CREATE TABLE `t_daoaccount`  (
   `dao_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_daodetail
@@ -398,15 +400,14 @@ CREATE TABLE `t_daoaccount`  (
 DROP TABLE IF EXISTS `t_daodetail`;
 CREATE TABLE `t_daodetail`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `dao_id` int(0) NULL DEFAULT 0 COMMENT 'smart common id',
   `member_votes` int(0) NULL DEFAULT 0 COMMENT '成员票数',
   `member_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员地址',
   `member_index` int(0) NULL DEFAULT 0 COMMENT '成员序号,已作废',
   `member_type` tinyint(0) NULL DEFAULT 1 COMMENT '类型:1原始，0邀请，已作废',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smartcommon代理地址',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `id`(`dao_id`, `member_address`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  UNIQUE INDEX `id`(`delegator`, `member_address`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_domain
@@ -460,7 +461,7 @@ CREATE TABLE `t_e2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_eth_utoken
@@ -479,7 +480,7 @@ CREATE TABLE `t_eth_utoken`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_getdaoutoken
@@ -496,7 +497,7 @@ CREATE TABLE `t_getdaoutoken`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_mynft
@@ -532,7 +533,7 @@ CREATE TABLE `t_nft`  (
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_mint
@@ -549,7 +550,7 @@ CREATE TABLE `t_nft_mint`  (
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swap
@@ -567,7 +568,7 @@ CREATE TABLE `t_nft_swap`  (
   `utoken` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swaphonor
@@ -585,7 +586,7 @@ CREATE TABLE `t_nft_swaphonor`  (
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_transfer
@@ -602,7 +603,7 @@ CREATE TABLE `t_nft_transfer`  (
   `in_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_pro
@@ -618,7 +619,7 @@ CREATE TABLE `t_pro`  (
   `rights` int(0) NULL DEFAULT 0 COMMENT '参数4',
   `antirights` int(0) NULL DEFAULT 0 COMMENT '参数5',
   `dao_desc` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '参数6',
-  `is_end` tinyint(0) UNSIGNED NULL DEFAULT 0 COMMENT '0未完成 1完成 2 过期',
+  `is_end` tinyint(0) UNSIGNED NULL DEFAULT 0 COMMENT '0未完成 1通过 2 未通过，3过期',
   `dao_id` int(0) NULL DEFAULT NULL COMMENT 'smart common id',
   `strategy` int(0) NULL DEFAULT NULL COMMENT '通过率',
   `lifetime` int(0) NULL DEFAULT NULL COMMENT '寿命',
@@ -630,7 +631,7 @@ CREATE TABLE `t_pro`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `delegator`(`delegator`, `createTime`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_proexcu
@@ -646,7 +647,7 @@ CREATE TABLE `t_proexcu`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_provote
@@ -665,7 +666,7 @@ CREATE TABLE `t_provote`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE,
   INDEX `delegator`(`delegator`, `createTime`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_swap
@@ -687,7 +688,7 @@ CREATE TABLE `t_swap`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2t
@@ -713,7 +714,7 @@ CREATE TABLE `t_t2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2u
@@ -736,7 +737,7 @@ CREATE TABLE `t_t2u`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_token
@@ -786,7 +787,7 @@ CREATE TABLE `t_u2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_updatedaocreator
@@ -800,7 +801,7 @@ CREATE TABLE `t_updatedaocreator`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- View structure for v_account
@@ -827,10 +828,16 @@ DROP VIEW IF EXISTS `v_dao`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_dao` AS select round(((`a`.`strategy` / 65535) * 100),0) AS `strategy`,`a`.`cool_time` AS `cool_time`,`a`.`lifetime` AS `lifetime`,`a`.`dao_id` AS `dao_id`,`a`.`block_num` AS `block_num`,`a`.`sctype` AS `sctype`,`a`.`dao_name` AS `dao_name`,concat(`a`.`dao_symbol`,'.',lower(`a`.`sctype`)) AS `dao_symbol`,`a`.`dao_desc` AS `dao_desc`,date_format(from_unixtime(`a`.`dao_time`),'%Y-%m-%d %H:%i:%s') AS `dao_time`,`a`.`dao_manager` AS `dao_manager`,`a`.`dao_logo` AS `dao_logo`,`a`.`creator` AS `creator`,`a`.`delegator` AS `delegator`,`a`.`utoken_cost` AS `utoken_cost`,`a`.`dao_ranking` AS `dao_ranking`,`a`.`dao_exec` AS `dao_exec`,date_format(from_unixtime(`a`.`_time`),'%Y-%m-%d %H:%i:%s') AS `_time`,ifnull(`b`.`token_id`,0) AS `token_id` from (`t_dao` `a` left join `t_token` `b` on((`a`.`dao_id` = `b`.`dao_id`)));
 
 -- ----------------------------
+-- View structure for v_daodetail
+-- ----------------------------
+DROP VIEW IF EXISTS `v_daodetail`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_daodetail` AS select `a`.`id` AS `id`,`a`.`member_votes` AS `member_votes`,`a`.`member_address` AS `member_address`,`a`.`member_index` AS `member_index`,`a`.`member_type` AS `member_type`,`a`.`delegator` AS `delegator`,`b`.`dao_id` AS `dao_id` from (`t_daodetail` `a` join `t_dao` `b` on((`a`.`delegator` = `b`.`delegator`)));
+
+-- ----------------------------
 -- View structure for v_daotoken
 -- ----------------------------
 DROP VIEW IF EXISTS `v_daotoken`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_daotoken` AS select -(2) AS `token_id`,-(2) AS `dao_id`,'eth' AS `dao_symbol`,NULL AS `dao_logo` union all select -(1) AS `token_id`,-(1) AS `dao_id`,'utoken' AS `dao_symbol`,NULL AS `dao_logo` union all select `a`.`token_id` AS `token_id`,`a`.`dao_id` AS `dao_id`,`a`.`dao_symbol` AS `dao_symbol`,`a`.`dao_logo` AS `dao_logo` from `v_dao` `a` where (`a`.`token_id` > 0);
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_daotoken` AS select -(2) AS `token_id`,-(2) AS `dao_id`,'ETH' AS `dao_symbol`,NULL AS `dao_logo` union all select -(1) AS `token_id`,-(1) AS `dao_id`,'UTO' AS `dao_symbol`,NULL AS `dao_logo` union all select `a`.`token_id` AS `token_id`,`a`.`dao_id` AS `dao_id`,`a`.`dao_symbol` AS `dao_symbol`,`a`.`dao_logo` AS `dao_logo` from `v_dao` `a` where (`a`.`token_id` > 0);
 
 -- ----------------------------
 -- View structure for v_follow
@@ -854,7 +861,7 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message` AS select `a`
 -- View structure for v_message_commont
 -- ----------------------------
 DROP VIEW IF EXISTS `v_message_commont`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message_commont` AS select `a_message_commont`.`id` AS `id`,`a_message_commont`.`pid` AS `pid`,`a_message_commont`.`message_id` AS `message_id`,`a_message_commont`.`manager` AS `manager`,`a_message_commont`.`actor_name` AS `actor_name`,`a_message_commont`.`avatar` AS `avatar`,`a_message_commont`.`actor_account` AS `actor_account`,`a_message_commont`.`actor_url` AS `actor_url`,`a_message_commont`.`content` AS `content`,`a_message_commont`.`createtime` AS `createtime`,`a_message_commont`.`type_index` AS `type_index`,`a_message_commont`.`vedio_url` AS `vedio_url`,`a_message_commont`.`top_img` AS `top_img`,`a_message_commont`.`content_link` AS `content_link`,now() AS `currentTime` from `a_message_commont`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message_commont` AS select `a_message_commont`.`id` AS `id`,`a_message_commont`.`pid` AS `pid`,`a_message_commont`.`ppid` AS `ppid`,`a_message_commont`.`message_id` AS `message_id`,`a_message_commont`.`manager` AS `manager`,`a_message_commont`.`actor_name` AS `actor_name`,`a_message_commont`.`avatar` AS `avatar`,`a_message_commont`.`actor_account` AS `actor_account`,`a_message_commont`.`actor_url` AS `actor_url`,`a_message_commont`.`content` AS `content`,`a_message_commont`.`createtime` AS `createtime`,`a_message_commont`.`type_index` AS `type_index`,`a_message_commont`.`vedio_url` AS `vedio_url`,`a_message_commont`.`top_img` AS `top_img`,`a_message_commont`.`content_link` AS `content_link`,now() AS `currentTime` from `a_message_commont`;
 
 -- ----------------------------
 -- View structure for v_messagesc
@@ -866,7 +873,7 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc` AS select `
 -- View structure for v_messagesc_commont
 -- ----------------------------
 DROP VIEW IF EXISTS `v_messagesc_commont`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc_commont` AS select `a_messagesc_commont`.`id` AS `id`,`a_messagesc_commont`.`pid` AS `pid`,`a_messagesc_commont`.`message_id` AS `message_id`,`a_messagesc_commont`.`manager` AS `manager`,`a_messagesc_commont`.`actor_name` AS `actor_name`,`a_messagesc_commont`.`avatar` AS `avatar`,`a_messagesc_commont`.`actor_account` AS `actor_account`,`a_messagesc_commont`.`actor_url` AS `actor_url`,`a_messagesc_commont`.`content` AS `content`,`a_messagesc_commont`.`createtime` AS `createtime`,`a_messagesc_commont`.`type_index` AS `type_index`,`a_messagesc_commont`.`vedio_url` AS `vedio_url`,`a_messagesc_commont`.`top_img` AS `top_img`,`a_messagesc_commont`.`content_link` AS `content_link`,now() AS `currentTime` from `a_messagesc_commont`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc_commont` AS select `a_messagesc_commont`.`id` AS `id`,`a_messagesc_commont`.`pid` AS `pid`,`a_messagesc_commont`.`ppid` AS `ppid`,`a_messagesc_commont`.`message_id` AS `message_id`,`a_messagesc_commont`.`manager` AS `manager`,`a_messagesc_commont`.`actor_name` AS `actor_name`,`a_messagesc_commont`.`avatar` AS `avatar`,`a_messagesc_commont`.`actor_account` AS `actor_account`,`a_messagesc_commont`.`actor_url` AS `actor_url`,`a_messagesc_commont`.`content` AS `content`,`a_messagesc_commont`.`createtime` AS `createtime`,`a_messagesc_commont`.`type_index` AS `type_index`,`a_messagesc_commont`.`vedio_url` AS `vedio_url`,`a_messagesc_commont`.`top_img` AS `top_img`,`a_messagesc_commont`.`content_link` AS `content_link`,now() AS `currentTime` from `a_messagesc_commont`;
 
 -- ----------------------------
 -- View structure for v_mynft
@@ -878,7 +885,7 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_mynft` AS select `a`.`
 -- View structure for v_pro
 -- ----------------------------
 DROP VIEW IF EXISTS `v_pro`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_pro` AS select `b`.`dao_name` AS `dao_name`,`b`.`dao_symbol` AS `dao_symbol`,`b`.`dao_logo` AS `dao_logo`,`b`.`dao_desc` AS `daodesc`,`a`.`proposalType` AS `proposalType`,`a`.`imgstr` AS `imgstr`,`a`.`pro_type` AS `pro_type`,(unix_timestamp() - (`a`.`createTime` + `a`.`cool_time`)) AS `cool_time`,`a`.`block_num` AS `block_num`,`a`.`delegator` AS `delegator`,`a`.`creator` AS `creator`,`a`.`account` AS `account`,`a`.`dividendRights` AS `dividendRights`,`a`.`createTime` AS `createTime`,date_format(from_unixtime(`a`.`createTime`),'%Y-%m-%d') AS `create_date`,(((`a`.`createTime` + `a`.`lifetime`) - unix_timestamp()) / (24 * 3600)) AS `lifetime`,`a`.`rights` AS `rights`,`a`.`antirights` AS `antirights`,`a`.`dao_desc` AS `dao_desc`,`a`.`is_end` AS `is_end`,`a`.`dao_id` AS `dao_id`,round(((`a`.`strategy` / 65535) * 100),0) AS `strategy`,ifnull(`c`.`s`,0) AS `total_vote` from ((`t_pro` `a` join `t_dao` `b` on((`a`.`dao_id` = `b`.`dao_id`))) left join (select `t_daodetail`.`dao_id` AS `dao_id`,sum(`t_daodetail`.`member_votes`) AS `s` from `t_daodetail` where (`t_daodetail`.`member_type` = 1) group by `t_daodetail`.`dao_id`) `c` on((`a`.`dao_id` = `c`.`dao_id`)));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_pro` AS select `b`.`dao_name` AS `dao_name`,`b`.`dao_symbol` AS `dao_symbol`,`b`.`dao_logo` AS `dao_logo`,`b`.`dao_desc` AS `daodesc`,`a`.`proposalType` AS `proposalType`,`a`.`imgstr` AS `imgstr`,`a`.`pro_type` AS `pro_type`,(unix_timestamp() - (`a`.`createTime` + `a`.`cool_time`)) AS `cool_time`,`a`.`block_num` AS `block_num`,`a`.`delegator` AS `delegator`,`a`.`creator` AS `creator`,`a`.`account` AS `account`,`a`.`dividendRights` AS `dividendRights`,`a`.`createTime` AS `createTime`,date_format(from_unixtime(`a`.`createTime`),'%Y-%m-%d') AS `create_date`,(((`a`.`createTime` + `a`.`lifetime`) - unix_timestamp()) / (24 * 3600)) AS `lifetime`,`a`.`rights` AS `rights`,`a`.`antirights` AS `antirights`,`a`.`dao_desc` AS `dao_desc`,`a`.`is_end` AS `is_end`,`a`.`dao_id` AS `dao_id`,round(((`a`.`strategy` / 65535) * 100),0) AS `strategy`,ifnull(`c`.`s`,0) AS `total_vote` from ((`t_pro` `a` join `t_dao` `b` on((`a`.`dao_id` = `b`.`dao_id`))) left join (select `v_daodetail`.`dao_id` AS `dao_id`,sum(`v_daodetail`.`member_votes`) AS `s` from `v_daodetail` where (`v_daodetail`.`member_type` = 1) group by `v_daodetail`.`dao_id`) `c` on((`a`.`dao_id` = `c`.`dao_id`)));
 
 -- ----------------------------
 -- View structure for v_t2tsame
@@ -955,6 +962,36 @@ truncate table t_nft_swaphonor;
 delimiter ;
 
 -- ----------------------------
+-- Procedure structure for calc_pro
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `calc_pro`;
+delimiter ;;
+CREATE PROCEDURE `calc_pro`(p_delegator CHAR(42), p_createTime INT)
+BEGIN
+    DECLARE t INT;   -- 总票数
+    DECLARE s INT;   -- 策略
+    DECLARE r INT;   -- 赞成票
+    DECLARE a INT;   -- 反对票
+    
+    -- 获取总票数，处理 NULL 情况
+    SELECT IFNULL(SUM(member_votes), 0) INTO t FROM t_daodetail WHERE delegator = p_delegator;
+    -- 获取策略
+    SELECT strategy INTO s FROM t_dao WHERE delegator = p_delegator;
+    -- 获取赞成票和反对票，分别查询，并处理 NULL 情况
+    SELECT IFNULL(SUM(rights), 0) INTO r FROM t_pro WHERE delegator = p_delegator AND createTime = p_createTime;
+    SELECT IFNULL(SUM(antirights), 0) INTO a FROM t_pro WHERE delegator = p_delegator AND createTime = p_createTime;
+    
+    -- 使用浮点数除法， 并确保分母不为0
+    IF t > 0 AND (r/t) >= (s/65535) THEN
+        UPDATE t_pro SET is_end = 1 WHERE delegator = p_delegator AND createTime = p_createTime;
+    ELSEIF t > 0 AND (t-a) / t < (s/65535) THEN
+        UPDATE t_pro SET is_end = 2 WHERE delegator = p_delegator AND createTime = p_createTime;
+    END IF;
+END
+;;
+delimiter ;
+
+-- ----------------------------
 -- Procedure structure for excuteRank
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `excuteRank`;
@@ -1003,7 +1040,7 @@ DROP PROCEDURE IF EXISTS `getAccount`;
 delimiter ;;
 CREATE PROCEDURE `getAccount`(did char(42))
 BEGIN
-	SELECT a.dao_id,a.dao_manager,IFNULL(b.account,'') account FROM t_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id IN(SELECT dao_id FROM t_daodetail
+	SELECT a.dao_id,a.dao_manager,IFNULL(b.account,'') account FROM t_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id IN(SELECT dao_id FROM v_daodetail
 	 WHERE member_address=did);
     END
 ;;
@@ -1060,7 +1097,7 @@ delimiter ;;
 CREATE PROCEDURE `get_prolist`(_address char(42))
 BEGIN
 	SELECT a.*,IFNULL(e.block_num,0) yvote 
-	FROM (SELECT * FROM v_pro WHERE is_end=0 AND dao_id IN (SELECT dao_id FROM t_daodetail WHERE member_address=_address)) a LEFT JOIN 
+	FROM (SELECT * FROM v_pro WHERE is_end=0 AND dao_id IN (SELECT dao_id FROM v_daodetail WHERE member_address=_address)) a LEFT JOIN 
         (SELECT block_num,delegator,createTime FROM t_provote WHERE creator=_address) e ON a.delegator=e.delegator AND a.createTime=e.createTime;
     END
 ;;
@@ -1086,26 +1123,11 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_daoaccount`;
 delimiter ;;
-CREATE PROCEDURE `i_daoaccount`(_blocknum bigint,_delegator char(42),_account char(42),_dividendRights int,daoId int)
+CREATE PROCEDURE `i_daoaccount`(_blocknum bigint,_delegator char(42),_account char(42),_dividendRights int)
 BEGIN
 	if not exists(select * from t_daoaccount where block_num=_blocknum and account=_account) then
-		INSERT INTO t_daoaccount(block_num,delegator,account,dividendRights,dao_id) VALUES(_blocknum,_delegator,_account,_dividendRights,daoId);
+		INSERT INTO t_daoaccount(block_num,delegator,account,dividendRights) VALUES(_blocknum,_delegator,_account,_dividendRights);
 	end if;
-    END
-;;
-delimiter ;
-
--- ----------------------------
--- Procedure structure for i_daodetail
--- ----------------------------
-DROP PROCEDURE IF EXISTS `i_daodetail`;
-delimiter ;;
-CREATE PROCEDURE `i_daodetail`(daoid int,daoaddress char(42),daovotes int,daoindex int)
-BEGIN
-	if not exists(select * from t_daodetail where dao_id=daoid and member_address=daoaddress) then
-		INSERT INTO t_daodetail(dao_id,member_address,member_votes,member_index) VALUES(daoid,daoaddress,daovotes,daoindex);
-	end if;
-	
     END
 ;;
 delimiter ;
@@ -1129,36 +1151,78 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_pro`;
 delimiter ;;
-CREATE PROCEDURE `i_pro`(_blockNum bigint,_delegator char(42),_creator char(42),_account char(42),_dividendRights int,_createTime int,_daodesc varchar(4000),_imgstr text,_proposalType tinyint)
+CREATE PROCEDURE `i_pro`(_blockNum BIGINT,
+    _delegator CHAR(42),
+    _creator CHAR(42),
+    _account CHAR(42),
+    _dividendRights INT,
+    _createTime INT,
+    _daodesc VARCHAR(4000),
+    _imgstr TEXT,
+    _proposalType TINYINT)
 BEGIN
+    DECLARE _daoid INT;
+    DECLARE _strategy INT;
+    DECLARE _lifetime INT;
+    DECLARE _cooltime INT;
+    DECLARE _type TINYINT;
+    -- 获取 DAO 信息
+    SELECT dao_id, strategy, lifetime, cool_time 
+    INTO _daoid, _strategy, _lifetime, _cooltime 
+    FROM t_dao 
+    WHERE delegator = _delegator;
+    -- 使用 CASE 表达式统一设置 _type
+    SET _type = CASE 
+        WHEN _proposalType = 0 THEN 7  -- 策略
+        WHEN _proposalType < 5 THEN _proposalType
+        WHEN NOT EXISTS(SELECT 1 FROM v_daodetail WHERE dao_id = _daoid AND member_address = _account ) THEN 5 -- 新增
+        ELSE 6
+    END;
     
-    declare _daoid int;
-    declare _strategy int;
-    declare _lifetime int;
-    declare _cooltime int;
-    declare _type tinyint;
-    
-    select dao_id,strategy,lifetime,cool_time into _daoid,_strategy,_lifetime,_cooltime from t_dao where delegator=_delegator;
-    
-    if _proposalType=0 then 
-	SET _type=7; -- 策略
-    else    
-	IF  _proposalType<5 THEN 
-		set _type=_proposalType;
-	ELSE 
-		IF NOT EXISTS(SELECT * from t_daodetail where dao_id=_daoid and member_address=_account ) then --  新增
-		      set _type=5;
-		else 
-		     set _type=6;
-		end if;
-		
-	END IF;
-    END IF;
-    
-    UPDATE t_pro SET is_end=1 WHERE block_num<_blockNum and dao_id=_daoid AND is_end=0;
-    INSERT INTO t_pro(block_num,delegator,creator,account,dividendRights,createTime,dao_desc,dao_id,strategy,lifetime,cool_time,pro_type,imgstr,proposalType) 
-    VALUES(_blockNum,_delegator,_creator,_account,_dividendRights,_createTime,_daodesc,_daoid,_strategy,_lifetime,_cooltime,_type,_imgstr,_proposalType);
-    END
+   -- 更新旧的提案状态
+   UPDATE t_pro
+   SET is_end = CASE
+       WHEN createTime + lifetime - UNIX_TIMESTAMP() < 0 THEN 3 -- 过期
+       WHEN rights > antirights THEN 1   -- 赞成
+       ELSE 2 -- 反对
+   END
+   WHERE block_num < _blockNum 
+     AND dao_id = _daoid 
+     AND is_end = 0;
+   -- 插入新的提案
+    INSERT INTO t_pro (
+        block_num,
+        delegator,
+        creator,
+        account,
+        dividendRights,
+        createTime,
+        dao_desc,
+        dao_id,
+        strategy,
+        lifetime,
+        cool_time,
+        pro_type,
+        imgstr,
+		proposalType
+    )
+    VALUES (
+        _blockNum,
+        _delegator,
+        _creator,
+        _account,
+        _dividendRights,
+        _createTime,
+        _daodesc,
+        _daoid,
+        _strategy,
+        _lifetime,
+        _cooltime,
+        _type,
+        _imgstr,
+		_proposalType
+    );
+END
 ;;
 delimiter ;
 
@@ -1277,6 +1341,7 @@ DO BEGIN
 	    update t_pro set is_end=2 where (createTime + lifetime - UNIX_TIMESTAMP())<0;
 	    delete from a_message where DATEDIFF(NOW(), createtime)>730;
 	    DELETE FROM a_messagesc WHERE DATEDIFF(NOW(), createtime)>730;
+	    update t_pro set is_end=3 where is_end=0 and createTime+ lifetime - UNIX_TIMESTAMP()<0;
 	   
 	    
 	END
@@ -1302,7 +1367,7 @@ delimiter ;
 DROP TRIGGER IF EXISTS `commont_insert`;
 delimiter ;;
 CREATE TRIGGER `commont_insert` AFTER INSERT ON `a_message_commont` FOR EACH ROW BEGIN
-	UPDATE a_message SET reply_time=NOW(),total=total+1 WHERE id=new.pid;
+	UPDATE a_message SET reply_time=NOW(),total=total+1 WHERE message_id=new.ppid;
 	
     END
 ;;
@@ -1327,7 +1392,7 @@ delimiter ;
 DROP TRIGGER IF EXISTS `commontsc_insert`;
 delimiter ;;
 CREATE TRIGGER `commontsc_insert` AFTER INSERT ON `a_messagesc_commont` FOR EACH ROW BEGIN
-	UPDATE a_messagesc SET reply_time=NOW(),total=total+1 WHERE id=new.pid;
+	UPDATE a_messagesc SET reply_time=NOW(),total=total+1 WHERE message_id=new.ppid;
     END
 ;;
 delimiter ;
@@ -1355,13 +1420,13 @@ DROP TRIGGER IF EXISTS `daoaccount_insert`;
 delimiter ;;
 CREATE TRIGGER `daoaccount_insert` AFTER INSERT ON `t_daoaccount` FOR EACH ROW BEGIN
 	
-	if not exists(select * from t_daodetail where dao_id=new.dao_id and member_address=new.account) then 
-		INSERT INTO t_daodetail (dao_id,member_votes,member_address,delegator) VALUES(new.dao_id,new.dividendRights,new.account,new.delegator);
+	if not exists(select * from t_daodetail where delegator=new.delegator and member_address=new.account) then 
+		INSERT INTO t_daodetail (member_votes,member_address,delegator) VALUES(new.dividendRights,new.account,new.delegator);
 	else 
 		if new.dividendRights=0 then 
-			delete from t_daodetail where dao_id=new.dao_id AND member_address=new.account;
+			delete from t_daodetail where delegator=new.delegator AND member_address=new.account;
 		else
-			UPDATE t_daodetail  SET member_votes=new.dividendRights WHERE dao_id=new.dao_id AND member_address=new.account; 
+			UPDATE t_daodetail  SET member_votes=new.dividendRights WHERE delegator=new.delegator AND member_address=new.account; 
 		end if;
 	end if;
     END
@@ -1518,6 +1583,17 @@ CREATE TRIGGER `nft_transfer_trigger` AFTER INSERT ON `t_nft_transfer` FOR EACH 
 		INSERT INTO t_mynft(to_address,token_id,_time,template_id,dao_id,tokensvg,contract_address,block_num,_type,tips) 
 		VALUES(new.token_to,new.token_id,DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s'),0,0,new.tokensvg,new.contract_address,new.block_num,0,'50Satoshis');
 	END IF;
+    END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table t_provote
+-- ----------------------------
+DROP TRIGGER IF EXISTS `provote_insert`;
+delimiter ;;
+CREATE TRIGGER `provote_insert` AFTER INSERT ON `t_provote` FOR EACH ROW BEGIN
+	update t_pro set rights=rights+new.rights,antirights=antirights+new.antirights where delegator=new.delegator and createTime=new.createTime;
     END
 ;;
 delimiter ;

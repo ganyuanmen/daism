@@ -6,7 +6,7 @@ export default function useLogs({currentPageNum, did}) {
 
     useEffect(() => {
         let ignore = false;
-        client.get(`/api/getData?ps=5&pi=${currentPageNum}&did=${did}`,'getLogsData').then(res =>{ 
+        client.get(`/api/getData?ps=20&pi=${currentPageNum}&did=${did}`,'getLogsData').then(res =>{ 
             if (!ignore) 
             if (res.status===200) setData({...res.data,status:'succeeded',error:''})
             else setData({rows:[],pages:0,total:0,status:'failed',error:res.statusText})

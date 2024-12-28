@@ -29,7 +29,11 @@ const abi=require('../data/SC_abi.json')
         return result
     }
     
-
+    async isVotable(delegator) {
+        let contract= this.genegateContract(delegator)
+        let res=await  contract['isVotable']();
+        return res;
+    }
 
     genegateContract(address){
         return new this.ethers.Contract(address,this.abi , this.signer);   

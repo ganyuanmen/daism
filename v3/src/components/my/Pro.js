@@ -16,12 +16,12 @@ export default function Proposal({user,tc}) {
         <>
            <Form>
                 <Form.Check inline label={t('noCompletetext')} name="group1" type='radio' defaultChecked={st===0} onClick={e=>
-                    {if(e.target.checked) setSt(0)}}  id='inline-2' />
+                    {if(e.target.checked) setSt(0)}}  id='inline-0' />
                 <Form.Check inline label={t('completeText')} name="group1" type='radio' defaultChecked={st===1} onClick={e=>
                     {if(e.target.checked) setSt(1)}}  id='inline-1' />
-                <Form.Check inline label={t('nocompleteText')} name="group1" type='radio' defaultChecked={st===1} onClick={e=>
-                    {if(e.target.checked) setSt(2)}}  id='inline-1' />
-                <Form.Check inline label={t('expireText')} name="group1" type='radio' defaultChecked={st===2} onClick={e=>
+                <Form.Check inline label={t('nocompleteText')} name="group1" type='radio' defaultChecked={st==2} onClick={e=>
+                    {if(e.target.checked) setSt(2)}}  id='inline-2' />
+                <Form.Check inline label={t('expireText')} name="group1" type='radio' defaultChecked={st===3} onClick={e=>
                     {if(e.target.checked) setSt(3)}}  id='inline-3' />
             </Form>
     

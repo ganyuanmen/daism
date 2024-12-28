@@ -182,11 +182,10 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
     
      //检查提案完成及冷却
     const checkPro=()=>{
-        if(lastPro.length && lastPro[0].is_end===0) {showError(t('noComplete'));return false;}
-        if(lastPro.length && lastPro[0].is_end===1 && lastPro[0].cool_time<0) {
-             showError(t('noCooling'))
-             return false
-        }
+        // if(lastPro.length && (lastPro[0].is_end===0 || (lastPro[0].is_end===2 && lastPro[0].cool_time<0))) {
+        //     showError(t('noComplete'));
+        //     return false;
+        // }
         return true
     }
 
@@ -331,13 +330,13 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
             </div>
         
             { ismember && <div className='mb-3 p-1' style={bStyle}> {/*  当前奖励 */}
-                <b>{t('currentDividend')}:</b> {'  '}(<span>Utoken :</span> {divdend})
+                <b>{t('currentDividend')}:</b> {'  '}(<span>UTO :</span> {divdend})
                 <Button  style={{marginLeft:30}} onClick={getDivdend}  variant='primary'> <EditSvg size={16} /> {t('obtainDividends')} </Button>
                 </div>
             }
             <div className='mb-3 p-1' style={bStyle} >
                <b>{t('typeName')}:</b> {'  '} ({record.sctype})
-                {ismember && <Button  style={{marginLeft:30}} onClick={e=>{setShowType(true)}}  variant='primary'> <EditSvg size={16} /> {t('editTypeText')}
+                {ismember && <Button  style={{marginLeft:30}} onClick={e=>{if(checkPro()) setShowType(true)}}  variant='primary'> <EditSvg size={16} /> {t('editTypeText')}
                     </Button>
                 }
             </div>

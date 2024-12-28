@@ -7,6 +7,7 @@ import useMyPro from '../../hooks/useMyPro';
 import ShowErrorBar from '../ShowErrorBar';
 import Loadding from '../Loadding';
 import ProDetail from './ProDetail';
+import { client } from '../../lib/api/client';
 
 
 export default function ProsPage({user,t,tc})
@@ -16,7 +17,7 @@ export default function ProsPage({user,t,tc})
 
     return (
         <>
-        {prosData.data.length?<ProsList prosData={prosData} t={t} tc={tc} setRefresh={setRefresh} />
+        {prosData.data.length?<ProsList user={user} prosData={prosData} t={t} tc={tc} setRefresh={setRefresh} />
             :prosData.status==='failed'?<ShowErrorBar errStr={prosData.error} />
             :prosData.status==='succeeded' ? <ShowErrorBar errStr={tc('noDataText')} />
             :<Loadding />
@@ -27,7 +28,7 @@ export default function ProsPage({user,t,tc})
 }
 
 
-function ProsList({prosData,t,tc,setRefresh})
+function ProsList({user,prosData,t,tc,setRefresh})
 {
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
@@ -37,17 +38,33 @@ function ProsList({prosData,t,tc,setRefresh})
     
 
     //投票
-    const vote=async (delegator,flag)=>{
-      
-        showTip(t('submitVoteText')); 
-        window.daismDaoapi.Dao.vote(delegator,flag).then(() => {
+    const vote=async (dao_id,delegator,flag)=>{
+        try {
+            let res=await client.get(`/api/getData?daoid=${dao_id}&did=${user.account}`,'getLastPro');
+            if(res?.data?.length){
+               
+                if(res.data[0].lifetime<0){
+                    showError(t('passlifeTime')); 
+                }else {
+                    if(dao_id>3){  //第2次升级增加的功能 
+                        let is_vis=await window.daismDaoapi.Dao.isVotable(delegator);
+                        if(!is_vis) {
+                            showError(t('noVoteText')); 
+                            return;
+                        }
+                    }
+                    showTip(t('submitVoteText')); 
+                    await  window.daismDaoapi.Dao.vote(delegator,flag);
+                    setRefresh(true);
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            showError(tc('errorText')+(err.message?err.message:err)); 
+        }
+        finally{
             closeTip()
-            setRefresh(true)
-          }, err => {
-              console.error(err);closeTip();
-              showError(tc('errorText')+(err.message?err.message:err));
-          }
-        );
+        }
     }
 
   const cssType={display:'inline-block',padding:'4px'}
@@ -64,8 +81,8 @@ function ProsList({prosData,t,tc,setRefresh})
                         <Col>
                             {obj.yvote!=="0"?<span style={cssType}>{t('votedText')}</span> //已投票
                                 :<>
-                                   <Button  size="sm" variant="info" onClick={()=>{vote(obj.delegator,false)}} ><EditSvg size={16} /> {t('rights')}</Button>  {'  '} 
-                                   <Button  size="sm" variant="warning" onClick={()=>{vote(obj.delegator,true)}} ><EditSvg size={16} /> {t('antirights')}</Button> 
+                                   <Button  size="sm" variant="info" onClick={()=>{vote(obj.dao_id,obj.delegator,false)}} ><EditSvg size={16} /> {t('rights')}</Button>  {'  '} 
+                                   <Button  size="sm" variant="warning" onClick={()=>{vote(obj.dao_id,obj.delegator,true)}} ><EditSvg size={16} /> {t('antirights')}</Button> 
                                 </>
                             }
                             <ProDetail obj={obj}  t={t} /> 

@@ -76,7 +76,8 @@ class EventSum
                     "delegator": data.returnValues['emiter'], 
                     "account":data.returnValues['to'], 
                     "dao_owner":data.returnValues['owner'], 
-                    "utoken_amount":parseFloat(_this.web3.utils.fromWei(data.returnValues.amount,'ether')).toFixed(6), 
+                    "utoken_amount":parseFloat(data.returnValues.amount)/100000000,
+                    // parseFloat(_this.web3.utils.fromWei(data.returnValues.amount,'ether')).toFixed(6), 
                     "pre_time":data.returnValues['_time']
                     })
                  }) 

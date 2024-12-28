@@ -97,7 +97,9 @@
     "dateText":"Date",
     "addressText":"address",
     "expireText":"expire",
-    "lastVersion":"Version num"
+    "lastVersion":"Version num",
+    "passlifeTime":"The proposal has expired!",
+    "noVoteText":"The proposal can no longer be voted on!"
 
   }
 }

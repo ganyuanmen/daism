@@ -7,7 +7,7 @@ export default function useProData({currentPageNum, did,st}) {
 
     useEffect(() => {
         let ignore = false;
-        client.get(`/api/getData?ps=5&pi=${currentPageNum}&did=${did}&st=${st}&t=${new Date().getTime()}`,'getProsData').then(res =>{ 
+        client.get(`/api/getData?ps=25&pi=${currentPageNum}&did=${did}&st=${st}&t=${new Date().getTime()}`,'getProsData').then(res =>{ 
             if (!ignore) 
             if (res.status===200) setData({...res.data,status:'succeeded',error:''})
             else setData({rows:[],pages:0,total:0,status:'failed',error:res.statusText})
