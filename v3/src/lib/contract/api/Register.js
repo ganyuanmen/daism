@@ -5,7 +5,7 @@ const abi=require('../data/SCRegistrar_abi.json')
     async createSC(daoinfo, memberAr,voteAr,_src,_type,_bytes) {
         this.genegateContract()
         let result = await this.contract['createSC'].send(daoinfo, memberAr,voteAr
-            ,(2 ** 16-1).toString(),7 * 24 * 3600,9 * 24 * 3600,[_type,_src],_bytes);
+            ,39321,7 * 24 * 3600,8 * 24 * 3600+1,[_type,_src],_bytes);
         await result.wait()
         return result
     }

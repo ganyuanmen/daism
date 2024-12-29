@@ -57,6 +57,8 @@ function ProsList({user,prosData,t,tc,setRefresh})
                     await  window.daismDaoapi.Dao.vote(delegator,flag);
                     setRefresh(true);
                 }
+            }else{
+                showTip(tc('dataHandleErrorText'));  
             }
         } catch (err) {
             console.error(err);

@@ -117,6 +117,8 @@ function listen_swap()
    token2utokenex()
  
    eth2utoken() //eth to utoken eth 兑换 utoken
+   addProEvent()   //addProEvent 创建提案事件
+   voteEvent()
 }
 
 function listen_attach()
@@ -124,8 +126,6 @@ function listen_attach()
    // setLogo()   //setlogo 创建dao logo 事件
    updateSCEvent()
    addCreatorCEvent()
-   addProEvent()   //addProEvent 创建提案事件
-   voteEvent()
    getDividendEvent() //提取分红
    accountDividendRight()  //增加成员
 }
@@ -526,9 +526,7 @@ function accountDividendRight()
       let sql = "call i_daoaccount(?,?,?,?)";
       let params = [obj.blockNumber, data['delegator'],data['account'],data['dividendRights']];
       maxData[14] = obj.blockNumber+1n; //Cache last block number
-      setTimeout(async () => {  //等待投票完成
-         await executeSql(sql, params);
-      }, 3000);
+      await executeSql(sql, params);
      
    })
 }

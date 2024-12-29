@@ -70,7 +70,7 @@ export async function getDappOwner({did})
 //最后一条提案
 export async function getLastPro({daoid,did})
 {
-    let re= await getData('SELECT * FROM v_pro WHERE dao_id=? and creator=? ORDER BY block_num DESC LIMIT 1',[daoid,did]);
+    let re= await getData(' SELECT * FROM v_pro WHERE dao_id=? AND  EXISTS (SELECT 1 FROM v_daodetail WHERE dao_id=? AND member_address=?) ORDER BY block_num DESC LIMIT 1',[daoid,daoid,did]);
     return re || []
 }
 
