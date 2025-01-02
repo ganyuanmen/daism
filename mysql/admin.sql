@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 28/12/2024 22:49:30
+ Date: 02/01/2025 09:28:17
 */
 
 SET NAMES utf8mb4;
@@ -40,7 +40,7 @@ CREATE TABLE `a_account`  (
   UNIQUE INDEX `block_num`(`block_num`) USING BTREE,
   UNIQUE INDEX `manager`(`dao_id`, `manager`) USING BTREE,
   UNIQUE INDEX `actor_url`(`actor_url`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_bookmark
@@ -84,7 +84,7 @@ CREATE TABLE `a_eip_type`  (
   `relay_type` tinyint(0) NULL DEFAULT NULL COMMENT '1 链上确认',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `type_name`(`type_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_follow
@@ -163,7 +163,7 @@ CREATE TABLE `a_message`  (
   INDEX `send_type`(`send_type`, `receive_account`) USING BTREE,
   INDEX `receive_account`(`receive_account`) USING BTREE,
   INDEX `dao_id`(`send_type`, `property_index`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_message_commont
@@ -187,7 +187,7 @@ CREATE TABLE `a_message_commont`  (
   `ppid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc
@@ -221,7 +221,7 @@ CREATE TABLE `a_messagesc`  (
   INDEX `_type`(`_type`) USING BTREE,
   INDEX `dao_id`(`dao_id`) USING BTREE,
   INDEX `reply_time`(`reply_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc_commont
@@ -245,7 +245,7 @@ CREATE TABLE `a_messagesc_commont`  (
   `ppid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for aux_bt
@@ -300,7 +300,7 @@ INSERT INTO `aux_tree` VALUES ('checkdao', 'SELECT a.id,b.dao_name,c.dao_symbol,
 INSERT INTO `aux_tree` VALUES ('daoactor', 'SELECT a.*,b.actor_account,b.actor_url,b.domain FROM v_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.delegator IN(SELECT delegator FROM t_daodetail WHERE member_address=?)', '地址->所在的智能化器');
 INSERT INTO `aux_tree` VALUES ('daoactorbyid', 'SELECT a.*,b.actor_account,b.actor_url,b.domain FROM v_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.delegator IN(SELECT delegator FROM t_daodetail WHERE member_address=(SELECT manager FROM a_account WHERE id=?))', 'id->所在智能公器');
 INSERT INTO `aux_tree` VALUES ('daodatabyid', 'SELECT a.*,b.actor_account,b.actor_url,b.domain FROM v_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id=?', NULL);
-INSERT INTO `aux_tree` VALUES ('daomember', 'SELECT a.member_address,b.actor_url,b.actor_account,b.avatar FROM v_daodetail a LEFT JOIN (SELECT * FROM a_account WHERE dao_id=0) b ON a.`member_address`=b.manager WHERE a.dao_id=?', 'dao 下所有成员');
+INSERT INTO `aux_tree` VALUES ('daomember', 'SELECT a.member_address,b.actor_url,b.actor_account,b.avatar FROM t_daodetail a LEFT JOIN (SELECT * FROM a_account WHERE dao_id=0) b ON a.`member_address`=b.manager WHERE a.dao_id=?', 'dao 下所有成员');
 INSERT INTO `aux_tree` VALUES ('fllower', 'SELECT user_account account,user_url url,user_avatar avatar,user_inbox inbox,createtime,follow_id,id FROM v_follow WHERE actor_account=(SELECT actor_account FROM a_account WHERE dao_id=?)', '按daoid 找谁关注我');
 INSERT INTO `aux_tree` VALUES ('follow0', 'SELECT actor_account account,actor_url url,actor_avatar avatar,actor_inbox inbox,createtime,follow_id,id FROM v_follow WHERE user_account=?', '我关注了谁集合');
 INSERT INTO `aux_tree` VALUES ('follow1', 'SELECT user_account account,user_url url,user_avatar avatar,user_inbox inbox,createtime,follow_id,id FROM v_follow WHERE actor_account=?', '谁关注了我集合');
@@ -331,7 +331,7 @@ CREATE TABLE `t_changelogo`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_createversion
@@ -346,7 +346,7 @@ CREATE TABLE `t_createversion`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_dao
@@ -392,7 +392,7 @@ CREATE TABLE `t_daoaccount`  (
   `dao_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_daodetail
@@ -405,9 +405,11 @@ CREATE TABLE `t_daodetail`  (
   `member_index` int(0) NULL DEFAULT 0 COMMENT '成员序号,已作废',
   `member_type` tinyint(0) NULL DEFAULT 1 COMMENT '类型:1原始，0邀请，已作废',
   `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smartcommon代理地址',
+  `dao_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `id`(`delegator`, `member_address`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  UNIQUE INDEX `id`(`delegator`, `member_address`) USING BTREE,
+  UNIQUE INDEX `dao_id`(`dao_id`, `member_address`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_domain
@@ -438,7 +440,7 @@ CREATE TABLE `t_domainsing`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_e2t
@@ -480,7 +482,7 @@ CREATE TABLE `t_eth_utoken`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_getdaoutoken
@@ -497,7 +499,7 @@ CREATE TABLE `t_getdaoutoken`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_mynft
@@ -533,7 +535,7 @@ CREATE TABLE `t_nft`  (
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_mint
@@ -550,7 +552,7 @@ CREATE TABLE `t_nft_mint`  (
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swap
@@ -568,7 +570,7 @@ CREATE TABLE `t_nft_swap`  (
   `utoken` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swaphonor
@@ -586,7 +588,7 @@ CREATE TABLE `t_nft_swaphonor`  (
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_transfer
@@ -628,10 +630,11 @@ CREATE TABLE `t_pro`  (
   `imgstr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
   `proposalType` tinyint(0) NULL DEFAULT NULL COMMENT '0 为修改strategy\n1 为修改logo\n2 为修改描述\n3 为修改管理员\n4 为修改智能公器类型',
   `id` int(0) NOT NULL AUTO_INCREMENT,
+  `total_vote` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `delegator`(`delegator`, `createTime`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_proexcu
@@ -647,7 +650,7 @@ CREATE TABLE `t_proexcu`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_provote
@@ -666,7 +669,7 @@ CREATE TABLE `t_provote`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE,
   INDEX `delegator`(`delegator`, `createTime`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_swap
@@ -688,7 +691,7 @@ CREATE TABLE `t_swap`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2t
@@ -714,7 +717,7 @@ CREATE TABLE `t_t2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2u
@@ -737,7 +740,7 @@ CREATE TABLE `t_t2u`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_token
@@ -787,7 +790,7 @@ CREATE TABLE `t_u2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_updatedaocreator
@@ -801,7 +804,7 @@ CREATE TABLE `t_updatedaocreator`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- View structure for v_account
@@ -826,12 +829,6 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_createversion` AS sele
 -- ----------------------------
 DROP VIEW IF EXISTS `v_dao`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_dao` AS select round(((`a`.`strategy` / 65535) * 100),0) AS `strategy`,`a`.`cool_time` AS `cool_time`,`a`.`lifetime` AS `lifetime`,`a`.`dao_id` AS `dao_id`,`a`.`block_num` AS `block_num`,`a`.`sctype` AS `sctype`,`a`.`dao_name` AS `dao_name`,concat(`a`.`dao_symbol`,'.',lower(`a`.`sctype`)) AS `dao_symbol`,`a`.`dao_desc` AS `dao_desc`,date_format(from_unixtime(`a`.`dao_time`),'%Y-%m-%d %H:%i:%s') AS `dao_time`,`a`.`dao_manager` AS `dao_manager`,`a`.`dao_logo` AS `dao_logo`,`a`.`creator` AS `creator`,`a`.`delegator` AS `delegator`,`a`.`utoken_cost` AS `utoken_cost`,`a`.`dao_ranking` AS `dao_ranking`,`a`.`dao_exec` AS `dao_exec`,date_format(from_unixtime(`a`.`_time`),'%Y-%m-%d %H:%i:%s') AS `_time`,ifnull(`b`.`token_id`,0) AS `token_id` from (`t_dao` `a` left join `t_token` `b` on((`a`.`dao_id` = `b`.`dao_id`)));
-
--- ----------------------------
--- View structure for v_daodetail
--- ----------------------------
-DROP VIEW IF EXISTS `v_daodetail`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_daodetail` AS select `a`.`id` AS `id`,`a`.`member_votes` AS `member_votes`,`a`.`member_address` AS `member_address`,`a`.`member_index` AS `member_index`,`a`.`member_type` AS `member_type`,`a`.`delegator` AS `delegator`,`b`.`dao_id` AS `dao_id` from (`t_daodetail` `a` join `t_dao` `b` on((`a`.`delegator` = `b`.`delegator`)));
 
 -- ----------------------------
 -- View structure for v_daotoken
@@ -885,7 +882,7 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_mynft` AS select `a`.`
 -- View structure for v_pro
 -- ----------------------------
 DROP VIEW IF EXISTS `v_pro`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_pro` AS select `b`.`dao_name` AS `dao_name`,`b`.`dao_symbol` AS `dao_symbol`,`b`.`dao_logo` AS `dao_logo`,`b`.`dao_desc` AS `daodesc`,`a`.`proposalType` AS `proposalType`,`a`.`imgstr` AS `imgstr`,`a`.`pro_type` AS `pro_type`,(unix_timestamp() - (`a`.`createTime` + `a`.`cool_time`)) AS `cool_time`,`a`.`block_num` AS `block_num`,`a`.`delegator` AS `delegator`,`a`.`creator` AS `creator`,`a`.`account` AS `account`,`a`.`dividendRights` AS `dividendRights`,`a`.`createTime` AS `createTime`,date_format(from_unixtime(`a`.`createTime`),'%Y-%m-%d') AS `create_date`,(((`a`.`createTime` + `a`.`lifetime`) - unix_timestamp()) / (24 * 3600)) AS `lifetime`,`a`.`rights` AS `rights`,`a`.`antirights` AS `antirights`,`a`.`dao_desc` AS `dao_desc`,`a`.`is_end` AS `is_end`,`a`.`dao_id` AS `dao_id`,round(((`a`.`strategy` / 65535) * 100),0) AS `strategy`,ifnull(`c`.`s`,0) AS `total_vote` from ((`t_pro` `a` join `t_dao` `b` on((`a`.`dao_id` = `b`.`dao_id`))) left join (select `v_daodetail`.`dao_id` AS `dao_id`,sum(`v_daodetail`.`member_votes`) AS `s` from `v_daodetail` where (`v_daodetail`.`member_type` = 1) group by `v_daodetail`.`dao_id`) `c` on((`a`.`dao_id` = `c`.`dao_id`)));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_pro` AS select `b`.`dao_name` AS `dao_name`,`b`.`dao_symbol` AS `dao_symbol`,`b`.`dao_logo` AS `dao_logo`,`b`.`dao_desc` AS `daodesc`,`a`.`proposalType` AS `proposalType`,`a`.`imgstr` AS `imgstr`,`a`.`pro_type` AS `pro_type`,`a`.`cool_time` AS `cool_time`,`a`.`block_num` AS `block_num`,`a`.`delegator` AS `delegator`,`a`.`creator` AS `creator`,`a`.`account` AS `account`,`a`.`dividendRights` AS `dividendRights`,`a`.`createTime` AS `createTime`,date_format(from_unixtime(`a`.`createTime`),'%Y-%m-%d') AS `create_date`,((`a`.`createTime` + `a`.`lifetime`) - unix_timestamp()) AS `lifetime`,`a`.`rights` AS `rights`,`a`.`antirights` AS `antirights`,`a`.`dao_desc` AS `dao_desc`,`a`.`is_end` AS `is_end`,`a`.`dao_id` AS `dao_id`,round(((`a`.`strategy` / 65535) * 100),0) AS `strategy`,`a`.`total_vote` AS `total_vote` from (`t_pro` `a` join `t_dao` `b` on((`a`.`dao_id` = `b`.`dao_id`)));
 
 -- ----------------------------
 -- View structure for v_t2tsame
@@ -966,25 +963,33 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `calc_pro`;
 delimiter ;;
-CREATE PROCEDURE `calc_pro`(p_delegator CHAR(42), p_createTime INT)
+CREATE PROCEDURE `calc_pro`(p_nump bigint,p_delegator CHAR(42), p_createTime INT,p_creator char(42),p_rights int,p_antirights int,p_time int,p_type tinyint)
 BEGIN
-    DECLARE t INT;   -- 总票数
-    DECLARE s INT;   -- 策略
-    DECLARE r INT;   -- 赞成票
-    DECLARE a INT;   -- 反对票
-    
-    -- 获取总票数，处理 NULL 情况
-    SELECT IFNULL(SUM(member_votes), 0) INTO t FROM t_daodetail WHERE delegator = p_delegator;
-    -- 获取策略
-    SELECT strategy INTO s FROM t_dao WHERE delegator = p_delegator;
-    -- 获取赞成票和反对票，分别查询，并处理 NULL 情况
-    SELECT IFNULL(SUM(rights), 0) INTO r FROM t_pro WHERE delegator = p_delegator AND createTime = p_createTime;
-    SELECT IFNULL(SUM(antirights), 0) INTO a FROM t_pro WHERE delegator = p_delegator AND createTime = p_createTime;
-    
+	DECLARE t INT;   -- 总票数
+	DECLARE s INT;   -- 策略
+	DECLARE r INT;   -- 赞成票
+	DECLARE a INT;   -- 反对票
+	DECLARE cc INT;  -- 本次投票数
+	-- 分别查询，并处理 NULL 情况
+	SELECT IFNULL(SUM(total_vote), 0) INTO t FROM t_pro WHERE delegator = p_delegator AND createTime = p_createTime;
+	SELECT IFNULL(SUM(strategy), 0) INTO s FROM t_pro WHERE delegator = p_delegator AND createTime = p_createTime;
+	SELECT IFNULL(SUM(rights), 0) INTO r FROM t_pro WHERE delegator = p_delegator AND createTime = p_createTime;
+	SELECT IFNULL(SUM(antirights), 0) INTO a FROM t_pro WHERE delegator = p_delegator AND createTime = p_createTime;
+	SELECT IFNULL(SUM(member_votes), 0) INTO cc FROM t_daodetail WHERE delegator=p_delegator AND member_address=p_creator;    
+	 
+	 if p_rights> r then --  赞成票增加
+		INSERT INTO t_provote(block_num,delegator,createTime,creator,antirights,rights,_time,proposalType) VALUES(p_nump,p_delegator,p_createTime,p_creator,0,cc,p_time,77);
+	 ELSEIF p_antirights>a then -- 反对票增加
+		INSERT INTO t_provote(block_num,delegator,createTime,creator,antirights,rights,_time,proposalType) VALUES(p_nump,p_delegator,p_createTime,p_creator,cc,0,p_time,88);
+	 else  -- 历史记录，直接用当前的
+		INSERT INTO t_provote(block_num,delegator,createTime,creator,antirights,rights,_time,proposalType) VALUES(p_nump,p_delegator,p_createTime,p_creator,p_antirights,p_rights,p_time,99);
+	 end if;
+	 
+	UPDATE t_pro SET rights=p_rights,antirights=p_antirights WHERE delegator=p_delegator AND createTime=p_createTime;
     -- 使用浮点数除法， 并确保分母不为0
-    IF t > 0 AND (r/t) >= (s/65535) THEN
+    IF t > 0 AND (p_rights/t) >= (s/65535) THEN
         UPDATE t_pro SET is_end = 1 WHERE delegator = p_delegator AND createTime = p_createTime;
-    ELSEIF t > 0 AND (t-a) / t < (s/65535) THEN
+    ELSEIF t > 0 AND (t-p_antirights) / t < (s/65535) THEN
         UPDATE t_pro SET is_end = 2 WHERE delegator = p_delegator AND createTime = p_createTime;
     END IF;
 END
@@ -998,20 +1003,27 @@ DROP PROCEDURE IF EXISTS `excuteRank`;
 delimiter ;;
 CREATE PROCEDURE `excuteRank`()
 BEGIN
-UPDATE t_dao t1 JOIN (
-SELECT dao_id,  utoken_cost, yy FROM
-(SELECT dao_id,  utoken_cost,
-@curRank := IF(@prevRank = utoken_cost, @curRank, @incRank) AS yy, 
-@incRank := @incRank + 1, 
-@prevRank := utoken_cost
-FROM t_dao p, (
-SELECT @curRank :=0, @prevRank := NULL, @incRank := 1
-) r 
-ORDER BY utoken_cost DESC) s
-) t2 
-ON t1.dao_id = t2.dao_id
-SET t1.dao_ranking = t2.yy;
-    END
+	UPDATE t_dao t1 
+	JOIN (SELECT dao_id,ROW_NUMBER() OVER (ORDER BY utoken_cost DESC) AS dao_ranking FROM t_dao) t2 ON t1.dao_id = t2.dao_id
+	SET t1.dao_ranking = t2.dao_ranking;
+    -- 初始化排名变量
+   -- SET @curRank := 0;
+   -- SET @prevRank := NULL;
+   -- SET @incRank := 1;
+    -- 使用变量计算排名并更新
+  --  UPDATE t_dao t1
+  --  JOIN (
+      --  SELECT dao_id, 
+               -- 计算排名
+          --     @curRank := IF(@prevRank = utoken_cost, @curRank, @incRank) AS rank0,
+         --      @incRank := @incRank + 1,
+         --      @prevRank := utoken_cost
+       -- FROM t_dao
+     --   ORDER BY utoken_cost DESC
+  --  ) t2 
+  --  ON t1.dao_id = t2.dao_id
+  --  SET t1.dao_ranking = t2.rank0;
+END
 ;;
 delimiter ;
 
@@ -1040,7 +1052,7 @@ DROP PROCEDURE IF EXISTS `getAccount`;
 delimiter ;;
 CREATE PROCEDURE `getAccount`(did char(42))
 BEGIN
-	SELECT a.dao_id,a.dao_manager,IFNULL(b.account,'') account FROM t_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id IN(SELECT dao_id FROM v_daodetail
+	SELECT a.dao_id,a.dao_manager,IFNULL(b.account,'') account FROM t_dao a LEFT JOIN a_account b ON a.dao_id=b.dao_id WHERE a.dao_id IN(SELECT dao_id FROM t_daodetail
 	 WHERE member_address=did);
     END
 ;;
@@ -1097,7 +1109,7 @@ delimiter ;;
 CREATE PROCEDURE `get_prolist`(_address char(42))
 BEGIN
 	SELECT a.*,IFNULL(e.block_num,0) yvote 
-	FROM (SELECT * FROM v_pro WHERE is_end=0 AND dao_id IN (SELECT dao_id FROM v_daodetail WHERE member_address=_address)) a LEFT JOIN 
+	FROM (SELECT * FROM v_pro WHERE is_end=0 AND dao_id IN (SELECT dao_id FROM t_daodetail WHERE member_address=_address)) a LEFT JOIN 
         (SELECT block_num,delegator,createTime FROM t_provote WHERE creator=_address) e ON a.delegator=e.delegator AND a.createTime=e.createTime;
     END
 ;;
@@ -1125,8 +1137,22 @@ DROP PROCEDURE IF EXISTS `i_daoaccount`;
 delimiter ;;
 CREATE PROCEDURE `i_daoaccount`(_blocknum bigint,_delegator char(42),_account char(42),_dividendRights int)
 BEGIN
-	if not exists(select * from t_daoaccount where block_num=_blocknum and account=_account) then
+	if not exists(select 1 from t_daoaccount where block_num=_blocknum and account=_account) then
 		INSERT INTO t_daoaccount(block_num,delegator,account,dividendRights) VALUES(_blocknum,_delegator,_account,_dividendRights);
+	end if;
+    END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Procedure structure for i_daodetail
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `i_daodetail`;
+delimiter ;;
+CREATE PROCEDURE `i_daodetail`(votes int,member char(42),delegat char(42) ,daoid int)
+BEGIN
+if not exists(select 1 from t_daodetail where dao_id=daoid and member_address=member) then
+		INSERT INTO t_daodetail(member_votes,member_address,delegator,dao_id) values(votes,member,delegat,daoid);
 	end if;
     END
 ;;
@@ -1166,6 +1192,9 @@ BEGIN
     DECLARE _lifetime INT;
     DECLARE _cooltime INT;
     DECLARE _type TINYINT;
+    DECLARE _votes INT;
+   
+    select sum(member_votes) into _votes from t_daodetail where delegator=_delegator;
     -- 获取 DAO 信息
     SELECT dao_id, strategy, lifetime, cool_time 
     INTO _daoid, _strategy, _lifetime, _cooltime 
@@ -1175,7 +1204,7 @@ BEGIN
     SET _type = CASE 
         WHEN _proposalType = 0 THEN 7  -- 策略
         WHEN _proposalType < 5 THEN _proposalType
-        WHEN NOT EXISTS(SELECT 1 FROM v_daodetail WHERE dao_id = _daoid AND member_address = _account ) THEN 5 -- 新增
+        WHEN NOT EXISTS(SELECT 1 FROM t_daodetail WHERE dao_id = _daoid AND member_address = _account ) THEN 5 -- 新增
         ELSE 6
     END;
     
@@ -1204,7 +1233,8 @@ BEGIN
         cool_time,
         pro_type,
         imgstr,
-		proposalType
+	proposalType,
+	total_vote
     )
     VALUES (
         _blockNum,
@@ -1220,7 +1250,8 @@ BEGIN
         _cooltime,
         _type,
         _imgstr,
-		_proposalType
+	_proposalType,
+	_votes
     );
 END
 ;;
@@ -1231,13 +1262,37 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_swap`;
 delimiter ;;
-CREATE PROCEDURE `i_swap`(blocknum bigint,swapaddress char(42),swaptime int,swapeth decimal(18,4),swaputoken decimal(18,6),tranHash char(66),swapgas int)
+CREATE PROCEDURE `i_swap`(blocknum BIGINT,
+    swapaddress CHAR(42),
+    swaptime INT,
+    swapeth DECIMAL(18,4),
+    swaputoken DECIMAL(18,6),
+    tranHash CHAR(66),
+    swapgas INT)
 BEGIN
-    IF NOT EXISTS(SELECT * FROM t_eth_utoken WHERE block_num=blocknum) THEN
-			INSERT INTO t_eth_utoken(block_num,swap_address,swap_time,swap_eth,swap_utoken,tran_hash,swap_gas) 
-			VALUES(blocknum,swapaddress,swaptime,swapeth,swaputoken,tranHash,swapgas);
-		end if;
-    END
+    -- 检查是否存在相同的 tran_hash
+    IF NOT EXISTS(SELECT 1 FROM t_eth_utoken WHERE tran_hash = tranHash) THEN
+        -- 插入新的记录
+        INSERT INTO t_eth_utoken(
+            block_num,
+            swap_address,
+            swap_time,
+            swap_eth,
+            swap_utoken,
+            tran_hash,
+            swap_gas
+        ) 
+        VALUES(
+            blocknum,
+            swapaddress,
+            swaptime,
+            swapeth,
+            swaputoken,
+            tranHash,
+            swapgas
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1246,14 +1301,58 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_t2t`;
 delimiter ;;
-CREATE PROCEDURE `i_t2t`(blocknum bigint,fromdaoid int,todaoid int,fromutokencost decimal(18,6),toutokencost DECIMAL(18,6),
-    fromaddress char(42),toaddress char(42),fromtoken DECIMAL(18,6),totoken DECIMAL(18,6),swaptime int,tranHsh char(66),swapgas int,_tip DECIMAL(18,6),_scid int)
+CREATE PROCEDURE `i_t2t`(blocknum BIGINT,
+    fromdaoid INT,
+    todaoid INT,
+    fromutokencost DECIMAL(18,6),
+    toutokencost DECIMAL(18,6),
+    fromaddress CHAR(42),
+    toaddress CHAR(42),
+    fromtoken DECIMAL(18,6),
+    totoken DECIMAL(18,6),
+    swaptime INT,
+    tranHsh CHAR(66),
+    swapgas INT,
+    _tip DECIMAL(18,6),
+    _scid INT)
 BEGIN
-     IF NOT EXISTS(SELECT * FROM t_t2t WHERE block_num=blocknum) THEN
-	INSERT INTO t_t2t(block_num,from_dao_id,to_dao_id,from_utoken_cost,to_utoken_cost,from_address,to_address,from_token,to_token,swap_time,tran_hash,swap_gas,tipAmount,sc_id)
-	 VALUES(blocknum,fromdaoid,todaoid,fromutokencost,toutokencost,fromaddress,toaddress,fromtoken,totoken,swaptime,tranHsh,swapgas,_tip,_scid);
-	 end if;
-    END
+    -- 检查记录是否存在，避免重复插入
+    IF NOT EXISTS (SELECT 1 FROM t_t2t WHERE tran_hash = tranHsh) THEN
+        -- 插入新记录
+        INSERT INTO t_t2t (
+            block_num,
+            from_dao_id,
+            to_dao_id,
+            from_utoken_cost,
+            to_utoken_cost,
+            from_address,
+            to_address,
+            from_token,
+            to_token,
+            swap_time,
+            tran_hash,
+            swap_gas,
+            tipAmount,
+            sc_id
+        ) 
+        VALUES (
+            blocknum,
+            fromdaoid,
+            todaoid,
+            fromutokencost,
+            toutokencost,
+            fromaddress,
+            toaddress,
+            fromtoken,
+            totoken,
+            swaptime,
+            tranHsh,
+            swapgas,
+            _tip,
+            _scid
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1262,15 +1361,31 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_t2u`;
 delimiter ;;
-CREATE PROCEDURE `i_t2u`(blocknum bigint,fromTokenId int,utokencost decimal(18,6),fromaddress char(42)
-    ,toaddress char(42),utokenamount DECIMAL(18,6),tokenamount DECIMAL(18,6),swaptime int,tranHash char(66),swapgas int,_tip DECIMAL(18,6))
+CREATE PROCEDURE `i_t2u`(blocknum BIGINT,
+    fromTokenId INT,
+    utokencost DECIMAL(18,6),
+    fromaddress CHAR(42),
+    toaddress CHAR(42),
+    utokenamount DECIMAL(18,6),
+    tokenamount DECIMAL(18,6),
+    swaptime INT,
+    tranHash CHAR(66),
+    swapgas INT,
+    _tip DECIMAL(18,6))
 BEGIN
-    IF NOT EXISTS(SELECT * FROM t_t2u WHERE block_num=blocknum) THEN
-	
-	INSERT INTO t_t2u(block_num,from_token_id,utoken_cost,from_address,to_address,utoken_amount,token_amount,swap_time,tran_hash,swap_gas,tipAmount)  
-	VALUES(blocknum,fromTokenId,utokencost,fromaddress,toaddress,utokenamount,tokenamount,swaptime,tranHash,swapgas,_tip);
-	end if;
-    END
+    -- 检查记录是否已存在
+    IF NOT EXISTS (SELECT 1 FROM t_t2u WHERE tran_hash = tranHash) THEN
+        -- 插入新记录
+        INSERT INTO t_t2u (
+            block_num, from_token_id, utoken_cost, from_address, to_address, 
+            utoken_amount, token_amount, swap_time, tran_hash, swap_gas, tipAmount
+        )  
+        VALUES (
+            blocknum, fromTokenId, utokencost, fromaddress, toaddress, 
+            utokenamount, tokenamount, swaptime, tranHash, swapgas, _tip
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1293,14 +1408,30 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `i_u2t`;
 delimiter ;;
-CREATE PROCEDURE `i_u2t`(blocknum bigint,tokenId int,utokencost decimal(18,6),fromaddress char(42)
-    ,toaddress char(42),utokenamount DECIMAL(18,6),tokenamount DECIMAL(18,6),swaptime int,tranHash char(66),swapgas int,_tip DECIMAL(18,6))
+CREATE PROCEDURE `i_u2t`(blocknum BIGINT,
+    tokenId INT,
+    utokencost DECIMAL(18,6),
+    fromaddress CHAR(42),
+    toaddress CHAR(42),
+    utokenamount DECIMAL(18,6),
+    tokenamount DECIMAL(18,6),
+    swaptime INT,
+    tranHash CHAR(66),
+    swapgas INT,
+    _tip DECIMAL(18,6))
 BEGIN
-    IF NOT EXISTS(SELECT * FROM t_u2t WHERE block_num=blocknum) THEN
-	INSERT INTO t_u2t(block_num,token_id,utoken_cost,from_address,to_address,utoken_amount,token_amount,swap_time,tran_hash,swap_gas,tipAmount) 
-	VALUES(blocknum,tokenId,utokencost,fromaddress,toaddress,utokenamount,tokenamount,swaptime,tranHash,swapgas,_tip);
-	end if;
-    END
+    -- 使用 NOT EXISTS 来检查 tranHash 是否存在，若不存在则插入数据
+    IF NOT EXISTS(SELECT 1 FROM t_u2t WHERE tran_hash = tranHash) THEN
+        INSERT INTO t_u2t (
+            block_num, token_id, utoken_cost, from_address, to_address, 
+            utoken_amount, token_amount, swap_time, tran_hash, swap_gas, tipAmount
+        ) 
+        VALUES (
+            blocknum, tokenId, utokencost, fromaddress, toaddress, 
+            utokenamount, tokenamount, swaptime, tranHash, swapgas, _tip
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1419,17 +1550,29 @@ delimiter ;
 DROP TRIGGER IF EXISTS `daoaccount_insert`;
 delimiter ;;
 CREATE TRIGGER `daoaccount_insert` AFTER INSERT ON `t_daoaccount` FOR EACH ROW BEGIN
-	
-	if not exists(select * from t_daodetail where delegator=new.delegator and member_address=new.account) then 
-		INSERT INTO t_daodetail (member_votes,member_address,delegator) VALUES(new.dividendRights,new.account,new.delegator);
-	else 
-		if new.dividendRights=0 then 
-			delete from t_daodetail where delegator=new.delegator AND member_address=new.account;
-		else
-			UPDATE t_daodetail  SET member_votes=new.dividendRights WHERE delegator=new.delegator AND member_address=new.account; 
-		end if;
-	end if;
-    END
+    -- 尝试先查找对应的记录
+    DECLARE existing_votes INT;
+     DECLARE _daoid INT;
+    SELECT member_votes INTO existing_votes FROM t_daodetail 
+    WHERE delegator = NEW.delegator AND member_address = NEW.account
+    LIMIT 1;
+    -- 如果没有找到记录，插入新的记录
+    IF existing_votes IS NULL THEN
+	select dao_id into _daoid from t_dao where delegator= NEW.delegator;
+        INSERT INTO t_daodetail (member_votes, member_address, delegator,dao_id) 
+        VALUES (NEW.dividendRights, NEW.account, NEW.delegator,_daoid);
+    -- 如果已有记录，进行相应的更新或删除
+    ELSE
+        IF NEW.dividendRights = 0 THEN
+            DELETE FROM t_daodetail 
+            WHERE delegator = NEW.delegator AND member_address = NEW.account;
+        ELSE
+            UPDATE t_daodetail 
+            SET member_votes = NEW.dividendRights 
+            WHERE delegator = NEW.delegator AND member_address = NEW.account;
+        END IF;
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1439,23 +1582,63 @@ delimiter ;
 DROP TRIGGER IF EXISTS `domain_trigger`;
 delimiter ;;
 CREATE TRIGGER `domain_trigger` AFTER INSERT ON `t_domain` FOR EACH ROW BEGIN
-		DECLARE _name VARCHAR(256);
-		DECLARE _manager CHAR(42);
-		DECLARE _dao_logo varCHAR(128);
-		DECLARE _desc text;
-		SELECT  dao_symbol,dao_manager,dao_logo,dao_desc INTO _name,_manager,_dao_logo,_desc FROM t_dao WHERE dao_id=new.dao_id;
-	IF not EXISTS(SELECT * FROM a_account WHERE dao_id=new.dao_id) THEN
-		
-		INSERT INTO a_account(block_num,dao_id,domain,manager,pubkey,privkey,actor_account,actor_url,avatar,createtime,actor_name,actor_desc) 
-		VALUES(new.block_num,new.dao_id,new.domain,_manager,new.pubkey,new.privkey,concat(_name,'@',new.domain),concat('https://',new.domain,'/api/activitepub/users/',_name),_dao_logo,
-		DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s'),_name,_desc);	
-	else
-		-- 只更新最后的
-		update a_account set block_num=new.block_num,domain=new.domain,actor_account=CONCAT(_name,'@',new.domain),actor_url=CONCAT('https://',new.domain,'/api/activitepub/users/',_name),avatar=_dao_logo,
-		createtime=DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s') where dao_id=new.dao_id and block_num<=new.block_num;
-	END IF;
-	
-    END
+    DECLARE _name VARCHAR(256);
+    DECLARE _manager CHAR(42);
+    DECLARE _dao_logo VARCHAR(128);
+    DECLARE _desc TEXT;
+    -- 获取对应的 DAO 信息
+    SELECT dao_symbol, dao_manager, dao_logo, dao_desc
+    INTO _name, _manager, _dao_logo, _desc
+    FROM t_dao
+    WHERE dao_id = NEW.dao_id;
+    -- 检查是否已经存在对应的记录
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM a_account 
+        WHERE dao_id = NEW.dao_id
+    ) THEN
+        -- 插入新记录
+        INSERT INTO a_account (
+            block_num,
+            dao_id,
+            domain,
+            manager,
+            pubkey,
+            privkey,
+            actor_account,
+            actor_url,
+            avatar,
+            createtime,
+            actor_name,
+            actor_desc
+        )
+        VALUES (
+            NEW.block_num,
+            NEW.dao_id,
+            NEW.domain,
+            _manager,
+            NEW.pubkey,
+            NEW.privkey,
+            CONCAT(_name, '@', NEW.domain),
+            CONCAT('https://', NEW.domain, '/api/activitepub/users/', _name),
+            _dao_logo,
+            FROM_UNIXTIME(NEW._time), -- 简化时间处理
+            _name,
+            _desc
+        );
+    ELSE
+        -- 更新已有记录
+        UPDATE a_account
+        SET 
+            block_num = NEW.block_num,
+            domain = NEW.domain,
+            actor_account = CONCAT(_name, '@', NEW.domain),
+            actor_url = CONCAT('https://', NEW.domain, '/api/activitepub/users/', _name),
+            avatar = _dao_logo,
+            createtime = FROM_UNIXTIME(NEW._time)
+        WHERE dao_id = NEW.dao_id AND block_num <= NEW.block_num;
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1465,17 +1648,54 @@ delimiter ;
 DROP TRIGGER IF EXISTS `daomainsing_trigger`;
 delimiter ;;
 CREATE TRIGGER `daomainsing_trigger` AFTER INSERT ON `t_domainsing` FOR EACH ROW BEGIN
-	IF not EXISTS(SELECT * FROM a_account WHERE dao_id=0 and manager=new.addr) THEN
-		
-		INSERT INTO a_account(block_num,dao_id,domain,manager,pubkey,privkey,actor_account,actor_url,avatar,createtime,actor_name,actor_desc) 
-		VALUES(new.block_num,0,new.domain,new.addr,new.pubkey,new.privkey,concat(new.nick_name,'@',new.domain),concat('https://',new.domain,'/api/activitepub/users/',new.nick_name),
-		CONCAT('https://',new.domain,'/user.svg'),DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s'),new.nick_name,'');	
-	else
-		-- 只更新最后的
-		update a_account set actor_name=new.nick_name, block_num=new.block_num,domain=new.domain,actor_account=CONCAT(new.nick_name,'@',new.domain),actor_url=CONCAT('https://',new.domain,'/api/activitepub/users/',new.nick_name)
-		,createtime=DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s') where dao_id=0 AND manager=new.addr and block_num<=new.block_num;
-	END IF;
-    END
+    -- 检查是否存在匹配的记录
+    IF NOT EXISTS (
+        SELECT 1
+        FROM a_account
+        WHERE dao_id = 0 AND manager = NEW.addr
+    ) THEN
+        -- 插入新记录
+        INSERT INTO a_account (
+            block_num,
+            dao_id,
+            domain,
+            manager,
+            pubkey,
+            privkey,
+            actor_account,
+            actor_url,
+            avatar,
+            createtime,
+            actor_name,
+            actor_desc
+        )
+        VALUES (
+            NEW.block_num,
+            0,
+            NEW.domain,
+            NEW.addr,
+            NEW.pubkey,
+            NEW.privkey,
+            CONCAT(NEW.nick_name, '@', NEW.domain),
+            CONCAT('https://', NEW.domain, '/api/activitepub/users/', NEW.nick_name),
+            CONCAT('https://', NEW.domain, '/user.svg'),
+            FROM_UNIXTIME(NEW._time), -- 简化时间处理
+            NEW.nick_name,
+            ''
+        );
+    ELSE
+        -- 更新已有记录
+        UPDATE a_account
+        SET 
+            actor_name = NEW.nick_name,
+            block_num = NEW.block_num,
+            domain = NEW.domain,
+            actor_account = CONCAT(NEW.nick_name, '@', NEW.domain),
+            actor_url = CONCAT('https://', NEW.domain, '/api/activitepub/users/', NEW.nick_name),
+            createtime = FROM_UNIXTIME(NEW._time)
+        WHERE dao_id = 0 AND manager = NEW.addr AND block_num <= NEW.block_num;
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1485,16 +1705,52 @@ delimiter ;
 DROP TRIGGER IF EXISTS `e2t_insert`;
 delimiter ;;
 CREATE TRIGGER `e2t_insert` AFTER INSERT ON `t_e2t` FOR EACH ROW BEGIN
-	DECLARE _out VARCHAR(128);
-	SELECT dao_symbol INTO _out FROM v_token WHERE token_id=new.token_id;
-	UPDATE t_dao SET utoken_cost=new.utoken_cost WHERE dao_id  IN(SELECT dao_id FROM t_token WHERE token_id =new.token_id);
-	IF NOT EXISTS(SELECT * FROM t_swap WHERE block_num=new.block_num) THEN 	
-	 INSERT INTO t_swap(block_num,tran_hash,title,in_amount,out_amount,swap_address,swap_time,in_str,out_str,tipAmount,tip_str) 
-	 VALUES(new.block_num,new.tran_hash,'ETH->token',new.in_amount,new.out_amount,new.from_address,DATE_FORMAT(FROM_UNIXTIME(new.swap_time),'%Y-%m-%d %H:%i:%s')
-	 ,CONCAT(CAST(new.in_amount AS CHAR) + 0,' ETH'),CONCAT(CAST(new.out_amount AS CHAR) + 0,' ',_out),new.tipAmount,case when new.tipAmount>0 then _out else '' end);
-	 end if;
-	CALL excuteRank();
-    END
+    DECLARE _out VARCHAR(128);
+    
+    -- 获取 token_symbol
+    SELECT dao_symbol INTO _out 
+    FROM v_token 
+    WHERE token_id = NEW.token_id;
+    
+    -- 更新 t_dao 表
+    UPDATE t_dao 
+    SET utoken_cost = NEW.utoken_cost 
+    WHERE dao_id = (SELECT dao_id FROM t_token WHERE token_id = NEW.token_id);
+    
+    -- 检查 tran_hash 是否存在
+    IF NOT EXISTS(SELECT 1 FROM t_swap WHERE tran_hash = NEW.tran_hash) THEN
+        -- 插入到 t_swap 表
+        INSERT INTO t_swap (
+            block_num,
+            tran_hash,
+            title,
+            in_amount,
+            out_amount,
+            swap_address,
+            swap_time,
+            in_str,
+            out_str,
+            tipAmount,
+            tip_str
+        ) 
+        VALUES (
+            NEW.block_num,
+            NEW.tran_hash,
+            'ETH->token',
+            NEW.in_amount,
+            NEW.out_amount,
+            NEW.from_address,
+            FROM_UNIXTIME(NEW.swap_time),  -- 简化时间格式化
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.in_amount, 8)), ' ETH'),
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.out_amount, 8)), ' ', _out),
+            NEW.tipAmount,
+            CASE WHEN NEW.tipAmount > 0 THEN _out ELSE '' END
+        );
+    END IF;
+    
+    -- 执行排名更新
+    CALL excuteRank();
+END
 ;;
 delimiter ;
 
@@ -1504,12 +1760,33 @@ delimiter ;
 DROP TRIGGER IF EXISTS `e2u_insert`;
 delimiter ;;
 CREATE TRIGGER `e2u_insert` AFTER INSERT ON `t_eth_utoken` FOR EACH ROW BEGIN
-	IF NOT EXISTS(SELECT * FROM t_swap WHERE block_num=new.block_num) THEN 	
-		INSERT INTO t_swap (block_num,tran_hash,title,in_amount,out_amount,swap_address,swap_time,in_str,out_str) 
-		 VALUES(new.block_num,new.tran_hash,'ETH->UTO',new.swap_eth,new.swap_utoken,new.swap_address,DATE_FORMAT(FROM_UNIXTIME(new.swap_time),'%Y-%m-%d %H:%i:%s')
-		 ,CONCAT(CAST(new.swap_eth AS CHAR) + 0,' ETH'),CONCAT(CAST(new.swap_utoken AS CHAR) + 0,' UTO'));
-	end if;
-    END
+    -- 检查 tran_hash 是否已存在
+    IF NOT EXISTS(SELECT 1 FROM t_swap WHERE tran_hash = NEW.tran_hash) THEN
+        -- 插入新的记录到 t_swap
+        INSERT INTO t_swap (
+            block_num,
+            tran_hash,
+            title,
+            in_amount,
+            out_amount,
+            swap_address,
+            swap_time,
+            in_str,
+            out_str
+        ) 
+        VALUES (
+            NEW.block_num,
+            NEW.tran_hash,
+            'ETH->UTO',
+            NEW.swap_eth,
+            NEW.swap_utoken,
+            NEW.swap_address,
+            FROM_UNIXTIME(NEW.swap_time),  -- 简化时间格式化
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.swap_eth, 8)), ' ETH'),
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.swap_utoken, 8)), ' UTO')
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1519,12 +1796,41 @@ delimiter ;
 DROP TRIGGER IF EXISTS `nft_trigger`;
 delimiter ;;
 CREATE TRIGGER `nft_trigger` AFTER INSERT ON `t_nft` FOR EACH ROW BEGIN
-	IF NOT EXISTS(SELECT * FROM t_mynft WHERE  token_id=new.token_id AND _type=1 AND contract_address=new.contract_address) THEN	
-		INSERT INTO t_mynft(to_address,token_id,_time,template_id,dao_id,tokensvg,contract_address,block_num,_type,tips) 
-		VALUES(new.token_to,new.token_id,DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s'),0,new.dao_id,new.tokensvg,new.contract_address,new.block_num,1,new.tips);
-	END IF;
-	
-    END
+    -- 检查记录是否已存在于 t_mynft 表中
+    IF NOT EXISTS(
+        SELECT 1 
+        FROM t_mynft 
+        WHERE token_id = NEW.token_id 
+          AND _type = 1 
+          AND contract_address = NEW.contract_address
+    ) THEN
+        -- 插入新记录到 t_mynft 表
+        INSERT INTO t_mynft (
+            to_address,
+            token_id,
+            _time,
+            template_id,
+            dao_id,
+            tokensvg,
+            contract_address,
+            block_num,
+            _type,
+            tips
+        ) 
+        VALUES (
+            NEW.token_to,
+            NEW.token_id,
+            FROM_UNIXTIME(NEW._time), -- 简化时间格式化
+            0, -- 默认 template_id
+            NEW.dao_id,
+            NEW.tokensvg,
+            NEW.contract_address,
+            NEW.block_num,
+            1, -- _type 表示 NFT 类型为 1
+            NEW.tips
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1534,12 +1840,41 @@ delimiter ;
 DROP TRIGGER IF EXISTS `nft_mint_trigger`;
 delimiter ;;
 CREATE TRIGGER `nft_mint_trigger` AFTER INSERT ON `t_nft_mint` FOR EACH ROW BEGIN
-	IF NOT EXISTS(SELECT * FROM t_mynft WHERE  token_id=new.token_id AND _type=3 AND contract_address=new.contract_address) THEN	
-		INSERT INTO t_mynft(to_address,token_id,_time,template_id,dao_id,tokensvg,contract_address,block_num,_type,tips) 
-		VALUES(new.token_to,new.token_id,DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s'),0,new.dao_id,new.tokensvg,new.contract_address,new.block_num,3
-		,'A Smart Common minted');
-	END IF;
-    END
+    -- 检查记录是否存在于 t_mynft 表中
+    IF NOT EXISTS(
+        SELECT 1 
+        FROM t_mynft 
+        WHERE token_id = NEW.token_id 
+          AND _type = 3 
+          AND contract_address = NEW.contract_address
+    ) THEN
+        -- 插入新记录到 t_mynft 表
+        INSERT INTO t_mynft (
+            to_address,
+            token_id,
+            _time,
+            template_id,
+            dao_id,
+            tokensvg,
+            contract_address,
+            block_num,
+            _type,
+            tips
+        ) 
+        VALUES (
+            NEW.token_to,
+            NEW.token_id,
+            FROM_UNIXTIME(NEW._time), -- 简化时间格式化
+            0,
+            NEW.dao_id,
+            NEW.tokensvg,
+            NEW.contract_address,
+            NEW.block_num,
+            3,
+            'A Smart Common minted'
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1549,12 +1884,41 @@ delimiter ;
 DROP TRIGGER IF EXISTS `nft_swap_trigger`;
 delimiter ;;
 CREATE TRIGGER `nft_swap_trigger` AFTER INSERT ON `t_nft_swap` FOR EACH ROW BEGIN
-	IF NOT EXISTS(SELECT * FROM t_mynft WHERE  token_id=new.token_id AND _type=2 AND contract_address=new.contract_address) THEN	
-		INSERT INTO t_mynft(to_address,token_id,_time,template_id,dao_id,tokensvg,contract_address,block_num,_type,tips) 
-		VALUES(new.token_to,new.token_id,DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s'),0,new.dao_id,new.tokensvg,new.contract_address,new.block_num,2
-		,concat('Tipping(UTO',new.utoken,')'));
-	END IF;
-    END
+    -- 检查记录是否已经存在于 t_mynft 表中
+    IF NOT EXISTS(
+        SELECT 1 
+        FROM t_mynft 
+        WHERE token_id = NEW.token_id 
+          AND _type = 2 
+          AND contract_address = NEW.contract_address
+    ) THEN
+        -- 插入新记录到 t_mynft 表
+        INSERT INTO t_mynft (
+            to_address,
+            token_id,
+            _time,
+            template_id,
+            dao_id,
+            tokensvg,
+            contract_address,
+            block_num,
+            _type,
+            tips
+        ) 
+        VALUES (
+            NEW.token_to,
+            NEW.token_id,
+            FROM_UNIXTIME(NEW._time), -- 简化时间格式化处理
+            0,
+            NEW.dao_id,
+            NEW.tokensvg,
+            NEW.contract_address,
+            NEW.block_num,
+            2,
+            CONCAT('Tipping (UTO', NEW.utoken, ')') -- 优化 CONCAT 语法
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1564,11 +1928,41 @@ delimiter ;
 DROP TRIGGER IF EXISTS `nft_swaphonor_trigger`;
 delimiter ;;
 CREATE TRIGGER `nft_swaphonor_trigger` AFTER INSERT ON `t_nft_swaphonor` FOR EACH ROW BEGIN
-	IF NOT EXISTS(SELECT * FROM t_mynft WHERE  token_id=new.token_id AND _type=4 AND contract_address=new.contract_address) THEN	
-		INSERT INTO t_mynft(to_address,token_id,_time,template_id,dao_id,tokensvg,contract_address,block_num,_type,tips) 
-		VALUES(new.token_to,new.token_id,DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s'),0,new.dao_id,new.tokensvg,new.contract_address,new.block_num,4,new.tips);
-	END IF;
-    END
+    -- 检查记录是否已存在于 t_mynft 表中
+    IF NOT EXISTS(
+        SELECT 1 
+        FROM t_mynft 
+        WHERE token_id = NEW.token_id 
+          AND _type = 4 
+          AND contract_address = NEW.contract_address
+    ) THEN
+        -- 插入新记录到 t_mynft 表
+        INSERT INTO t_mynft (
+            to_address,
+            token_id,
+            _time,
+            template_id,
+            dao_id,
+            tokensvg,
+            contract_address,
+            block_num,
+            _type,
+            tips
+        ) 
+        VALUES (
+            NEW.token_to,
+            NEW.token_id,
+            FROM_UNIXTIME(NEW._time), -- 简化时间格式化处理
+            0,
+            NEW.dao_id,
+            NEW.tokensvg,
+            NEW.contract_address,
+            NEW.block_num,
+            4,
+            NEW.tips -- 直接引用 NEW.tips，无需额外处理
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1578,23 +1972,41 @@ delimiter ;
 DROP TRIGGER IF EXISTS `nft_transfer_trigger`;
 delimiter ;;
 CREATE TRIGGER `nft_transfer_trigger` AFTER INSERT ON `t_nft_transfer` FOR EACH ROW BEGIN
-	IF NOT EXISTS(SELECT * FROM t_mynft WHERE token_id=new.token_id and _type=0 AND contract_address=new.contract_address) THEN
-		
-		INSERT INTO t_mynft(to_address,token_id,_time,template_id,dao_id,tokensvg,contract_address,block_num,_type,tips) 
-		VALUES(new.token_to,new.token_id,DATE_FORMAT(FROM_UNIXTIME(new._time),'%Y-%m-%d %H:%i:%s'),0,0,new.tokensvg,new.contract_address,new.block_num,0,'50Satoshis');
-	END IF;
-    END
-;;
-delimiter ;
-
--- ----------------------------
--- Triggers structure for table t_provote
--- ----------------------------
-DROP TRIGGER IF EXISTS `provote_insert`;
-delimiter ;;
-CREATE TRIGGER `provote_insert` AFTER INSERT ON `t_provote` FOR EACH ROW BEGIN
-	update t_pro set rights=rights+new.rights,antirights=antirights+new.antirights where delegator=new.delegator and createTime=new.createTime;
-    END
+    -- 检查记录是否已存在于 t_mynft 表中
+    IF NOT EXISTS(
+        SELECT 1 
+        FROM t_mynft 
+        WHERE token_id = NEW.token_id 
+          AND _type = 0 
+          AND contract_address = NEW.contract_address
+    ) THEN
+        -- 插入新记录到 t_mynft 表
+        INSERT INTO t_mynft (
+            to_address,
+            token_id,
+            _time,
+            template_id,
+            dao_id,
+            tokensvg,
+            contract_address,
+            block_num,
+            _type,
+            tips
+        ) 
+        VALUES (
+            NEW.token_to,
+            NEW.token_id,
+            FROM_UNIXTIME(NEW._time), -- 简化时间格式化
+            0, -- template_id 默认值
+            0, -- dao_id 默认值
+            NEW.tokensvg,
+            NEW.contract_address,
+            NEW.block_num,
+            0, -- _type 表示普通转移
+            '50Satoshis' -- 提示信息
+        );
+    END IF;
+END
 ;;
 delimiter ;
 
@@ -1604,22 +2016,54 @@ delimiter ;
 DROP TRIGGER IF EXISTS `t2t_regisster`;
 delimiter ;;
 CREATE TRIGGER `t2t_regisster` AFTER INSERT ON `t_t2t` FOR EACH ROW BEGIN
-	declare _in varchar(128);
-	declare _out varchar(128);
-	DECLARE _sc VARCHAR(128); -- 打赏 sc_id
+    DECLARE _in VARCHAR(128);
+    DECLARE _out VARCHAR(128);
+    DECLARE _sc VARCHAR(128); -- 打赏 sc_id
+    -- 更新 DAO 的 utoken_cost
+    UPDATE t_dao 
+    SET utoken_cost = NEW.from_utoken_cost 
+    WHERE dao_id = (SELECT dao_id FROM t_token WHERE token_id = NEW.from_dao_id);
     
-	UPDATE t_dao SET utoken_cost=new.from_utoken_cost WHERE dao_id =(select dao_id from t_token where token_id=new.from_dao_id);
-	UPDATE t_dao SET utoken_cost=new.to_utoken_cost WHERE dao_id =(select dao_id from t_token where token_id=new.to_dao_id);
-	if not exists(select * from t_swap where block_num=new.block_num) then 	
-		select dao_symbol into _in from v_token where token_id=new.from_dao_id;
-		SELECT dao_symbol into _out from v_token WHERE token_id=new.to_dao_id;
-		SELECT dao_symbol INTO _sc FROM v_token WHERE token_id=new.sc_id;
-		INSERT INTO t_swap (block_num,tran_hash,title,in_amount,out_amount,swap_address,swap_time,in_str,out_str,tipAmount,tip_str) 
-		values(new.block_num,new.tran_hash,'token->token',new.from_token,new.to_token,new.to_address,DATE_FORMAT(FROM_UNIXTIME(new.swap_time),'%Y-%m-%d %H:%i:%s')
-		,CONCAT(CAST(new.from_token AS CHAR) + 0,' ',_in),CONCAT(CAST(new.to_token AS CHAR) + 0,' ',_out),new.tipAmount,case when new.tipAmount>0 then _sc else '' end);
-	end if;
-	CALL excuteRank();
-    END
+    UPDATE t_dao 
+    SET utoken_cost = NEW.to_utoken_cost 
+    WHERE dao_id = (SELECT dao_id FROM t_token WHERE token_id = NEW.to_dao_id);
+    -- 检查是否已存在相同的交易
+    IF NOT EXISTS (SELECT 1 FROM t_swap WHERE tran_hash = NEW.tran_hash) THEN
+        -- 获取相应的 dao_symbol
+        SELECT dao_symbol INTO _in FROM v_token WHERE token_id = NEW.from_dao_id;
+        SELECT dao_symbol INTO _out FROM v_token WHERE token_id = NEW.to_dao_id;
+        SELECT dao_symbol INTO _sc FROM v_token WHERE token_id = NEW.sc_id;
+        -- 插入 t_swap 表
+        INSERT INTO t_swap (
+            block_num, 
+            tran_hash, 
+            title, 
+            in_amount, 
+            out_amount, 
+            swap_address, 
+            swap_time, 
+            in_str, 
+            out_str, 
+            tipAmount, 
+            tip_str
+        ) 
+        VALUES (
+            NEW.block_num, 
+            NEW.tran_hash, 
+            'token->token', 
+            NEW.from_token, 
+            NEW.to_token, 
+            NEW.to_address, 
+            FROM_UNIXTIME(NEW.swap_time),  -- 简化时间格式化
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.from_token, 8)), ' ', _in), 
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.to_token, 8)), ' ', _out), 
+            NEW.tipAmount, 
+            CASE WHEN NEW.tipAmount > 0 THEN _sc ELSE '' END
+        );
+    END IF;
+    -- 调用 excuteRank 存储过程
+    CALL excuteRank();
+END
 ;;
 delimiter ;
 
@@ -1629,16 +2073,39 @@ delimiter ;
 DROP TRIGGER IF EXISTS `t2u_insert`;
 delimiter ;;
 CREATE TRIGGER `t2u_insert` AFTER INSERT ON `t_t2u` FOR EACH ROW BEGIN
-	DECLARE _in VARCHAR(128);
-	SELECT dao_symbol INTO _in FROM v_token WHERE token_id=new.from_token_id;
-	UPDATE t_dao SET utoken_cost=new.utoken_cost WHERE dao_id IN (SELECT dao_id FROM t_token WHERE token_id=new.from_token_id);
-	IF NOT EXISTS(SELECT * FROM t_swap WHERE block_num=new.block_num) THEN
-		INSERT INTO t_swap (block_num,tran_hash,title,in_amount,out_amount,swap_address,swap_time,in_str,out_str,tipAmount,tip_str) 
-		VALUES(new.block_num,new.tran_hash,'token->UTO',new.token_amount,new.utoken_amount,new.to_address,DATE_FORMAT(FROM_UNIXTIME(new.swap_time),'%Y-%m-%d %H:%i:%s')
-		,CONCAT(CAST(new.token_amount AS CHAR) + 0,' ',_in),CONCAT(CAST(new.utoken_amount AS CHAR) + 0,' UTO'),new.tipAmount,CASE WHEN new.tipAmount>0 THEN _in ELSE '' END);
-	end if;
-	CALL excuteRank();
-    END
+    DECLARE _dao_symbol VARCHAR(128);
+    -- 获取 dao_symbol
+    SELECT dao_symbol INTO _dao_symbol 
+    FROM v_token 
+    WHERE token_id = NEW.from_token_id;
+    -- 更新 t_dao 表中的 utoken_cost
+    UPDATE t_dao 
+    SET utoken_cost = NEW.utoken_cost 
+    WHERE dao_id = (SELECT dao_id FROM t_token WHERE token_id = NEW.from_token_id);
+    -- 检查是否需要插入到 t_swap 表
+    IF NOT EXISTS (SELECT 1 FROM t_swap WHERE tran_hash = NEW.tran_hash) THEN
+        -- 插入到 t_swap 表
+        INSERT INTO t_swap (
+            block_num, tran_hash, title, in_amount, out_amount, swap_address, swap_time, 
+            in_str, out_str, tipAmount, tip_str
+        ) 
+        VALUES (
+            NEW.block_num, 
+            NEW.tran_hash, 
+            'token->UTO', 
+            NEW.token_amount, 
+            NEW.utoken_amount, 
+            NEW.to_address, 
+            FROM_UNIXTIME(NEW.swap_time), -- 简化日期格式化
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.token_amount, 8)), ' ', _dao_symbol), 
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.utoken_amount, 8)), ' UTO'), 
+            NEW.tipAmount, 
+            CASE WHEN NEW.tipAmount > 0 THEN _dao_symbol ELSE '' END
+        );
+    END IF;
+    -- 调用存储过程 excuteRank
+    CALL excuteRank();
+END
 ;;
 delimiter ;
 
@@ -1648,17 +2115,39 @@ delimiter ;
 DROP TRIGGER IF EXISTS `u2t_insert`;
 delimiter ;;
 CREATE TRIGGER `u2t_insert` AFTER INSERT ON `t_u2t` FOR EACH ROW BEGIN
-	DECLARE _out VARCHAR(128);
-	UPDATE t_dao SET utoken_cost=new.utoken_cost WHERE dao_id  IN(SELECT dao_id FROM t_token WHERE token_id =new.token_id);
-	if not exists(select * from t_swap where block_num=new.block_num) then
-		
-		SELECT dao_symbol INTO _out FROM v_token WHERE token_id=new.token_id;
-		INSERT INTO t_swap (block_num,tran_hash,title,in_amount,out_amount,swap_address,swap_time,in_str,out_str,tipAmount,tip_str) 
-		VALUES(new.block_num,new.tran_hash,'UTO->token',new.utoken_amount,new.token_amount,new.to_address,DATE_FORMAT(FROM_UNIXTIME(new.swap_time),'%Y-%m-%d %H:%i:%s')
-		,CONCAT(CAST(new.utoken_amount AS CHAR) + 0,' UTO'),CONCAT(CAST(new.token_amount AS CHAR) + 0,' ',_out),new.tipAmount,CASE WHEN new.tipAmount>0 THEN _out ELSE '' END);
-	end if;
-	CALL excuteRank();
-    END
+    DECLARE _dao_symbol VARCHAR(128);
+    -- 更新 t_dao 表中的 utoken_cost
+    UPDATE t_dao 
+    SET utoken_cost = NEW.utoken_cost 
+    WHERE dao_id = (SELECT dao_id FROM t_token WHERE token_id = NEW.token_id);
+    -- 检查是否需要插入到 t_swap 表
+    IF NOT EXISTS (SELECT 1 FROM t_swap WHERE tran_hash = NEW.tran_hash) THEN
+        -- 获取 dao_symbol
+        SELECT dao_symbol INTO _dao_symbol 
+        FROM v_token 
+        WHERE token_id = NEW.token_id;
+        -- 插入到 t_swap 表
+        INSERT INTO t_swap (
+            block_num, tran_hash, title, in_amount, out_amount, swap_address, swap_time, 
+            in_str, out_str, tipAmount, tip_str
+        ) 
+        VALUES (
+            NEW.block_num, 
+            NEW.tran_hash, 
+            'UTO->token', 
+            NEW.utoken_amount, 
+            NEW.token_amount, 
+            NEW.to_address, 
+            FROM_UNIXTIME(NEW.swap_time),  -- 简化日期格式化
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.utoken_amount, 8)), ' UTO'), 
+            CONCAT(TRIM(TRAILING '0' FROM FORMAT(NEW.token_amount, 8)), ' ', _dao_symbol), 
+            NEW.tipAmount, 
+            CASE WHEN NEW.tipAmount > 0 THEN _dao_symbol ELSE '' END
+        );
+    END IF;
+    -- 调用存储过程 excuteRank
+    CALL excuteRank();
+END
 ;;
 delimiter ;
 

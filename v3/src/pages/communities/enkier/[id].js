@@ -18,7 +18,7 @@ export default function Message({currentObj,locale,env}) {
   const t = useTranslations('ff');
   const tc = useTranslations('Common');
   const root = parse(currentObj.content);
-  const content=root.textContent;
+  const content=root.textContent.slice(0, 150);
 
     return (
       <>

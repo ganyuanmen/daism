@@ -67,7 +67,6 @@ export  function findFirstURI(code) {
   }
 
 
-
     
   export  async function getTootContent(tootUrl,domain) {
       try {

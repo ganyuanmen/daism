@@ -18,7 +18,7 @@ export default function Message({currentObj,locale,env}) {
   const t = useTranslations('ff');
   const tc = useTranslations('Common');
   const root = parse(currentObj.content);
-  const content=root.textContent;
+  const content=root.textContent.slice(0, 150);
   
     return (
       <>
@@ -52,6 +52,8 @@ export const getServerSideProps =async ({locale,query }) => {
   if(currentObj?.createtime) currentObj.createtime=new Date(currentObj.createtime).toJSON();
   if(currentObj?.currentTime) currentObj.currentTime=new Date(currentObj.currentTime).toJSON();
   if(currentObj?.reply_time) currentObj.reply_time=new Date(currentObj.reply_time).toJSON();
+  if(currentObj?.start_time) currentObj.start_time=new Date(currentObj.start_time).toJSON();
+  if(currentObj?.end_time) currentObj.end_time=new Date(currentObj.end_time).toJSON();
     return {
       props: {
         messages: {

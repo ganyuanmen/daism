@@ -64,6 +64,12 @@
     "hoorDescText":"Example of dapp smart contract",
     "mintDescText":"explain",
     "receiveAddress":"Receiving address",
+    "proPassText":"Approval rate",
+    "proLifeText":"lifetime",
+    "proCoolText":"Cooling period",
+    "errorDay":"Not less than 3 days",
+    "dayText":"day",
+    "errorS":"The pass rate must be greater than 0 and less than 50%",
     "mintDesc":"Method for simultaneously obtaining Mint Honor Token with Mint smart common",
     "mintText":"At the same time as the smart common, Mint Honor Token is required, and the dApp contract must comply with the contract standards of daism"
      

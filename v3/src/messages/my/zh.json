@@ -65,7 +65,13 @@
     "mintDescText":"说明",
     "exampleText":"示例",
     "receiveAddress":"接收地址",
-    "mintDesc":"mint智能公器同时mint荣誉通证的方法"
+    "mintDesc":"mint智能公器同时mint荣誉通证的方法",
+    "proPassText":"提案通过率",
+    "proLifeText":"提案生命期",
+    "proCoolText":"提案冷却期",
+    "errorDay":"不能少于3天",
+    "errorS":"通过率必须大于0小于50%",
+    "dayText":"天"
 
     
     

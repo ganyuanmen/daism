@@ -107,7 +107,6 @@ export default function sc({env,locale,accountAr,openObj }) {
       }, []);
 
       useEffect(()=>{
-        console.log(openObj)
         if(openObj?.dao_id) setNavObj(openObj)
       },[openObj])
       

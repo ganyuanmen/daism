@@ -5,12 +5,13 @@ import ConfirmWin from "./ConfirmWin";
 import {setTipText,setMessageText,setDaoActor} from '../../data/valueData'
 import { useDispatch } from 'react-redux';
 import { client } from "../../lib/api/client";
+import ShowErrorBar from "../ShowErrorBar";
 
 
 /**
  * 域名管理
  */
-export default function Domain_div({record,t,tc,daoActor,domain,accountTotal}) {  
+export default function Domain_div({record,t,tc,daoActor,domain,accountTotal,loginsiwe}) {  
 
     const [show,setShow]=useState(false)
     // const domainRef=useRef()
@@ -82,18 +83,20 @@ export default function Domain_div({record,t,tc,daoActor,domain,accountTotal}) {
         <Card className='mb-2 daism-title mt-2' >
         <Card.Header>{t('companyText')}</Card.Header>
         <Card.Body>
-        <div className="mb-1" >
-            <strong>{t('alredyDomainText')}</strong>:<strong style={{display:'inline-block',paddingLeft:'12px'}} >{record?.domain}</strong>
-        </div>
-        <div className='row mb-1 ' >
-            <div className='col-auto me-auto' >
-              <strong>{t('localDomainText')}</strong>:<strong style={{display:'inline-block',paddingLeft:'12px'}} >{domain}</strong>
+
+        <div className="mb-1 d-flex justify-content-between align-items-center" >
+            <div>
+                <strong>{t('alredyDomainText')}</strong>:<strong style={{display:'inline-block',paddingLeft:'12px'}} >{record?.domain}</strong><br/>
+                <strong>{t('localDomainText')}</strong>:<strong style={{display:'inline-block',paddingLeft:'12px'}} >{domain}</strong>
             </div>
-            <div className='col-auto' >
-                {checkDao() &&domain!==record.domain && <Button onClick={()=>{setShow(true)}} >
-                        <EditSvg size={18} /> {record.domain?t('editText'):t('bindText')}</Button>}
+            <div>
+            {loginsiwe? checkDao() &&domain!==record.domain && <Button onClick={()=>{setShow(true)}} >
+                        <EditSvg size={18} /> {record.domain?t('editText'):t('bindText')}</Button>
+                        :<ShowErrorBar errStr={tc('notLoginText')} />
+                }
             </div>
         </div>
+      
         <div className="mb-1" >{t('DomainDescText')}</div>
       
         </Card.Body>

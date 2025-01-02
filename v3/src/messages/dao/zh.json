@@ -25,6 +25,8 @@
     "votedText":"已投票",
     "lifetime":"过期",
     "days":"天",
+    "hours":"小时",
+    "minutes":"分钟",
     "strategy":"投票通过率",
     "noVote":"奖励权不能为1,2,3",
     "voteText": "投票",
@@ -96,6 +98,7 @@
     "addressText":"地址",
     "expireText":"过期",
     "lastVersion":"版本号",
+    "nowVote":"现在投票",
     "passlifeTime":"提案已经失效!",
     "noVoteText":"提案已经不能投票！"
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Col, Row,Button,Modal } from 'react-bootstrap';
 import { EventsSvg  } from "../../lib/jssvg/SvgCollection"
 import useProDetail from '../../hooks/useProDetail';
-// import { client } from '../../lib/api/client';
+import { daism_getTime } from '../../lib/utils/windowjs';
 
 
 
@@ -33,7 +33,7 @@ export default function ProDetail({obj,t}){
                 </Row>
 
                 <Row  className='mb-3 p-1'  style={{borderBottom:'1px solid gray'}} >
-                        <Col><span style={cssType}>{t('lifetime')}</span>:<b>{obj.lifetime>0?`${obj.lifetime}${t('days')}`:t('alreadydays')}</b></Col>
+                        <Col><span style={cssType}>{t('lifetime')}</span>:<b>{obj.lifetime>0?daism_getTime(obj.lifetime,t):t('alreadydays')}</b></Col>
                         <Col><span style={cssType}>{t('strategy')}</span>:<b>{obj.strategy}</b>% </Col>
                 </Row>
                

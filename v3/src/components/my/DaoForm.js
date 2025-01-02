@@ -20,6 +20,11 @@ export default function DaoForm({typeData,env,user,setRefresh,t,tc,setShow,close
     const [errorFirrstName, setErrorFirrstName] = useState(false) //第一个成员名称错误标记
     const [errorFirrstVote, setErrorFirrstVote] = useState(false) //第一个成员票权错误标记
     const [errorPerNumber, setErrorPerNumber] = useState(false) //每个成员mint数量 
+
+    const [errorS, setErrorS] = useState(false) //通过率 
+    const [errorLife, setErrorLife] = useState(false) //生命期 
+    const [errorCool, setErrorCool] = useState(false) //冷却期 
+
     const [filteredData, setFilteredData] = useState([]);
     const [typeNameErr, setTypeNameErr] = useState(false) //
     const [typeDescErr, setTypeDescErr] = useState(false) //
@@ -78,6 +83,17 @@ export default function DaoForm({typeData,env,user,setRefresh,t,tc,setShow,close
             if(!_temp || !checkNum(_temp)|| parseInt(_temp)<0 || parseInt(_temp)>10000 ) {_err=_err+1; v.isErr2=true;}
 
         })
+
+        //通过率
+        _temp = parseFloat(form.org_s.value); 
+        if (_temp<0 || _temp>50) { _err = _err + 1; setErrorS(true); }
+        //生命期
+        _temp = parseInt(form.org_life.value); 
+        if (_temp<3) { _err = _err + 1; setErrorLife(true); }
+        //冷却期
+        _temp = parseInt(form.org_cool.value); 
+        if (_temp<3) { _err = _err + 1; setErrorCool(true); }
+
         return _err === 0;
     }
 
@@ -168,7 +184,12 @@ export default function DaoForm({typeData,env,user,setRefresh,t,tc,setShow,close
                         type===1?'dapp':(type===2?'EIP':_type.typeName)
                     ]
 
-                    window.daismDaoapi.Register.createSC(daoinfo,members,votes,imgstr,'svg',mintnftparas).then(re => {
+                     const s=Math.floor(parseFloat(form.org_s.value)/100*65535);  //通过率
+                     const life=parseInt(form.org_life.value)
+                     const cool=parseInt(form.org_cool.value)
+                  
+
+                    window.daismDaoapi.Register.createSC(daoinfo,members,votes,imgstr,'svg',mintnftparas,s,life,cool).then(re => {
                         setTimeout(() => {
                             closeTip()
                             setShow(false)  //关闭窗口
@@ -427,6 +448,45 @@ const handleInputChange = (e) => {
                     </InputGroup>
                 </div>
             ))}
+            {/* 通过率 */}
+            <InputGroup hasValidation className="mb-2">
+                <InputGroup.Text style={stylea} >{t('proPassText')}</InputGroup.Text>
+                <FormControl id='org_s'   
+                isInvalid={errorS?true: false}  type="text" placeholder=""  
+                onFocus={e=>{setErrorS(false)}}  
+                defaultValue="50" />
+                <InputGroup.Text >%</InputGroup.Text>
+                <Form.Control.Feedback type="invalid">
+                    {t('errorS')}
+                </Form.Control.Feedback>
+            </InputGroup>
+
+            {/* 生命期 */}
+            <InputGroup hasValidation className="mb-2">
+                <InputGroup.Text style={stylea} >{t('proLifeText')}</InputGroup.Text>
+                <FormControl id='org_life'   
+                isInvalid={errorLife?true: false}  type="text" placeholder=""  
+                onFocus={e=>{setErrorLife(false)}}  
+                defaultValue="3" />
+                <InputGroup.Text >{t('dayText')}</InputGroup.Text>
+                <Form.Control.Feedback type="invalid">
+                    {t('errorDay')}
+                </Form.Control.Feedback>
+            </InputGroup>
+
+               {/* 冷却期 */}
+                 <InputGroup hasValidation className="mb-2">
+                <InputGroup.Text style={stylea} >{t('proCoolText')}</InputGroup.Text>
+                <FormControl id='org_cool'   
+                isInvalid={errorCool?true: false}  type="text" placeholder=""  
+                onFocus={e=>{setErrorCool(false)}}  
+                defaultValue="3" />
+                <InputGroup.Text >{t('dayText')}</InputGroup.Text>
+                <Form.Control.Feedback type="invalid">
+                    {t('errorDay')}
+                </Form.Control.Feedback>
+            </InputGroup>
+
 
         <DaismImg  ref={imgRef} title='logo'  maxSize={10240} fileTypes='svg' />
                 {/* dao描述 */}

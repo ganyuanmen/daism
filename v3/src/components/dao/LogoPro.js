@@ -13,10 +13,8 @@ import { useTranslations } from 'next-intl'
  * @daoName 智能公器名称
  * @setChangeLogo 关闭窗口
  * @delegator 智能公器的代理地址
- * @lastPro 该智能公器的最后一个提案
- * @setRefresh 刷新上层窗口的数据
  */
-export default function LogoPro({ daoName,setChangeLogo,delegator,lastPro,setRefresh }) {
+export default function LogoPro({ daoName,setChangeLogo,delegator,setMess }) {
     const t = useTranslations('dao')
     const tc = useTranslations('Common') 
 
@@ -44,32 +42,30 @@ export default function LogoPro({ daoName,setChangeLogo,delegator,lastPro,setRef
         //修改logo proposalType=1
         window.daismDaoapi.Dao.addProposal(delegator,uplogoid,1,parseInt(new Date().getTime()/1000),0,0,'',1,
         'svg',imgstr).then(() => {
-            closeTip()
-            showError(`${t("uploadPro")}_*_`)
-            setRefresh(true)
+            closeTip();
+            setMess(true);
+            // showError(`${t("uploadPro")}_*_`)
           }, err => {
               console.error(err);closeTip();
-              showError(tc('errorText')+(err.message?err.message:err));
+              if(err.message && err.message.includes('proposal cooling period'))  showError(t('noCooling'))
+              else if(err.message && err.message.includes('valid proposal exists'))  showError(t('noComplete'))
+              else showError(tc('errorText')+(err.message?err.message:err));
           }
         );
 
     }
   
-    return <> {(lastPro.length && lastPro[0].is_end===0)?<Alert variant="danger" >{t('noComplete')} </Alert>
-                :<>{lastPro.length && lastPro[0].is_end===1 && lastPro[0].cool_time<0?<Alert variant="danger" >{t('noCooling')} </Alert>:
-                    <>
-                        <DaismImg  ref={imgRef} title={`${t('uploadText')} logo`}  maxSize={10480} fileTypes='svg' />
-                        <Button variant='primary'  className='mb-2' onClick={changeLogoClick} ><EditSvg size={20} />  {t('changeLogoProText')}</Button>
+    return (
+            <>
+                <DaismImg  ref={imgRef} title={`${t('uploadText')} logo`}  maxSize={10480} fileTypes='svg' />
+                <Button variant='primary'  className='mb-2' onClick={changeLogoClick} ><EditSvg size={20} />  {t('changeLogoProText')}</Button>
 
-                        <Alert variant="danger" >
-                                <p>
-                                Smart Commons ({daoName})  {t('chageLogoWarnText')}
-                                </p>
-                        </Alert>
-                    </>
-                   }               
-                </>
-             }
+                <Alert variant="danger" >
+                        <p>
+                        Smart Commons ({daoName})  {t('chageLogoWarnText')}
+                        </p>
+                </Alert>
             </>
+        );
 
 }

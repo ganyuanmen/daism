@@ -33,6 +33,8 @@ export default withSession(async (req, res) => {
         if (id[0] == '0') { //增加
             let message_id = uuidv4().replaceAll('-','')
             if (daoid) { //enki
+                const re=await getData("SELECT 1 AS c  WHERE (SELECT manager FROM a_account WHERE id=?) IN (SELECT member_address FROM t_daodetail WHERE dao_id=?)",[actorid[0],daoid[0]]);
+                if(!re.length) return res.status(406).json({ errMsg: 'Non smart common members!' });
                 paras = [propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],message_id,actorid[0], daoid[0], content[0], isSend[0], isDiscussion[0], path, _type[0]]
                 if (_type[0] == '1') { //活动嗯文
                     sql = 'INSERT INTO a_messagesc(property_index,type_index,vedio_url,account_at,message_id,actor_id,dao_id,content,is_send,is_discussion,top_img,_type,start_time,end_time,event_url,event_address,time_event) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'

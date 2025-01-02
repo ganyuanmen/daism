@@ -49,19 +49,18 @@ class DaoApi {
             const _info=await this.GetInfos.getDaoInfo(dao_id)  
             _data.data.data.manager=_info[0]['manager'] //管理员
             _data.data.data.version=_info[0]['version'] // 版本号
-            _data.data.data.name=_info[0]['name'] //dao 名称 
-            _data.data.data.symbol=_info[0]['symbol'] // dao 符号
-            _data.data.data.describe=_info[0]['desc'] // dao 描述
-            _data.data.data.sctype=_info[0]['SCType'] // dao 类型
+            _data.data.data.name=_info[0]['name']        //dao 名称 
+            _data.data.data.symbol=_info[0]['symbol']    // dao 符号
+            _data.data.data.describe=_info[0]['desc']    // dao 描述
+            _data.data.data.sctype=_info[0]['SCType']    // dao 类型
             _data.data.data.creator=_info[0]['SCType']=='dapp'?_info[1]:''
             _data.data.data.delegator=_info[2]
             _data.data.data.strategy=_info[3]
             _data.data.data.lifetime=_info[4]
             _data.data.data.cool_time=_info[5]
-            _data.data.data.time=await utils.getTime(this.web3,_data.data.blockNumber)
             _data.data.data.address=_info[1] //执行人
              const logo=await this.DaoLogo.getLogo(dao_id)
-             _data.data.data.src=logo.src //执行人
+             _data.data.data.src=logo.src //
             
              if(_info[0]['SCType']=='dapp') {
                 const _contract = new this.web3.eth.Contract(f_abi, _info[1]);

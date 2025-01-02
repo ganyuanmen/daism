@@ -2,10 +2,10 @@ const abi=require('../data/SCRegistrar_abi.json')
 
  class Register {
     //_bytes ='0x' 表示不需要mint NFT
-    async createSC(daoinfo, memberAr,voteAr,_src,_type,_bytes) {
+    async createSC(daoinfo, memberAr,voteAr,_src,_type,_bytes,s,life,cool) {
         this.genegateContract()
         let result = await this.contract['createSC'].send(daoinfo, memberAr,voteAr
-            ,39321,7 * 24 * 3600,8 * 24 * 3600+1,[_type,_src],_bytes);
+            ,s,life * 24 * 3600,cool * 24 * 3600,[_type,_src],_bytes);
         await result.wait()
         return result
     }

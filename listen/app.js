@@ -5,8 +5,8 @@ const mysql = require('mysql2/promise');
 const dotenv=require('dotenv');
 const crypto = require('node:crypto');
 dotenv.config();
-// const start_block=21232473n  //Start listening for block numbers
-const start_block=0n
+const start_block=21232473n  //Start listening for block numbers
+// const start_block=0n
 var monitor = 0; //Restart every 10 minutes 
 var server1=new Server();
 var maxData = []; // Record the maximum block number that has been listened to
@@ -253,7 +253,7 @@ function nftsing()
 
 function daoCreate()
 {
-  server1.daoapi.DaoRegistrar.daoCreateEvent(maxData[0],async (obj) => {
+  server1.daoapi.DaoRegistrar.daoCreateEvent0(maxData[0],async (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
       let sql ="INSERT INTO t_dao(sctype,dao_id,block_num,dao_name,dao_symbol,dao_desc,dao_manager,dao_time,dao_exec,creator,delegator,strategy,lifetime,cool_time,dao_logo,dapp_owner) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -261,6 +261,21 @@ function daoCreate()
       ,data['time'],data['address'],data['creator'],data['delegator'],data['strategy'],data['lifetime'],data['cool_time'],data['src'],data['dapp_owner']];
       maxData[0] = obj.blockNumber+1n;  //Cache last block number
       await executeSql(sql, params); //dao 信息
+      // for(let i=0;i<data["members"].length;i++){
+      //    await executeSql("call i_daodetail(?,?,?,?)",[data['dividendRights'][i],data['members'][i],data['delegator'],data['daoId']]);
+      // }
+   });
+   server1.daoapi.DaoRegistrar.daoCreateEvent(maxData[0],async (obj) => {
+      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      const {data}=obj
+      let sql ="INSERT INTO t_dao(sctype,dao_id,block_num,dao_name,dao_symbol,dao_desc,dao_manager,dao_time,dao_exec,creator,delegator,strategy,lifetime,cool_time,dao_logo,dapp_owner) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      let params = [data['sctype'],data['daoId'],obj.blockNumber,data['name'],data['symbol'],data['describe'],data['manager']
+      ,data['time'],data['address'],data['creator'],data['delegator'],data['strategy'],data['lifetime'],data['cool_time'],data['src'],data['dapp_owner']];
+      maxData[0] = obj.blockNumber+1n;  //Cache last block number
+      await executeSql(sql, params); //dao 信息
+      for(let i=0;i<data["members"].length;i++){
+         await executeSql("call i_daodetail(?,?,?,?)",[data['dividendRights'][i],data['members'][i],data['delegator'],data['daoId']]);
+      }
    });
 }
 
@@ -455,11 +470,12 @@ function voteEvent()
    server1.daoapi.EventSum.voteEvent(maxData[10],async obj => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj);
       const {data}=obj
-      let sql = "INSERT INTO t_provote(block_num,delegator,createTime,creator,antirights,rights,_time,proposalType) VALUES(?,?,?,?,?,?,?,?)";
-      let params = [obj.blockNumber, data['delegator'],data['createTime'],data['creator'],data['antirights'],data['rights'],data['_time'],data['proposalType']];
-      maxData[10] = obj.blockNumber+1n; //Cache last block number
-      await executeSql(sql, params);
-      await executeSql("call calc_pro(?,?)",[data['delegator'],data['createTime']]); //处理是结束
+      // let sql = "INSERT INTO t_provote(block_num,delegator,createTime,creator,antirights,rights,_time,proposalType) VALUES(?,?,?,?,?,?,?,?)";
+      // let params = [obj.blockNumber, data['delegator'],data['createTime'],data['creator'],data['antirights'],data['rights'],data['_time'],data['proposalType']];
+      // maxData[10] = obj.blockNumber+1n; //Cache last block number
+      // await executeSql(sql, params);
+      //p_nump BIGINT,p_delegator CHAR(42), p_createTime INT,p_creator CHAR(42),p_rights INT,p_antirights INT,p_time INT,p_type
+      await executeSql("call calc_pro(?,?,?,?,?,?,?,?)",[obj.blockNumber,data['delegator'],data['createTime'],data['creator'],data['rights'],data['antirights'],data['_time'],data['proposalType']]); //处理是结束
       // let contract= new server1.web3.eth.Contract(daoabi, data['delegator'], { from: server1.account });
       // let res=await contract.methods.proposal().call({ from: server1.account })
       // console.log(res)

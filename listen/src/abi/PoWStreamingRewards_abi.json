@@ -227,6 +227,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getAllParticipants",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -260,6 +273,11 @@
       {
         "internalType": "address",
         "name": "_uToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_initOwner",
         "type": "address"
       }
     ],

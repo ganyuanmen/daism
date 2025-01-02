@@ -16,10 +16,12 @@ import Head from 'next/head';
  */
 export default function DaoInfo({daoData,daoMember,follower,accountTotal,env,locale}) {
     const daoActor=useSelector((state) => state.valueData.daoActor)
+    const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
     const tc = useTranslations('Common')
     const t = useTranslations('ff')
     const [member,setMember]=useState([])
     const [follow,setFollow]=useState([])
+
 
     useEffect(()=>{ setMember(daoMember) },[daoMember])
     useEffect(()=>{ setFollow(follower) },[follower])
@@ -32,7 +34,7 @@ export default function DaoInfo({daoData,daoMember,follower,accountTotal,env,loc
         <PageLayout env={env}>
             <div style={{marginTop:'10px'}} >
                   { daoData.dao_id?<>
-                    <Domain_div record={daoData} daoActor={daoActor}  domain={env.domain} tc={tc} accountTotal={accountTotal} t={t}/>
+                    <Domain_div record={daoData} daoActor={daoActor}  domain={env.domain} tc={tc} loginsiwe={loginsiwe} accountTotal={accountTotal} t={t}/>
                     <DaoInfo_div record={daoData} t={t} />
                     {daoData && member && member.length>0 &&  <Daomember_div record={member} t={t} dao_manager={daoData.dao_manager}/>}
                     {follow && follow.length>0 &&  <Follower_div record={follow} t={t} locale={locale} />}

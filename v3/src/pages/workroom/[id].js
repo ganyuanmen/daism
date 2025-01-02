@@ -15,24 +15,23 @@ import PageLayout from '../../components/PageLayout';
 import { useRouter } from 'next/router';
 import { getEnv } from '../../lib/utils/getEnv';
 import LogoPro from '../../components/dao/LogoPro';
-import useLastPro from '../../hooks/useLastPro';
+// import useLastPro from '../../hooks/useLastPro';
 import DaismTextarea from '../../components/form/DaismTextarea';
 import ConfirmWin from '../../components/federation/ConfirmWin';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import useGetVersion from '../../hooks/useGetVersion';
 import Head from 'next/head';
-
+import Link from 'next/link';
+import {daism_getTime} from '../../lib/utils/windowjs'
 /**
  * 指定id 某个智能公器信息
  */
 export default function DaoDetail({locale,env}) {
     const { query } = useRouter()
     const daoid=query.id
-    const [refresh,setRefresh]=useState(true)
     const daoData=useDaoDetail({daoid})
     const user = useSelector((state) => state.valueData.user)
-    const lastPro=useLastPro(daoid,user.account,refresh,setRefresh)  
     const t = useTranslations('dao')
     const tc = useTranslations('Common')
    
@@ -42,7 +41,7 @@ export default function DaoDetail({locale,env}) {
         </Head>
         <PageLayout env={env}>
             {daoData.data.length?<> 
-                  <DaoInfo record={daoData.data[0]} user={user} daoid={daoid} lastPro={lastPro} setRefresh={setRefresh} /> 
+                  <DaoInfo record={daoData.data[0]} user={user} daoid={daoid} t={t} tc={tc} locale={locale} /> 
             </>
             :daoData.status==='failed'?<ShowErrorBar errStr={daoData.error} />
             :daoData.status==='succeeded' ? <ShowErrorBar errStr={tc('noDataText')}  />
@@ -55,10 +54,9 @@ export default function DaoDetail({locale,env}) {
 
 const bStyle={borderBottom:'1px solid gray'}
 
-function DaoInfo({record,daoid,user,lastPro,setRefresh})
+function DaoInfo({record,daoid,user,t,tc,locale})
 {
-    const t = useTranslations('dao')
-    const tc = useTranslations('Common')
+    const [mess,setMess]=useState(false) // add member window
     const [show,setShow]=useState(false) // add member window
     const [showmodify,setShowmodify]=useState(false)  //modify window
     const [updateCreator,setUpdateCreator]=useState(false) //set updateCreator window
@@ -180,14 +178,6 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
     }, 300);
     }
     
-     //检查提案完成及冷却
-    const checkPro=()=>{
-        // if(lastPro.length && (lastPro[0].is_end===0 || (lastPro[0].is_end===2 && lastPro[0].cool_time<0))) {
-        //     showError(t('noComplete'));
-        //     return false;
-        // }
-        return true
-    }
 
     //修改dao管理者
     const manager=()=>{
@@ -215,7 +205,7 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
         setUpdateCreator(false)
         showTip(t('submittingText'))
         window.daismDaoapi.Register.proposeUpdate(record.dao_id,_address).then(() => {
-            setTimeout(() => {closeTip();setRefresh(true);}, 1000);
+            setTimeout(() => {closeTip();}, 1000);
         }, err => {
             console.error(err);closeTip();showError(tc('errorText')+(err.message?err.message:err));
         });
@@ -225,13 +215,14 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
     const upPro=(_address,_vote,_desc,proposalType)=>{
         showTip(t('submitingProText'));
         window.daismDaoapi.Dao.addProposal(record.delegator,_address,_vote,parseInt(new Date().getTime()/1000),0,0,_desc,proposalType).then((e) => {
-            closeTip()
-            showError(`${t("uploadPro")}_*_`)
-            setRefresh(true) //刷新提案
+            closeTip();
+            // showError(`${t("uploadPro")}_*_`)
+            setMess(true);
             }, err => {
                 console.error(err);
                 closeTip();
                 if(err.message && err.message.includes('proposal cooling period'))  showError(t('noCooling'))
+                else if(err.message && err.message.includes('valid proposal exists'))  showError(t('noComplete'))
                 else showError(tc('errorText')+(err.message?err.message:err));
             }
             );
@@ -279,7 +270,7 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
           </Popover.Body>
         </Popover>
       );
-      
+ 
     return <>
    
             <Card className='daism-title mt-3'>
@@ -305,15 +296,13 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
 
             <div className='mb-3 p-1' style={bStyle} >
                 {t('managerText')}:<ShowAddress  address={record.dao_manager} />  {'  '} 
-                {ismember && <Button  style={{marginLeft:30}} onClick={e=>{if(checkPro())  setChangeManager(true);}}  variant='primary'> <EditSvg size={16} /> {t('updateManagerText')}</Button>}
+                {ismember && <Button  style={{marginLeft:30}} onClick={e=>{setChangeManager(true);}}  variant='primary'> <EditSvg size={16} /> {t('updateManagerText')}</Button>}
            </div>
 
             <div className='mb-3 p-1'  style={bStyle}>
                <b>{t('descText')}:</b>  {'  '} 
                 {ismember && 
-                    <Button style={{marginLeft:30}}  onClick={e=>{
-                            if(checkPro())  setChangeDesc(true);
-                            }}  variant='primary'> <EditSvg size={16} /> {t('changeDescText')} 
+                    <Button style={{marginLeft:30}}  onClick={e=>{setChangeDesc(true);}}  variant='primary'> <EditSvg size={16} /> {t('changeDescText')} 
                     </Button>
                 }
                 <p className='mt-3' >{record.dao_desc}</p>
@@ -322,8 +311,7 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
 
             <div className='mb-3 p-1' style={bStyle} >
                <b>{t('proStrategyText')}:</b> {'  '} (<span>{t('voteRateText')}:</span> {record.strategy} %)
-                {ismember && <Button  style={{marginLeft:30}} onClick={e=>{
-                            if(checkPro())  setChangeStrategy(true);
+                {ismember && <Button  style={{marginLeft:30}} onClick={e=>{setChangeStrategy(true);
                             }}  variant='primary'> <EditSvg size={16} /> {t('changeStrategyText')} 
                     </Button>
                 }
@@ -336,21 +324,20 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
             }
             <div className='mb-3 p-1' style={bStyle} >
                <b>{t('typeName')}:</b> {'  '} ({record.sctype})
-                {ismember && <Button  style={{marginLeft:30}} onClick={e=>{if(checkPro()) setShowType(true)}}  variant='primary'> <EditSvg size={16} /> {t('editTypeText')}
+                {ismember && <Button  style={{marginLeft:30}} onClick={e=>{setShowType(true)}}  variant='primary'> <EditSvg size={16} /> {t('editTypeText')}
                     </Button>
                 }
             </div>
 
             <div className='mb-3 p-1'  style={bStyle}>
-              <span>{t('proLifeTime')} :</span> {record.lifetime/(24*3600)} {t('days')} 
-              <span style={{marginLeft:30}} >{t('proCoolTime')} :</span> {record.cool_time/(24*3600)} {t('days')}  
+              <span>{t('proLifeTime')} :</span> {daism_getTime(record.lifetime,t)} 
+              <span style={{marginLeft:30}} >{t('proCoolTime')} :</span> {daism_getTime(record.cool_time,t)}  
             </div>
 
 
             <div className='mb-3 p-1' >
                 <b>{t('daoMemberText')}:</b>
-                {ismember && <Button style={{marginLeft:30}} onClick={()=>{
-                            if(checkPro())  setShow(true);
+                {ismember && <Button style={{marginLeft:30}} onClick={()=>{setShow(true);
                             }}  variant='primary'> <AddSvg size={16} /> {t('addMember')} 
                     </Button>
 
@@ -368,16 +355,12 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
                      {'   '} 
                      { parseInt(obj.member_type)===1 && ismember && 
                         <><Button onClick={e=>{
-                           if(checkPro()) {
                                 setShowmodify(true);
                                 update(obj);
-                            }
                             }} size='sm' variant='primary'> <EditSvg size={16} /> {t('updateText')} </Button> {'   '}
                         {record.dao_manager.toLowerCase()!==obj.member_address.toLowerCase() && <Button onClick={e=>{
-                                if(checkPro()) {
                                     setShowDel(true)
                                     delMemberRef.current=obj.member_address
-                                }
                             }
                             }
                             size='sm' variant='danger'><DeleteSvg size={16} />  {t('delText')} </Button>
@@ -422,7 +405,7 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
             <Modal className='daism-title' show={changeLogo} onHide={(e) => {setChangeLogo(false)}} >
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
-                    <LogoPro  daoId={daoid} daoName={record.dao_name} setChangeLogo={setChangeLogo} delegator={record.delegator} setRefresh={setRefresh} lastPro={lastPro} />
+                    <LogoPro  daoId={daoid} daoName={record.dao_name} setMess={setMess} setChangeLogo={setChangeLogo} delegator={record.delegator} />
                 </Modal.Body>
             </Modal>
             <Modal className='daism-title' show={changeDesc} onHide={(e) => {setChangeDesc(false)}} >
@@ -475,7 +458,21 @@ function DaoInfo({record,daoid,user,lastPro,setRefresh})
                     </div>
                 </Modal.Body>
             </Modal>
-
+                {/* 提示窗口 */}
+            <Modal className="modal-dialog-scrollable daism-title " centered show={mess} onHide={(e) => {setMess(false)}} >
+                <Modal.Header closeButton>
+                    <Modal.Title>{tc('tipText')}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="daism-tip-body">
+                    <img alt="" src='/mess1.svg' width={32} height={32} />
+                    <div className="daism-tip-text">
+                        {t("uploadPro")}<br/>
+                        <Link  href={`/${locale}/workroom#3`} as={`/${locale}/workroom#3`}>
+                            {t('nowVote')}
+                        </Link>
+                    </div>
+                </Modal.Body>
+            </Modal>
             </>
 }
 

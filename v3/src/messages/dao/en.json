@@ -26,6 +26,8 @@
     "noVote":"Dividend rights cannot be 1,2,3",
     "lifetime":"lifetime",
     "days":"day",
+    "hours":"hour",
+    "minutes":"minute",
     "strategy":"Passing rate",
     "votedText":"voted",
     "waitOtherText": "Waiting for others to vote",
@@ -98,6 +100,7 @@
     "addressText":"address",
     "expireText":"expire",
     "lastVersion":"Version num",
+    "nowVote":"Vote Now",
     "passlifeTime":"The proposal has expired!",
     "noVoteText":"The proposal can no longer be voted on!"
 

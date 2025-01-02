@@ -5,7 +5,7 @@ import { useState,useEffect } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { useTranslations } from 'next-intl'
 import {Honor} from '../../lib/jssvg/SvgCollection'
-
+import {setTipText,setMessageText} from '../../data/valueData'
 /**
  * Mint NFT
  */
