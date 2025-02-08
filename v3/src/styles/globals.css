@@ -204,21 +204,13 @@
     }
 
     .sccontent {
-      /* float: right; */
-      /* padding-left: 20px; */
-      /* padding-top: 0px; */
-      /* padding-top:0px ; */
-      /* margin: 0px; */
-      /* width: calc(100% - 360px); */
       flex: 1;
       border-left:1px solid #D9D9E8;  
       border-right: 1px solid #D9D9E8;
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
       max-width: 800px;
-      min-width: 300px;
-
-      
+      min-width: 300px;     
     }
    
     .scsidebar {
@@ -357,3 +349,14 @@
 .daismCard img{
   max-width: 100%;
 }
+
+
+.st0{enable-background:new;}.st1{fill:#E6E6E6;} .st2{fill:#D44117;}	.st3{fill:#F2A438;}	.st4{fill:#6BB427;}	.st5{fill:#5775B1;}
+.suft{text-anchor: start; font-size:2.1em;}
+.suft2{text-anchor: start; font-size:2.2em;}
+.suft5{text-anchor: start; font-size:2.2em;fill:#F2A438;}
+.suft4{text-anchor: start; font-size:2.2em;fill:#6BB427;}
+.suft3{text-anchor: start; font-size:2.2em;fill:#5775B1;}
+.sufb{font-size:3em;text-anchor:start;stroke:#D44117;text-shadow:-9px -5px 9px #FFFF00;}@keyframes stroke{100% {stroke-dashoffset:-400;}}
+
+.topsvg{display:flex; align-items:center; justify-content:center;}

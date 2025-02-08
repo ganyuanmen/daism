@@ -18,9 +18,11 @@ import { useTranslations } from 'next-intl'
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人  
  * @path enki/enkier
  * @daoData 个人所属的smart common 集合
+ * @isSelf 是否从我的帐号中打开
  */
 export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhere,
-     setFetchWhere,afterEditCall,delCallBack,accountAr,path,daoData}) {
+     setFetchWhere,afterEditCall,delCallBack,accountAr,path,daoData,isSelf=false}) {
+
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [pageNum, setPageNum] = useState(0);
@@ -50,7 +52,7 @@ export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhe
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            // console.log(fetchWhere)
+            console.log(fetchWhere)
             if (fetchWhere.currentPageNum === 0) setData([]);
             try {
                 const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&menutype=${fetchWhere.menutype}&daoid=${fetchWhere.daoid}&actorid=${fetchWhere.actorid}&w=${fetchWhere.where}&order=${fetchWhere.order}&eventnum=${fetchWhere.eventnum}&account=${fetchWhere.account}&v=${fetchWhere.v}`, 'messagePageData');
@@ -113,7 +115,7 @@ export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhe
 
     return (
 
-        <div className='sccontent'>
+        <div className='sccontent' style={isSelf?{maxWidth:'1800px',borderTop:'1px solid #D9D9E8'}:{}} >
    
             <div ref={listRef} >
                 <InfiniteScroll

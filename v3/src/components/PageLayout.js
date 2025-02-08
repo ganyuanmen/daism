@@ -34,8 +34,9 @@ export default function PageLayout({children,env}) {
             
                 <Nav  style={{width:'100%'}}>
                   <div className="d-flex flex-row flex-sm-wrap p-0 m-0 ">
-                  <Nav.Link className={route === '/'  ? 'pnavactive'  : ''}  href={`/${locale!='zh'?'':'zh'}`}>{t('iadd')}</Nav.Link>
-                  <Nav.Link className={route === '/smartcommons' ? 'pnavactive' : ''} href={`${locale!='zh'?'':'/zh'}/smartcommons`}>{t('home')}</Nav.Link> 
+                  <Nav.Link className={route === '/'  ? 'pnavactive'  : ''}  href={`/${locale!='zh'?'':'zh'}`}>{t('home')}</Nav.Link>
+                  <Nav.Link className={route === '/deval'  ? 'pnavactive'  : ''}  href={`${locale!='zh'?'':'/zh'}/deval`}>{t('iadd')}</Nav.Link>
+                  <Nav.Link className={route === '/smartcommons' ? 'pnavactive' : ''} href={`${locale!='zh'?'':'/zh'}/smartcommons`}>{t('smarcommon')}</Nav.Link> 
                   <Nav.Link className={route === '/honortokens' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/honortokens`} >{t('nft')}</Nav.Link> 
                   </div>
                   <div  className="d-flex flex-row flex-sm-wrap p-0 m-0 ">

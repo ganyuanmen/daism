@@ -30,8 +30,8 @@ const SubmitButton = forwardRef(({comulate,upRef,downRef,statusRef,setUtokenBala
     // function fromEther(v){return  window.daismDaoapi.ethers.formatEther(v+'')}
 
     function getEther(v){return window.daismDaoapi.ethers.parseEther(v+'')}
-    function getUtoEther(v){return window.daismDaoapi.ethers.parseUnits(v+'',8)}
-    function fromEther(v){return  window.daismDaoapi.ethers.formatEther(v+'')}
+    // function getUtoEther(v){return window.daismDaoapi.ethers.parseUnits(v+'',8)}
+    // function fromEther(v){return  window.daismDaoapi.ethers.formatEther(v+'')}
     function fromUtoken(v){return  window.daismDaoapi.ethers.formatUnits(v+'',8)}
 
     //兑换操作完成后清理
@@ -41,6 +41,7 @@ const SubmitButton = forwardRef(({comulate,upRef,downRef,statusRef,setUtokenBala
         upRef.current.clear()
         downRef.current.clear()
         tipRef?.current?.setTip(false)
+        tipRef?.current?.setBurn(false)
         statusRef.current.setStatus({...statusRef.current.state,gas:'',price:'',minValue:'',exValue:''})
         setShow(false)
         getTokens()
@@ -115,7 +116,8 @@ const SubmitButton = forwardRef(({comulate,upRef,downRef,statusRef,setUtokenBala
    // _uto(打赏),recipient(转帐接收地址),_isMintNFT,_nftRecipient
     const eth_token =async (out_id,value,minRatio,) => { 
       
-        const {_uto,_isMintNFT}=geneParas()
+        const {_uto,_isMintNFT}=geneParas();
+        const _isBurnNFT=tipRef.current.getBurn();
         showTip(t('walltSubmitText'));
         // if(parseFloat(_uto)>0){
             let re=await  utoken.getOutputAmount(getEther(value))  // 计算可以获多少utoken
@@ -125,7 +127,7 @@ const SubmitButton = forwardRef(({comulate,upRef,downRef,statusRef,setUtokenBala
              closeTip()
              return
             }
-            window.daismDaoapi.IADD_EX.ethToDaoToken(value,out_id,_uto,minRatio,user.account,_isMintNFT,user.account).then(e => {
+            window.daismDaoapi.IADD_EX.ethToDaoToken(value,out_id,_uto,minRatio,user.account,_isMintNFT,_isBurnNFT,user.account).then(e => {
                 closeTip();
                 window.daismDaoapi.signer.provider.getBalance(user.account).then(e1 => {
                     const _b1 = window.daismDaoapi.ethers.formatEther(e1);

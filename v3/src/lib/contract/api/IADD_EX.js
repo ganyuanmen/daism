@@ -8,7 +8,7 @@ class IADD_EX {
 	// _isMintNFT : 打赏时是否mint 荣誉通证
 	// _nftRecipient : 荣誉通证接收地址
     //_eth ,_id(sc_id),_uto(打赏),_minRatio（滑点）
-    async ethToDaoToken(_eth,_id,_uto,_minRatio,recipient,_isMintNFT,_nftRecipient) {
+    async ethToDaoToken(_eth,_id,_uto,_minRatio,recipient,_isMintNFT,_isBurnNFT,_nftRecipient) {
 
         this.genegateContract()
         let _amount=this.ethers.parseEther(_eth+'')
@@ -16,7 +16,7 @@ class IADD_EX {
         let min_amount=await this.contract.estimateEthToSCTokenByTip(_amount,_id,_utotip)
         let temp=parseFloat(this.ethers.formatEther(min_amount))
         let minratio=this.ethers.parseEther(temp*(1-_minRatio/100)+'')
-        let res=await this.contract.ethToSCTokenByTip.send(minratio,_id,recipient,_id,_utotip,_isMintNFT,_nftRecipient,{value: _amount})
+        let res=await this.contract.ethToSCTokenByTip.send(minratio,_id,recipient,_id,_utotip,_isMintNFT,_isBurnNFT,_nftRecipient,{value: _amount})
         await res.wait()
         return res
      }

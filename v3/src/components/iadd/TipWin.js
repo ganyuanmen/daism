@@ -7,6 +7,7 @@ import { Row,Col,InputGroup,Form, Button } from "react-bootstrap";
 //打赏 和min NFT 窗口
 //downRef 输出区域  statusRef 状态区域 submitRef 提交按钮区域 balanceRef余额 inobj 上选择内容  setVita 设置输入框价值
 const TipWin = forwardRef(({setOutput,inobj,outobj}, ref) => {
+    const [showBurn, setShowBurn] = useState(false);//是否锻造
     const [showTip, setShowTip] = useState(false);//是否打赏
     const [showNft, setShowNft] = useState(false);//是否mint NFT
     const [token, setToken] = useState(true); //默认选择第二个
@@ -18,6 +19,7 @@ const TipWin = forwardRef(({setOutput,inobj,outobj}, ref) => {
     
     useImperativeHandle(ref, () => ({
         getTip:()=>{return showTip},
+        getBurn:()=>{return showBurn},
         getValue:()=>{return inputRef.current.value},
         getNft:()=>{return showNft},
         getTokenId:()=>{
@@ -27,7 +29,8 @@ const TipWin = forwardRef(({setOutput,inobj,outobj}, ref) => {
             }
             else return 0;
         },
-        setTip:(flag)=>{setShowTip(flag)}
+        setTip:(flag)=>{setShowTip(flag)},
+        setBurn:(flag)=>{setShowBurn(flag)},
     }));
 
     const setChange=()=>{
@@ -41,9 +44,12 @@ const TipWin = forwardRef(({setOutput,inobj,outobj}, ref) => {
 
     return (  
         <div className="mt-3" >
-           
-                <Form.Check className='mb-3' type="switch" id="custom-switch1" checked={showTip} onChange={e=>{setShowTip(!showTip)}} 
+                <div className="d-flex mb-3" >
+                <Form.Check  type="switch" id="custom-switch1" checked={showTip} onChange={e=>{setShowTip(!showTip)}} 
                 label={(inobj.token_id==-2 && outobj.token_id==-1)?t('tipTextE2U'):t('tipText')} />
+                {(inobj.token_id==-2 && outobj.token_id>0) &&<Form.Check style={{marginLeft:'20px'}}  type="switch" id="custom-switch3" checked={showBurn} onChange={e=>{setShowBurn(!showBurn)}} 
+                label={t('tipTextE2U')} /> }
+                </div>
               
             {showTip && !(inobj.token_id==-2 && outobj.token_id==-1) &&
               <Row>

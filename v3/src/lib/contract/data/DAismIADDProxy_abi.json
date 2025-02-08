@@ -132,7 +132,13 @@
       {
         "indexed": false,
         "internalType": "bool",
-        "name": "isMintNFT",
+        "name": "isMintTipNFT",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isMintBrunNFT",
         "type": "bool"
       },
       {
@@ -427,7 +433,7 @@
         "type": "address"
       }
     ],
-    "name": "SCTokenToExactSCToken",
+    "name": "SCTokenToExactSCTokenByTip",
     "outputs": [
       {
         "internalType": "bool",
@@ -743,7 +749,7 @@
         "type": "uint256"
       }
     ],
-    "name": "estimateSCTokenToExactSCToken",
+    "name": "estimateSCTokenToExactSCTokenByTip",
     "outputs": [
       {
         "internalType": "uint256",
@@ -938,7 +944,12 @@
       },
       {
         "internalType": "bool",
-        "name": "_isMintNFT",
+        "name": "_isMintTipNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintBurnNFT",
         "type": "bool"
       },
       {
@@ -987,7 +998,12 @@
       },
       {
         "internalType": "bool",
-        "name": "_isMintNFT",
+        "name": "_isMintTipNFT",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintBurnNFT",
         "type": "bool"
       },
       {

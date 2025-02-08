@@ -22,7 +22,33 @@ export default function Message({currentObj,locale,env}) {
 
     return (
       <>
-        <Head>
+       <Head>
+       <meta content="text/html; charset=UTF-8" name="Content-Type" />
+        <title>{tc('enkierTitle')}</title>
+        {/* Open Graph Tags */}
+        <meta content="article" property="og:type" />
+        <meta content={env.domain} property="og:site_name" />
+        <meta content={`${currentObj.actor_name} (${currentObj.actor_account})`} property="og:title" />
+        <meta content={`https://${env.domain}${router.asPath}?time=${Date.now()}`} property="og:url" />
+        <meta content={new Date().toISOString()} property="og:published_time" />
+        <meta content={currentObj.actor_account} property="profile:username" />
+        <meta content={content} name="description" />
+        <meta content={content} property="og:description" />
+        <meta content={currentObj.top_img ? currentObj.top_img : currentObj.avatar} property="og:image" />
+
+        {/* Twitter Card Tags */}
+        <meta content="summary" property="twitter:card" />
+        <meta content={content} property="twitter:description" />
+        <meta content={currentObj.top_img ? currentObj.top_img : currentObj.avatar} property="twitter:image" />
+        <meta name="twitter:image" content={currentObj.top_img ? currentObj.top_img : currentObj.avatar}></meta>
+
+        {/* WeChat Tags */}
+        <meta name="wechat:title" content={`${currentObj.actor_name} (${currentObj.actor_account})`} />
+        <meta name="wechat:description" content={content} />
+        <meta name="wechat:image" content={currentObj.top_img ? currentObj.top_img : currentObj.avatar} />
+      </Head>
+
+        {/* <Head>
         <title>{tc('enkierTitle')}</title>
         <meta content="article" property="og:type"></meta>
         <meta content={`${currentObj.actor_name} (${currentObj.actor_account})`} property="og:title" />
@@ -33,7 +59,11 @@ export default function Message({currentObj,locale,env}) {
         <meta content={content} property="og:description" />
         <meta content="summary" property="twitter:card"/>
         <meta content={currentObj.top_img?currentObj.top_img:currentObj.avatar}  property="og:image" />
-      </Head>
+        <meta name="wechat:title" content={`${currentObj.actor_name} (${currentObj.actor_account})`}  />
+        <meta name="wechat:description" content={content} />
+        <meta name="wechat:image" content={currentObj.top_img?currentObj.top_img:currentObj.avatar} />
+
+      </Head> */}
     
       <PageLayout env={env}>
         {currentObj?.id? <MessagePage path="noedit" locale={locale}  currentObj={currentObj} env={env} />

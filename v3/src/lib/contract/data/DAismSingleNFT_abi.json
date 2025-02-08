@@ -298,6 +298,12 @@
       },
       {
         "indexed": false,
+        "internalType": "address",
+        "name": "nftTo",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
@@ -712,6 +718,35 @@
         "type": "address"
       },
       {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      }
+    ],
+    "name": "mintByBurnETH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "unit_token_output",
         "type": "uint256"
@@ -724,6 +759,50 @@
     ],
     "name": "mintByBurnETHExactUnitToken",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftRecipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "unit_token_output",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isMintNFT",
+        "type": "bool"
+      }
+    ],
+    "name": "mintByBurnETHExactUnitToken",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "",

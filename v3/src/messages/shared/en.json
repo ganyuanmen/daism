@@ -1,7 +1,8 @@
 {
   "Navigation": {
+    "home": "Home",
     "iadd": "DeVal",
-    "home": "Smart Commons",
+    "smarcommon": "Smart Commons",
     "nft":"Honor Tokens",
     "my": "My Workroom",
     "social":"Social",

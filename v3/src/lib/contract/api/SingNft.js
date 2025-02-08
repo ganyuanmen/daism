@@ -8,7 +8,7 @@ class SingNft {
     async mintByBurnETH(_to,_ethValue,isNft) {
         this.genegateContract()
         let ethValue=this.ethers.parseEther(_ethValue+'')
-        let tx = await this.contract['mintByBurnETH'].send(_to,isNft,{value: ethValue});
+        let tx = await this.contract['mintByBurnETH(address,bool)'].send(_to,isNft,{value: ethValue});
         await tx.wait();
         return tx;
     }

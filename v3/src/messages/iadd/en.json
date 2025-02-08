@@ -20,8 +20,27 @@
     "transactionText":"IADD Network",
     "notTipText":"Not enough to give a tip",
     "tipText":"give a tip",
-    "tipTextE2U":"Honor Token",
-    "minthonorText":"mint Honor Tokens",
-    "notEnoughTip":"Plus the bonus, the balance is insufficient!"
+    "tipTextE2U":"Burn Honor Token",
+    "minthonorText":"Tip Honor Tokens",
+    "notEnoughTip":"Plus the bonus, the balance is insufficient!",
+    "pov":"Proof of Value",
+    "suf":"Leading to Next Civilization by Joining Blockchain & AI Together!",
+    "utoValue":"1.15792 × 10^69 UTO for universal value.",
+    "scc0":"A crucial governance license for Smart Commons (public goods).",
+    "enkier":"Join the great Enki community with ease!",
+    "top1":"In Q2 of 2020, after nearly a year of development, we completed the ",
+    "top2":"Our Innovation revealed that all current DEXs have become accomplices to scammers through an capitalistic secret. This insight has also inspired us to rethink how we govern the applications necessary for the future.",
+    "top3":"It is a fundamental governance license that leading dAIpps to a new civilization.",
+    "top4":"The first case of the Satoshi UTO Fund's application refers to the rewards provided by the Satoshi UTO Fund if you participate in ",
+    "top5":"ETH forging (converting ETH into UTO)",
+    "top6":"The earlier you forge, the higher the rewards! For a detailed explanation, please read the relevant section in the",
+    "top7":"The Satoshi UTO Fund was forged by 50 anonymous participants. The Satoshi UTO Fund is dedicated to human incentives, welfare, and relief. And it's as huge as 1.15792 × 10^69 UTO.",
+    "networkName":"Network",
+    "top8":"...And more!",
+    "top9":"The Fusion of Smart Contracts and AI.",
+    "top10":"Transform Ethereum through AI, and elevate SCAI to 2.0."
+
+
+
   }
 }
