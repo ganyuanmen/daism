@@ -1,8 +1,236 @@
 [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "daismRegistrar_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "nftAddress_",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "desc",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "SCType",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAismInterface.SCInfo",
+        "name": "_SCInfo",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_members",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint16[]",
+        "name": "_dividendRights",
+        "type": "uint16[]"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_strategy",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_lifetime",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_coolingPeriod",
+        "type": "uint32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "fileType",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "fileContent",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAismInterface.File",
+        "name": "_logo",
+        "type": "tuple"
+      }
+    ],
+    "name": "createSC",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "daismRegistrar",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "desc",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "uint16",
+            "name": "version",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "SCType",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAismInterface.SCInfo",
+        "name": "_SCInfo",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_members",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint16[]",
+        "name": "_dividendRights",
+        "type": "uint16[]"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_strategy",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_lifetime",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_coolingPeriod",
+        "type": "uint32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "fileType",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "fileContent",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAismInterface.File",
+        "name": "_logo",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_num",
+        "type": "uint256"
+      }
+    ],
+    "name": "mintSCandNFT",
+    "outputs": [
+      {
+        "internalType": "uint256[][]",
+        "name": "",
+        "type": "uint256[][]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nftAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [],

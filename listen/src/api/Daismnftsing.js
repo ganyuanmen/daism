@@ -48,7 +48,7 @@ class Daismnftsing
                 if(!data || !data.returnValues) {utils.log("MintBatchEvent error:"+_error);throw _error;}
                 _this.daotoken.har.push({fn:callbackFun,data:utils.valueFactory(data,{
                     "daoId": data.returnValues.scId,
-                    "to": data.returnValues.to,
+                    "to": data.returnValues.nftTo,
                     "tokenId": data.returnValues.tokenId,
                     "mark": data.returnValues.mark,
                     "ethBurn": parseFloat(parseFloat(_this.web3.utils.fromWei(data.returnValues.ethBurn,'ether')).toFixed(6))
