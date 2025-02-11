@@ -10,6 +10,8 @@
    
   .daism-a{color:black; text-decoration: none;}
   .daism-a:hover{ cursor: pointer;}
+
+
   .daism-span{display: inline-block;margin-right: 8px;}
 
   .daism-nowrap{overflow: hidden;  text-overflow:ellipsis; white-space: nowrap;
@@ -349,14 +351,22 @@
 .daismCard img{
   max-width: 100%;
 }
+.desktop-only {
+  display: block;
+}
 
+.mobile-only {
+  display: none;
+}
 
-.st0{enable-background:new;}.st1{fill:#E6E6E6;} .st2{fill:#D44117;}	.st3{fill:#F2A438;}	.st4{fill:#6BB427;}	.st5{fill:#5775B1;}
-.suft{text-anchor: start; font-size:2.1em;}
-.suft2{text-anchor: start; font-size:2.2em;}
-.suft5{text-anchor: start; font-size:2.2em;fill:#F2A438;}
-.suft4{text-anchor: start; font-size:2.2em;fill:#6BB427;}
-.suft3{text-anchor: start; font-size:2.2em;fill:#5775B1;}
-.sufb{font-size:3em;text-anchor:start;stroke:#D44117;text-shadow:-9px -5px 9px #FFFF00;}@keyframes stroke{100% {stroke-dashoffset:-400;}}
+@media (max-width: 600px) {
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-only {
+    display: block;
+  }
+}
 
 .topsvg{display:flex; align-items:center; justify-content:center;}
