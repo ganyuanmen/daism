@@ -60,15 +60,16 @@ export default function Home({locale,env}) {
     return (<>
          <Head>
          <meta charSet="utf-8"/>
-		 <link rel="dns-prefetch" href="//www.google-analytics.com" />
-        <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+		     <link rel="dns-prefetch" href="//www.google-analytics.com" />
         <meta httpEquiv="x-dns-prefetch-control" content="on" />
         <meta name="robots" content="index, follow, noodp" />
-        <title>Satoshi UTO Fund, 50Satoshis Bounty, SufAIthon - All about Satoshi UTO Fund</title>
-        <meta name="keywords" lang="en" content="Satoshi UTO Fund, SUF, 50Satoshis Bounty, SufAIthon" />
-        <meta name="keywords" lang="zh-cmn-Hans" content="中本聪UTO基金,Satoshi UTO Fund,SUF,五十个中本聪赏金,速发赛,SufAItho" />
-        <meta name="description" lang="en" content="Brief Introduction of Satoshi UTO Fund, including total amount of UTO, address of its smart contract, forged time. Introduction of 50Satoshis Bounty. Introduction of SUF Development Event 'SufAIthon'" />
-        <meta name="description" lang="zh-cmn-Hans" content="Satoshi UTO Fund的简介,包括其UTO代币总量、智能合约查询地址、锻造时间。五十个中本聪 赏金活动的简介。ETH锻造奖励。中本聪UTO基金速发赛邀请函。"/>
+	      <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+        <title>{t('indexTitleText')}</title>
+        <meta name="keywords" lang="en" content="Satoshi UTO Fund, SUF, Universal Value, SufAIthon, DAism"/>
+        <meta name="keywords" lang="zh-cmn-Hans" content="中本聪UTO基金, Satoshi UTO Fund, SUF, 普世价值, 速发赛, 道易程"/>
+        <meta name="description" lang="en" content="DAism's Proof-of-Value Leads to Universal Value by Joining Blockchain & AI Together."/>
+        <meta name="description" lang="zh-cmn-Hans" content="道易程的PoV价值证明治理共识，将区块链与人工智能融合在一起，引领人类奔赴以普世价值为核心的新文明。"/>
+
 
         </Head>
 
