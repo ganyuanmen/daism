@@ -22,7 +22,7 @@ export default withSession(async (req, res) => {
 
         const form = formidable({})
         const [fields, files] = await form.parse(req);
-        const {vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
+        const {vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent,tags } = fields
         // const actorName=account[0].split('@')[0];
         const _path=new Date().toLocaleDateString().replaceAll('/','');
         const imgPath = saveImage(files, fileType[0],_path)
@@ -30,6 +30,8 @@ export default withSession(async (req, res) => {
         let sql = '';
         let paras;
         const sctype = daoid ? 'sc' : '';
+        const tagar=JSON.parse(tags[0]);
+
         if (id[0] == '0') { //增加
             let message_id = uuidv4().replaceAll('-','')
             if (daoid) { //enki
@@ -70,7 +72,16 @@ export default withSession(async (req, res) => {
                         await executeID(sql, paras);
                     })
                 }
-                setTimeout(async () => {await addLink(content[0], message_id,sctype)},1);//生成链接卡片
+                setTimeout(async () => {
+                    await addLink(content[0], message_id,sctype); //生成链接卡片
+                    tagar.forEach(async e=>{ //处理标签
+                        let _cid=e.id;
+                        if(_cid>100000) { //新tag
+                            _cid=await executeID("insert into t_tag(name) values(?)",[e.name]);
+                        }
+                        if(_cid>0) await execute(`insert into t_tagmess${sctype}(cid,id) values(?,?)`,[insertId,_cid])
+                    });
+                },1);
                 res.status(200).json({ msg: 'handle ok', id: insertId });
             } else res.status(500).json({ errMsg: 'fail' });
         } else { //修改
@@ -95,7 +106,15 @@ export default withSession(async (req, res) => {
             let lok = await execute(sql,paras);
             if(lok) {       
                 setTimeout(async () => {  //生成链接卡片
-                    await addLink(content[0],rear.message_id,sctype)
+                    await addLink(content[0],rear.message_id,sctype);
+                    await execute(`delete from t_tagness${sctype} where cid=?`,[id[0]])
+                    tagar.forEach(async e=>{ //处理标签
+                        let _cid=e.id;
+                        if(_cid>100000) { //新tag
+                            _cid=await executeID("insert into t_tag(name) values(?)",[e.name]);
+                        }
+                        if(_cid>0) await execute(`insert into t_tagmess${sctype}(cid,id) values(?,?)`,[id[0],_cid])
+                    });
                 }, 1);
                 res.status(200).json(await getData(`select * from v_message${sctype} where id=?`, [id[0]],true));
             }

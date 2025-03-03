@@ -74,6 +74,19 @@ export async function getLastPro({daoid,did})
     return re || []
 }
 
+export async function getTag()
+{
+    let re= await getData(' SELECT * FROM t_tag where id>2',[]);
+    return re || []
+}
+
+//嗯文的标签
+export async function getMessTag({cid,type})
+{
+    let re= await getData(`SELECT * FROM v_tagmess${type} where cid=?`,[cid]);
+    return re || []
+}
+
 //daos列表
 export async function getDaosData({ps,pi,orderField,orderType,searchText})
 {

@@ -370,3 +370,46 @@
 }
 
 .topsvg{display:flex; align-items:center; justify-content:center;}
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tag-item {
+  display: inline-flex;
+  align-items: center;
+  background: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.delete-btn {
+  border: none;
+  background: none;
+  color: #666;
+  margin-left: 6px;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.delete-btn:hover {
+  color: #ff4444;
+}
+
+.add-btn {
+  border: none;
+  background: none;
+  color: #1890ff;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.add-btn:hover {
+  background: #f0faff;
+}

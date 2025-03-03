@@ -78,6 +78,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         formData.append('fileType',(typeIndex===0?editorRef:richEditorRef).current.getFileType()); //后缀名
         formData.append('isSend',sendRef.current.checked?1:0);
         formData.append('isDiscussion',discussionRef.current.checked?1:0);
+        formData.append('tags',JSON.stringify(inputRef.current.getData()));
 
      
         fetch(`/api/admin/addMessage`, {

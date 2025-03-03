@@ -52,7 +52,7 @@ export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhe
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            console.log(fetchWhere)
+            // console.log(fetchWhere)
             if (fetchWhere.currentPageNum === 0) setData([]);
             try {
                 const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&menutype=${fetchWhere.menutype}&daoid=${fetchWhere.daoid}&actorid=${fetchWhere.actorid}&w=${fetchWhere.where}&order=${fetchWhere.order}&eventnum=${fetchWhere.eventnum}&account=${fetchWhere.account}&v=${fetchWhere.v}`, 'messagePageData');

@@ -1,6 +1,7 @@
-import { useState,useRef,useEffect } from 'react';
+import { useState,useRef,useEffect,forwardRef,useImperativeHandle } from 'react';
 import { Popover,Button,OverlayTrigger } from 'react-bootstrap';
 import { client } from '../../lib/api/client';
+import {DeleteSvg } from '../../lib/jssvg/SvgCollection'
 
   const TagShow = forwardRef(({cid,type}, ref) => {
   
@@ -11,15 +12,17 @@ import { client } from '../../lib/api/client';
     const inputRef=useRef();
 
   useImperativeHandle(ref, () => ({
-    getData: ()=>{return propertyIndex},
+    getData: ()=>{return selectTag},
   }));
 
   useEffect(()=>{
     const fetchData = async () => {
         try {
-            const res = await client.get(`/api/getData?cid=${cid}&type=${type}`,'getTag');
+            const res = await client.get(`/api/getData?cid=${cid}&type=${type}`,'getMessTag');
+            console.log(res)
             if(res.status===200)
-                if(Array.isArray(res.data)) setTags([...oData,...res.data])
+            
+                if(Array.isArray(res.data)) setSelectTag(res.data)
         } catch (error) {
             console.error(error);
         } 
@@ -29,15 +32,44 @@ import { client } from '../../lib/api/client';
 
 },[cid,type]) 
 
-  // 添加新标签
-  const addTag = (newTag) => {
-    const tag = {
-      id: Date.now(), // 使用时间戳作为唯一ID
-      name: newTag
-    };
-    setSelectTag([selectTag, tag]);
+
+useEffect(()=>{
+  const fetchData = async () => {
+      try {
+          const res = await client.get(`/api/getData`,'getTag');
+          if(res.status===200)
+              if(Array.isArray(res.data)) setTags([...oData,...res.data])
+      } catch (error) {
+          console.error(error);
+      } 
   };
 
+ fetchData();
+
+},[]) 
+
+  // 添加新标签
+  const addTag = (newTag) => {
+    let temp = selectTag.find(obj => obj.name === newTag);
+    if(temp) return;
+    let _id=new Date().getTime();
+    temp = tags.find(obj => obj.name === newTag);
+    if(temp) _id=temp.id;
+    const tag = {
+      id: _id, // 使用时间戳作为唯一ID
+      name: newTag
+    };
+    setSelectTag([...selectTag, tag]);
+    setShowPopover(false);
+  };
+
+   // 单击添加新标签
+   const addTag1 = (newTag) => {
+    console.log(newTag);
+    let temp = selectTag.find(obj => obj.id === newTag.id);
+    if (!temp) setSelectTag([...selectTag,newTag]);
+   
+  };
   // 删除标签
   const deleteTag = (id) => {
     setSelectTag(selectTag.filter(tag => tag.id !== id));
@@ -55,11 +87,11 @@ import { client } from '../../lib/api/client';
       </Popover.Header>
       <Popover.Body  >
         <input ref={inputRef} className="form-control" placeholder="Enter键可添加自定义标签"
-                onKeyDown={(e) => {if (e.key === "Enter") {addTag(e.target.value.trim()) }}}>
+                onKeyDown={(e) => {if (e.key === "Enter") {if(e.target.value.trim()) addTag(e.target.value.trim()) }}}>
         </input>
-      <div>
+      <div className='mt-3' >
       {tags.map(tag => (
-        <Button variant="light" key={tag.id} onClick={} className="tag-item">{tag.name}</Button>
+        <Button variant="light" key={tag.id} onClick={e=>{addTag1(tag);}} className="tag-item">{tag.name}</Button>
       ))}
       </div>
       </Popover.Body>
@@ -74,7 +106,7 @@ import { client } from '../../lib/api/client';
           <button 
             className="delete-btn"
             onClick={() => deleteTag(tag.id)}
-          >×</button>
+          ><DeleteSvg size={16} /></button>
         </div>
       ))}
       <OverlayTrigger trigger="click" placement="bottom" overlay={popover} show={showPopover} onToggle={(show) => setShowPopover(show)}>
@@ -84,55 +116,5 @@ import { client } from '../../lib/api/client';
     </div>
   );
 });
-
-// CSS 样式
-const styles = `
-.tag-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.tag-item {
-  display: inline-flex;
-  align-items: center;
-  background: #f0f0f0;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 14px;
-}
-
-.delete-btn {
-  border: none;
-  background: none;
-  color: #666;
-  margin-left: 6px;
-  cursor: pointer;
-  padding: 0 4px;
-}
-
-.delete-btn:hover {
-  color: #ff4444;
-}
-
-.add-btn {
-  border: none;
-  background: none;
-  color: #1890ff;
-  cursor: pointer;
-  padding: 4px 8px;
-}
-
-.add-btn:hover {
-  background: #f0faff;
-}
-`;
-
-// 在文档中注入样式
-document.head.insertAdjacentHTML('beforeend', `<style>${styles}</style>`);
 
 export default TagShow;

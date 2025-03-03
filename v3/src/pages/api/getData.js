@@ -1,4 +1,4 @@
-import {getUser,getIsDaoMember, getEipTypes, getDappVersion, getDividend,getDappOwner,getProsData,getMynft, getSelfAccount,getDaoVote,getLastPro, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail } from "../../lib/mysql/daism";
+import {getUser,getIsDaoMember, getEipTypes, getDappVersion, getDividend,getDappOwner,getProsData,getMynft, getSelfAccount,getDaoVote,getLastPro, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail,getTag,getMessTag } from "../../lib/mysql/daism";
 import { messagePageData,replyPageData,getAllSmartCommon,getHeartAndBook,fromAccount,getReplyTotal,daoPageData,getUserFromUrl,getOne } from "../../lib/mysql/message";
 import { getFollowers,getFollowees,getFollow,getFollow0,getFollow1 } from "../../lib/mysql/folllow";
 import { httpGet } from "../../lib/net";
@@ -38,6 +38,8 @@ const methods={
     daoPageData, //获取注册dao帐号列表
     getUserFromUrl, //从网页获取个人信息
     getOne, //获取一条嗯文
+    getTag,//所有标签
+    getMessTag, // 当前嗯文的标签
 
 }
 
