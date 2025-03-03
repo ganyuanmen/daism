@@ -4,9 +4,9 @@ import { client } from '../../lib/api/client';
 import {DeleteSvg } from '../../lib/jssvg/SvgCollection'
 import ErrorBar from '../form/ErrorBar';
 
-  const TagShow = forwardRef(({cid,type}, ref) => {
+  const TagShow = forwardRef(({cid,type,t}, ref) => {
   
-    const oData=[{ id: 1, name: '原创' },{ id: 2, name: '转发' }];
+    const oData=[{ id: 1, name: t('originalText') },{ id: 2, name: t('forwardText') }];
     const [tags, setTags] = useState(oData);
     const [selectTag, setSelectTag] = useState([]);
     const [showError, setShowError] = useState(false);
@@ -22,7 +22,6 @@ import ErrorBar from '../form/ErrorBar';
     const fetchData = async () => {
         try {
             const res = await client.get(`/api/getData?cid=${cid}&type=${type}`,'getMessTag');
-            console.log(res)
             if(res.status===200)
             
                 if(Array.isArray(res.data)) setSelectTag(res.data)
@@ -94,7 +93,7 @@ useEffect(()=>{
   const popover = (
     <Popover style={{width:'500px'}} >
       <Popover.Header as="div" className="d-flex justify-content-between align-items-center">
-        <div>添加标签</div>
+        <div>{t('addTagText')}</div>
         <Button style={{margin:0,padding:0}} 
           variant="link"
           onClick={() => setShowPopover(false)}
@@ -103,7 +102,7 @@ useEffect(()=>{
         </Button>
       </Popover.Header>
       <Popover.Body  >
-        <input ref={inputRef} className="form-control" placeholder="Enter键可添加自定义标签"
+        <input ref={inputRef} className="form-control" placeholder={t('enterText')}
                 onKeyDown={(e) => {if (e.key === "Enter") {if(e.target.value.trim()) addTag(e.target.value.trim()) }}}>
         </input>
       <div className='mt-3' >
@@ -128,11 +127,11 @@ useEffect(()=>{
         </div>
       ))}
       <OverlayTrigger trigger="click" placement="bottom" overlay={popover} show={showPopover} onToggle={(show) => setShowPopover(show)}>
-            <Button variant="link" onClick={() => setShowPopover(!showPopover)}> 添加标签 </Button>
+            <Button variant="link" onClick={() => setShowPopover(!showPopover)}> {t('addTagText')} </Button>
         </OverlayTrigger>
 
     </div>
-    <ErrorBar show={showError} target={divRef} placement='top' invalidText="最多允许3个标签" />
+    <ErrorBar show={showError} target={divRef} placement='top' invalidText={t('mostThreeText')} />
     </>
   );
 });

@@ -222,7 +222,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
                  </Card.Body>
              </Card>
          }
-   <TagShow ref={inputRef} cid={currentObj?.id} type='sc' />
+   <TagShow ref={inputRef} cid={currentObj?.id} type='sc' t={t} />
           <div className="form-check form-switch  mt-3">
               <input ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={currentObj?(currentObj.is_discussion===1?true:false):true} />
               <label className="form-check-label" htmlFor="isSendbox">{t('emitDiscussion')}</label>

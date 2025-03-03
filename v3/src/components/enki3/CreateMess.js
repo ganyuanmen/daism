@@ -110,7 +110,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} accountAr={accountAr} showProperty={true} />
         :<RichEditor  ref={richEditorRef} currentObj={currentObj} accountAr={accountAr} />}
      
-        <TagShow ref={inputRef} cid={currentObj?.id} type='' />
+        <TagShow ref={inputRef} cid={currentObj?.id} type='' t={t} />
         <div className="form-check form-switch  mt-3">
             <input ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={currentObj?(currentObj.is_discussion===1?true:false):true} />
             <label className="form-check-label" htmlFor="isSendbox">{t('emitDiscussion')}</label>

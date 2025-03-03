@@ -155,7 +155,12 @@
     "shortText":"short article",
     "longText":"Long article",
     "showmore":"Show more...",
-    "uploadImg":"Uploading images..."
+    "uploadImg":"Uploading images...",
+    "originalText":"original",
+    "forwardText":"forward",
+    "addTagText":"Add tag",
+    "enterText":"Enter key to add custom tags",
+    "mostThreeText":"Up to 3 tags allowed"
 
   }
 }

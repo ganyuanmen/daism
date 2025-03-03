@@ -83,7 +83,7 @@ export async function getTag()
 //嗯文的标签
 export async function getMessTag({cid,type})
 {
-    let re= await getData(`SELECT * FROM v_tagmess${type} where cid=?`,[cid]);
+    let re= await getData(`SELECT * FROM t_tagmess${type} where cid=?`,[cid]);
     return re || []
 }
 

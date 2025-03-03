@@ -79,7 +79,7 @@ export default withSession(async (req, res) => {
                         if(_cid>100000) { //新tag
                             _cid=await executeID("insert into t_tag(name) values(?)",[e.name]);
                         }
-                        if(_cid>0) await execute(`insert into t_tagmess${sctype}(cid,id) values(?,?)`,[insertId,_cid])
+                        if(_cid>0) await execute(`insert into t_tagmess${sctype}(cid,id,name) values(?,?,?)`,[insertId,_cid,e.name])
                     });
                 },1);
                 res.status(200).json({ msg: 'handle ok', id: insertId });
@@ -113,7 +113,7 @@ export default withSession(async (req, res) => {
                         if(_cid>100000) { //新tag
                             _cid=await executeID("insert into t_tag(name) values(?)",[e.name]);
                         }
-                        if(_cid>0) await execute(`insert into t_tagmess${sctype}(cid,id) values(?,?)`,[id[0],_cid])
+                        if(_cid>0) await execute(`insert into t_tagmess${sctype}(cid,id,name) values(?,?,?)`,[id[0],_cid,e.name])
                     });
                 }, 1);
                 res.status(200).json(await getData(`select * from v_message${sctype} where id=?`, [id[0]],true));
