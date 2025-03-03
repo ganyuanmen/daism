@@ -56,6 +56,7 @@ const bStyle={borderBottom:'1px solid gray'}
 
 function DaoInfo({record,daoid,user,t,tc,locale})
 {
+    const [showPopover, setShowPopover] = useState(false);
     const [mess,setMess]=useState(false) // add member window
     const [show,setShow]=useState(false) // add member window
     const [showmodify,setShowmodify]=useState(false)  //modify window
@@ -257,7 +258,15 @@ function DaoInfo({record,daoid,user,t,tc,locale})
     }
     const popover = (
         <Popover >
-          <Popover.Header as="h3">{t('upgradeText')}</Popover.Header>
+          <Popover.Header as="div" className="d-flex justify-content-between align-items-center">
+            <div>{t('upgradeText')}</div>
+            <Button style={{margin:0,padding:0}} 
+              variant="link"
+              onClick={() => setShowPopover(false)}
+            >
+              &times;
+            </Button>
+          </Popover.Header>
           <Popover.Body  >
          {versionData?.data?.map((obj,idx)=>(
              <div key={idx} className='mb-2' style={{borderBottom:'1px solid gray'}}  >
@@ -270,6 +279,8 @@ function DaoInfo({record,daoid,user,t,tc,locale})
           </Popover.Body>
         </Popover>
       );
+
+  
  
     return <>
    
@@ -288,9 +299,9 @@ function DaoInfo({record,daoid,user,t,tc,locale})
                 {ismember &&  user.account.toLowerCase()===record.dao_manager.toLowerCase() &&
                     <Button  style={{marginLeft:30}} onClick={e=>{  setUpdateCreator(true);}}  variant='primary'> <EditSvg size={16} /> {t('updateText')}</Button>
                 }{'  '} 
-                <OverlayTrigger trigger="click" placement="bottom" overlay={popover}  >
-                     <Button variant="success">{t('versionText')}</Button>
-                 </OverlayTrigger>
+                <OverlayTrigger trigger="click" placement="bottom" overlay={popover} show={showPopover} onToggle={(show) => setShowPopover(show)}>
+                    <Button variant="success" onClick={() => setShowPopover(!showPopover)}>{t('versionText')}</Button>
+                </OverlayTrigger>
             </div>
             }
 
