@@ -107,7 +107,7 @@ export default withSession(async (req, res) => {
             if(lok) {       
                 setTimeout(async () => {  //生成链接卡片
                     await addLink(content[0],rear.message_id,sctype);
-                    await execute(`delete from t_tagness${sctype} where cid=?`,[id[0]])
+                    await execute(`delete from t_tagmess${sctype} where cid=?`,[id[0]])
                     tagar.forEach(async e=>{ //处理标签
                         let _cid=e.id;
                         if(_cid>100000) { //新tag

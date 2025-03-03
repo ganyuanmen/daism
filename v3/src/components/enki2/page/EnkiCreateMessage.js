@@ -10,6 +10,7 @@ import RichEditor from "../../enki3/RichEditor";
 import Editor from "../form/Editor";
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux';
+import TagShow from '../../enki3/TagShow';
 
 /**
  * 社区嗯文编辑
@@ -48,6 +49,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
     const addressRef = useRef()
     const timeRef = useRef()
     const selectRef = useRef()
+    const inputRef=useRef();
 
     useEffect(() => { //为select 设默认值 
         if(Array.isArray(daoData)){
@@ -140,6 +142,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
         formData.append('fileType',(typeIndex===0?editorRef:richEditorRef).current.getFileType()); //后缀名
         formData.append('isSend', sendRef.current.checked ? 1 : 0);
         formData.append('isDiscussion', discussionRef.current.checked ? 1 : 0);
+        formData.append('tags',JSON.stringify(inputRef.current.getData()));
 
         fetch(`/api/admin/addMessage`, {
             method: 'POST',
@@ -219,7 +222,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
                  </Card.Body>
              </Card>
          }
-   
+   <TagShow ref={inputRef} cid={currentObj?.id} type='sc' />
           <div className="form-check form-switch  mt-3">
               <input ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={currentObj?(currentObj.is_discussion===1?true:false):true} />
               <label className="form-check-label" htmlFor="isSendbox">{t('emitDiscussion')}</label>

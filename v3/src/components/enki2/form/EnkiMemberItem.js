@@ -59,14 +59,33 @@ export default function EnkiMemberItem({locale,messageObj,domain}) {
 
 function Honor({honor,t}){
 
+    const overlayRef=useRef();
+
     const svgToBase=(svgCode)=> {
 	    const utf8Bytes = new window.TextEncoder().encode(svgCode);
 	    return 'data:image/svg+xml;base64,' +window.btoa(String.fromCharCode.apply(null, utf8Bytes));
 	}
 
+ 
+
+      
     const geneHonor=()=>{
         const [show, setShow] = useState(false);
         const target = useRef(null);
+
+        const handleClickOutside = (event) => { //单击隐藏弹窗
+            if (overlayRef.current && !overlayRef.current.contains(event.target)) {
+              setShow(false)
+            }
+          
+          };
+           useEffect(() => {
+              document.addEventListener('click', handleClickOutside, true);
+              return () => {
+                document.removeEventListener('click', handleClickOutside, true);
+              };
+           }, []);
+           
       
         if(honor.length===3){
             return <>
@@ -82,7 +101,7 @@ function Honor({honor,t}){
             <Button variant="light" ref={target} onClick={() => setShow(!show)} title={t('moreText')}>
                 <MoreBtn size={24}/>
             </Button>
-            <Overlay target={target.current} show={show} placement="bottom">
+            <Overlay ref={overlayRef} target={target.current} show={show} placement="bottom">
                 {(props) => (
                 <Tooltip id="overlay-example78" {...props}>
                   { honor.map((obj,idx)=>(<img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  />))}

@@ -53,7 +53,7 @@ const DaismInputGroup = forwardRef(({title,defaultValue,...props}, ref) => {
               />
               </Form.Group>
             }
-       <ErrorBar show={showError} target={editRef} placement='bottom' invalidText={invalidText} ></ErrorBar>
+       <ErrorBar show={showError} target={editRef} placement='bottom' invalidText={invalidText} />
         </>
     );
 });

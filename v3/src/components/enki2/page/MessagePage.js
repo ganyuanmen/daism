@@ -41,7 +41,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     const [replyIndex,setReplyIndex]=useState(-1) //保存修改讨论的数组序号
     const [replyObj,setReplyObj]=useState(null) //回复内容，用于修改，为null表示新增
     const [pageNum, setPageNum] = useState(0);
-
+    const [selectTag, setSelectTag] = useState([]);
     const repluBtn=useRef()
     const contentDiv=useRef()
 
@@ -52,6 +52,24 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     useEffect(()=>{
         if(fetchWhere.currentPageNum===0) setPageNum(0);
     },[fetchWhere])
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            try {
+                const res = await client.get(`/api/getData?cid=${currentObj?.id}&type=${currentObj?.dao_id>0?'sc':''}`,'getMessTag' );
+                if(res.status===200)
+                    if(Array.isArray(res.data)) setSelectTag(res.data)
+            } catch (error) {
+                console.error(error);
+            } 
+        };
+    
+        fetchData();
+        // return () => controller.abort();
+    
+    },[currentObj]) 
+    
+    
 
     useEffect(()=>{
         const checkIsEdit=()=>{  //是否允许修改 
@@ -148,6 +166,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
             }
         };
         fetchData();
+          
     
     }, [fetchWhere]);
 
@@ -176,6 +195,11 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
                {currentObj?._type===1 && <EventItem currentObj={currentObj} /> }
             </Card.Header>
         <Card.Body>
+        {selectTag.map(tag => (
+        <div style={{marginRight:'10px'}} key={tag.id} className="tag-item">
+          <span>{tag.name}</span>
+        </div>
+      ))}
             <div ref={contentDiv} dangerouslySetInnerHTML={{__html: currentObj?.content}}></div>
             {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
             {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{maxWidth:'100%'}} />
