@@ -50,7 +50,9 @@ export default function sc({env,locale,accountAr,openObj }) {
     const tc = useTranslations('Common')
     const t = useTranslations('ff')
     
-    const svgs=[{svg:<TimeSvg size={24} />,text:'latestText'},{svg:<EventSvg size={24} />,text:'eventText'}];
+    const svgs=[{svg:<TimeSvg size={24} />,text:'latestText'},{svg:<EventSvg size={24} />,text:'eventText'},
+        {svg:<BookSvg size={24}/>,text:'filterText'}
+    ];
     const [navObj,setNavObj]=useState(svgs[0])
 
     function removeUrlParams() {
@@ -110,6 +112,14 @@ export default function sc({env,locale,accountAr,openObj }) {
         if(openObj?.dao_id) setNavObj(openObj)
       },[openObj])
       
+      const filterTag=(tag)=>{ //过滤标签
+        removeUrlParams() 
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0,daoid:0, order: 'reply_time', account: '', eventnum: 8, where: tag })
+        setActiveTab(0);
+        setNavObj(svgs[2]);
+      
+    }
+
     const latestHandle=()=>{ //最新
         removeUrlParams()
         setFetchWhere({ ...fetchWhere, currentPageNum: 0,daoid:0, order: 'reply_time', account: '', eventnum: 0, where: '' })
@@ -212,13 +222,14 @@ export default function sc({env,locale,accountAr,openObj }) {
                      
                         {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} 
                         setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
-                        delCallBack={callBack} afterEditCall={afterEditCall}  path='enki' daoData={daoActor} />
+                        delCallBack={callBack} afterEditCall={afterEditCall}  path='enki' daoData={daoActor}
+                        filterTag={filterTag} />
                         
                         :activeTab === 1 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack}
                          currentObj={currentObj} afterEditCall={afterEditCall} accountAr={accountAr}/>
                      
                         :activeTab === 2 && <MessagePage  path="enki" locale={locale} env={env} currentObj={currentObj} 
-                        delCallBack={callBack} setActiveTab={setActiveTab} daoData={daoActor} />
+                        delCallBack={callBack} setActiveTab={setActiveTab} daoData={daoActor} filterTag={filterTag} />
 }
                         </>}
                     </div>

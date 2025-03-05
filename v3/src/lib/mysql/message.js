@@ -5,7 +5,7 @@ import { getUser } from './user';
  
 ////pi,menutype,daoid,w,actorid:嗯文人ID,account,order,eventnum
 // menutype 1 我的社区，2 公区社区 3 个人社区
-//eventnum 社区: 0 非活动，1活动, 个人：1:首页 2:我的嗯文 3:我的收藏 4:我的接收嗯文 
+//eventnum 社区: 0 非活动，1活动, 个人：1:首页 2:我的嗯文 3:我的收藏 4:我的接收嗯文 ,8 过滤（where 为过滤值）
 // v: 1 我关注的社区
 export async function messagePageData({pi,menutype,daoid,w,actorid,account,order,eventnum,v})
 {
@@ -20,12 +20,14 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			else{ 
 				if(daoid.includes(',')) where=`where dao_id in(${daoid})`;else where=`where dao_id=${daoid}`;
 				if(parseInt(eventnum)===1) where=`${where} and _type=1`;
+				else if(parseInt(eventnum)===8) where=`where id in(select cid from t_tagmesssc where name='${w}')`; //过滤
 			}
 			sctype='sc'
 			break;
 		case 2: //公区社区
 			if(parseInt(daoid)>0) where=`where dao_id=${daoid}`; //单个dao
 			else if(parseInt(eventnum)===1) where="where _type=1"; //活动
+			else if(parseInt(eventnum)===8) where=`where id in(select cid from t_tagmesssc where name='${w}')`; //过滤
 			sctype='sc';
 			break;
 		default: //个人
@@ -36,6 +38,7 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			else if(parseInt(eventnum)===5)	where='where send_type=0 and property_index=1'; //公开
 			else if(parseInt(eventnum)===6) where=`where id in(select pid from a_heart where account='${account}')`; //喜欢
 			else if(parseInt(eventnum)===7) where=`where receive_account='${account}' and send_type=2`; //@
+			else if(parseInt(eventnum)===8) where=`where ((send_type=0 and actor_account='${account}') or receive_account='${account}') and id in(select cid from t_tagmess where name='${w}')`; //过滤
 			break;
 	}
 	// if(w) where=where?`${where} and title like '%${w}%'`:`where title like '%${w}%'`;

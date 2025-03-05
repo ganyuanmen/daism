@@ -22,7 +22,7 @@ export default withSession(async (req, res) => {
 
         const form = formidable({})
         const [fields, files] = await form.parse(req);
-        const {vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent,tags } = fields
+        const {vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
         // const actorName=account[0].split('@')[0];
         const _path=new Date().toLocaleDateString().replaceAll('/','');
         const imgPath = saveImage(files, fileType[0],_path)
@@ -30,8 +30,7 @@ export default withSession(async (req, res) => {
         let sql = '';
         let paras;
         const sctype = daoid ? 'sc' : '';
-        const tagar=JSON.parse(tags[0]);
-
+        const tagar = content[0].match(/#\S+(?=\s|$)/g)?.map(match => match.slice(1,40)) || [];
         if (id[0] == '0') { //增加
             let message_id = uuidv4().replaceAll('-','')
             if (daoid) { //enki
@@ -65,7 +64,7 @@ export default withSession(async (req, res) => {
                     const ar=JSON.parse(accountAt[0]);
                     sql='INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,content,is_send,is_discussion,top_img,receive_account,send_type,vedio_url,property_index,type_index) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
                     let re=await getData(`SELECT manager,actor_name,avatar,actor_account,actor_url,actor_inbox FROM v_message${sctype} where id=?`,[insertId],true);
-                   let linkUrl=`https://${process.env.LOCAL_DOMAIN}/communities/${daoid?'enki':'enkier'}/${message_id}`
+                    let linkUrl=`https://${process.env.LOCAL_DOMAIN}/communities/${daoid?'enki':'enkier'}/${message_id}`
                    
                     ar.forEach(async namestr=> {
                         paras=[message_id,re.manager,re.actor_name,re.avatar,re.actor_account,re.actor_url,re.actor_inbox,linkUrl,content[0],0,1,path,`${namestr}@${process.env.LOCAL_DOMAIN}`,2,vedioURL[0],propertyIndex[0],typeIndex[0]]
@@ -74,13 +73,7 @@ export default withSession(async (req, res) => {
                 }
                 setTimeout(async () => {
                     await addLink(content[0], message_id,sctype); //生成链接卡片
-                    tagar.forEach(async e=>{ //处理标签
-                        let _cid=e.id;
-                        if(_cid>100000) { //新tag
-                            _cid=await executeID("insert into t_tag(name) values(?)",[e.name]);
-                        }
-                        if(_cid>0) await execute(`insert into t_tagmess${sctype}(cid,id,name) values(?,?,?)`,[insertId,_cid,e.name])
-                    });
+                    if(tagar.length) await execute(`call in_tag(?,?,?)`,[insertId,tagar.join(','), sctype])
                 },1);
                 res.status(200).json({ msg: 'handle ok', id: insertId });
             } else res.status(500).json({ errMsg: 'fail' });
@@ -108,13 +101,7 @@ export default withSession(async (req, res) => {
                 setTimeout(async () => {  //生成链接卡片
                     await addLink(content[0],rear.message_id,sctype);
                     await execute(`delete from t_tagmess${sctype} where cid=?`,[id[0]])
-                    tagar.forEach(async e=>{ //处理标签
-                        let _cid=e.id;
-                        if(_cid>100000) { //新tag
-                            _cid=await executeID("insert into t_tag(name) values(?)",[e.name]);
-                        }
-                        if(_cid>0) await execute(`insert into t_tagmess${sctype}(cid,id,name) values(?,?,?)`,[id[0],_cid,e.name])
-                    });
+                    if(tagar.length) await execute(`call in_tag(?,?,?)`,[id[0],tagar.join(','), sctype])
                 }, 1);
                 res.status(200).json(await getData(`select * from v_message${sctype} where id=?`, [id[0]],true));
             }

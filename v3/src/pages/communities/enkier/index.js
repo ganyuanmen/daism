@@ -82,7 +82,8 @@ export default function enkier({openObj,env,locale,accountAr }) {
         create:'create',
         follow0:'follow0',
         follow1:'follow1',
-        at:'at'
+        at:'at',
+        filter:'filter'
       }
 
       const svgs={
@@ -95,7 +96,8 @@ export default function enkier({openObj,env,locale,accountAr }) {
         create:<EditSvg size={24} />,
         follow0:<Follow size={24} />,
         follow1:<Follow size={24} />,
-        at:<SomeOne size={24} />
+        at:<SomeOne size={24} />,
+        filter:<SomeOne size={24} />
       }
     
       const [navIndex,setNavIndex]=useState(paras.all) 
@@ -160,7 +162,7 @@ export default function enkier({openObj,env,locale,accountAr }) {
 
     const allHandle=()=>{ // 公开
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 5,account: '' });
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 5,account: '',where:'' });
         setActiveTab(0);
         setTopText(t('allPostText'));setNavIndex(paras.all);
         // if(post) history.pushState({id:paras.all}, tc('enkierTitle'), `#${paras.all}`);
@@ -168,9 +170,17 @@ export default function enkier({openObj,env,locale,accountAr }) {
 
     const homeHandle=()=>{ //首页
         removeUrlParams() 
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 1,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' });
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 1,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' });
         setActiveTab(0);
         setTopText(t('scHomeText'));setNavIndex(paras.home);
+        // if(post) history.pushState({id:paras.home}, tc('enkierTitle'), `#${paras.home}`);
+      
+    }
+    const filterTag=(tag)=>{ //过滤标签
+        removeUrlParams() 
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 8,where:tag,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' });
+        setActiveTab(0);
+        setTopText(tag);setNavIndex(paras.filter);
         // if(post) history.pushState({id:paras.home}, tc('enkierTitle'), `#${paras.home}`);
       
     }
@@ -190,7 +200,7 @@ export default function enkier({openObj,env,locale,accountAr }) {
 
     const myPostHandle=()=>{ //我的发文
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 2,account: actorRef.current?.actor_account })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 2,account: actorRef.current?.actor_account })
         setActiveTab(0);
         setTopText(t('myPostText'));setNavIndex(paras.mypost);
         // if(post) history.pushState({id:paras.mypost}, tc('enkierTitle'), `#${paras.mypost}`);
@@ -198,7 +208,7 @@ export default function enkier({openObj,env,locale,accountAr }) {
  
     const myReceiveHandle=()=>{ //接收到的发文
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 4,account: actorRef.current?.actor_account })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 4,account: actorRef.current?.actor_account })
         setActiveTab(0);
         setTopText(t('myReceiveText'));setNavIndex(paras.myreceive);
         // if(post) history.pushState({id:paras.myreceive}, tc('enkierTitle'), `#${paras.myreceive}`);
@@ -222,14 +232,14 @@ export default function enkier({openObj,env,locale,accountAr }) {
 
     const myBookHandle=()=>{ //我的书签
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 3,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 3,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
         setActiveTab(0);
         setTopText(t('bookTapText'));setNavIndex(paras.book);
         // if(post) history.pushState({id:paras.book}, tc('enkierTitle'), `#${paras.book}`);
     }
     const myLikeHandle=()=>{ //喜欢
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 6,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 6,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
         setActiveTab(0);
         setTopText(t('likeText'));setNavIndex(paras.like);
         //  if(post) history.pushState({id:paras.like}, tc('enkierTitle'), `#${paras.like}`);
@@ -237,7 +247,7 @@ export default function enkier({openObj,env,locale,accountAr }) {
     
     const myAtHandle=()=>{ //私下提及
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 7,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 7,actorid:actorRef.current?.id,account: actorRef.current?.actor_account })
         setActiveTab(0);
         setTopText(t('atSomeOne'));setNavIndex(paras.at);
         // if(post) history.pushState({id:paras.at}, tc('enkierTitle'), `#${paras.at}`);

@@ -7,7 +7,7 @@ import RichEditor from "./RichEditor";
 import Editor from "../enki2/form/Editor";
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux';
-import TagShow from "./TagShow";
+// import TagShow from "./TagShow";
 /**
  * 个人嗯文编辑
  * @currentObj 嗯文对象
@@ -27,7 +27,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
     const richEditorRef=useRef(); 
     const discussionRef=useRef();
     const sendRef=useRef();
-    const inputRef=useRef();
+    // const inputRef=useRef();
     const nums=500;
     const t = useTranslations('ff')
     const tc = useTranslations('Common')
@@ -78,7 +78,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         formData.append('fileType',(typeIndex===0?editorRef:richEditorRef).current.getFileType()); //后缀名
         formData.append('isSend',sendRef.current.checked?1:0);
         formData.append('isDiscussion',discussionRef.current.checked?1:0);
-        formData.append('tags',JSON.stringify(inputRef.current.getData()));
+        // formData.append('tags',JSON.stringify(inputRef.current.getData()));
 
      
         fetch(`/api/admin/addMessage`, {
@@ -110,7 +110,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} accountAr={accountAr} showProperty={true} />
         :<RichEditor  ref={richEditorRef} currentObj={currentObj} accountAr={accountAr} />}
      
-        <TagShow ref={inputRef} cid={currentObj?.id} type='' t={t} />
+        {/* <TagShow ref={inputRef} cid={currentObj?.id} type='' t={t} /> */}
         <div className="form-check form-switch  mt-3">
             <input ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={currentObj?(currentObj.is_discussion===1?true:false):true} />
             <label className="form-check-label" htmlFor="isSendbox">{t('emitDiscussion')}</label>

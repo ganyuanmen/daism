@@ -64,7 +64,8 @@ export default function enki({openObj,env,locale,accountAr }) {
         {svg:<MyFollowSvg size={24}/>,text:'followCommunity'},
         {svg:<BookSvg size={24}/>,text:'bookTapText'},
         {svg:<Heart size={24}/>,text:'likeText'},
-        {svg:<EditSvg size={24}/>,text:'publishText'}
+        {svg:<EditSvg size={24}/>,text:'publishText'},
+        {svg:<BookSvg size={24}/>,text:'filterText'}
     ]
 
    
@@ -113,7 +114,14 @@ export default function enki({openObj,env,locale,accountAr }) {
         }
       }, []);
 
+    const filterTag=(tag)=>{ //过滤标签
+        removeUrlParams() 
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, order: 'reply_time',v:'0', account: '', eventnum: 8, where: tag, daoid: daoData.map((item) => { return item.dao_id }).join(',') })
+        setActiveTab(0);
+        setNavObj(svgs[6]);
       
+    }
+
     const latestHandle=()=>{ //最新
         removeUrlParams();
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, order: 'reply_time',v:'0', account: '', eventnum: 0, where: '', daoid: daoData.map((item) => { return item.dao_id }).join(',') })
@@ -139,27 +147,27 @@ export default function enki({openObj,env,locale,accountAr }) {
 
     const myFollowHandle=()=>{ //我关注的社区
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum:0,account:actorRef.current?.actor_account,eventnum:0,daoid:0,v:1})
+        setFetchWhere({ ...fetchWhere, currentPageNum:0,account:actorRef.current?.actor_account,eventnum:0,daoid:0,v:1,where: ''})
         setNavObj(svgs[2]);
         setActiveTab(0);
     }
 
     const myBookHandle=()=>{ //我的书签
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum:0,account:actorRef.current?.actor_account,eventnum:0,daoid:0,v:3})
+        setFetchWhere({ ...fetchWhere, currentPageNum:0,account:actorRef.current?.actor_account,eventnum:0,daoid:0,v:3,where: ''})
         setActiveTab(0);
         setNavObj(svgs[3]);
     }
     const myLikeHandle=()=>{ //喜欢
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum:0,account:actorRef.current?.actor_account,eventnum:0,daoid:0,v:6})
+        setFetchWhere({ ...fetchWhere, currentPageNum:0,account:actorRef.current?.actor_account,eventnum:0,daoid:0,v:6,where: ''})
         setActiveTab(0);
         setNavObj(svgs[4]);
     }
 
     const daoSelectHandle=(obj)=>{ //选择dao后
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum:0,order:'id',eventnum:0,where:'',v:0,daoid:obj.dao_id,account:obj.actor_account});
+        setFetchWhere({ ...fetchWhere, currentPageNum:0,where: '',order:'id',eventnum:0,where:'',v:0,daoid:obj.dao_id,account:obj.actor_account});
         setActiveTab(0);
         setNavObj(obj);
     }

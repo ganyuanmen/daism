@@ -160,7 +160,8 @@
     "forwardText":"forward",
     "addTagText":"Add tag",
     "enterText":"Enter key to add custom tags",
-    "mostThreeText":"Up to 3 tags allowed"
+    "mostThreeText":"Up to 3 tags allowed",
+    "filterText":"Tag filtering"
 
   }
 }

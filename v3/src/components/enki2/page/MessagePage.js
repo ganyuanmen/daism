@@ -1,4 +1,4 @@
-import { Card } from "react-bootstrap";
+import { Card,Button } from "react-bootstrap";
 import { useState,useEffect, useRef } from 'react';
 import EnkiMemberItem from "../form/EnkiMemberItem";
 import EventItem from "../form/EventItem";
@@ -14,6 +14,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import ShowVedio from "../form/ShowVedio";
 import EnkiEditItem from "../form/EnkiEditItem";
 import { useTranslations } from 'next-intl'
+import { Button } from "jodit/esm/modules";
 
 /**
  * 单登个发文信息界面 //  delCallBack:删除嗯文后回调
@@ -27,7 +28,7 @@ import { useTranslations } from 'next-intl'
  * @daoData 个人所属的smart common 集合
  */
 
-export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData}) { 
+export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,filterTag}) { 
   
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
@@ -196,9 +197,9 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
             </Card.Header>
         <Card.Body>
         {selectTag.map(tag => (
-        <div style={{marginRight:'10px'}} key={tag.id} className="tag-item">
-          <span>{tag.name}</span>
-        </div>
+        <Button variant="light" style={{marginRight:'10px'}} key={tag.id}  onClick={()=>{filterTag.call(null,tag.name)}} >
+          {tag.name}
+        </Button>
       ))}
             <div ref={contentDiv} dangerouslySetInnerHTML={{__html: currentObj?.content}}></div>
             {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
