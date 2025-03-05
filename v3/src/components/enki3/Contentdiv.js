@@ -5,7 +5,7 @@ import EnKiBookmark from "../enki2/form/EnKiBookmark";
 import EnKiHeart from "../enki2/form/EnKiHeart";
 import EnkiShare from "../enki2/form/EnkiShare";
 import ShowVedio from "../enki2/form/ShowVedio";
-import { useRef,useState,useEffect } from "react";
+import { useRef,useState,useEffect,useCallback } from "react";
 import { Down } from "../../lib/jssvg/SvgCollection";
 import EnkiEditItem from "../enki2/form/EnkiEditItem";
 import { Button } from "react-bootstrap";
@@ -28,7 +28,7 @@ import { useTranslations } from 'next-intl'
  * @daoData 个人所属的smart common 集合
  */
 
-export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,
+export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,filterTag,
   setActiveTab,replyAddCallBack,delCallBack,afterEditCall,data_index,accountAr,daoData}) {
     
     const actor = useSelector((state) => state.valueData.actor)
@@ -110,18 +110,42 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,
         backgroundColor:'white'
     }
 
+const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
+
+const filter = (para) => {
+ filterTag.call(null,para)
+};
+ const replacedText = messageObj?.content.replace(regex, (match, p1) => {
+  const escapedParam = p1.replace(/"/g, '&quot;');
+  return `<span class="tagclass" data-param="${escapedParam}">${p1}</span>`;
+});
+
+// 点击事件处理
+const handleClick = useCallback((event) => {
+  const target = event.target;
+  if (target.classList.contains('tagclass')) {
+    const param = target.dataset.param;
+    if (param) {
+      filter(param);
+    } else afterEditCall.call(this,messageObj)
+  } else 
+  afterEditCall.call(this,messageObj)
+}, []); // fi
+
+   
+
     return (
    
 
        <div id={`item-${messageObj.id}`}  style={{padding:'10px',borderBottom:'1px solid #D9D9E8'}}>
            <EnkiMemberItem messageObj={messageObj} domain={env.domain} locale={locale} />
 
-            <div style={{position:'relative'}}  className="daism-a mt-2 mb-3" 
-                onClick={()=>afterEditCall.call(this,messageObj)} > 
+            <div style={{position:'relative'}}  className="daism-a mt-2 mb-3"  onClick={handleClick}
+               > 
                 <div className="daismCard" ref={contentDiv} style={messageObj._type===1?{paddingLeft:'90px',minHeight:'80px',
                     maxHeight: showAll ? 'unset' : '400px', overflow: 'hidden'}
                     :{maxHeight: showAll ? 'unset' : '400px', overflow: 'hidden'}} 
-                    dangerouslySetInnerHTML={{__html:messageObj?.content}}>
+                    dangerouslySetInnerHTML={{__html:replacedText}}>
                 </div>
                 {messageObj._type===1 && 
                 <div className='border' style={bStyle} >

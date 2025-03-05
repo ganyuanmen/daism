@@ -156,11 +156,6 @@
     "longText":"Long article",
     "showmore":"Show more...",
     "uploadImg":"Uploading images...",
-    "originalText":"original",
-    "forwardText":"forward",
-    "addTagText":"Add tag",
-    "enterText":"Enter key to add custom tags",
-    "mostThreeText":"Up to 3 tags allowed",
     "filterText":"Tag filtering"
 
   }

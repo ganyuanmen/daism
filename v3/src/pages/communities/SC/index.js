@@ -14,7 +14,7 @@ import EnkiCreateMessage from '../../../components/enki2/page/EnkiCreateMessage'
 import Mainself from '../../../components/enki3/Mainself';
 import MessagePage from '../../../components/enki2/page/MessagePage';
 import { NavDropdown,Button } from 'react-bootstrap';
-import {BackSvg,TimeSvg,EventSvg  } from '../../../lib/jssvg/SvgCollection';
+import {BackSvg,TimeSvg,EventSvg,SomeOne  } from '../../../lib/jssvg/SvgCollection';
 
 /**
  * 我的社区
@@ -51,7 +51,7 @@ export default function sc({env,locale,accountAr,openObj }) {
     const t = useTranslations('ff')
     
     const svgs=[{svg:<TimeSvg size={24} />,text:'latestText'},{svg:<EventSvg size={24} />,text:'eventText'},
-        {svg:<BookSvg size={24}/>,text:'filterText'}
+        {svg:<SomeOne size={24}/>,text:'filterText'}
     ];
     const [navObj,setNavObj]=useState(svgs[0])
 

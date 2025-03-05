@@ -16,7 +16,7 @@ import Mainself from '../../../components/enki3/Mainself';
 import MessagePage from '../../../components/enki2/page/MessagePage';
 import { NavDropdown } from 'react-bootstrap';
 import EnkiCreateMessage from '../../../components/enki2/page/EnkiCreateMessage';
-import { BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg  } from '../../../lib/jssvg/SvgCollection';
+import { BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg,SomeOne  } from '../../../lib/jssvg/SvgCollection';
 
 /**
  * 我的社区
@@ -65,7 +65,7 @@ export default function enki({openObj,env,locale,accountAr }) {
         {svg:<BookSvg size={24}/>,text:'bookTapText'},
         {svg:<Heart size={24}/>,text:'likeText'},
         {svg:<EditSvg size={24}/>,text:'publishText'},
-        {svg:<BookSvg size={24}/>,text:'filterText'}
+        {svg:<SomeOne size={24}/>,text:'filterText'}
     ]
 
    
@@ -270,7 +270,7 @@ export default function enki({openObj,env,locale,accountAr }) {
                         </div>
 
                         {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} 
-                        setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
+                        setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} filterTag={filterTag}
                         delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr} 
                         path='enki' daoData={daoData}  />
 
@@ -279,7 +279,8 @@ export default function enki({openObj,env,locale,accountAr }) {
                          accountAr={accountAr} />
                          
                         :activeTab === 2 && <MessagePage  path="enki" locale={locale} env={env} currentObj={currentObj} 
-                        delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} daoData={daoData}/>
+                        delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} daoData={daoData}
+                        filterTag={filterTag} />
 }
                         </>}
                     </div>

@@ -30,7 +30,9 @@ export default withSession(async (req, res) => {
         let sql = '';
         let paras;
         const sctype = daoid ? 'sc' : '';
-        const tagar = content[0].match(/#\S+(?=\s|$)/g)?.map(match => match.slice(1,40)) || [];
+        const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
+        const tagar = content[0].match(regex)?.map(match => match.slice(1,40)) || [];
+        console.log(tagar)
         if (id[0] == '0') { //增加
             let message_id = uuidv4().replaceAll('-','')
             if (daoid) { //enki

@@ -1,5 +1,5 @@
 import { Card,Button } from "react-bootstrap";
-import { useState,useEffect, useRef } from 'react';
+import { useState,useEffect, useRef,useCallback } from 'react';
 import EnkiMemberItem from "../form/EnkiMemberItem";
 import EventItem from "../form/EventItem";
 import MessageReply from '../form/MessageReply'
@@ -14,7 +14,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import ShowVedio from "../form/ShowVedio";
 import EnkiEditItem from "../form/EnkiEditItem";
 import { useTranslations } from 'next-intl'
-import { Button } from "jodit/esm/modules";
+
 
 /**
  * 单登个发文信息界面 //  delCallBack:删除嗯文后回调
@@ -28,7 +28,8 @@ import { Button } from "jodit/esm/modules";
  * @daoData 个人所属的smart common 集合
  */
 
-export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,filterTag}) { 
+export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,filterTag}) {
+    console.log(filterTag) 
   
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
@@ -186,6 +187,30 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         data.unshift(obj);
         setData([...data])
     }
+
+    
+const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
+
+const filter = (para) => {
+ filterTag.call(null,para)
+};
+ const replacedText = currentObj?.content.replace(regex, (match, p1) => {
+  const escapedParam = p1.replace(/"/g, '&quot;');
+  return `<span class="tagclass daism-a" data-param="${escapedParam}">${p1}</span>`;
+});
+
+// 点击事件处理
+const handleClick = useCallback((event) => {
+  const target = event.target;
+  if (target.classList.contains('tagclass')) {
+    const param = target.dataset.param;
+    if (param) {
+      filter(param);
+    } 
+  } 
+}, []); // fi
+
+
     return (
        
 
@@ -196,12 +221,12 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
                {currentObj?._type===1 && <EventItem currentObj={currentObj} /> }
             </Card.Header>
         <Card.Body>
-        {selectTag.map(tag => (
-        <Button variant="light" style={{marginRight:'10px'}} key={tag.id}  onClick={()=>{filterTag.call(null,tag.name)}} >
+        {/* {selectTag.map(tag => (
+        <Button variant="light" style={{marginRight:'10px',color:'blue',fontWeight:'bold'}} key={tag.id}  onClick={()=>{filterTag.call(null,tag.name)}} >
           {tag.name}
         </Button>
-      ))}
-            <div ref={contentDiv} dangerouslySetInnerHTML={{__html: currentObj?.content}}></div>
+      ))} */}
+            <div onClick={handleClick} ref={contentDiv} dangerouslySetInnerHTML={{__html: replacedText}}></div>
             {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
             {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{maxWidth:'100%'}} />
             }
