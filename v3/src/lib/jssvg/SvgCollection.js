@@ -629,3 +629,12 @@ export function UploadVedio({size=32}) {
 }
 
 
+
+export function World1({size=32}) {
+    return (         
+        <svg width={size} height={size}  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 48 48">
+      <text x="10" y="40" font-family="Arial" font-size="40" fill="black">#</text>
+      </svg>
+    )
+}
+

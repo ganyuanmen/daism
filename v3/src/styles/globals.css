@@ -413,4 +413,5 @@
 .add-btn:hover {
   background: #f0faff;
 }
-.tagclass{ color:  blue;font-weight: bold;}
+.tagclass{ color:  blue;font-weight: bold;  border-bottom: 1px solid blue;}
+.tagclass:hover{ text-decoration: none;color: red;border-bottom: 1px solid red;}

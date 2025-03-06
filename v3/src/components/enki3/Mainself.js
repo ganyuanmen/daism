@@ -82,7 +82,8 @@ export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhe
             }
         };
         if(!isLoading && fetchWhere.currentPageNum>-1 ) {
-            if(fetchWhere.menutype===3 && (fetchWhere.eventnum === 5 || fetchWhere.account))  fetchData(); //个人显示所有，或登录后显示所有
+            if(fetchWhere.eventnum === 8)  fetchData();
+            else if(fetchWhere.menutype===3 && (fetchWhere.eventnum === 5 || fetchWhere.account))  fetchData(); //个人显示所有，或登录后显示所有
             else if (fetchWhere.menutype===1 && (fetchWhere.daoid || fetchWhere.v>0))  fetchData(); // 有我的注册dao集，才能获取 
             else if(fetchWhere.menutype===2) fetchData(); //公共社区直接获取
         }

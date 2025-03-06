@@ -22,7 +22,7 @@ import Mainself from '../../../components/enki3/Mainself';
 import CreateMess from '../../../components/enki3/CreateMess';
 import MessagePage from '../../../components/enki2/page/MessagePage';
 import { NavDropdown } from 'react-bootstrap';
-import { Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,ReceiveSvg } from '../../../lib/jssvg/SvgCollection';
+import { Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,ReceiveSvg,World1 } from '../../../lib/jssvg/SvgCollection';
 
 
 /**
@@ -97,7 +97,7 @@ export default function enkier({openObj,env,locale,accountAr }) {
         follow0:<Follow size={24} />,
         follow1:<Follow size={24} />,
         at:<SomeOne size={24} />,
-        filter:<SomeOne size={24} />
+        filter:''
       }
     
       const [navIndex,setNavIndex]=useState(paras.all) 
@@ -180,7 +180,7 @@ export default function enkier({openObj,env,locale,accountAr }) {
         removeUrlParams() 
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 8,where:tag,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' });
         setActiveTab(0);
-        setTopText(tag);setNavIndex(paras.filter);
+        setTopText(`# ${tag}`);setNavIndex(paras.filter);
         // if(post) history.pushState({id:paras.home}, tc('enkierTitle'), `#${paras.home}`);
       
     }

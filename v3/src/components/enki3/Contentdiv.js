@@ -117,7 +117,7 @@ const filter = (para) => {
 };
  const replacedText = messageObj?.content.replace(regex, (match, p1) => {
   const escapedParam = p1.replace(/"/g, '&quot;');
-  return `<span class="tagclass" data-param="${escapedParam}">${p1}</span>`;
+  return `<span class="tagclass" data-param="${escapedParam}">#${p1}</span>`;
 });
 
 // 点击事件处理

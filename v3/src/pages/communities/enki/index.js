@@ -64,8 +64,7 @@ export default function enki({openObj,env,locale,accountAr }) {
         {svg:<MyFollowSvg size={24}/>,text:'followCommunity'},
         {svg:<BookSvg size={24}/>,text:'bookTapText'},
         {svg:<Heart size={24}/>,text:'likeText'},
-        {svg:<EditSvg size={24}/>,text:'publishText'},
-        {svg:<SomeOne size={24}/>,text:'filterText'}
+        {svg:<EditSvg size={24}/>,text:'publishText'}
     ]
 
    
@@ -118,7 +117,7 @@ export default function enki({openObj,env,locale,accountAr }) {
         removeUrlParams() 
         setFetchWhere({ ...fetchWhere, currentPageNum: 0, order: 'reply_time',v:'0', account: '', eventnum: 8, where: tag, daoid: daoData.map((item) => { return item.dao_id }).join(',') })
         setActiveTab(0);
-        setNavObj(svgs[6]);
+        setNavObj({isFilter:true,text:`# ${tag}`});
       
     }
 
@@ -244,8 +243,8 @@ export default function enki({openObj,env,locale,accountAr }) {
                         <div className='d-flex justify-content-between align-items-center' style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
                             <div className='selectText' style={{paddingLeft:'12px'}} >
                                 {activeTab===2 ? <span className='daism-a selectText' onClick={callBack} > <BackSvg size={24} />{t('esctext')} </span>
-                                :<>{navObj?.svg?navObj.svg:<img src={navObj.dao_logo} alt={navObj.actor_account} height={24} width={24}/>} {' '}
-                                 {navObj?.text?t(navObj.text):navObj.actor_account}</>}
+                                :<>{navObj.isFilter?'':navObj?.svg?navObj.svg:<img src={navObj.dao_logo} alt={navObj.actor_account} height={24} width={24}/>} {' '}
+                                 {navObj.isFilter?navObj.text:navObj?.text?t(navObj.text):navObj.actor_account}</>}
                             
                             </div>  
                             

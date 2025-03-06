@@ -8,7 +8,7 @@ import {DateSvg,DeleteSvg,EditSvg,EventsSvg,GroupsSvg,
   ExitSvg,LoginSvg,User1Svg,GasTokenSvg,SwapSvg,TokenSvg,DaoSvg,AppSvg,
 SwapTokenSvg,CheckSvg,SetLogoSvg,ExcuteSvg,ExitWalletSvg,ToolsSvg,UnlockSvg
 ,UploadSvg,LockSvg,MemberRemoveSvg,VitaSvg,Honor,Down,Up,Paperclip,Home,BookTap,Event,Follow,Heart
-,Right,Left,PublicMess,SomeOne,BackSvg,BookSvg,MyPost,ReceiveSvg,EventSvg} from './SvgCollection';
+,Right,Left,PublicMess,SomeOne,BackSvg,BookSvg,MyPost,ReceiveSvg,EventSvg,World1} from './SvgCollection';
   import { Button } from 'react-bootstrap';
 
 
@@ -94,6 +94,10 @@ export default function MyIcon() {
           MyPost : <span className={color} ><MyPost/> </span><br/>
           ReceiveSvg : <span className={color} ><ReceiveSvg/> </span><br/>
           EventSvg ： <span className={color} ><EventSvg/> </span><br/>
+          World1 ： <span className={color} ><World1 size={24} /> </span><br/>
+          <p></p>
+
+          
 
       </>
     );

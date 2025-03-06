@@ -32,7 +32,7 @@ export default withSession(async (req, res) => {
         const sctype = daoid ? 'sc' : '';
         const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
         const tagar = content[0].match(regex)?.map(match => match.slice(1,40)) || [];
-        console.log(tagar)
+        // console.log(tagar)
         if (id[0] == '0') { //增加
             let message_id = uuidv4().replaceAll('-','')
             if (daoid) { //enki
