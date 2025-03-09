@@ -5,8 +5,9 @@ const mysql = require('mysql2/promise');
 const dotenv=require('dotenv');
 const crypto = require('node:crypto');
 dotenv.config();
-const start_block=21232473n  //Start listening for block numbers
-// const start_block=0n
+
+let start_block=21232473n  //Start listening for block numbers
+if(process.env.BLOCKCHAIN_NETWORK!='mainnet') start_block=0n
 var monitor = 0; //Restart every 10 minutes 
 var server1=new Server();
 var maxData = []; // Record the maximum block number that has been listened to

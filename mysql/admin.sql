@@ -1,3 +1,6 @@
+create database dao_db default character set utf8mb4 collate utf8mb4_unicode_ci;
+
+USE dao_db;
 /*
  Navicat Premium Data Transfer
 
@@ -11,7 +14,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 03/03/2025 10:37:42
+ Date: 09/03/2025 21:48:39
 */
 
 SET NAMES utf8mb4;
@@ -25,22 +28,22 @@ CREATE TABLE `a_account`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `block_num` bigint(0) NULL DEFAULT NULL COMMENT '用于对比更新最后的',
   `dao_id` int(0) NULL DEFAULT NULL,
-  `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称(组帐是对应代币名称)',
-  `domain` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '域名',
-  `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '管理员地址/个人帐号是钱包地址',
-  `pubkey` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '公钥',
-  `privkey` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '私钥',
-  `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '社交帐号@表示',
-  `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '社交帐号url 表示',
-  `avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT 'https://daism.io/logo.svg' COMMENT '头像地址/组帐号是logo',
-  `actor_desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '帐号描述/组帐号是dao描述',
-  `createtime` char(19) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '注册时间',
+  `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称(组帐是对应代币名称)',
+  `domain` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '域名',
+  `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '管理员地址/个人帐号是钱包地址',
+  `pubkey` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '公钥',
+  `privkey` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '私钥',
+  `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '社交帐号@表示',
+  `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '社交帐号url 表示',
+  `avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'https://daism.io/logo.svg' COMMENT '头像地址/组帐号是logo',
+  `actor_desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '帐号描述/组帐号是dao描述',
+  `createtime` char(19) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '注册时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `acount`(`actor_account`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`) USING BTREE,
   UNIQUE INDEX `manager`(`dao_id`, `manager`) USING BTREE,
   UNIQUE INDEX `actor_url`(`actor_url`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_bookmark
@@ -48,9 +51,9 @@ CREATE TABLE `a_account`  (
 DROP TABLE IF EXISTS `a_bookmark`;
 CREATE TABLE `a_bookmark`  (
   `pid` int(0) NOT NULL COMMENT '发文ID',
-  `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收藏人帐号',
+  `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收藏人帐号',
   PRIMARY KEY (`account`, `pid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_bookmarksc
@@ -58,9 +61,9 @@ CREATE TABLE `a_bookmark`  (
 DROP TABLE IF EXISTS `a_bookmarksc`;
 CREATE TABLE `a_bookmarksc`  (
   `pid` int(0) NOT NULL COMMENT '发文ID',
-  `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收藏帐号',
+  `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '收藏帐号',
   PRIMARY KEY (`account`, `pid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_domain
@@ -68,9 +71,9 @@ CREATE TABLE `a_bookmarksc`  (
 DROP TABLE IF EXISTS `a_domain`;
 CREATE TABLE `a_domain`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `daomain` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '域名',
+  `daomain` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '域名',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_eip_type
@@ -78,13 +81,13 @@ CREATE TABLE `a_domain`  (
 DROP TABLE IF EXISTS `a_eip_type`;
 CREATE TABLE `a_eip_type`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `type_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 类型名称',
-  `type_desc` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '类型描述',
+  `type_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'smart common 类型名称',
+  `type_desc` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '类型描述',
   `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `relay_type` tinyint(0) NULL DEFAULT NULL COMMENT '1 链上确认',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `type_name`(`type_name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_follow
@@ -92,21 +95,21 @@ CREATE TABLE `a_eip_type`  (
 DROP TABLE IF EXISTS `a_follow`;
 CREATE TABLE `a_follow`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `follow_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '关注ID 唯一',
-  `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '被关注帐号',
-  `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '被关注url',
-  `actor_inbox` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '被关注信箱',
-  `actor_avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '被关注头像',
-  `user_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主动关注帐号',
-  `user_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主动关注帐号url',
-  `user_avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主动关注者头像',
-  `user_inbox` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主动关注者信箱',
+  `follow_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '关注ID 唯一',
+  `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '被关注帐号',
+  `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '被关注url',
+  `actor_inbox` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '被关注信箱',
+  `actor_avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '被关注头像',
+  `user_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '主动关注帐号',
+  `user_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '主动关注帐号url',
+  `user_avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '主动关注者头像',
+  `user_inbox` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '主动关注者信箱',
   `createtime` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `follow_id`(`follow_id`) USING BTREE,
   UNIQUE INDEX `idd`(`actor_account`, `user_account`) USING BTREE,
   INDEX `user_account`(`user_account`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_heart
@@ -114,9 +117,9 @@ CREATE TABLE `a_follow`  (
 DROP TABLE IF EXISTS `a_heart`;
 CREATE TABLE `a_heart`  (
   `pid` int(0) NOT NULL COMMENT '发文ID',
-  `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '点赞人',
+  `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '点赞人',
   PRIMARY KEY (`account`, `pid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_heartsc
@@ -124,9 +127,9 @@ CREATE TABLE `a_heart`  (
 DROP TABLE IF EXISTS `a_heartsc`;
 CREATE TABLE `a_heartsc`  (
   `pid` int(0) NOT NULL COMMENT '发文ID',
-  `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '点赞人',
+  `account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '点赞人',
   PRIMARY KEY (`account`, `pid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_message
@@ -134,28 +137,28 @@ CREATE TABLE `a_heartsc`  (
 DROP TABLE IF EXISTS `a_message`;
 CREATE TABLE `a_message`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `message_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发送/接收r的发文ID,唯一',
-  `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '钱包地址(接收推送也要有)',
-  `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称',
-  `avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头像',
-  `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
-  `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
-  `actor_inbox` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '帐号邮箱',
-  `link_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '链接url',
-  `title` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标题',
-  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '内容',
+  `message_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '发送/接收r的发文ID,唯一',
+  `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '钱包地址(接收推送也要有)',
+  `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
+  `avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
+  `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
+  `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
+  `actor_inbox` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '帐号邮箱',
+  `link_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '链接url',
+  `title` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '标题',
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '内容',
   `is_send` tinyint(0) NULL DEFAULT 1 COMMENT '允许推送给关注组',
   `is_discussion` tinyint(0) NULL DEFAULT 1 COMMENT '允许评论',
-  `top_img` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头部图片url地址',
-  `receive_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '',
+  `top_img` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头部图片url地址',
+  `receive_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '',
   `send_type` tinyint(0) NULL DEFAULT 0 COMMENT '0 本地，1 推送 2 @',
   `createtime` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `reply_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `account_at` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `account_at` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `property_index` tinyint(0) NULL DEFAULT 1,
   `type_index` tinyint(0) NULL DEFAULT 1,
-  `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `total` int(0) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`, `receive_account`) USING BTREE,
@@ -163,7 +166,7 @@ CREATE TABLE `a_message`  (
   INDEX `send_type`(`send_type`, `receive_account`) USING BTREE,
   INDEX `receive_account`(`receive_account`) USING BTREE,
   INDEX `dao_id`(`send_type`, `property_index`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_message_commont
@@ -172,22 +175,22 @@ DROP TABLE IF EXISTS `a_message_commont`;
 CREATE TABLE `a_message_commont`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `pid` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '父ID',
-  `message_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '回复/接收r的发文ID,唯一',
-  `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '钱包地址',
-  `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称',
-  `avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头像',
-  `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
-  `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
-  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '内容',
+  `message_id` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '回复/接收r的发文ID,唯一',
+  `manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '钱包地址',
+  `actor_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '昵称',
+  `avatar` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '头像',
+  `actor_account` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
+  `actor_url` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '创建/发送帐号',
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '内容',
   `createtime` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `type_index` tinyint(0) NULL DEFAULT 0 COMMENT '0 短，1长',
-  `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `top_img` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `ppid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `vedio_url` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `top_img` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `ppid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc
@@ -221,7 +224,7 @@ CREATE TABLE `a_messagesc`  (
   INDEX `_type`(`_type`) USING BTREE,
   INDEX `dao_id`(`dao_id`) USING BTREE,
   INDEX `reply_time`(`reply_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc_commont
@@ -252,14 +255,14 @@ CREATE TABLE `a_messagesc_commont`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `aux_bt`;
 CREATE TABLE `aux_bt`  (
-  `d` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `t` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `f` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `s` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `w` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `rt` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `d` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `t` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `f` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `s` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `w` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `rt` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`d`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of aux_bt
@@ -284,11 +287,11 @@ INSERT INTO `aux_bt` VALUES ('swap', 't_swap', '*', NULL, '1=1', NULL);
 -- ----------------------------
 DROP TABLE IF EXISTS `aux_tree`;
 CREATE TABLE `aux_tree`  (
-  `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `sqls` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `desc` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sqls` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `desc` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of aux_tree
@@ -313,9 +316,9 @@ INSERT INTO `aux_tree` VALUES ('minttime', 'SELECT TIMESTAMPDIFF(MINUTE, in_time
 -- ----------------------------
 DROP TABLE IF EXISTS `t_ad`;
 CREATE TABLE `t_ad`  (
-  `id` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `id` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_changelogo
@@ -326,12 +329,12 @@ CREATE TABLE `t_changelogo`  (
   `block_num` bigint(0) NOT NULL COMMENT '区块号',
   `dao_time` int(0) NULL DEFAULT NULL COMMENT '时间戳',
   `logo_id` int(0) NULL DEFAULT NULL,
-  `dao_logo` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `dao_logo` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_createversion
@@ -340,13 +343,13 @@ DROP TABLE IF EXISTS `t_createversion`;
 CREATE TABLE `t_createversion`  (
   `block_num` bigint(0) UNSIGNED NOT NULL,
   `dao_id` int(0) NULL DEFAULT NULL,
-  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `dao_version` int(0) NULL DEFAULT NULL,
   `_time` int(0) NULL DEFAULT NULL,
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_dao
@@ -355,29 +358,29 @@ DROP TABLE IF EXISTS `t_dao`;
 CREATE TABLE `t_dao`  (
   `dao_id` int(0) NOT NULL COMMENT 'dao ID',
   `block_num` bigint(0) NULL DEFAULT NULL COMMENT '区块号',
-  `dao_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '名称',
-  `dao_symbol` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '代币名称',
-  `dao_desc` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
-  `dao_manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '管理员地址',
-  `dao_logo` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'logo',
+  `dao_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '名称',
+  `dao_symbol` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '代币名称',
+  `dao_desc` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '描述',
+  `dao_manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '管理员地址',
+  `dao_logo` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'logo',
   `utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000 COMMENT '币值',
   `dao_ranking` int(0) NULL DEFAULT 0 COMMENT '排名',
-  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'mint dao的合约地址',
-  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'DAO代理地址',
-  `dao_exec` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '执行者',
+  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'mint dao的合约地址',
+  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'DAO代理地址',
+  `dao_exec` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '执行者',
   `dao_time` int(0) NULL DEFAULT NULL COMMENT '时间戳',
   `strategy` int(0) NULL DEFAULT NULL COMMENT '2的16次方',
   `lifetime` int(0) NULL DEFAULT NULL COMMENT '寿命期（秒）',
   `cool_time` int(0) NULL DEFAULT NULL COMMENT '冷却时间(秒)',
   `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `dapp_owner` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'dapp 所有者',
-  `sctype` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '智能公器类型',
+  `dapp_owner` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'dapp 所有者',
+  `sctype` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '智能公器类型',
   PRIMARY KEY (`dao_id`) USING BTREE,
   UNIQUE INDEX `dao_name`(`dao_name`) USING BTREE,
   UNIQUE INDEX `delegator`(`delegator`) USING BTREE,
   UNIQUE INDEX `dao_symbol`(`dao_symbol`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_daoaccount
@@ -386,13 +389,13 @@ DROP TABLE IF EXISTS `t_daoaccount`;
 CREATE TABLE `t_daoaccount`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
-  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
-  `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员地址',
+  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
+  `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '成员地址',
   `dividendRights` int(0) NULL DEFAULT NULL COMMENT '分红，票权， 0 表示已删除',
   `dao_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_daodetail
@@ -401,15 +404,15 @@ DROP TABLE IF EXISTS `t_daodetail`;
 CREATE TABLE `t_daodetail`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `member_votes` int(0) NULL DEFAULT 0 COMMENT '成员票数',
-  `member_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员地址',
+  `member_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '成员地址',
   `member_index` int(0) NULL DEFAULT 0 COMMENT '成员序号,已作废',
   `member_type` tinyint(0) NULL DEFAULT 1 COMMENT '类型:1原始，0邀请，已作废',
-  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smartcommon代理地址',
+  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'smartcommon代理地址',
   `dao_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `id`(`delegator`, `member_address`) USING BTREE,
   UNIQUE INDEX `dao_id`(`dao_id`, `member_address`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_domain
@@ -418,12 +421,12 @@ DROP TABLE IF EXISTS `t_domain`;
 CREATE TABLE `t_domain`  (
   `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号，用于监听标记',
   `dao_id` int(0) NULL DEFAULT NULL COMMENT 'smart common id',
-  `domain` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '域名',
-  `pubkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '公钥',
-  `privkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '私钥',
+  `domain` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '域名',
+  `pubkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '公钥',
+  `privkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '私钥',
   `_time` int(0) NULL DEFAULT NULL COMMENT '时间戳',
   PRIMARY KEY (`block_num`, `domain`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_domainsing
@@ -431,16 +434,16 @@ CREATE TABLE `t_domain`  (
 DROP TABLE IF EXISTS `t_domainsing`;
 CREATE TABLE `t_domainsing`  (
   `block_num` bigint(0) NOT NULL COMMENT '区块号，用于监听标记',
-  `addr` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '钱包地址',
-  `domain` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '域名',
-  `nick_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '名称/昵称',
-  `pubkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '公钥',
-  `privkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '私钥',
+  `addr` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '钱包地址',
+  `domain` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '域名',
+  `nick_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '名称/昵称',
+  `pubkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '公钥',
+  `privkey` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '私钥',
   `_time` int(0) NULL DEFAULT NULL COMMENT '时间戳',
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_e2t
@@ -448,13 +451,13 @@ CREATE TABLE `t_domainsing`  (
 DROP TABLE IF EXISTS `t_e2t`;
 CREATE TABLE `t_e2t`  (
   `block_num` bigint(0) NOT NULL,
-  `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `in_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `out_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `swap_time` int(0) NULL DEFAULT NULL,
   `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
   `token_id` int(0) NULL DEFAULT NULL,
   `swap_gas` int(0) NULL DEFAULT 0,
@@ -463,7 +466,7 @@ CREATE TABLE `t_e2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_eth_utoken
@@ -472,17 +475,17 @@ DROP TABLE IF EXISTS `t_eth_utoken`;
 CREATE TABLE `t_eth_utoken`  (
   `block_num` bigint(0) NOT NULL,
   `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `swap_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `swap_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `swap_time` int(0) NULL DEFAULT NULL,
   `swap_eth` decimal(18, 6) NULL DEFAULT 0.000000,
   `swap_utoken` decimal(18, 6) NULL DEFAULT 0.000000,
-  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `swap_gas` int(0) NULL DEFAULT 0,
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_getdaoutoken
@@ -490,34 +493,34 @@ CREATE TABLE `t_eth_utoken`  (
 DROP TABLE IF EXISTS `t_getdaoutoken`;
 CREATE TABLE `t_getdaoutoken`  (
   `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
-  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
-  `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分红者地址',
+  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
+  `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '分红者地址',
   `utoken_amount` decimal(18, 6) NULL DEFAULT NULL COMMENT '分红的utoken',
   `_time` int(0) NULL DEFAULT NULL,
-  `dao_owner` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '成员地址',
+  `dao_owner` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '成员地址',
   `pre_time` int(0) NULL DEFAULT NULL COMMENT '上次取的时间戳',
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_mynft
 -- ----------------------------
 DROP TABLE IF EXISTS `t_mynft`;
 CREATE TABLE `t_mynft`  (
-  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `token_id` int(0) NOT NULL,
   `template_id` int(0) NULL DEFAULT NULL,
   `dao_id` int(0) NULL DEFAULT NULL,
-  `_time` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `_time` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `block_num` bigint(0) NULL DEFAULT NULL,
-  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `_type` tinyint(0) NOT NULL DEFAULT 0 COMMENT '0发布时,1其它mint, 2打赏 3mint smart common',
-  `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`_type`, `to_address`, `token_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft
@@ -528,14 +531,14 @@ CREATE TABLE `t_nft`  (
   `block_num` bigint(0) UNSIGNED NOT NULL,
   `dao_id` int(0) NULL DEFAULT NULL,
   `token_id` int(0) NULL DEFAULT NULL,
-  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `_time` int(0) NULL DEFAULT NULL,
-  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '事件数组',
+  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_mint
@@ -546,13 +549,13 @@ CREATE TABLE `t_nft_mint`  (
   `block_num` bigint(0) UNSIGNED NOT NULL,
   `dao_id` int(0) NULL DEFAULT NULL,
   `token_id` int(0) NULL DEFAULT NULL,
-  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `_time` int(0) NULL DEFAULT NULL,
-  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swap
@@ -563,14 +566,14 @@ CREATE TABLE `t_nft_swap`  (
   `block_num` bigint(0) UNSIGNED NOT NULL,
   `dao_id` int(0) NULL DEFAULT NULL,
   `token_id` int(0) NULL DEFAULT NULL,
-  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `_time` int(0) NULL DEFAULT NULL,
-  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `utoken` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `utoken` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swaphonor
@@ -581,14 +584,14 @@ CREATE TABLE `t_nft_swaphonor`  (
   `block_num` bigint(0) UNSIGNED NOT NULL,
   `dao_id` int(0) NULL DEFAULT NULL,
   `token_id` int(0) NULL DEFAULT NULL,
-  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `_time` int(0) NULL DEFAULT NULL,
-  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '事件数组',
+  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_transfer
@@ -598,14 +601,14 @@ CREATE TABLE `t_nft_transfer`  (
   `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
   `block_num` bigint(0) UNSIGNED NULL DEFAULT NULL,
   `token_id` int(0) NULL DEFAULT NULL,
-  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `token_to` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `tokensvg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `_time` int(0) NULL DEFAULT NULL,
-  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `in_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_pro
@@ -613,28 +616,28 @@ CREATE TABLE `t_nft_transfer`  (
 DROP TABLE IF EXISTS `t_pro`;
 CREATE TABLE `t_pro`  (
   `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
-  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
-  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '提案创建人',
-  `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '参数1',
+  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
+  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '提案创建人',
+  `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '参数1',
   `dividendRights` int(0) NULL DEFAULT 0 COMMENT '参数2',
   `createTime` int(0) NULL DEFAULT 0 COMMENT '参数3',
   `rights` int(0) NULL DEFAULT 0 COMMENT '参数4',
   `antirights` int(0) NULL DEFAULT 0 COMMENT '参数5',
-  `dao_desc` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '参数6',
+  `dao_desc` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '参数6',
   `is_end` tinyint(0) UNSIGNED NULL DEFAULT 0 COMMENT '0未完成 1通过 2 未通过，3过期',
   `dao_id` int(0) NULL DEFAULT NULL COMMENT 'smart common id',
   `strategy` int(0) NULL DEFAULT NULL COMMENT '通过率',
   `lifetime` int(0) NULL DEFAULT NULL COMMENT '寿命',
   `cool_time` int(0) NULL DEFAULT NULL COMMENT '冷却时间',
   `pro_type` tinyint(0) NULL DEFAULT NULL COMMENT '1修改logo,2修改描述,3修改管理者,4 修改类型,7修改策略,5新增成员,6,修改票权,0删除成员',
-  `imgstr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `imgstr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `proposalType` tinyint(0) NULL DEFAULT NULL COMMENT '0 为修改strategy\n1 为修改logo\n2 为修改描述\n3 为修改管理员\n4 为修改智能公器类型',
   `id` int(0) NOT NULL AUTO_INCREMENT,
   `total_vote` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `delegator`(`delegator`, `createTime`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_proexcu
@@ -642,15 +645,15 @@ CREATE TABLE `t_pro`  (
 DROP TABLE IF EXISTS `t_proexcu`;
 CREATE TABLE `t_proexcu`  (
   `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
-  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
-  `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '提案参数1',
+  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
+  `account` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '提案参数1',
   `dividendRights` int(0) NULL DEFAULT NULL COMMENT '提案参数2',
   `_time` int(0) NULL DEFAULT NULL COMMENT '链上时间戳',
   `proposalType` tinyint(0) NULL DEFAULT NULL,
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_provote
@@ -658,9 +661,9 @@ CREATE TABLE `t_proexcu`  (
 DROP TABLE IF EXISTS `t_provote`;
 CREATE TABLE `t_provote`  (
   `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
-  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
+  `delegator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'smart common 代理地址',
   `createTime` int(0) NULL DEFAULT NULL COMMENT '提案时间戳',
-  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '投票人地址',
+  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '投票人地址',
   `antirights` int(0) NULL DEFAULT NULL COMMENT '反对票',
   `rights` int(0) NULL DEFAULT NULL COMMENT '赞成票',
   `_time` int(0) NULL DEFAULT NULL COMMENT '链上时间戳',
@@ -669,7 +672,7 @@ CREATE TABLE `t_provote`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE,
   INDEX `delegator`(`delegator`, `createTime`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_swap
@@ -677,21 +680,21 @@ CREATE TABLE `t_provote`  (
 DROP TABLE IF EXISTS `t_swap`;
 CREATE TABLE `t_swap`  (
   `block_num` bigint(0) UNSIGNED NOT NULL COMMENT '区块号 用于监听标记',
-  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'Etherscan交易hash码',
-  `title` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '兑换内容',
+  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'Etherscan交易hash码',
+  `title` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '兑换内容',
   `in_amount` decimal(18, 6) NULL DEFAULT NULL COMMENT '输入数值',
   `out_amount` decimal(18, 6) NULL DEFAULT NULL COMMENT '输出数值',
-  `swap_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '兑换人地址',
-  `swap_time` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '兑换时间',
-  `in_str` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `out_str` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `swap_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '兑换人地址',
+  `swap_time` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '兑换时间',
+  `in_str` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `out_str` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏uto',
-  `tip_str` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '打赏给',
+  `tip_str` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '打赏给',
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2t
@@ -704,12 +707,12 @@ CREATE TABLE `t_t2t`  (
   `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `from_utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
   `to_utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
-  `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `from_token` decimal(18, 6) NULL DEFAULT 0.000000,
   `to_token` decimal(18, 6) NULL DEFAULT 0.000000,
   `swap_time` int(0) NULL DEFAULT NULL,
-  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `swap_gas` int(0) NULL DEFAULT NULL,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏',
   `sc_id` int(0) NULL DEFAULT NULL COMMENT '打赏scID',
@@ -717,7 +720,7 @@ CREATE TABLE `t_t2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2u
@@ -727,30 +730,65 @@ CREATE TABLE `t_t2u`  (
   `block_num` bigint(0) NOT NULL,
   `from_token_id` int(0) NULL DEFAULT NULL,
   `utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
-  `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `utoken_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `token_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `swap_time` int(0) NULL DEFAULT NULL,
   `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `swap_gas` int(0) NULL DEFAULT 0,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏',
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for t_tag
+-- Table structure for t_tagmess
 -- ----------------------------
-DROP TABLE IF EXISTS `t_tag`;
-CREATE TABLE `t_tag`  (
-  `id` int(0) NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `t_tagmess`;
+CREATE TABLE `t_tagmess`  (
+  `cid` int(0) NOT NULL COMMENT '嗯文ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`cid`, `name`) USING BTREE,
+  INDEX `id`(`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 50 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_tagmess
+-- ----------------------------
+INSERT INTO `t_tagmess` VALUES (6, 'qqq', 43);
+INSERT INTO `t_tagmess` VALUES (6, '在在工工', 44);
+INSERT INTO `t_tagmess` VALUES (7, '鑫', 46);
+INSERT INTO `t_tagmess` VALUES (7, 'qqq', 47);
+INSERT INTO `t_tagmess` VALUES (7, '椅厅有', 48);
+INSERT INTO `t_tagmess` VALUES (7, 'www1t', 49);
+
+-- ----------------------------
+-- Table structure for t_tagmesssc
+-- ----------------------------
+DROP TABLE IF EXISTS `t_tagmesssc`;
+CREATE TABLE `t_tagmesssc`  (
+  `cid` int(0) NOT NULL COMMENT '嗯文ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`cid`, `name`) USING BTREE,
+  INDEX `id`(`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_tagmesssc
+-- ----------------------------
+INSERT INTO `t_tagmesssc` VALUES (23, '2ewew', 1);
+INSERT INTO `t_tagmesssc` VALUES (23, '3434', 2);
+INSERT INTO `t_tagmesssc` VALUES (23, 'fff', 3);
+INSERT INTO `t_tagmesssc` VALUES (3, 'sdssfdf', 4);
+INSERT INTO `t_tagmesssc` VALUES (3, '在夺苛', 5);
+INSERT INTO `t_tagmesssc` VALUES (3, '232433', 6);
+INSERT INTO `t_tagmesssc` VALUES (2, 'sdssfdf', 7);
 
 -- ----------------------------
 -- Table structure for t_token
@@ -765,7 +803,7 @@ CREATE TABLE `t_token`  (
   PRIMARY KEY (`dao_id`) USING BTREE,
   UNIQUE INDEX `token_id`(`token_id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_tokenuser
@@ -774,10 +812,10 @@ DROP TABLE IF EXISTS `t_tokenuser`;
 CREATE TABLE `t_tokenuser`  (
   `dao_id` int(0) NULL DEFAULT NULL COMMENT 'smart common id',
   `token_id` int(0) NOT NULL COMMENT '代币ID',
-  `dao_manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'smart common 管理员地址',
+  `dao_manager` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'smart common 管理员地址',
   `token_cost` decimal(18, 6) NULL DEFAULT 0.000000 COMMENT '代币余额',
   PRIMARY KEY (`token_id`, `dao_manager`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_u2t
@@ -787,20 +825,20 @@ CREATE TABLE `t_u2t`  (
   `block_num` bigint(0) NOT NULL,
   `token_id` int(0) NULL DEFAULT NULL,
   `utoken_cost` decimal(18, 6) NULL DEFAULT 0.000000,
-  `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `from_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `to_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `utoken_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `token_amount` decimal(18, 6) NULL DEFAULT 0.000000,
   `swap_time` int(0) NULL DEFAULT NULL,
   `_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `tran_hash` char(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `swap_gas` int(0) NULL DEFAULT 0,
   `tipAmount` decimal(18, 6) NULL DEFAULT NULL COMMENT '打赏',
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_updatedaocreator
@@ -809,12 +847,12 @@ DROP TABLE IF EXISTS `t_updatedaocreator`;
 CREATE TABLE `t_updatedaocreator`  (
   `block_num` bigint(0) UNSIGNED NOT NULL,
   `dao_id` int(0) NULL DEFAULT NULL,
-  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `creator` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `_time` int(0) NULL DEFAULT NULL,
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- View structure for v_account
@@ -1121,6 +1159,50 @@ BEGIN
 	SELECT a.*,IFNULL(e.block_num,0) yvote 
 	FROM (SELECT * FROM v_pro WHERE is_end=0 AND dao_id IN (SELECT dao_id FROM t_daodetail WHERE member_address=_address)) a LEFT JOIN 
         (SELECT block_num,delegator,createTime FROM t_provote WHERE creator=_address) e ON a.delegator=e.delegator AND a.createTime=e.createTime;
+    END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Procedure structure for in_tag
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `in_tag`;
+delimiter ;;
+CREATE PROCEDURE `in_tag`(p_id int,p_tags varchar(100),p_sctype varchar(10))
+BEGIN
+    if(p_sctype='sc') then 
+	INSERT INTO t_tagmesssc(cid,`name`) WITH RECURSIVE splitter AS (
+	SELECT 
+		1 AS n, 
+		SUBSTRING_INDEX(p_tags, ',', 1) AS part,
+		LENGTH(p_tags) - LENGTH(REPLACE(p_tags, ',', '')) + 1 AS total
+	UNION ALL
+	SELECT 
+		n + 1,
+		SUBSTRING_INDEX(SUBSTRING_INDEX(p_tags, ',', n + 1), ',', -1),
+		total
+	FROM splitter
+	WHERE n < total
+	)
+	SELECT DISTINCT p_id,part FROM splitter;
+	
+   else 
+	INSERT INTO t_tagmess(cid,`name`) WITH RECURSIVE splitter AS (
+	SELECT 
+		1 AS n, 
+		SUBSTRING_INDEX(p_tags, ',', 1) AS part,
+		LENGTH(p_tags) - LENGTH(REPLACE(p_tags, ',', '')) + 1 AS total
+	UNION ALL
+	SELECT 
+		n + 1,
+		SUBSTRING_INDEX(SUBSTRING_INDEX(p_tags, ',', n + 1), ',', -1),
+		total
+	FROM splitter
+	WHERE n < total
+	)
+	SELECT DISTINCT p_id,part FROM splitter;
+   end if;
+   
     END
 ;;
 delimiter ;
