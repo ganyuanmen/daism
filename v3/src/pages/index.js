@@ -8,54 +8,6 @@ export default function Home({locale,env}) {
   
     const t = useTranslations('iadd')
 
-    const objectRef1 = useRef(null);
-    const objectRef2 = useRef(null);
-
-  useEffect(() => {
-    const handleObjectLoad1 = () => {
-      const svgDoc = objectRef1.current.contentDocument;
-      if (svgDoc) {
-        const links = svgDoc.querySelectorAll('.daism-svg');
-
-        links.forEach(link => {
-          link.addEventListener('click', (event) => {
-            event.preventDefault();
-            const url = link.getAttribute('data-href');
-            if (url) {
-              window.open(url, '_blank');
-            }
-          });
-        });
-      }
-    };
-    const handleObjectLoad2 = () => {
-        const svgDoc = objectRef2.current.contentDocument;
-        if (svgDoc) {
-          const links = svgDoc.querySelectorAll('.daism-svg');
-  
-          links.forEach(link => {
-            link.addEventListener('click', (event) => {
-              event.preventDefault();
-              const url = link.getAttribute('data-href');
-              if (url) {
-                window.open(url, '_blank');
-              }
-            });
-          });
-        }
-      };
-
-    const currentObject1 = objectRef1.current;
-    currentObject1.addEventListener('load', handleObjectLoad1);
-
-    const currentObject2 = objectRef2.current;
-    currentObject2.addEventListener('load', handleObjectLoad2);
-
-    return () => {
-      currentObject1.removeEventListener('load', handleObjectLoad1);
-      currentObject2.removeEventListener('load', handleObjectLoad2);
-    };
-  }, []);
 
     return (<>
          <Head>
@@ -75,8 +27,8 @@ export default function Home({locale,env}) {
 
         <PageLayout env={env} >
        
-        <div className="desktop-only"><object ref={objectRef1} type="image/svg+xml" style={{width:'100%'}} data={`/topsvg_${locale==='en'?'en':'zh'}.svg`}></object> </div>
-        <div className="mobile-only"><object ref={objectRef2} type="image/svg+xml" style={{width:'100%'}} data={`/s1_${locale==='en'?'en':'zh'}.svg`}></object></div>
+        <div className="desktop-only"><object type="image/svg+xml" style={{width:'100%'}} data={`/topsvg_${locale==='en'?'en':'zh'}.svg`}></object> </div>
+        <div className="mobile-only"><object type="image/svg+xml" style={{width:'100%'}} data={`/s1_${locale==='en'?'en':'zh'}.svg`}></object></div>
 		
         
 
