@@ -65,10 +65,10 @@ export default function Home({locale,env}) {
         <meta name="robots" content="index, follow, noodp" />
 	      <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
         <title>{t('indexTitleText')}</title>
-        <meta name="keywords" lang="en" content="Satoshi UTO Fund, SUF, Universal Value, SufAIthon, DAism"/>
-        <meta name="keywords" lang="zh-cmn-Hans" content="中本聪UTO基金, Satoshi UTO Fund, SUF, 普世价值, 速发赛, 道易程"/>
-        <meta name="description" lang="en" content="DAism's Proof-of-Value Leads to Universal Value by Joining Blockchain & AI Together."/>
-        <meta name="description" lang="zh-cmn-Hans" content="道易程的PoV价值证明治理共识，将区块链与人工智能融合在一起，引领人类奔赴以普世价值为核心的新文明。"/>
+        {locale==='en'?<meta name="keywords" lang="en" content="Satoshi UTO Fund, SUF, Universal Value, SufAIthon, DAism"/>
+        :<meta name="keywords" lang="zh-cmn-Hans" content="中本聪UTO基金, Satoshi UTO Fund, SUF, 普世价值, 速发赛, 道易程"/>}
+        {locale==='en'?<meta name="description" lang="en" content="DAism's Proof-of-Value Leads to Universal Value by Joining Blockchain & AI Together."/>
+        :<meta name="description" lang="zh-cmn-Hans" content="道易程的PoV价值证明治理共识，将区块链与人工智能融合在一起，引领人类奔赴以普世价值为核心的新文明。"/>}
 
 
         </Head>

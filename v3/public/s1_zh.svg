@@ -68,12 +68,12 @@
 			<use href="#250s" x="236" y="78" transform="rotate(-14)" class="st3" />
 			<use href="#250s" x="8" y="325" transform="rotate(-28)" class="st4" />
 			<use href="#250s" x="-292" y="524" transform="rotate(-43)" class="st5" />
-			<text x="50%" y="28.5%" class="sufb"><a class="daism-svg" style="font-size: 72px;" href="#" data-href="https://learn.daism.io/zh/docs/pov.html" fill="#D44117" >价值证明（Proof of Value）</a></text>
+			<text x="50%" y="28.5%" class="sufb"><a class="daism-svg" style="font-size: 72px;" href="https://learn.daism.io/zh/docs/pov.html" data-href="https://learn.daism.io/zh/docs/pov.html" fill="#D44117" >价值证明（Proof of Value）</a></text>
 			<text x="50%" y="34%" class="suft">融合区块链与AI</text>
 			<text x="50%" y="39%" class="suft">引领人类实现普世价值</text>
-			<text x="50%" y="48%" class="suft"><a class="daism-svg" href="#" data-href="https://learn.daism.io/zh/docs/whitepaper.html#scc0-license" fill="#D44117" >Smart Creative Commons 0</a></text>
+			<text x="50%" y="48%" class="suft"><a class="daism-svg" href="https://learn.daism.io/zh/docs/whitepaper.html#scc0-license" data-href="https://learn.daism.io/zh/docs/whitepaper.html#scc0-license" fill="#D44117" >Smart Creative Commons 0</a></text>
 			<text x="50%" y="53%" class="suft2">智能公器（公共品）的治理许可证</text>
-			<text x="50%" y="58%" class="suft4"><a class="daism-svg" href="#" data-href="https://etherscan.io/token/0xe40b05570d2760102c59bf4ffc9b47f921b67a1f" fill="#D44117" >Satoshi UTO Fund</a></text>
+			<text x="50%" y="58%" class="suft4"><a class="daism-svg" href="https://etherscan.io/token/0xe40b05570d2760102c59bf4ffc9b47f921b67a1f" data-href="https://etherscan.io/token/0xe40b05570d2760102c59bf4ffc9b47f921b67a1f" fill="#D44117" >Satoshi UTO Fund</a></text>
 			<text x="50%" y="63%" class="suft2">1.15792 × 10^69 UTO（公共）</text>		
-			<text x="50%" y="72%" class="suft4"><a class="daism-svg" href="#" data-href="https://daism.io/zh/communities/enkier" fill="green">加入伟大的Enki社区</a></text>
+			<text x="50%" y="72%" class="suft4"><a class="daism-svg" href="https://daism.io/zh/communities/enkier" data-href="https://daism.io/zh/communities/enkier" fill="green">加入伟大的Enki社区</a></text>
 		</svg>
