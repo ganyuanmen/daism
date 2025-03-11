@@ -24,7 +24,7 @@ export default async function handler(req, res) {
         if(localUser.dao_id>0)
             res.redirect(`/smartcommons/daoinfo/${localUser['dao_id']}`);
         else 
-            res.redirect(`/smartcommons/actor/${localUser['actor_account']}`);
+            res.redirect(`/smartcommons/actor/${encodeURIComponent(localUser['actor_account'])}`);
 
     }
 

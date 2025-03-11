@@ -30,35 +30,54 @@ const LoginButton = forwardRef((props, ref) => {
 
     const siweLogin=async ()=>{
         if(singering) return
+        const controller = new AbortController();
+     
+
         showLoadding(t('singerLoginingText'))
         setSingering(true)
         const messageObj = await createSiweMessage();
         const message=messageObj.prepareMessage();
 
         window.daism_signer.signMessage(message).then(async (signature)=>{
-        const res = await fetch(`/api/siwe/login`, {
-            method: "POST",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ message, signature })
-        });
-        let data=await res.json();
+            const timeoutId = setTimeout(() => {controller.abort();}, 5000); 
+            try {
+                const res = await fetch(`/api/siwe/login`, {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message, signature }),
+                    signal: controller.signal,
+                });
+                clearTimeout(timeoutId);
+                let data=await res.json();
 
-        if(res.status!==200) { 
-            console.error(data.errMsg)
-            showTip(`${t('loginError')} \n ${data.errMsg} `)
-         }
-        else { 
-            dispatch(setLoginsiwe(true))
-            dispatch(setDaoActor(data.daoActor))
-            dispatch(setActor(data.actor))
-            dispatch(setMyFollow(data.myFollow))
-            window.sessionStorage.setItem("loginsiwe", "1")
-            window.sessionStorage.setItem("daoActor", JSON.stringify(data.daoActor))
-            window.sessionStorage.setItem("actor", JSON.stringify(data.actor))
-            window.sessionStorage.setItem("myFollow", JSON.stringify(data.myFollow))
-        }
-        setSingering(false)
-        showLoadding('')
+                if(res.status!==200) { 
+                    console.error(data.errMsg)
+                    showTip(`${t('loginError')} \n ${data.errMsg} `)
+                }
+                else { 
+                    dispatch(setLoginsiwe(true))
+                    dispatch(setDaoActor(data.daoActor))
+                    dispatch(setActor(data.actor))
+                    dispatch(setMyFollow(data.myFollow))
+                    window.sessionStorage.setItem("loginsiwe", "1")
+                    window.sessionStorage.setItem("daoActor", JSON.stringify(data.daoActor))
+                    window.sessionStorage.setItem("actor", JSON.stringify(data.actor))
+                    window.sessionStorage.setItem("myFollow", JSON.stringify(data.myFollow))
+                }
+                setSingering(false)
+                showLoadding('')
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    console.error("请求超时");
+                    showTip('登录超时，请重新登录!'); // 显示超时提示
+                } else {
+                    console.error(error);
+                }
+                setSingering(false);
+                showLoadding('');     
+            }
+
 
     },err=>{ //钱包签名错误处理
         console.error(err);
