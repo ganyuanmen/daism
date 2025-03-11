@@ -38,7 +38,7 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			else if(parseInt(eventnum)===5)	where='where send_type=0 and property_index=1'; //公开
 			else if(parseInt(eventnum)===6) where=`where id in(select pid from a_heart where account='${account}')`; //喜欢
 			else if(parseInt(eventnum)===7) where=`where receive_account='${account}' and send_type=2`; //@
-			else if(parseInt(eventnum)===8) where=`where ((send_type=0 and actor_account='${account}') or receive_account='${account}') and id in(select cid from t_tagmess where name='${w}')`; //过滤
+			else if(parseInt(eventnum)===8) where=`where id in(select cid from t_tagmess where name='${w}')`; //过滤
 			break;
 	}
 	// if(w) where=where?`${where} and title like '%${w}%'`:`where title like '%${w}%'`;
