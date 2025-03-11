@@ -45,7 +45,7 @@ export default function EnkiView({env,locale,accountAr }) {
 
                     :activeTab === 1 ? <CreateMess accountAr={accountAr} currentObj={currentObj} 
                     afterEditCall={afterEditCall}  
-                    callBack={callBack} />
+                    callBack={afterEditCall} />
 
                     : <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj} 
                     delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr}/>

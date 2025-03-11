@@ -259,7 +259,7 @@ const handleClick = useCallback((event) => {
                 >
                     {data.map((obj, idx) => (
                         <ReplyItem  key={idx} locale={locale} isEdit={ableReply() && actor.actor_account===obj.actor_account } 
-                         replyObj={obj} delCallBack={replyDelCallBack} 
+                         replyObj={obj} delCallBack={replyDelCallBack}  domain={env.domain}
                          preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
                     ))}
             </InfiniteScroll>

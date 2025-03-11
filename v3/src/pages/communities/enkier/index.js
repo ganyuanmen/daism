@@ -22,7 +22,7 @@ import Mainself from '../../../components/enki3/Mainself';
 import CreateMess from '../../../components/enki3/CreateMess';
 import MessagePage from '../../../components/enki2/page/MessagePage';
 import { NavDropdown } from 'react-bootstrap';
-import { Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,ReceiveSvg,World1 } from '../../../lib/jssvg/SvgCollection';
+import { Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,ReceiveSvg } from '../../../lib/jssvg/SvgCollection';
 
 
 /**
@@ -264,6 +264,7 @@ export default function enkier({openObj,env,locale,accountAr }) {
         sessionStorage.setItem("daism-list-id",messageObj.id)
         history.pushState({ id: messageObj?.id }, `id:${messageObj?.id}`, `?d=${encrypt(`${messageObj.id},${getDomain(messageObj)}`,env)}`);
       }
+
 
     const callBack=()=>{  //回退处理，包括删除
         if(navIndex===paras.home) homeHandle(false);
