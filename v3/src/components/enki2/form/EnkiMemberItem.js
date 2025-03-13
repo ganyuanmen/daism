@@ -50,21 +50,16 @@ export default function EnkiMemberItem({locale,messageObj,domain}) {
     return (
         <div className="d-flex flex-wrap justify-content-between align-items-center" >
             <div><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
-            {honor.length>0 && <div><Honor honor={honor} t={t} /> </div>}
+            {honor.length>0 && <div><Honor honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
             {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
             <div><TimesItem currentObj={messageObj} /></div>
         </div>
     );
 }
 
-function Honor({honor,t}){
+function Honor({honor,t,messageObj,locale}){
 
     const overlayRef=useRef();
-
-    const svgToBase=(svgCode)=> {
-	    const utf8Bytes = new window.TextEncoder().encode(svgCode);
-	    return 'data:image/svg+xml;base64,' +window.btoa(String.fromCharCode.apply(null, utf8Bytes));
-	}
 
  
 
@@ -88,34 +83,46 @@ function Honor({honor,t}){
            
       
         if(honor.length===3){
-            return <>
-            <img src={svgToBase(honor[0].tokensvg)} className="honor"  />
-            <img src={svgToBase(honor[1].tokensvg)} className="honor"  />
-            <img src={svgToBase(honor[2].tokensvg)} className="honor"  />
-            </>
+            return honor.map((obj,idx)=>(<SvgShow locale={locale} messageObj={messageObj} tokensvg={obj} key={`lk${idx}`} />));
         }
         else if(honor.length>2) {
             return <>
-            <img src={svgToBase(honor[0].tokensvg)} className="honor"  />
-            <img src={svgToBase(honor[1].tokensvg)} className="honor"  />
+            <SvgShow locale={locale} messageObj={messageObj} tokensvg={honor[0].tokensvg} />
+            <SvgShow locale={locale} messageObj={messageObj} tokensvg={honor[1].tokensvg} />
+            {/* <img src={svgToBase(honor[0].tokensvg)} className="honor"  /> */}
+            {/* <img src={svgToBase(honor[1].tokensvg)} className="honor"  /> */}
             <Button variant="light" ref={target} onClick={() => setShow(!show)} title={t('moreText')}>
                 <MoreBtn size={24}/>
             </Button>
             <Overlay ref={overlayRef} target={target.current} show={show} placement="bottom">
                 {(props) => (
                 <Tooltip id="overlay-example78" {...props}>
-                  { honor.map((obj,idx)=>(<img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  />))}
+                  { 
+                //   honor.map((obj,idx)=>(<img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  />))
+                  honor.map((obj,idx)=>(<SvgShow locale={locale} messageObj={messageObj} tokensvg={obj.tokensvg} key={`lk${idx}`} />))
+                  }
                 </Tooltip>
                 )}
             </Overlay>
             </>
         }
         else { //0,1,2
-            return honor.map((obj,idx)=>(<img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  />));
+            return honor.map((obj,idx)=>(<SvgShow locale={locale} messageObj={messageObj} tokensvg={obj} key={`lk${idx}`} />));
+            // return honor.map((obj,idx)=>(<a href={`/${locale}/honortokens/${messageObj.manager}`} alt=''><img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  /></a>));
         }
     }
 
     return <>{geneHonor()}</>
     
  
+}
+
+function SvgShow({tokensvg,locale,messageObj}){
+    
+    const svgToBase=(svgCode)=> {
+	    const utf8Bytes = new window.TextEncoder().encode(svgCode);
+	    return 'data:image/svg+xml;base64,' +window.btoa(String.fromCharCode.apply(null, utf8Bytes));
+	}
+
+    return <a href={`/${locale}/honortokens/${messageObj.manager}`} alt=''> <img src={svgToBase(tokensvg)} className="honor"  /></a>
 }

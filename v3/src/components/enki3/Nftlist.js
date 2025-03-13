@@ -50,8 +50,8 @@ export default function Nftlist({mynftData})
                 <div key={`c_${idx}`} style={{width:'320px'}} >
                     <Card   style={{margin:'10px'}}> 
                     <Card.Body>
-                    {obj._type>0? <img src={svgToBase(obj.tokensvg)} style={{width:'300px',height:'300px',borderRadius:'50%'}} />
-                    :<span  dangerouslySetInnerHTML={{__html: obj?.tokensvg}}></span>}
+                    {obj._type>0? <img src={svgToBase(obj.tokensvg)} style={{width:'270px',height:'270px'}} />
+                    :<div style={{width:'270px',height:'270px'}} > <span  dangerouslySetInnerHTML={{__html: obj?.tokensvg?.replace(/width=".*?"/g, '').replace(/height=".*?"/g, '')}}></span></div>}
                     <div className='daism-nowrap'>owner: <ShowAddress address={obj.to_address} isb={true} /> </div> 
                     <div  >
                     <Row>
@@ -76,7 +76,7 @@ export default function Nftlist({mynftData})
                 <Card   style={{margin:'10px'}}> 
                     <Card.Body>
                         <div style={{textAlign:'center'}} >
-                        {nftObj._type>0? <img src={svgToBase(nftObj.tokensvg)} style={{width:'300px',height:'300px',borderRadius:'50%'}} />
+                        {nftObj._type>0? <img src={svgToBase(nftObj.tokensvg)} style={{width:'300px',height:'300px'}} />
                     :<span  dangerouslySetInnerHTML={{__html: nftObj?.tokensvg}}></span>}
                         </div>
                         <Table striped bordered hover style={{width:'100%',marginTop:'4px'}} >
