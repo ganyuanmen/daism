@@ -56,7 +56,7 @@ export default function Nftlist({mynftData})
                     <div  >
                     <Row>
                     <Col className="Col-auto me-auto"  > ID:<b> {obj.token_id}</b></Col>
-                    <Col className="col-auto" > <a className='pull-right'  href='#' onClick={e=>showwin(obj)} >show more</a> </Col>
+                    <Col className="col-auto" > <a className='pull-right' href='' onClick={e=>{e.preventDefault(); showwin(obj);}} >show more</a> </Col>
                     </Row>
                     </div> 
                     <div className='daism-nowrap'>blockNumber:<b>{obj.block_num}</b></div> 
