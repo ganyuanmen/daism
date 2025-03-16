@@ -39,8 +39,9 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
         
             <div style={{paddingLeft:'10px'}} >
                 <div>{messageObj?.actor_account || messageObj?.account}</div>
-                {messageObj?.send_type==1 ? <div>to: {messageObj?.receive_account} </div>
-                :isLocal && messageObj?.manager && <ShowAddress address={messageObj?.manager} />}
+                {!messageObj.dao_id && <> {messageObj?.send_type==1 ? <div>to: {messageObj?.receive_account} </div>
+                :isLocal && messageObj?.manager && <ShowAddress address={messageObj?.manager} />}</>
+                }
             </div>
         </div>
    
