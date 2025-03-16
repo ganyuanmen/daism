@@ -83,14 +83,12 @@ function Honor({honor,t,messageObj,locale}){
            
       
         if(honor.length===3){
-            return honor.map((obj,idx)=>(<SvgShow locale={locale} messageObj={messageObj} tokensvg={obj} key={`lk${idx}`} />));
+            return honor.map((obj,idx)=>(<SvgShow locale={locale} messageObj={messageObj} tokensvg={obj.tokensvg} key={`lk${idx}`} />));
         }
         else if(honor.length>2) {
             return <>
             <SvgShow locale={locale} messageObj={messageObj} tokensvg={honor[0].tokensvg} />
             <SvgShow locale={locale} messageObj={messageObj} tokensvg={honor[1].tokensvg} />
-            {/* <img src={svgToBase(honor[0].tokensvg)} className="honor"  /> */}
-            {/* <img src={svgToBase(honor[1].tokensvg)} className="honor"  /> */}
             <Button variant="light" ref={target} onClick={() => setShow(!show)} title={t('moreText')}>
                 <MoreBtn size={24}/>
             </Button>
@@ -98,7 +96,6 @@ function Honor({honor,t,messageObj,locale}){
                 {(props) => (
                 <Tooltip id="overlay-example78" {...props}>
                   { 
-                //   honor.map((obj,idx)=>(<img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  />))
                   honor.map((obj,idx)=>(<SvgShow locale={locale} messageObj={messageObj} tokensvg={obj.tokensvg} key={`lk${idx}`} />))
                   }
                 </Tooltip>
@@ -107,8 +104,7 @@ function Honor({honor,t,messageObj,locale}){
             </>
         }
         else { //0,1,2
-            return honor.map((obj,idx)=>(<SvgShow locale={locale} messageObj={messageObj} tokensvg={obj} key={`lk${idx}`} />));
-            // return honor.map((obj,idx)=>(<a href={`/${locale}/honortokens/${messageObj.manager}`} alt=''><img key={idx} src={svgToBase(obj.tokensvg)} className="honor"  /></a>));
+            return honor.map((obj,idx)=>(<SvgShow locale={locale} messageObj={messageObj} tokensvg={obj.tokensvg} key={`lk${idx}`} />));
         }
     }
 
@@ -124,5 +120,5 @@ function SvgShow({tokensvg,locale,messageObj}){
 	    return 'data:image/svg+xml;base64,' +window.btoa(String.fromCharCode.apply(null, utf8Bytes));
 	}
 
-    return <a href={`/${locale}/honortokens/${messageObj.manager}`} alt=''> <img src={svgToBase(tokensvg)} className="honor"  /></a>
+    return <a href={`/${locale}/honortokens/${messageObj.manager}`} alt=''><img src={svgToBase(tokensvg)} className="honor" /></a>
 }

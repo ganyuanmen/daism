@@ -156,7 +156,8 @@
     "longText":"Long article",
     "showmore":"Show more...",
     "uploadImg":"Uploading images...",
-    "filterText":"Tag filtering"
+    "filterText":"Tag filtering",
+    "proposedText":"Proposed by"
 
   }
 }

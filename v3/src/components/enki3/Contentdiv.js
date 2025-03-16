@@ -11,6 +11,7 @@ import EnkiEditItem from "../enki2/form/EnkiEditItem";
 import { Button } from "react-bootstrap";
 import { useSelector } from 'react-redux';
 import { useTranslations } from 'next-intl'
+import ShowAddress from "../ShowAddress";
 
 /**
  * 列表中的单个嗯文
@@ -165,8 +166,22 @@ const handleClick = useCallback((event) => {
             {messageObj?.top_img && <img  onClick={()=>afterEditCall.call(this,messageObj)} className="daism-a mt-2 mb-2" 
                 alt="" src={messageObj.top_img} style={{maxWidth:'100%'}} />
             }
-            {messageObj?.vedio_url && <ShowVedio vedioUrl={messageObj.vedio_url} /> 
+            {messageObj?.vedio_url && <ShowVedio vedioUrl={messageObj.vedio_url} /> }
+        
+            
+            {/* 发起者 */}
+            {messageObj?.dao_id>0 &&<div className="d-flex justify-content-between align-items-center"  >
+            <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center">
+              <span style={{display:"inline-block",paddingRight:"10px"}} >{t('proposedText')}:</span>
+              <img src={messageObj?.self_avatar} alt='' width={32} height={32}/> 
+              <span> {messageObj?.self_account} </span>
+            </div>
+            <div style={{paddingRight:'10px'}} >
+                <ShowAddress address={messageObj?.manager} />
+            </div>
+            </div>
             }
+
            <div className="d-flex justify-content-between align-items-center" style={{padding:'4px 8px'}}  >
                 
                 <MessageReply currentObj={messageObj} isEdit={ableReply()}
