@@ -234,10 +234,10 @@ const handleClick = useCallback((event) => {
         <Card.Footer style={{padding:0}} >
 
             {/* 发起者 */}
-            {currentObj?.dao_id>0 &&<div className="d-flex justify-content-between align-items-center"  >
+            {currentObj?.dao_id>0 &&<div className="d-flex justify-content-between align-items-center mt-1"  >
             <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center">
                <span style={{display:"inline-block",paddingRight:"10px"}} >{t('proposedText')}:</span>
-               <img src={currentObj?.self_avatar} alt='' width={32} height={32}/> 
+               <img src={currentObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 
               <span> {currentObj?.self_account} </span>
             </div>
             <div style={{paddingRight:'10px'}} >
