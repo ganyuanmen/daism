@@ -82,7 +82,7 @@ export default function ShowWalletInfo({env,locale}) {
                         <tr><td style={{ textAlign: 'right' }}>UTO {t('balanceText')}</td><td >{utokenBalance}</td></tr>
                         {tokensData.data.map((obj,idx)=>(
                           <tr key={idx}><td style={{ textAlign: 'right' }}>
-                            <img height={24} width={24} alt='' src={obj.dao_logo?obj.dao_logo:'/logo.svg'} style={{borderRadius:'50%'}} />{'  '}
+                            <img height={24} width={24} alt='' src={obj.dao_logo?obj.dao_logo:'/logo.svg'}  />{'  '}
                             {obj.dao_symbol} {' '}  {t('balanceText')}
                             </td><td >{obj.token_cost}</td></tr>
                         ))

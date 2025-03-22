@@ -203,8 +203,8 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
               <Form.Check inline label={t('longText')} name="group1" type='radio' defaultChecked={typeIndex===1} onClick={e=>
                   {if(e.target.checked) setTypeIndex(1)}}  id='inline-1' />
           </Form>
-      {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} accountAr={accountAr} showProperty={true}/>
-      :<RichEditor  ref={richEditorRef} currentObj={currentObj} accountAr={accountAr}/>}
+      {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} isSC={true} accountAr={accountAr} showProperty={true}/>
+      :<RichEditor  ref={richEditorRef} currentObj={currentObj} isSC={true} accountAr={accountAr}/>}
         
         <Form.Check className='mt-3' type="switch" checked={showEvent} onChange={e => { setShowEvent(!showEvent) }} id="ssdsd_swith1" label={t('eventArtice')} />
          {showEvent &&

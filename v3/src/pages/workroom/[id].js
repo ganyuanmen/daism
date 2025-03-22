@@ -289,7 +289,7 @@ function DaoInfo({record,daoid,user,t,tc,locale})
             <Card.Body>
 
             <div className='mb-3 p-1' style={bStyle} >
-                <img height={32} width={32} alt='' src={record.dao_logo?record.dao_logo:'/logo.svg'} style={{borderRadius:'50%'}} />{'  '}
+                <img height={32} width={32} alt='' src={record.dao_logo?record.dao_logo:'/logo.svg'} />{'  '}
                 <b>{record.dao_name}({record.dao_symbol})</b> {'  '}
                 {ismember && <Button  style={{marginLeft:30}} variant="primary" onClick={e=>{setChangeLogo(true)}} >{t('logoChangeText')}</Button>}
             </div>

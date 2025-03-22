@@ -12,7 +12,7 @@ import { useTranslations } from 'next-intl'
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  * @showProperty 显示特定人的选项，回复的编辑中设为false
  */
-const Editor = forwardRef(({currentObj,nums,accountAr,showProperty=true }, ref) => {
+const Editor = forwardRef(({currentObj,nums,accountAr,isSC,showProperty=true }, ref) => {
   const actor = useSelector((state) => state.valueData.actor)
   const t = useTranslations('ff')
   const tc = useTranslations('Common')
@@ -64,7 +64,7 @@ const Editor = forwardRef(({currentObj,nums,accountAr,showProperty=true }, ref) 
     onChange={(e) => setInputValue(e.target.value)} />
     
     <Media ref={mediaRef} t={t} tc={tc} currentObj={currentObj} >
-       {showProperty && <SCProperty ref={propertyRef} t={t} currentObj={currentObj} accountAr={accountAr}  actor={actor} >
+       {showProperty && <SCProperty ref={propertyRef} t={t} currentObj={currentObj} accountAr={accountAr}  isSC={isSC} actor={actor} >
           <div className={editStyle.charcount}>{t('remainingText')}: {remainingChars} </div> 
         </SCProperty>}
     </Media>

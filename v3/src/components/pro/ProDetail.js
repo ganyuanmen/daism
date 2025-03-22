@@ -18,7 +18,7 @@ export default function ProDetail({obj,t}){
             <Modal.Body>
             
                <Row  className='mb-3 p-1'  style={{borderBottom:'1px solid gray'}} >
-                    <Col>  <img height={32} width={32} alt='' src={obj.dao_logo?obj.dao_logo:'/logo.svg'} style={{borderRadius:'50%'}} />{'  '}
+                    <Col>  <img height={32} width={32} alt='' src={obj.dao_logo?obj.dao_logo:'/logo.svg'}  />{'  '}
                         <b>{obj.dao_name}({obj.dao_symbol})</b>
                     </Col>                   
                 </Row>

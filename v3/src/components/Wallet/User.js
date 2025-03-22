@@ -111,7 +111,7 @@ export default function User({user,loginsiwe,t,env,...props}) {
     return (<>
       <Nav onSelect={handleSelect}  style={{display:"inline-block"}} >
       <NavDropdown   title={
-        <span className='daism-color' >{actor?.avatar?<img src={actor.avatar}  alt={actor?.actor_account} width={32} height={32} style={{borderRadius:'50%'}}/> :<AccountSvg /> }  </span>
+        <span className='daism-color' >{actor?.avatar?<img src={actor.avatar}  alt={actor?.actor_account} width={32} height={32} /> :<AccountSvg /> }  </span>
       } >
         {/* <NavDropdown.Item eventKey="a"><span className='daism-color' ><SwapTokenSvg size={24}/></span> 中本聪 荣誉通证 </NavDropdown.Item>  */}
         <NavDropdown.Item eventKey="1"><span className='daism-color' ><WalletSvg  size={24}/></span> {t('myWalletText')}...</NavDropdown.Item>
@@ -134,7 +134,7 @@ export default function User({user,loginsiwe,t,env,...props}) {
         <Modal.Header closeButton>About </Modal.Header>
         <Modal.Body  >
           <div className='d-flex justify-content-start align-items-center' >
-            <Image src="/enki.svg" style={{borderRadius:'50%'}}  width={64}  height={64}  alt="Dasim"    /> 
+            <Image src="/enki.svg"  width={64}  height={64}  alt="Dasim"    /> 
             <span style={{fontSize:"42px",marginLeft:"30px",fontWeight:"bold" }} >  EnKi</span>
          </div>
         <hr/>

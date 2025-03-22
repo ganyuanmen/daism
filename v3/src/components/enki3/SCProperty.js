@@ -10,7 +10,7 @@ import { useTranslations } from 'next-intl'
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  * @children 留有一个插槽 用于放置 剩多少个文字， 把两个组件放在一行上
  */
-const SCProperty = forwardRef(({children,currentObj,accountAr}, ref) => {
+const SCProperty = forwardRef(({children,currentObj,accountAr,isSC}, ref) => {
     const actor = useSelector((state) => state.valueData.actor)
     const t = useTranslations('ff')
     const div1Ref = useRef(null);  //属性选择窗口
@@ -65,13 +65,13 @@ const SCProperty = forwardRef(({children,currentObj,accountAr}, ref) => {
     return (<>
       <Row >
          <Col>
-          <button className='btn btn-light'  onClick={e=>{setShowProperty(true)}}>
+         {!isSC && <button  className='btn btn-light'  onClick={e=>{setShowProperty(true)}}>
             {propertyIndex===1?
             <div className="d-flex align-items-center" ><PublicMess size={18} /> <span style={{display:'inline-block',paddingLeft:'4px'}} >{t('publicMess')}</span> </div>:propertyIndex===2?
             <div className="d-flex align-items-center" ><LockSvg size={24} /> <span>{t('followMess')}</span></div>:
             <div className="d-flex align-items-center" ><SomeOne size={24} /> <span>{t('someonrMess')}</span></div>
             }
-        </button>
+        </button>}
          </Col>
          <Col className="col-auto" >{children}</Col>
          </Row>

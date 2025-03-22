@@ -42,7 +42,7 @@ function DaosPage({daosData,user,t,tc})
                 
                     <Row  className='mb-3 p-1'  style={{borderBottom:'1px solid gray'}} >
                         <Col className='col-auto me-auto' >
-                            <img style={{borderRadius:'50%'}}  alt="" width={32} height={32} src={obj.dao_logo?obj.dao_logo:'/logo.svg'} />
+                            <img alt="" width={32} height={32} src={obj.dao_logo?obj.dao_logo:'/logo.svg'} />
                             {'  '}<b>{obj.dao_name}(Valuation Token: {obj.dao_symbol})</b>
                         </Col>
                         <Col className='col-auto' ><b>{obj.dao_time}(UTC-8)</b></Col>

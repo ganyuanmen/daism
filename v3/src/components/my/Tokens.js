@@ -33,7 +33,7 @@ function TokensPage({tokensData,t})
                     <Row key={idx} className='mb-3 p-1'  style={{borderBottom:'1px solid gray'}} >
                         <Col>
                         <Link className='daism-a' href={`/${locale}/workroom/[id]`} as={`/${locale}/workroom/${obj.dao_id}`}>
-                            <img height={32} width={32} alt='' src={obj.dao_logo?obj.dao_logo:'/logo.svg'} style={{borderRadius:'50%'}} />{'  '}<b>{obj.dao_symbol}</b>
+                            <img height={32} width={32} alt='' src={obj.dao_logo?obj.dao_logo:'/logo.svg'} />{'  '}<b>{obj.dao_symbol}</b>
                             </Link>
                         </Col>
                         <Col>

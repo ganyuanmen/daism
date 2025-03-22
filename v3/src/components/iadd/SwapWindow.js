@@ -50,7 +50,7 @@ export default function SwapWindow({workIndex,show,setShow,selectToken}) {
              {tokenFilter.map((obj, idx) =>                 
                <Row key={idx} className={`mb-1 ${iaddStyle.iadd_tokenlist}`}  onClick={()=>{clickSelect(obj)}} >
                     <Col className="Col-auto me-auto d-flex  align-items-center" >
-                        <img width={36} height={36}  alt="" src={obj.dao_logo ? obj.dao_logo : '/logo.svg'} style={{borderRadius:'50%'}}  />
+                        <img width={36} height={36}  alt="" src={obj.dao_logo ? obj.dao_logo : '/logo.svg'}  />
                         <div style={{paddingLeft:'12px'}} >
                             <div style={{color:'#0D111C',fontSize:'16px'}} >{obj.dao_name}</div>
                             <div style={{color:'#98AEC0',fontSize:'12px'}} >{obj.dao_symbol}</div>

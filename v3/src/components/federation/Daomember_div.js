@@ -24,9 +24,7 @@ export default function Daomember_div({record,t,dao_manager}) {
                                   }
                                   <span style={{display:'inline-block',paddingLeft:'6px'}} >{obj.actor_account}</span>
                               </a>
-                            // obj.avatar?
-                            // <ShowImg path={obj.avatar}  width="32px" alt='' height="32px" borderRadius='50%' />
-                            // : <img src='/logo.svg' width={32} alt='' height={32} style={{borderRadius:'50%'}} />
+                           
                             }
                            
                             

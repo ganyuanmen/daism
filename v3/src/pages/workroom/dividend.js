@@ -61,7 +61,7 @@ export default function Dividend({env,locale}) {
                       
             <tr key={idx}  >
             <td  >
-                <img style={{borderRadius:'50%'}}  alt="" width={32} height={32} src={obj.dao_logo?obj.dao_logo:'/logo.svg'} />
+                <img  alt="" width={32} height={32} src={obj.dao_logo?obj.dao_logo:'/logo.svg'} />
                 {'  '}<b>{obj.dao_name}(Valuation Token: {obj.dao_symbol})</b>
             </td>
             <td><ShowAddress address={obj.account}  /></td>
