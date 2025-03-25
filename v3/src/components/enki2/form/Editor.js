@@ -50,12 +50,12 @@ const Editor = forwardRef(({currentObj,nums,accountAr,isSC,showProperty=true }, 
   //输入处理
   const onInput = (e) => {
     const value = e.target.value;
-    if (value.length <= nums) {
+    // if (value.length <= nums) {
       setRemainingChars(nums - value.length);
-    } else 
-    {
-        setInputValue(value.slice(0, nums));
-    }
+    // } else 
+    // {
+    //     setInputValue(value.slice(0, nums));
+    // }
   };
 
   return (

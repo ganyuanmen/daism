@@ -70,7 +70,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         formData.append('vedioURL',(typeIndex===0?editorRef:richEditorRef).current.getVedioUrl());  //视频网址
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //
         formData.append('accountAt',(typeIndex===0?editorRef:richEditorRef).current.getAccount());  //@用户
-        formData.append('textContent', typeIndex===0?'':richEditorRef.current.getTextContent());  //文本
+        formData.append('textContent', typeIndex===0?contentHTML:richEditorRef.current.getTextContent());  //文本
         formData.append('typeIndex', typeIndex);  //长或短
         formData.append('content', contentHTML); //，html内容
         formData.append('actorid', actor.id);
@@ -116,7 +116,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
             <label className="form-check-label" htmlFor="isSendbox">{t('emitDiscussion')}</label>
         </div>
         <div className="form-check form-switch mb-3 mt-3">
-            <input ref={sendRef} className="form-check-input" type="checkbox" id="isDiscussionbox" defaultChecked={currentObj?(currentObj.is_send===1?true:false):true} />
+            <input  disabled={true}  ref={sendRef} className="form-check-input" type="checkbox" id="isDiscussionbox" defaultChecked={currentObj?(currentObj.is_send===1?true:false):true} />
             <label className="form-check-label" htmlFor="isDiscussionbox">{t('sendToFollow')}</label>
         </div>
         

@@ -157,7 +157,9 @@
     "showmore":"Show more...",
     "uploadImg":"Uploading images...",
     "filterText":"Tag filtering",
-    "proposedText":"Proposed by"
+    "proposedText":"Proposed by",
+    "wordNotLess":"The word count cannot exceed {nums}",
+    "notSelect":"No community selected for publication"
 
   }
 }

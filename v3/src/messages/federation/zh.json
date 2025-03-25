@@ -157,7 +157,9 @@
     "showmore":"显示更多...",
     "uploadImg":"正在上传图片...",
     "filterText":"标签过滤",
-    "proposedText":"发起者"
+    "proposedText":"发起者",
+    "wordNotLess":"字数不能大于{nums}",
+    "notSelect":"没有选择发布的社区"
 
 
   

@@ -1,8 +1,8 @@
-export function createMessage(userName,domain,text,fileName,id,title,imgpath,message_domain,pathtype)
+export function createMessage(userName,domain,text,imgPath,id,message_domain,pathtype,contentType)
 {   
     userName=userName.toLowerCase()
     let d=new Date();  
-    let suff=fileName.indexOf('.')>0?fileName.split('.').splice(-1)[0]:''
+    let suff=imgPath.indexOf('.')>0?imgPath.split('.').splice(-1)[0]:''
     let noteMessage = {
       'id': `https://${message_domain}/communities/${pathtype}/${id}`,
       'url':`https://${message_domain}/communities/${pathtype}/${id}`,
@@ -14,26 +14,30 @@ export function createMessage(userName,domain,text,fileName,id,title,imgpath,mes
       'attributedTo': `https://${domain}/api/activitepub/users/${userName}`,
       'content': text,
       'draft': false,
-      'name':title,
-      'title':title,
-      "imgpath":imgpath,
+      'name':text,
+      'title':text,
+      "imgpath":imgPath,
       'to': ['https://www.w3.org/ns/activitystreams#Public'],
       'cc':[`https://${domain}/api/activitepub/follower/${userName}`]
     };
   
-    if(fileName && suff)
+    if(imgPath && suff)
     {
       noteMessage['attachment']=[{
         'mediaType':`image/${suff}`,
         'name':'Banner',
         'type':'Document',
-        'url': fileName,
+        'url': imgPath,
       }]
+    }
+    if(contentType==='Update'){
+      noteMessage.updated=d.toISOString();
+      delete noteMessage.published;
     }
     let createMessage = {
       '@context': 'https://www.w3.org/ns/activitystreams',
-      'id': `https://${message_domain}/communities/${pathtype}/${id}`,
-      'type': 'Create',
+      'id': `https://${message_domain}/communities/${pathtype}/${id}#${contentType}`,
+      'type': contentType,
       'published': d.toISOString(),
       'actor': `https://${domain}/api/activitepub/users/${userName}`,
       'attributedTo':`https://${domain}/api/activitepub/users/${userName}`,

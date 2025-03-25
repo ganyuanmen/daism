@@ -28,7 +28,7 @@ async function createConnection() {
 
 export async function getData(sql, sqlParams, is_object = false) {
   const pool = await createConnection(); // 只调用一次 createConnection
-  if (process.env.IS_DEBUGGER === '1') console.info(`getData: ${sql}-->` + sqlParams.join());
+  // if (process.env.IS_DEBUGGER === '1') console.info(`getData: ${sql}-->` + sqlParams.join());
 
   try {
     const [rows, ] = await pool.query(sql, sqlParams);
@@ -75,7 +75,7 @@ export async function getJsonArray(cid, sqlParams,object_false)
   const [rows,] = await pool.query("select sqls from aux_tree where id=?",[cid]);
   let sql=rows[0].sqls;
 
-  if(process.env.IS_DEBUGGER==='1')  console.info(`${cid}--> getJsonArray: ${sql}-->`+sqlParams.join())
+  // if(process.env.IS_DEBUGGER==='1')  console.info(`${cid}--> getJsonArray: ${sql}-->`+sqlParams.join())
   try {
     const [rows,fields] = await pool.query(sql,sqlParams);
     if(rows && rows.length)

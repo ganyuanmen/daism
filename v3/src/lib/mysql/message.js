@@ -78,17 +78,28 @@ export async function daoPageData({pi,w})
 
 //element.user_account--->receive_account
 //`https://${process.env.LOCAL_DOMAIN}/communities/${sctype}/${id}`--->linkUrl
-export async function insertMessage(account,message_id,pathtype)
+export async function insertMessage(account,message_id,pathtype,contentType)
 {
 	let sctype=pathtype==='enkier'?'':'sc';
 	let re=await getData(`SELECT message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,title,content,top_img FROM v_message${sctype} where message_id=?`
 	,[message_id],true);
 
 	let linkUrl=`https://${process.env.LOCAL_DOMAIN}/communities/${pathtype}/${message_id}`
-	
-	let sql="INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,title,content,is_send,is_discussion,top_img,receive_account,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-	let paras=[re.message_id,re.manager,re.actor_name,re.avatar,re.actor_account,re.actor_url,re.actor_inbox,linkUrl,re.title,re.content,0,1,re.top_img,account,1]
+	let sql;
+	let paras;
+	if(contentType==='Create') {
+		sql="INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,title,content,is_send,is_discussion,top_img,receive_account,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+		paras=[re.message_id,re.manager,re.actor_name,re.avatar,re.actor_account,re.actor_url,re.actor_inbox,linkUrl,re.title,re.content,0,1,re.top_img,account,1]
+	} else if(contentType==='Update')
+	{
+		sql="update a_message set content=?,top_img=? where message_id=? and send_type>0";
+		paras=[re.content,re.top_img,re.message_id]
 
+	} else 
+	{
+		sql="delete from a_message where message_id=?";
+		paras=[re.message_id]
+	}
 	await execute(sql,paras)
 }
  //获取回复总数

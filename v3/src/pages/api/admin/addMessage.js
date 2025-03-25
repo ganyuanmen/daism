@@ -33,6 +33,8 @@ export default withSession(async (req, res) => {
         const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
         const tagar = content[0].match(regex)?.map(match => match.slice(1,40)) || [];
         // console.log(tagar)
+        const pathtype=daoid?'enki':'enkier';
+
         if (id[0] == '0') { //增加
             let message_id = uuidv4().replaceAll('-','')
             if (daoid) { //enki
@@ -55,13 +57,19 @@ export default withSession(async (req, res) => {
 
             let insertId = await executeID(sql, paras);
             if (insertId) {
-                if (parseInt(isSend[0]) === 1) {
-                     if (daoid){
-                        send(account[0],parseInt(typeIndex[0])===0?content[0]:textContent[0], content[0], path, message_id, '', path, 'enki' )
-                    }else {
-                        send(account[0],parseInt(typeIndex[0])===0?content[0]:textContent[0], content[0], path, message_id, '', path,'enkier')
-                    }    
-                }
+                // if (parseInt(isSend[0]) === 1) {
+                    //account,textContent,imgpath,message_id,pathtype,contentType
+                send(
+                    account[0],
+                    content[0],
+                    textContent[0],
+                    // parseInt(typeIndex[0])===0?content[0]:textContent[0],
+                    path,
+                    message_id,
+                    pathtype,
+                    'Create'
+                ) 
+                // }
                 if(accountAt && accountAt[0]){
                     const ar=JSON.parse(accountAt[0]);
                     sql='INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,content,is_send,is_discussion,top_img,receive_account,send_type,vedio_url,property_index,type_index) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
@@ -99,7 +107,20 @@ export default withSession(async (req, res) => {
              }
 
             let lok = await execute(sql,paras);
-            if(lok) {       
+            if(lok) {  
+                // if (parseInt(isSend[0]) === 1) {
+                    //account,textContent,imgpath,message_id,pathtype,contentType
+                send(
+                    account[0],
+                    content[0],
+                    textContent[0],
+                    // parseInt(typeIndex[0])===0?content[0]:textContent[0],
+                    path,
+                    rear.message_id,
+                    pathtype,
+                    'Update'
+                ) 
+                // }     
                 setTimeout(async () => {  //生成链接卡片
                     await addLink(content[0],rear.message_id,sctype);
                     await execute(`delete from t_tagmess${sctype} where cid=?`,[id[0]])

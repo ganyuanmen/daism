@@ -72,7 +72,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
                     return '';
                 }
                 if (contentText.length >nums) {
-                       showClipError(`字数不能大于${nums}!`);
+                       showClipError(t('wordNotLess',{nums}));
                        return '';
                 }
           
@@ -91,7 +91,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
     const submit = async () => {
         if(!currentObj?.id) {
             if (errorSelect) return showClipError(t('loginDomainText', { domain: loginDomain }));
-            if (!selectedDaoid) return showClipError('没有选择发布的社区！')
+            if (!selectedDaoid) return showClipError(t('notSelect'))
         }
         const contentHTML = getHTML();
         if(!contentHTML) return;
@@ -128,7 +128,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
             formData.append('eventAddress', addressRef.current.getData());
             formData.append('time_event', timeRef.current.getData());
         }
-        formData.append('textContent', typeIndex===0?'':richEditorRef.current.getTextContent());  //文本非enki 推送
+        formData.append('textContent', typeIndex===0?contentHTML:richEditorRef.current.getTextContent());  //文本非enki 推送
         formData.append('typeIndex', typeIndex);  //长或短
         formData.append('vedioURL',(typeIndex===0?editorRef:richEditorRef).current.getVedioUrl());  //视频网址
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //
@@ -224,11 +224,11 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
          }
    {/* <TagShow ref={inputRef} cid={currentObj?.id} type='sc' t={t} /> */}
           <div className="form-check form-switch  mt-3">
-              <input ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={currentObj?(currentObj.is_discussion===1?true:false):true} />
+              <input  ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={currentObj?(currentObj.is_discussion===1?true:false):true} />
               <label className="form-check-label" htmlFor="isSendbox">{t('emitDiscussion')}</label>
           </div>
           <div className="form-check form-switch mb-3 mt-3">
-              <input ref={sendRef} className="form-check-input" type="checkbox" id="isDiscussionbox" defaultChecked={currentObj?(currentObj.is_send===1?true:false):true} />
+              <input disabled={true} ref={sendRef} className="form-check-input" type="checkbox" id="isDiscussionbox" defaultChecked={currentObj?(currentObj.is_send===1?true:false):true} />
               <label className="form-check-label" htmlFor="isDiscussionbox">{t('sendToFollow')}</label>
           </div>
        
