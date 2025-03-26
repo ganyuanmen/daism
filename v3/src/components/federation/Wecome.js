@@ -13,11 +13,11 @@ export default function Wecome() {
     return (
         
         <div style={{paddingTop:'30px'}}>
-            <div style={{paddingBottom:'30px'}} ><h1>{t('federationWecomeText0')}</h1> </div>
-            <div style={{display:'flex',alignItems:'flex-end'}} >
-                <div style={{fontSize:'1.5em',lineHeight:'2em',borderRight:'1px solid gray',paddingRight:'30px'}} >
-                    <h2>{t('federationWecomeText1')}:</h2>
-                    <ul>
+            <div style={{fontSize:'1.8em',fontWeight:'bold',textAlign:'center',marginBottom:'6px'}} >{t('federationWecomeText0')}</div>
+            <div style={{display:'flex',alignItems:'flex-start'}} >
+                <div style={{borderRight:'1px solid gray',paddingRight:'30px'}} >
+                    <div style={{fontSize:'1.4em',fontWeight:'bold'}} >{t('federationWecomeText1')}:</div>
+                    <ul style={{fontSize:'1.3em',lineHeight:'2em'}}>
                         <li>{t('federationWecomeText2')}</li>
                         <li>{t('federationWecomeText3')}</li>
                         <li>{t('federationWecomeText4')}</li>
