@@ -159,7 +159,9 @@
     "filterText":"标签过滤",
     "proposedText":"发起者",
     "wordNotLess":"字数不能大于{nums}",
-    "notSelect":"没有选择发布的社区"
+    "notSelect":"没有选择发布的社区",
+    "setTopText":"置顶",
+    "dropTopText":"取消置顶"
 
 
   

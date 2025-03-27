@@ -42,8 +42,20 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			break;
 	}
 	// if(w) where=where?`${where} and title like '%${w}%'`:`where title like '%${w}%'`;
+
 	let sql=`select * from v_message${sctype} ${where} order by ${order} desc limit ${pi*12},12`;
 	let re=await getData(sql,[]);
+	if(parseInt(menutype)===1 || parseInt(menutype)===2){
+		let arr=re.filter(obj => obj.is_top===0);
+		if(parseInt(pi)===0){ //首页
+			where=where?`${where} and is_top=1`:`where is_top=1`;
+			sql=`select * from v_message${sctype} ${where} order by ${order} desc`;
+			let re1=await getData(sql,[]);
+			re= [...re1, ...arr]
+		}
+	} 
+
+	
 	// if(parseInt(menutype)===3 && parseInt(eventnum)===3){ //从sc取出收藏
 	// 	sql=`select * from v_messagesc where id in(select pid from a_bookmarksc where account='${account}') order by ${order} desc limit ${pi*12},12`;
 	// 	const re1=await getData(sql,[]);
@@ -120,6 +132,14 @@ export async function replyPageData({pi,ppid,sctype})
 	let re=await getData(sql,[ppid]);
 	return re; 
 }
+
+//取置顶
+export async function setTopMessage({id,sctype,flag})
+{
+    return await execute(`update a_message${sctype} set is_top=? where id=?`,[flag,id]);
+	
+}
+
 
 //删除
 export async function messageDel({id,type,sctype})

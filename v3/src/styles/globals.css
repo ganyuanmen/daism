@@ -356,6 +356,9 @@ body {
 .daismCard img{
   max-width: 100%;
 }
+.daismCard td{
+  border: 1px solid #DADADA;
+}
 .desktop-only {
   display: block;
 }

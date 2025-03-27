@@ -16,6 +16,7 @@ import { MoreBtn } from "../../../lib/jssvg/SvgCollection";
  */
 export default function EnkiMemberItem({locale,messageObj,domain}) {
     const [honor,setHonor]=useState([])
+    const [isTop,setIsTop]=useState(false)
     const [isFollow,setIsFollow]=useState(true) //默认已关注
     const myFollow = useSelector((state) => state.valueData.myFollow)
     const actor = useSelector((state) => state.valueData.actor)
@@ -41,7 +42,8 @@ export default function EnkiMemberItem({locale,messageObj,domain}) {
             } 
         };
 
-        if(messageObj.dao_id==0 && messageObj?.manager) fetchData();
+        if (messageObj.dao_id === 0 && messageObj.manager) fetchData();
+        else if (messageObj.dao_id > 0 && messageObj.is_top) setIsTop(true);
 
     },[messageObj]) 
  
@@ -52,6 +54,7 @@ export default function EnkiMemberItem({locale,messageObj,domain}) {
             <div><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
             {honor.length>0 && <div><Honor honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
             {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
+            {isTop &&  <div style={{fontSize:'1.2em'}} className="badge bg-secondary">{t('setTopText')}</div>}
             <div><TimesItem currentObj={messageObj} /></div>
         </div>
     );

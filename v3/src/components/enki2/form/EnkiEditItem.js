@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { EditSvg,DeleteSvg } from "../../../lib/jssvg/SvgCollection";
+import { EditSvg,DeleteSvg,Pin } from "../../../lib/jssvg/SvgCollection";
 import { Nav,NavDropdown } from "react-bootstrap";
 import ConfirmWin from "../../federation/ConfirmWin";
 import { client } from "../../../lib/api/client";
@@ -32,7 +32,14 @@ export default function EnkiEditItem({messageObj,delCallBack,preEditCall,sctype,
         else showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
       
     }
-
+    const handlePin=async (flag,id)=>{
+        showTip(t('submittingText')) 
+        let res=await client.post('/api/postwithsession',"setTopMessage",{sctype,flag,id})
+        closeTip()
+        if(res.status===200) delCallBack.call() 
+        else showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
+      
+    }
  
 
     const [show,setShow]=useState(false)
@@ -46,6 +53,8 @@ export default function EnkiEditItem({messageObj,delCallBack,preEditCall,sctype,
             case "2":
               setShow(true)
             break;
+            case "3":
+                handlePin(messageObj.is_top?0:1,messageObj.id);
             default:
             break;
         } 
@@ -62,6 +71,8 @@ export default function EnkiEditItem({messageObj,delCallBack,preEditCall,sctype,
                 <NavDropdown  title=' ......' active={false} drop={type===0?"up":'down'} >
                     <NavDropdown.Item disabled={!isEdit} eventKey="1"> <span style={{color:isEdit?'black':'gray'}}><EditSvg size={24} /> {t('editText')}...</span></NavDropdown.Item> 
                     <NavDropdown.Item disabled={!isEdit} eventKey="2"> <span style={{color:isEdit?'black':'gray'}}><DeleteSvg size={24} /> {t('deleteText')}...</span></NavDropdown.Item>     
+                   {messageObj.dao_id>0 && <NavDropdown.Item disabled={!isEdit} eventKey="3"> <span style={{color:isEdit?'black':'gray'}}><Pin size={24} /> {messageObj.is_top?t('dropTopText'):t('setTopText')}...</span></NavDropdown.Item>}     
+                
                 </NavDropdown>
             </Nav>
             <ConfirmWin show={show} setShow={setShow} callBack={deldiscussions} question={t('deleteSureText')}/>

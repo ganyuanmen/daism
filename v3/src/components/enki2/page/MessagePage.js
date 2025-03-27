@@ -225,7 +225,7 @@ const handleClick = useCallback((event) => {
           {tag.name}
         </Button>
       ))} */}
-            <div onClick={handleClick} ref={contentDiv} dangerouslySetInnerHTML={{__html: replacedText}}></div>
+            <div className="daismCard"  onClick={handleClick} ref={contentDiv} dangerouslySetInnerHTML={{__html: replacedText}}></div>
             {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
             {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{maxWidth:'100%'}} /> }
             {currentObj?.vedio_url && <ShowVedio vedioUrl={currentObj.vedio_url} /> }

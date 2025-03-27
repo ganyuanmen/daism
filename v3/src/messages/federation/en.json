@@ -159,7 +159,9 @@
     "filterText":"Tag filtering",
     "proposedText":"Proposed by",
     "wordNotLess":"The word count cannot exceed {nums}",
-    "notSelect":"No community selected for publication"
+    "notSelect":"No community selected for publication",
+    "setTopText":"Pin the post",
+    "dropTopText":"Unpin the post"
 
   }
 }

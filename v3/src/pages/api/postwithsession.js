@@ -1,7 +1,6 @@
 import withSession from "../../lib/session";
 import { addEipType } from "../../lib/mysql/daism";
-import {messageDel} from '../../lib/mysql/message';
-import { handleHeartAndBook } from "../../lib/mysql/message";
+import {messageDel,setTopMessage,handleHeartAndBook} from '../../lib/mysql/message';
 import { getData } from "../../lib/mysql/common"
 import { broadcast } from "../../lib/net";
 import { send } from "../../lib/utils/send";
@@ -9,6 +8,7 @@ const methods={
     messageDel, //删除
     addEipType,// 增加eip 类型
     handleHeartAndBook, //点赞、取消点赞
+    setTopMessage, //取置顶
     
 }
 
