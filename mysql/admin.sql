@@ -1,6 +1,6 @@
 create database dao_db default character set utf8mb4 collate utf8mb4_unicode_ci;
+use dao_db;
 
-USE dao_db;
 /*
  Navicat Premium Data Transfer
 
@@ -14,7 +14,7 @@ USE dao_db;
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 09/03/2025 21:48:39
+ Date: 28/03/2025 08:42:44
 */
 
 SET NAMES utf8mb4;
@@ -43,7 +43,7 @@ CREATE TABLE `a_account`  (
   UNIQUE INDEX `block_num`(`block_num`) USING BTREE,
   UNIQUE INDEX `manager`(`dao_id`, `manager`) USING BTREE,
   UNIQUE INDEX `actor_url`(`actor_url`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_bookmark
@@ -87,7 +87,7 @@ CREATE TABLE `a_eip_type`  (
   `relay_type` tinyint(0) NULL DEFAULT NULL COMMENT '1 链上确认',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `type_name`(`type_name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_follow
@@ -109,7 +109,7 @@ CREATE TABLE `a_follow`  (
   UNIQUE INDEX `follow_id`(`follow_id`) USING BTREE,
   UNIQUE INDEX `idd`(`actor_account`, `user_account`) USING BTREE,
   INDEX `user_account`(`user_account`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_heart
@@ -160,13 +160,15 @@ CREATE TABLE `a_message`  (
   `type_index` tinyint(0) NULL DEFAULT 1,
   `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `total` int(0) NULL DEFAULT 0,
+  `is_top` tinyint(0) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`, `receive_account`) USING BTREE,
   INDEX `actor_account`(`actor_account`) USING BTREE,
   INDEX `send_type`(`send_type`, `receive_account`) USING BTREE,
   INDEX `receive_account`(`receive_account`) USING BTREE,
-  INDEX `dao_id`(`send_type`, `property_index`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+  INDEX `dao_id`(`send_type`, `property_index`) USING BTREE,
+  INDEX `Qis_top`(`is_top`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_message_commont
@@ -190,7 +192,7 @@ CREATE TABLE `a_message_commont`  (
   `ppid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc
@@ -220,11 +222,13 @@ CREATE TABLE `a_messagesc`  (
   `type_index` tinyint(0) NULL DEFAULT 1,
   `content_link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `total` int(0) NULL DEFAULT 0,
+  `is_top` tinyint(0) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `_type`(`_type`) USING BTREE,
   INDEX `dao_id`(`dao_id`) USING BTREE,
-  INDEX `reply_time`(`reply_time`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+  INDEX `reply_time`(`reply_time`) USING BTREE,
+  INDEX `Qis_top`(`is_top`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for a_messagesc_commont
@@ -248,7 +252,7 @@ CREATE TABLE `a_messagesc_commont`  (
   `ppid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `message_id`(`message_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for aux_bt
@@ -334,7 +338,7 @@ CREATE TABLE `t_changelogo`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_createversion
@@ -349,7 +353,7 @@ CREATE TABLE `t_createversion`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_dao
@@ -395,7 +399,7 @@ CREATE TABLE `t_daoaccount`  (
   `dao_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_daodetail
@@ -412,7 +416,7 @@ CREATE TABLE `t_daodetail`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `id`(`delegator`, `member_address`) USING BTREE,
   UNIQUE INDEX `dao_id`(`dao_id`, `member_address`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_domain
@@ -443,7 +447,7 @@ CREATE TABLE `t_domainsing`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_e2t
@@ -466,7 +470,7 @@ CREATE TABLE `t_e2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_eth_utoken
@@ -485,7 +489,7 @@ CREATE TABLE `t_eth_utoken`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_getdaoutoken
@@ -502,7 +506,7 @@ CREATE TABLE `t_getdaoutoken`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_mynft
@@ -538,7 +542,7 @@ CREATE TABLE `t_nft`  (
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_mint
@@ -555,7 +559,7 @@ CREATE TABLE `t_nft_mint`  (
   `contract_address` char(42) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 48 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swap
@@ -573,7 +577,7 @@ CREATE TABLE `t_nft_swap`  (
   `utoken` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_swaphonor
@@ -591,7 +595,7 @@ CREATE TABLE `t_nft_swaphonor`  (
   `tips` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '事件数组',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_nft_transfer
@@ -608,7 +612,7 @@ CREATE TABLE `t_nft_transfer`  (
   `in_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_pro
@@ -637,7 +641,7 @@ CREATE TABLE `t_pro`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `delegator`(`delegator`, `createTime`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_proexcu
@@ -653,7 +657,7 @@ CREATE TABLE `t_proexcu`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_provote
@@ -672,7 +676,7 @@ CREATE TABLE `t_provote`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `block_num`(`block_num`, `delegator`) USING BTREE,
   INDEX `delegator`(`delegator`, `createTime`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_swap
@@ -694,7 +698,7 @@ CREATE TABLE `t_swap`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2t
@@ -720,7 +724,7 @@ CREATE TABLE `t_t2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_t2u
@@ -743,7 +747,7 @@ CREATE TABLE `t_t2u`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_tagmess
@@ -762,10 +766,6 @@ CREATE TABLE `t_tagmess`  (
 -- ----------------------------
 INSERT INTO `t_tagmess` VALUES (6, 'qqq', 43);
 INSERT INTO `t_tagmess` VALUES (6, '在在工工', 44);
-INSERT INTO `t_tagmess` VALUES (7, '鑫', 46);
-INSERT INTO `t_tagmess` VALUES (7, 'qqq', 47);
-INSERT INTO `t_tagmess` VALUES (7, '椅厅有', 48);
-INSERT INTO `t_tagmess` VALUES (7, 'www1t', 49);
 
 -- ----------------------------
 -- Table structure for t_tagmesssc
@@ -838,7 +838,7 @@ CREATE TABLE `t_u2t`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `tran_hash`(`tran_hash`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_updatedaocreator
@@ -852,7 +852,7 @@ CREATE TABLE `t_updatedaocreator`  (
   `id` int(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `block_num`(`block_num`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- View structure for v_account
@@ -900,7 +900,7 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_getdaoutoken` AS selec
 -- View structure for v_message
 -- ----------------------------
 DROP VIEW IF EXISTS `v_message`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message` AS select `a`.`id` AS `id`,`a`.`message_id` AS `message_id`,`a`.`manager` AS `manager`,`a`.`actor_name` AS `actor_name`,`a`.`avatar` AS `avatar`,`a`.`actor_account` AS `actor_account`,`a`.`actor_url` AS `actor_url`,`a`.`actor_inbox` AS `actor_inbox`,`a`.`link_url` AS `link_url`,`a`.`title` AS `title`,`a`.`content` AS `content`,`a`.`is_send` AS `is_send`,`a`.`is_discussion` AS `is_discussion`,`a`.`top_img` AS `top_img`,`a`.`receive_account` AS `receive_account`,`a`.`send_type` AS `send_type`,`a`.`createtime` AS `createtime`,`a`.`reply_time` AS `reply_time`,`a`.`vedio_url` AS `vedio_url`,`a`.`account_at` AS `account_at`,`a`.`property_index` AS `property_index`,`a`.`type_index` AS `type_index`,`a`.`content_link` AS `content_link`,`a`.`total` AS `total`,`b`.`dao_id` AS `dao_id`,ifnull(`b`.`id`,0) AS `actor_id`,now() AS `currentTime` from (`a_message` `a` left join `a_account` `b` on((`a`.`actor_account` = `b`.`actor_account`)));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message` AS select `a`.`id` AS `id`,`a`.`message_id` AS `message_id`,`a`.`manager` AS `manager`,`a`.`actor_name` AS `actor_name`,`a`.`avatar` AS `avatar`,`a`.`actor_account` AS `actor_account`,`a`.`actor_url` AS `actor_url`,`a`.`actor_inbox` AS `actor_inbox`,`a`.`link_url` AS `link_url`,`a`.`title` AS `title`,`a`.`content` AS `content`,`a`.`is_send` AS `is_send`,`a`.`is_discussion` AS `is_discussion`,`a`.`top_img` AS `top_img`,`a`.`receive_account` AS `receive_account`,`a`.`send_type` AS `send_type`,`a`.`createtime` AS `createtime`,`a`.`reply_time` AS `reply_time`,`a`.`vedio_url` AS `vedio_url`,`a`.`account_at` AS `account_at`,`a`.`property_index` AS `property_index`,`a`.`type_index` AS `type_index`,`a`.`content_link` AS `content_link`,`a`.`total` AS `total`,`b`.`dao_id` AS `dao_id`,`a`.`is_top` AS `is_top`,ifnull(`b`.`id`,0) AS `actor_id`,now() AS `currentTime` from (`a_message` `a` left join `a_account` `b` on((`a`.`actor_account` = `b`.`actor_account`)));
 
 -- ----------------------------
 -- View structure for v_message_commont
@@ -912,7 +912,7 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_message_commont` AS se
 -- View structure for v_messagesc
 -- ----------------------------
 DROP VIEW IF EXISTS `v_messagesc`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc` AS select `a`.`id` AS `id`,`a`.`actor_id` AS `actor_id`,`a`.`dao_id` AS `dao_id`,`a`.`title` AS `title`,`a`.`content` AS `content`,`a`.`is_send` AS `is_send`,`a`.`is_discussion` AS `is_discussion`,`a`.`top_img` AS `top_img`,`a`.`start_time` AS `start_time`,`a`.`end_time` AS `end_time`,`a`.`event_url` AS `event_url`,`a`.`event_address` AS `event_address`,`a`.`time_event` AS `time_event`,`a`.`_type` AS `_type`,`a`.`reply_time` AS `reply_time`,`a`.`createtime` AS `createtime`,`a`.`message_id` AS `message_id`,`a`.`vedio_url` AS `vedio_url`,`a`.`account_at` AS `account_at`,`a`.`property_index` AS `property_index`,`a`.`type_index` AS `type_index`,`a`.`content_link` AS `content_link`,`a`.`total` AS `total`,concat('https://',`b`.`domain`,'/api/activitepub/inbox/',`b`.`actor_name`) AS `actor_inbox`,`b`.`actor_name` AS `actor_name`,`b`.`avatar` AS `avatar`,`b`.`actor_account` AS `actor_account`,`b`.`actor_url` AS `actor_url`,`c`.`manager` AS `manager`,`c`.`actor_account` AS `self_account`,`c`.`avatar` AS `self_avatar`,0 AS `send_type`,now() AS `currentTime` from ((`a_messagesc` `a` left join `a_account` `b` on((`a`.`dao_id` = `b`.`dao_id`))) left join `a_account` `c` on((`a`.`actor_id` = `c`.`id`)));
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_messagesc` AS select `a`.`id` AS `id`,`a`.`actor_id` AS `actor_id`,`a`.`dao_id` AS `dao_id`,`a`.`title` AS `title`,`a`.`content` AS `content`,`a`.`is_send` AS `is_send`,`a`.`is_discussion` AS `is_discussion`,`a`.`top_img` AS `top_img`,`a`.`start_time` AS `start_time`,`a`.`end_time` AS `end_time`,`a`.`event_url` AS `event_url`,`a`.`event_address` AS `event_address`,`a`.`time_event` AS `time_event`,`a`.`_type` AS `_type`,`a`.`reply_time` AS `reply_time`,`a`.`createtime` AS `createtime`,`a`.`message_id` AS `message_id`,`a`.`vedio_url` AS `vedio_url`,`a`.`account_at` AS `account_at`,`a`.`property_index` AS `property_index`,`a`.`type_index` AS `type_index`,`a`.`content_link` AS `content_link`,`a`.`total` AS `total`,`a`.`is_top` AS `is_top`,concat('https://',`b`.`domain`,'/api/activitepub/inbox/',`b`.`actor_name`) AS `actor_inbox`,`b`.`actor_name` AS `actor_name`,`b`.`avatar` AS `avatar`,`b`.`actor_account` AS `actor_account`,`b`.`actor_url` AS `actor_url`,`c`.`manager` AS `manager`,`c`.`actor_account` AS `self_account`,`c`.`avatar` AS `self_avatar`,0 AS `send_type`,now() AS `currentTime` from ((`a_messagesc` `a` left join `a_account` `b` on((`a`.`dao_id` = `b`.`dao_id`))) left join `a_account` `c` on((`a`.`actor_id` = `c`.`id`)));
 
 -- ----------------------------
 -- View structure for v_messagesc_commont
@@ -1560,7 +1560,7 @@ CREATE EVENT `day_event`
 ON SCHEDULE
 EVERY '1' DAY STARTS '2024-04-01 00:00:00'
 DO BEGIN
-	    UPDATE a_messagesc SET end_time=DATE_ADD(end_time, INTERVAL 7 DAY),start_time=DATE_ADD(start_time, INTERVAL 7 DAY)  WHERE time_event>0 AND NOW()>end_time and receive_account is null;
+	    UPDATE a_messagesc SET end_time=DATE_ADD(end_time, INTERVAL 7 DAY),start_time=DATE_ADD(start_time, INTERVAL 7 DAY)  WHERE time_event>0 AND NOW()>end_time ;
 	    update t_pro set is_end=2 where (createTime + lifetime - UNIX_TIMESTAMP())<0;
 	    delete from a_message where DATEDIFF(NOW(), createtime)>730;
 	    DELETE FROM a_messagesc WHERE DATEDIFF(NOW(), createtime)>730;
