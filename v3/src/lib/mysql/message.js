@@ -46,12 +46,12 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 	let sql=`select * from v_message${sctype} ${where} order by ${order} desc limit ${pi*12},12`;
 	let re=await getData(sql,[]);
 	if(parseInt(menutype)===1 || parseInt(menutype)===2){
-		let arr=re.filter(obj => obj.is_top===0);
+		re=re.filter(obj => obj.is_top===0);
 		if(parseInt(pi)===0){ //首页
 			where=where?`${where} and is_top=1`:`where is_top=1`;
 			sql=`select * from v_message${sctype} ${where} order by ${order} desc`;
 			let re1=await getData(sql,[]);
-			re= [...re1, ...arr]
+			re= [...re1, ...re]
 		}
 	} 
 
