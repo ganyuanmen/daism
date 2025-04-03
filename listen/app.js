@@ -167,7 +167,7 @@ function domain()
   server1.daoapi.Domain.RecordEvent(maxData[15], (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
-      let sql ="INSERT INTO t_domain(dao_id,block_num,domain,pubkey,privkey,_time) VALUES(?,?,?,?,?,?)";
+      let sql ="INSERT IGNORE INTO t_domain(dao_id,block_num,domain,pubkey,privkey,_time) VALUES(?,?,?,?,?,?)";
       crypto.generateKeyPair('rsa', {
          modulusLength: 512,
          publicKeyEncoding: {
@@ -192,7 +192,7 @@ function domainsing()
   server1.daoapi.Domain.recordInfoEvent(maxData[17], (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
-      let sql ="insert into t_domainsing(block_num,addr,domain,nick_name,pubkey,privkey,_time) values(?,?,?,?,?,?,?)";
+      let sql ="insert IGNORE into t_domainsing(block_num,addr,domain,nick_name,pubkey,privkey,_time) values(?,?,?,?,?,?,?)";
       crypto.generateKeyPair('rsa', {
          modulusLength: 512,
          publicKeyEncoding: {
@@ -218,7 +218,7 @@ function mintEvent()
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
       let tokenSvg=await server1.daoapi.DaismNft.getNFT(data['tokenId'])
-      let sql ="INSERT INTO t_nft(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
+      let sql ="INSERT IGNORE INTO t_nft(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
       let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.DaismNft.address,tokenSvg[1].join(',')];
       maxData[16] = obj.blockNumber+1n;  //Cache last block number
       await executeSql(sql, params); //dao 信息
@@ -232,7 +232,7 @@ function mintBurnEvent()
       const {data}=obj
       if(parseInt(data['tokenId'])===0) return;
       let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(data['tokenId'])
-      let sql ="INSERT INTO t_nft_swaphonor(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
+      let sql ="INSERT IGNORE INTO t_nft_swaphonor(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
       let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.Daismnftsing.address,`ETH Forging(${data["ethBurn"]}ETH)`];
       maxData[18] = obj.blockNumber+1n;  //Cache last block number
       await executeSql(sql, params); //dao 信息
@@ -245,7 +245,7 @@ function nftsing()
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
       let tokenSvg=await server1.daoapi.DaoLogo.getLogoByDaoId(data['daoId'])
-      let sql ="INSERT INTO t_nft_swap(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,utoken) VALUES(?,?,?,?,?,?,?,?)";
+      let sql ="INSERT IGNORE INTO t_nft_swap(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,utoken) VALUES(?,?,?,?,?,?,?,?)";
       let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[1],data['timestamp'], server1.daoapi.Daismnftsing.address,data['utokenAmount']];
       maxData[22] = obj.blockNumber+1n;  //Cache last block number
       await executeSql(sql, params); //dao 信息
@@ -257,7 +257,7 @@ function daoCreate()
   server1.daoapi.DaoRegistrar.daoCreateEvent0(maxData[0],async (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
-      let sql ="INSERT INTO t_dao(sctype,dao_id,block_num,dao_name,dao_symbol,dao_desc,dao_manager,dao_time,dao_exec,creator,delegator,strategy,lifetime,cool_time,dao_logo,dapp_owner) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      let sql ="INSERT IGNORE INTO t_dao(sctype,dao_id,block_num,dao_name,dao_symbol,dao_desc,dao_manager,dao_time,dao_exec,creator,delegator,strategy,lifetime,cool_time,dao_logo,dapp_owner) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       let params = [data['sctype'],data['daoId'],obj.blockNumber,data['name'],data['symbol'],data['describe'],data['manager']
       ,data['time'],data['address'],data['creator'],data['delegator'],data['strategy'],data['lifetime'],data['cool_time'],data['src'],data['dapp_owner']];
       maxData[0] = obj.blockNumber+1n;  //Cache last block number
@@ -269,7 +269,7 @@ function daoCreate()
    server1.daoapi.DaoRegistrar.daoCreateEvent(maxData[0],async (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
-      let sql ="INSERT INTO t_dao(sctype,dao_id,block_num,dao_name,dao_symbol,dao_desc,dao_manager,dao_time,dao_exec,creator,delegator,strategy,lifetime,cool_time,dao_logo,dapp_owner) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      let sql ="INSERT IGNORE INTO t_dao(sctype,dao_id,block_num,dao_name,dao_symbol,dao_desc,dao_manager,dao_time,dao_exec,creator,delegator,strategy,lifetime,cool_time,dao_logo,dapp_owner) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       let params = [data['sctype'],data['daoId'],obj.blockNumber,data['name'],data['symbol'],data['describe'],data['manager']
       ,data['time'],data['address'],data['creator'],data['delegator'],data['strategy'],data['lifetime'],data['cool_time'],data['src'],data['dapp_owner']];
       maxData[0] = obj.blockNumber+1n;  //Cache last block number
@@ -365,7 +365,7 @@ async function geneE2t(obj)
 {
    if(process.env.IS_DEBUGGER==='1') console.info(obj);
    const {data}=obj
-   let sql = "INSERT INTO t_e2t (block_num,from_address,to_address,in_amount,out_amount,swap_time,tran_hash,token_id,utoken_cost,swap_gas,tipAmount) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+   let sql = "INSERT IGNORE INTO t_e2t (block_num,from_address,to_address,in_amount,out_amount,swap_time,tran_hash,token_id,utoken_cost,swap_gas,tipAmount) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
    let cost = await server1.daoapi.IADD.getPool(data.tokenId); // 流动池中 dao 的当前币值（utoken）
    let params = [obj.blockNumber, data['from'],  data['to'], data['input_amount'],data['output_amount'],data['swap_time'],obj.transactionHash,data.tokenId,cost,data['gas'],data['tipAmount']];
    maxData[6] = obj.blockNumber+1n; //Cache last block number
@@ -411,7 +411,7 @@ function mintSmartCommon()  // mint smart common
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
       let tokenSvg=await server1.daoapi.DaoLogo.getLogoByDaoId(data['daoId'])
-      let sql ="INSERT INTO t_nft_mint(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address) VALUES(?,?,?,?,?,?,?)";
+      let sql ="INSERT IGNORE INTO t_nft_mint(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address) VALUES(?,?,?,?,?,?,?)";
       let params ;
       data['to'].forEach((account,idx)=>{
          data['tokenIds'][idx].forEach(async token=>{
@@ -429,7 +429,7 @@ function updateSCEvent()
    server1.daoapi.DaoRegistrar.updateSCEvent(maxData[21],async (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
-      let sql ="INSERT INTO t_updatedaocreator(block_num,dao_id,creator,_time) VALUES(?,?,?,?) ";
+      let sql ="INSERT IGNORE INTO t_updatedaocreator(block_num,dao_id,creator,_time) VALUES(?,?,?,?) ";
       let params = [obj.blockNumber,data['daoId'],data['newCreator'],data['timestamp']];
       maxData[21] = obj.blockNumber+1n;  //Cache last block number
       await executeSql(sql, params); 
@@ -441,7 +441,7 @@ function addCreatorCEvent()
    server1.daoapi.DaoRegistrar.addCreatorCEvent(maxData[1], async (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
-      let sql ="INSERT INTO t_createversion(block_num,dao_id,creator,dao_version,_time) VALUES(?,?,?,?,?) ";
+      let sql ="INSERT IGNORE INTO t_createversion(block_num,dao_id,creator,dao_version,_time) VALUES(?,?,?,?,?) ";
       let params = [obj.blockNumber,data['daoId'],data['newCreator'],data['SC_Version'],data['timestamp']];
       maxData[1] = obj.blockNumber+1n;  //Cache last block number
       await executeSql(sql, params); 
@@ -495,7 +495,7 @@ function execEvent()
    server1.daoapi.EventSum.execEvent(maxData[8], async obj => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj);
       const {data}=obj
-      let sql = "INSERT INTO t_proexcu(block_num,delegator,account,dividendRights,_time,proposalType) VALUES(?,?,?,?,?,?)";
+      let sql = "INSERT IGNORE INTO t_proexcu(block_num,delegator,account,dividendRights,_time,proposalType) VALUES(?,?,?,?,?,?)";
       let params = [obj.blockNumber, data['delegator'],data['account'],data['dividendRights'],data['_time'],data['proposalType']];
       maxData[8] = obj.blockNumber+1n; //Cache last block number
       await executeSql(sql, params);
@@ -528,7 +528,7 @@ function getDividendEvent()
    server1.daoapi.EventSum.getDividendEvent(maxData[13],async obj => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj);
       const {data}=obj
-      let sql = "INSERT INTO t_getdaoutoken(block_num,delegator,account,utoken_amount,_time,dao_owner,pre_time) VALUES(?,?,?,?,?,?,?)";
+      let sql = "INSERT IGNORE INTO t_getdaoutoken(block_num,delegator,account,utoken_amount,_time,dao_owner,pre_time) VALUES(?,?,?,?,?,?,?)";
       let params = [obj.blockNumber, data['delegator'],data['account'],data['utoken_amount'],data['_time'],data['dao_owner'],data['pre_time']];
       maxData[13] = obj.blockNumber+1n; //Cache last block number
       await executeSql(sql, params);
@@ -554,7 +554,7 @@ function nfttransfer()
       if(process.env.IS_DEBUGGER==='1') console.info(obj);
       const {data}=obj
       let tokenSvg=await server1.daoapi.UnitNFT.getTokenImageSvg(data['tokenId'])
-      let sql = "INSERT INTO t_nft_transfer(block_num,token_id,token_to,tokensvg,_time,contract_address) VALUES(?,?,?,?,?,?)";
+      let sql = "INSERT IGNORE INTO t_nft_transfer(block_num,token_id,token_to,tokensvg,_time,contract_address) VALUES(?,?,?,?,?,?)";
       let params = [obj.blockNumber, data['tokenId'],data['to'],tokenSvg,data['timestamp'],server1.daoapi.UnitNFT.address];
       maxData[20] = obj.blockNumber+1n; //Cache last block number
       await executeSql(sql, params);
