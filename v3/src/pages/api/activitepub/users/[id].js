@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     let name = req.query.id.toLowerCase();
     if (!name) return res.status(400).send('Bad request.')
     
-    let localUser = await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'actor_account,pubkey,avatar,dao_id,id,actor_desc')
+    let localUser = await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'actor_account,pubkey,avatar,dao_id,id,actor_desc,manager')
     if (!localUser['actor_account']) return res.status(404).send(`No record found for ${name}.`)
 
     if((req.headers['accept'] && req.headers['accept'].toLowerCase().startsWith('application/activity'))||(req.headers['content-type'] && req.headers['content-type'].toLowerCase().startsWith('application/activity')))

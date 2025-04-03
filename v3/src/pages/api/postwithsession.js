@@ -1,6 +1,6 @@
 import withSession from "../../lib/session";
 import { addEipType } from "../../lib/mysql/daism";
-import {messageDel,setTopMessage,handleHeartAndBook} from '../../lib/mysql/message';
+import {messageDel,setTopMessage,handleHeartAndBook,setAnnounce} from '../../lib/mysql/message';
 import { getData } from "../../lib/mysql/common"
 import { broadcast } from "../../lib/net";
 import { send } from "../../lib/utils/send";
@@ -9,6 +9,7 @@ const methods={
     addEipType,// 增加eip 类型
     handleHeartAndBook, //点赞、取消点赞
     setTopMessage, //取置顶
+    setAnnounce,//转发
     
 }
 
@@ -37,11 +38,11 @@ export default withSession(async (req, res) => {
         {
           broadcast({type:'addType',domain:process.env.LOCAL_DOMAIN,actor:{_type:req.body._type,_desc:req.body._desc},user:{},followId:0})  //广播信息
         } 
-        res.status(200).json(lok);
+        res.status(200).json({state:lok});
     }
     catch(err)
     {
-        console.error('post:/api/postwithsession:',req.headers.method,req.body,err)
+        console.error('error for post:/api/postwithsession:',req.headers.method,req.body,err)
         res.status(500).json({errMsg: 'fail'+err.toString()});
     }  
 });

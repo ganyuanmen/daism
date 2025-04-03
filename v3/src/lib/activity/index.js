@@ -12,6 +12,7 @@ export function createActor(name,domain,user) {
     type: 'Person',
     preferredUsername: name,
     name: name,
+    manager:user.manager,
     summary: user.actor_desc,
     icon: {
       type: 'Image',
@@ -219,3 +220,53 @@ export function createUndo(userName, domain,actorUrl,followId) {
     "@context":["https://www.w3.org/ns/activitystreams","https://w3id.org/security/v1"]
   };
  }
+
+ 
+ export function createAnnounce(userName,domain,id,content,topImg,contentLink,vedioUrl,toUrl)  //id 嗯文ID pathtype:enki/enkier
+ {
+  userName=userName.toLowerCase();
+  let d=new Date();  
+  return {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id":`https://${domain}/api/activitepub/users/${userName}/announces/${d.getTime()}`,
+    "type": "Announce",
+    'actor': `https://${domain}/api/activitepub/users/${userName}`,
+    'attributedTo':toUrl,
+    "object": id, // 转发 的帖子 ID
+    content,topImg,contentLink,vedioUrl,
+    "published": d.toISOString(),
+    "to": ["https://www.w3.org/ns/activitystreams#Public"],
+    "cc": ["https://example.com/users/alice/followers"]
+  };
+ }
+//pid 回复ID
+ export function createNote(userName,domain,pid,id,message_domain,pathtype,content)
+ {   
+     userName=userName.toLowerCase()
+     let d=new Date();  
+     
+     let noteMessage = {
+       'id': `https://${message_domain}/commont/${pathtype}/${id}`,
+       'url':pid,
+       content,
+       'type':'Note',
+       'published': d.toISOString(),
+       'inReplyTo':pid,
+       'to': ['https://www.w3.org/ns/activitystreams#Public'],
+       'cc':[`https://${domain}/api/activitepub/follower/${userName}`]
+     };
+       
+     let createMessage = {
+       '@context': 'https://www.w3.org/ns/activitystreams',
+       'id': `https://${message_domain}/commont/${pathtype}/${id}/${d.getTime()}`,
+       'type': 'Create',
+       'published': d.toISOString(),
+       'actor': `https://${domain}/api/activitepub/users/${userName}`,
+       'attributedTo':`https://${domain}/api/activitepub/users/${userName}`,
+       'to': ['https://www.w3.org/ns/activitystreams#Public'],
+       'cc':[`https://${domain}/api/activitepub/follower/${userName}`],
+       'object': noteMessage
+     };
+     return createMessage;
+ }
+ 

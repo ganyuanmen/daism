@@ -1,6 +1,6 @@
 import { User1Svg } from "../../../lib/jssvg/SvgCollection";
 import ShowAddress from "../../ShowAddress";
-
+import { useTranslations } from 'next-intl'
 /**
  * 显示用户信息，包括头像，钱包地址，enki 帐号
  * @messageObj 
@@ -10,6 +10,7 @@ import ShowAddress from "../../ShowAddress";
 
 export default function EnkiMember({messageObj,isLocal,locale,hw=48})
 {
+    const t = useTranslations('ff')
     const geneHref=()=>{
         
         if(messageObj?.dao_id>0){ //SC 帐号
@@ -20,8 +21,9 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
     }
 
     return( 
+        //.
   
-        <div className="d-inline-flex align-items-center"  >
+        <div style={{width:'60%'}}  className="d-inline-flex align-items-center"  >
             {isLocal?
             <a href={geneHref()} className="daism-a"  >
                 {messageObj?.avatar?
@@ -37,11 +39,16 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
             </a>
             }
         
-            <div style={{paddingLeft:'10px'}} >
-                <div>{messageObj?.actor_account || messageObj?.account}</div>
+            <div style={{paddingLeft:'2px', flex:1}} >
+                {messageObj?.send_type>7?<>
+                <div className="daism-account" >{t('amouseText')}: {messageObj?.actor_account || messageObj?.account}</div>
+                <div>to: {messageObj?.receive_account} </div>
+                </>:<>
+                <div className="daism-account" >{messageObj?.actor_account || messageObj?.account}</div>
                 {(!messageObj.dao_id || messageObj?.send_type>0) && <> {messageObj?.send_type==1 ? <div>to: {messageObj?.receive_account} </div>
                 :isLocal && messageObj?.manager && <ShowAddress address={messageObj?.manager} />}</>
-                }
+                }</>
+            }
             </div>
         </div>
    

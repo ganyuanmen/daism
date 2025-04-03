@@ -147,11 +147,12 @@ async function addLink(content, id,sctype) {
       
         let tootContent = await getTootContent(furl, process.env.LOCAL_DOMAIN)
         if (tootContent) {
-            await executeID(sql, [tootContent, id]);
+            await execute(sql, [tootContent, id]);
         } else {
-            await executeID(sql, ['', id]);
+            await execute(sql, ['', id]);
         }
     }else {
-        await executeID(sql, ['', id]);
+        await execute(sql, ['', id]);
     }
 }
+

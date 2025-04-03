@@ -53,7 +53,7 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,fil
       const checkIsEdit=()=>{  //是否允许修改
           if(!loginsiwe) return false;
           if(!messageObj?.actor_account && !messageObj?.actor_account?.includes('@')) return false;
-          if(!actor?.actor_account && !actor?.actor_account?.includes('@')) return false;
+          if(!actor?.actor_account || !actor?.actor_account?.includes('@')) return false;
           //远程读取不可修改
           if(env.domain!=messageObj.actor_account.split('@')[1]) return false;
           if(messageObj.dao_id>0){  //SC
@@ -196,7 +196,7 @@ const handleClick = useCallback((event) => {
               {messageObj.send_type===0 && 
               <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={messageObj}  />}
             
-              <EnkiEditItem isEdit={isEdit} messageObj={messageObj} delCallBack={delCallBack}
+              <EnkiEditItem isEdit={isEdit} env={env} actor={actor} messageObj={messageObj} delCallBack={delCallBack}
                preEditCall={()=>{ setCurrentObj(messageObj);setActiveTab(1);}} sctype={messageObj?.dao_id>0?'sc':''} /> 
             </div>
 

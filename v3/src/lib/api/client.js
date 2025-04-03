@@ -14,6 +14,7 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
     
     try {
       const response = await window.fetch(endpoint, config)
+
       if(response.status!==200){
         return {
           status: response.status,
@@ -35,8 +36,8 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
       return {
         status: 404,
         data:{},
-        headers: response.headers,
-        url: response.url,
+        // headers: response.headers,
+        // url: response.url,
         statusText:'fetch error:'+err.toString()
       }
     }

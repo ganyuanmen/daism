@@ -34,7 +34,7 @@ export async function getData(sql, sqlParams, is_object = false) {
     const [rows, ] = await pool.query(sql, sqlParams);
     return is_object ? rows[0] : rows;
   } catch (error) {
-    console.info(`getData: ${sql}-->` + sqlParams.join());
+    console.info(`error for getData: ${sql}-->` + sqlParams.join());
     console.error('Database query error:', error); 
     return is_object ? {} : [];
   }
@@ -48,7 +48,7 @@ export async function execute(sql, sqlParams) {
     const result = await pool.execute(sql,sqlParams)
     return result
   } catch (error) {
-    console.info(`execute: ${sql}-->`+sqlParams.join())
+    console.info(`error for execute: ${sql}-->`+sqlParams.join())
     console.error(error)
     return 0
   }
@@ -62,7 +62,7 @@ export async function executeID(sql, sqlParams) {
     const result = await pool.execute(sql,sqlParams)
     return result[0].insertId
   } catch (error) {
-    console.info(`executeID: ${sql}-->`+sqlParams.join())
+    console.info(`error for executeID: ${sql}-->`+sqlParams.join())
     console.error(error)
     return 0
   }
@@ -92,7 +92,7 @@ export async function getJsonArray(cid, sqlParams,object_false)
     }
     return object_false?{}:[]
   } catch (error) {
-    console.info(`${cid}--> getJsonArray: ${sql}-->`+sqlParams.join())
+    console.info(` error for ${cid}--> getJsonArray: ${sql}-->`+sqlParams.join())
     console.error(error)
     return  object_false?{}:[]
   }

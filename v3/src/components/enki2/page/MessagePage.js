@@ -33,7 +33,8 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
         ,sctype:currentObj.dao_id>0?'sc':''
-        ,ppid:currentObj.message_id});
+        ,ppid:currentObj.message_id
+        ,pid:currentObj.id});
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
@@ -76,7 +77,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         const checkIsEdit=()=>{  //是否允许修改 
             if(!loginsiwe) return false;
             if(!currentObj?.actor_account && !currentObj?.actor_account?.includes('@')) return false;
-            if(!actor?.actor_account && !actor?.actor_account?.includes('@')) return false;
+            if(!actor?.actor_account || !actor?.actor_account?.includes('@')) return false;
             //远程读取不可修改
             if(env.domain!=currentObj?.actor_account?.split('@')[1]) return false;
             if(currentObj.dao_id>0){  //SC
@@ -107,7 +108,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
 
     const ableReply = () => { //是否允许回复，点赞，书签
         if(!loginsiwe) return false;
-        if(!actor?.actor_account && !actor?.actor_account?.includes('@')) return false;
+        if(!actor?.actor_account || !actor?.actor_account?.includes('@')) return false;
         //发布帐号，用于判断是否本域名
         let _account=currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account;
         if(!_account || !_account?.includes('@'))  return false;
@@ -140,7 +141,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&ppid=${fetchWhere.ppid}&account=${fetchWhere.account}&sctype=${fetchWhere.sctype}`,'replyPageData');
+                const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&ppid=${fetchWhere.ppid}&account=${fetchWhere.account}&sctype=${fetchWhere.sctype}&pid=${fetchWhere.pid}`,'replyPageData');
                 if(res.status===200){
                     if(Array.isArray(res.data)){
                         setHasMore(res.data.length >= 20);
@@ -257,7 +258,7 @@ const handleClick = useCallback((event) => {
                 {/* 非注册地登录，不能收藏 */}
                 <EnKiBookmark isEdit={ableReply() && actor.actor_account.split('@')[1]==env.domain} currentObj={currentObj}/>
               {currentObj.send_type===0 && <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={currentObj} />}
-              <EnkiEditItem isEdit={isEdit} messageObj={currentObj} delCallBack={delCallBack} 
+              <EnkiEditItem env={env} isEdit={isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
               preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} /> 
             </div>
             {currentObj?.link_url && <div className="mt-2 mb-2" style={{textAlign:'center'}}>

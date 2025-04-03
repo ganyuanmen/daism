@@ -4,9 +4,13 @@ import {createAccept} from '../../../../lib/activity'
 import { getUser } from "../../../../lib/mysql/user";
 import {signAndSend,broadcast} from '../../../../lib/net'
 import { getOne } from "../../../../lib/mysql/message";
-import { execute } from "../../../../lib/mysql/common";
+import { execute, executeID } from "../../../../lib/mysql/common";
 import { getInboxFromUrl,getLocalInboxFromUrl } from '../../../../lib/mysql/message';
 import { LRUCache } from 'lru-cache'
+import { getTootContent,findFirstURI } from '../../../../lib/utils'
+
+//'../../lib/utils'
+
 const crypto = require('crypto');
 
 const options = {max: 64,maxSize: 5000,
@@ -61,7 +65,7 @@ export default async function handler(req, res) {
 		// console.info(req.headers)
 	}
 	
-	const validTypes = ['follow', 'accept', 'undo', 'create', 'update', 'delete'];
+	const validTypes = ['follow', 'accept', 'undo', 'create', 'update', 'delete','announce'];
     if (!validTypes.includes(_type))   return res.status(200).json({ errMsg: 'No need to handle' });
 
 	let actor = cache.get(postbody.actor);
@@ -106,6 +110,7 @@ export default async function handler(req, res) {
 				case 'create': 
 				case 'update':
 				case 'delete':
+				case 'announce':
 					createMess(postbody,name,actor).then(()=>{}); 
 					break;
 				
@@ -169,31 +174,61 @@ async function createMess(postbody,name,actor){ //对方的推送
 		return;
 	}
 	if(!actor.account) return;
-
-	const replyType=postbody.object.inReplyTo || postbody.object.inReplyToAtomUri || null;  //inReplyTo:
 	const strs=actor.account.split('@') ;
-	if(!replyType || !replyType.includes('/communities/'))
+	let localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
+	if(!localUser.manager) return;
+	if(postbody.type.toLowerCase()==='announce'){
+		
+		if(postbody?.object && typeof(postbody.object)==='string' && postbody.object.startsWith('http')) {
+			let sql="INSERT IGNORE INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type,vedio_url,content_link) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			let paras;
+			if(postbody.attributedTo){
+				let user=await getLocalInboxFromUrl(postbody.attributedTo);
+				if(!user.name) user=await getInboxFromUrl(postbody.attributedTo);
+				if(!user.name) return;
+				paras=[user.manager??'', postbody.object,user.name,user.avatar,user.account,user.url,
+				postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,user.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,postbody?.topImg,9,postbody?.vedioUrl,postbody?.contentLink]	;
+			} else 
+			{
+				paras=['', postbody.object,actor.name,actor.avatar,actor.account,actor.url,
+					`<a href='${postbody.object}' >${postbody.object}</a>`,actor.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,'',9,'',''];	
+			}
+			executeID(sql,paras).then((insertId)=>{
+				if(!postbody?.content) addAnnoceLink(postbody.object, insertId)
+			})
+		}
+		return;
+	}
+	
+	const replyType=postbody.object.inReplyTo || postbody.object.inReplyToAtomUri || null;  //inReplyTo:
+	
+	if(!replyType )
 	{
-		let localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
-		if(!localUser.manager) return;
+	
 		let linkUrl=postbody.object.url || postbody.object.atomUri
-		let sql="INSERT INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-		let paras=[localUser.manager, postbody.object.id,strs[0],actor.avatar,actor.account,postbody.actor,content,actor.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,linkUrl,imgpath,1]	
-		execute(sql,paras).then(()=>{})
+		let sql="INSERT IGNORE INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+		let paras=[actor?.manager??'', postbody.object.id,strs[0],actor.avatar,actor.account,postbody.actor,content,actor.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,linkUrl,imgpath,1]	
+		executeID(sql,paras).then((insertId)=>{addLink(content, insertId); //生成链接卡片
+		})
 	}
 	else {
+		if(replyType.includes('communities/enki')){
 		const ids=replyType.split('/');
 		const id=ids[ids.length-1];
-		if(/^[0-9]+$/.test(id)){
 			const sctype=ids[ids.length-2]==='enki'?'sc':'';
-			let message=await getOne({id,sctype:''})
+			let message=await getOne({id,sctype})
 			if(message['is_discussion']==1) //允许讨论
 			{
-				execute(`INSERT INTO a_message${sctype}_commont(pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?)`,
-				[message['id'],postbody.object.id,strs[0],actor.avatar,actor.account,postbody.actor,content]).then(()=>{})
+				execute(`INSERT IGNORE INTO a_message${sctype}_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
+				[id,message['id'],postbody.object.id,strs[0],actor.avatar,actor.account,postbody.actor,content]).then(()=>{});
 			}
-
 		}
+		else {
+			let message=await getOne({replyType,sctype:''})
+			if(message?.id)
+			execute(`INSERT IGNORE INTO a_message_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
+				[replyType,message['id'],postbody.object.id,strs[0],actor.avatar,actor.account,postbody.actor,content]).then(()=>{});
+			}
 	}
 	
 }
@@ -386,3 +421,32 @@ async function verifySignature(req,actor,name) {
 	  return false;
 	}
   }
+
+  
+
+async function addAnnoceLink(url, id) {
+
+        let tootContent = await getTootContent(url, process.env.LOCAL_DOMAIN)
+        if (tootContent) {
+            await execute('update a_message set content_link=? where id=?', [tootContent, id]);
+        } 
+  
+}
+
+
+async function addLink(content, id) {
+    const furl = findFirstURI(content)
+    const sql = `update a_message set content_link=? where id=?`
+    if (furl) {
+        let tootContent = await getTootContent(furl, process.env.LOCAL_DOMAIN)
+        if (tootContent) {
+            await execute(sql, [tootContent, id]);
+        } else {
+            await execute(sql, ['', id]);
+        }
+    }else {
+        await execute(sql, ['', id]);
+    }
+}
+
+

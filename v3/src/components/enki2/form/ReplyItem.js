@@ -36,15 +36,25 @@ export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCal
         setIsFollow(true); else setIsFollow(false);
 }, [myFollow]);  
 
+
+    const createtime=new Date(replyObj.createtime);
+
+    const month = String(createtime.getMonth() + 1).padStart(2, '0'); // 月份是从 0 开始的，需要加 1 并补零
+    const day = String(createtime.getDate()).padStart(2, '0'); // 天数补零
+    
+
+
     return (
         <div style={{borderBottom:'1px solid #D2D2D2'}}>
-           <div className="d-flex justify-content-between align-items-center" style={{paddingLeft:"20px"}}  >
+           <div style={{width:'100%',paddingLeft:"10px"}} className="d-inline-flex justify-content-between align-items-center"   >
                 <EnkiMember messageObj={replyObj} isLocal={false} hw={32} locale={locale} />
                 {!isFollow && <div><EnKiFollow searObj={replyObj} /> </div>}
-                <div style={{paddingRight:'10px'}}  >
-                   <EnkiEditItem isEdit={isEdit} messageObj={replyObj} delCallBack={callBack} 
+                
+                <div  style={{paddingRight:'10px'}}  >
+                    <EnkiEditItem isEdit={isEdit} actor={actor} messageObj={replyObj} delCallBack={callBack} 
                     preEditCall={editCallBack} type={1} sctype={sctype} />
-                    <TimesItem currentObj={replyObj} />
+                    {/* <TimesItem currentObj={replyObj} />  */}
+                   <span style={{display:'inline-block',paddingLeft:'10px'}} > {`${month}-${day}`}</span>
                 </div>
             </div> 
             <div className="daism-reply-item" style={{paddingBottom:'20px'}} >
@@ -58,4 +68,5 @@ export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCal
         </div> 
     );
 }
+
 

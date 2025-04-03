@@ -161,7 +161,8 @@
     "wordNotLess":"The word count cannot exceed {nums}",
     "notSelect":"No community selected for publication",
     "setTopText":"Pin the post",
-    "dropTopText":"Unpin the post"
+    "dropTopText":"Unpin the post",
+    "amouseText":"Retweet"
 
   }
 }

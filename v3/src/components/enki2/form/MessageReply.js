@@ -78,7 +78,7 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
         formData.append('ppid', currentObj.message_id);
         formData.append('content', contentHTML); //，内容
         formData.append('actorid', actor.id); //，回复者id
-        // formData.append('account', actor.actor_account); //，回复者id
+        formData.append('inbox', currentObj.actor_inbox); //，回复者id
         formData.append('sctype', currentObj.dao_id > 0 ? 'sc' : '');
         formData.append('typeIndex', typeIndex);  //长或短
         formData.append('vedioURL',(typeIndex===0?editorRef:richEditorRef).current.getVedioUrl());  //视频网址

@@ -1,6 +1,8 @@
-import { getData,execute } from './common'
-import { httpGet } from "../net"; 
+import { getData,execute, executeID } from './common'
+import { httpGet,signAndSend } from "../net"; 
 import { getUser } from './user';
+import {getFollowers} from '../mysql/folllow';
+import {createAnnounce} from '../../lib/activity'
 
  
 ////pi,menutype,daoid,w,actorid:嗯文人ID,account,order,eventnum
@@ -125,11 +127,11 @@ export async function getReplyTotal({sctype,pid})
 
 
 //所有回复
-export async function replyPageData({pi,ppid,sctype})
+export async function replyPageData({pi,ppid,sctype,pid})
 {
 
 	let sql=`select * from v_message${sctype}_commont where ppid=? order by id desc limit ${pi*20},20`
-	let re=await getData(sql,[ppid]);
+	let re=await getData(sql,[ppid,pid]);
 	return re; 
 }
 
@@ -178,6 +180,50 @@ export async function handleHeartAndBook({account,pid,flag,table,sctype})
     if(flag==0) return await execute(`delete from a_${table}${sctype} where pid=? and account=?`,[pid,account]);
     else return await execute(`insert into a_${table}${sctype}(account,pid) values(?,?)`,[account,pid]);
 }
+//转发
+export async function setAnnounce({account,id,content,pathtype,topImg,contentLink,vedioUrl,toUrl,recordId})
+{	
+	// topImg:messageObj.top_img,
+	// contentLink:messageObj.content_link,
+	// vedioUrl:messageObj.vedio_url,
+
+	try{
+		if(!id.startsWith('http')) id=`https://${process.env.LOCAL_DOMAIN}/communities/${pathtype}/${id}`
+		let user=await getLocalInboxFromUrl(toUrl);
+		if(!user.name) user=await getInboxFromUrl(toUrl);
+		if(!user.name) return;
+	
+		const re=await getData("select domain,actor_name,privkey from v_account where actor_account=?"
+		,[account],true);
+		
+		let sql="INSERT IGNORE INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,content,is_send,is_discussion,top_img,receive_account,send_type,vedio_url,content_link) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+		let paras=[
+			id,
+			 user.manager??'',user.name,user.avatar,user.account,user.url,user.inbox,
+			 id,
+			 content,0,1,topImg,account,8,vedioUrl,contentLink]
+		execute(sql,paras);
+		execute("insert IGNORE into a_annoce(id,sctype,account) values(?,?,?)",[recordId,pathtype==='enki'?'sc':'',account])
+		const sendbody=createAnnounce(re.actor_name,process.env.LOCAL_DOMAIN,id,content,topImg,contentLink,vedioUrl,toUrl) 
+		getFollowers({account}).then(async data=>{
+			
+			data.forEach(element => {
+				if(element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
+                    // paras=[id,re.manager,re.actor_name,re.avatar,re.account,re.actor_url,re.actor_inbox,id,content,0,1,'',element.user_account,9];
+					paras=[
+						id,
+						 user.manager??'',user.name,user.avatar,user.account,user.url,user.inbox,
+						 id,
+						 content,0,1,topImg,,element.user_account,9,vedioUrl,contentLink]
+					execute(sql,paras);  
+				}else {
+					signAndSend(element.user_inbox,re.actor_name,re.domain,sendbody,re.privkey);
+				  }
+			});
+		})
+	}catch(e1){ console.error(e1)}
+  
+}
 
 
 //获取一条嗯文
@@ -185,6 +231,13 @@ export async function getOne({id,sctype})
 {
     let re= await getData(`select * from v_message${sctype} where ${id.length<10?'id':'message_id'}=?`,[id]);
     return  re[0] || {}
+}
+
+//获取是否已转发
+export async function getAnnoce({id,sctype,account})
+{
+    let re= await getData(`select id from a_annoce where id=? and sctype=? and account=?`,[id,sctype,account]);
+    return  re || []
 }
 
 //查找我关注过的人
@@ -258,19 +311,19 @@ export async function getLocalInboxFromAccount(account) {
 }
 
 export async function getLocalInboxFromUrl(url){
-	let obj={name:'',domain:'',inbox:'',account:'',url:'',pubkey:'',avatar:''}
-	let user=await getUser('actor_url',url,'actor_account,avatar,pubkey');
+	let obj={name:'',domain:'',inbox:'',account:'',url:'',pubkey:'',avatar:'',manager:''}
+	let user=await getUser('actor_url',url,'actor_account,avatar,pubkey,manager');
 	// if( process.env.IS_DEBUGGER==='1') { console.info("user",user)	}
 	if(!user['actor_account']) return obj;
 	const [userName,domain]=user.actor_account.split('@');
 
 	return {name:userName,domain,inbox:`https://${domain}/api/activitepub/inbox/${userName}`
-	,account:user['actor_account'],url,pubkey:user['pubkey'],avatar:user['avatar']}
+	,account:user['actor_account'],url,pubkey:user['pubkey'],avatar:user['avatar'],manager:user['manager']}
 }
 
 export async function getInboxFromUrl(url,type='application/activity+json'){
 	const myURL = new URL(url);
-	let obj={name:'',domain:myURL.hostname,inbox:'',account:'',url:'',pubkey:'',avatar:''}
+	let obj={name:'',domain:myURL.hostname,inbox:'',account:'',url:'',pubkey:'',avatar:'',manager:''}
 	let re= await httpGet(url,{"Content-Type": type})
 	if(re.code!==200) return obj;
 	re=re.message
@@ -279,6 +332,7 @@ export async function getInboxFromUrl(url,type='application/activity+json'){
 	if(re.inbox) { 
 	obj.inbox=re.inbox; 
 	obj.desc=re.summary;
+	obj.manager=re.manager;
 	obj.pubkey=re.publicKey.publicKeyPem;
 	obj.url=re.id;
 	obj.account=`${re.name}@${myURL.hostname}`
@@ -292,7 +346,7 @@ export async function getInboxFromUrl(url,type='application/activity+json'){
 
 async function getInboxFromUrl1(url,type='application/activity+json'){
 	const myURL = new URL(url);
-	let obj={name:'',domain:myURL.hostname,inbox:'',account:'',url:'',pubkey:'',avatar:''}
+	let obj={name:'',domain:myURL.hostname,inbox:'',account:'',url:'',pubkey:'',avatar:'',manager:''}
 	let re= await httpGet(url,{"Content-Type": type})
 	if(re.code!==200) return obj;
 	re=re.message
@@ -301,6 +355,7 @@ async function getInboxFromUrl1(url,type='application/activity+json'){
 	if(re.inbox) { 
 	obj.inbox=re.inbox; 
 	obj.desc=re.summary;
+	obj.manager=re.manager;
 	obj.pubkey=re.publicKey.publicKeyPem;
 	obj.url=re.id;
 	obj.account=`${re.name}@${myURL.hostname}`

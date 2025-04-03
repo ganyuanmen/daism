@@ -4,6 +4,9 @@ import withSession from "../../../lib/session";
 import formidable from 'formidable';
 import { executeID,getData,execute } from "../../../lib/mysql/common";
 import { saveImage, findFirstURI, getTootContent } from "../../../lib/utils";
+import {createNote} from '../../../lib/activity/index'
+import { signAndSend } from "../../../lib/net";
+
 const { v4: uuidv4 } = require("uuid");
 
 
@@ -22,14 +25,14 @@ export default withSession(async (req, res) => {
    
     const form = formidable({})
     const [fields, files] = await form.parse(req);
-    let {vedioURL,typeIndex,rid,pid,ppid,actorid,content,sctype,fileType} = fields  //rid 修改ID
+    let {vedioURL,typeIndex,rid,pid,ppid,actorid,content,sctype,fileType,inbox} = fields  //rid 修改ID
     // const actorName=account[0].split('@')[0];
     const _path=new Date().toLocaleDateString().replaceAll('/','');
     const imgPath = saveImage(files, fileType[0],_path)
     let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${_path}/${imgPath}` : '';
     if(rid[0]=='0') { //add
       let message_id=uuidv4()
-      let rows=await getData("select manager,actor_name,avatar,actor_account,actor_url from a_account where id=?",[actorid[0]])
+      let rows=await getData("select manager,domain,actor_name,avatar,actor_account,actor_url,privkey from a_account where id=?",[actorid[0]])
       if(rows.length===0){
          return res.status(err.httpCode || 500).json({errMsg: "invalid ID"}); 
       }
@@ -38,6 +41,11 @@ export default withSession(async (req, res) => {
           const paras=[rows[0].manager,pid[0],ppid[0],message_id.replaceAll('-',''),rows[0].actor_name,rows[0].avatar,rows[0].actor_account,rows[0].actor_url,content[0],typeIndex[0],vedioURL[0],path]
           let insertId=await executeID(sql,paras);
           if(insertId) { 
+            if(ppid[0].startsWith('http')){
+              const sendbody= createNote(rows[0].actor_name,rows[0].domain,ppid[0],insertId, process.env.LOCAL_DOMAIN,sctype==='sc'?'enki':'enkier',content[0]);
+              signAndSend(inbox[0],rows[0].actor_name,rows[0].domain,sendbody,rows[0].privkey);
+
+            }
             setTimeout(async () => {await addLink(content[0], insertId,sctype[0])}, 1);//生成链接卡片
             return  res.status(200).json(await getData(`select * from v_message${sctype[0]}_commont where id=?`, [insertId],true));
         }

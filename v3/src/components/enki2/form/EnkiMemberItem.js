@@ -51,11 +51,11 @@ export default function EnkiMemberItem({locale,messageObj,domain}) {
   //a_message中的actor_id,关联到a_account, 是enki 帐号的都是本地。
     return (
         <div className="d-flex flex-wrap justify-content-between align-items-center" >
-            <div><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
+            <div style={{flex:1}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
             {honor.length>0 && <div><Honor honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
             {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
             {isTop &&  <div style={{fontSize:'1.2em'}} className="badge bg-secondary">{t('setTopText')}</div>}
-            <div><TimesItem currentObj={messageObj} /></div>
+            <div style={{paddingLeft:'4px'}} ><TimesItem currentObj={messageObj} /></div>
         </div>
     );
 }
