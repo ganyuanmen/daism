@@ -321,7 +321,7 @@ export default function enkier({openObj,env,locale,accountAr }) {
                           
                         </>}
                     </ul>
-                    {loginsiwe && actor?.actor_account?.includes('@') && env.domain===actor.actor_account.split('@')[1] && <div>
+                    {loginsiwe && actor?.actor_account?.includes('@') && env.domain===actor?.actor_account.split('@')[1] && <div>
                     <SearchInput setSearObj={setSearObj} setFindErr={setFindErr} />
                     {searObj && <div className='mt-3' >
                         <EnkiMember messageObj={searObj} isLocal={!!searObj.manager} locale={locale} />

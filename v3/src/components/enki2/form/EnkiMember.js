@@ -23,7 +23,7 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
     return( 
         //.
   
-        <div style={{width:'60%'}}  className="d-inline-flex align-items-center"  >
+        <div style={{width:'90%'}} className="d-inline-flex align-items-center"  >
             {isLocal?
             <a href={geneHref()} className="daism-a"  >
                 {messageObj?.avatar?
@@ -39,13 +39,13 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
             </a>
             }
         
-            <div style={{paddingLeft:'2px', flex:1}} >
+            <div style={{paddingLeft:'2px',width:'100%'}} >
                 {messageObj?.send_type>7?<>
-                <div className="daism-account" >{t('amouseText')}: {messageObj?.actor_account || messageObj?.account}</div>
-                <div>to: {messageObj?.receive_account} </div>
+                <div  className="daism-account" >{t('amouseText')}: {messageObj?.actor_account || messageObj?.account}</div>
+                <div className="daism-account" >to: {messageObj?.receive_account} </div>
                 </>:<>
-                <div className="daism-account" >{messageObj?.actor_account || messageObj?.account}</div>
-                {(!messageObj.dao_id || messageObj?.send_type>0) && <> {messageObj?.send_type==1 ? <div>to: {messageObj?.receive_account} </div>
+                <div  className="daism-account" >{messageObj?.actor_account || messageObj?.account}</div>
+                {(!messageObj.dao_id || messageObj?.send_type>0) && <> {messageObj?.send_type==1 ? <div  className="daism-account">to: {messageObj?.receive_account} </div>
                 :isLocal && messageObj?.manager && <ShowAddress address={messageObj?.manager} />}</>
                 }</>
             }

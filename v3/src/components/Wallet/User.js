@@ -81,10 +81,10 @@ export default function User({user,loginsiwe,t,env,...props}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if(!actor?.actor_account && !actor.actor_account?.includes('@')){
+    if(!actor?.actor_account && !actor?.actor_account?.includes('@')){
       return showError(t('notRegisterEnki'))
     }
-    if(actor.actor_account.split('@')[1]!=env.domain) {
+    if(actor?.actor_account.split('@')[1]!=env.domain) {
       return showError(t('registerDomain',{domain:env.domain}))
     }
 
@@ -111,7 +111,7 @@ export default function User({user,loginsiwe,t,env,...props}) {
     return (<>
       <Nav onSelect={handleSelect}  style={{display:"inline-block"}} >
       <NavDropdown   title={
-        <span className='daism-color' >{actor?.avatar?<img src={actor.avatar}  alt={actor?.actor_account} width={32} height={32} /> :<AccountSvg /> }  </span>
+        <span className='daism-color' >{actor?.avatar?<img src={actor?.avatar}  alt={actor?.actor_account} width={32} height={32} /> :<AccountSvg /> }  </span>
       } >
         {/* <NavDropdown.Item eventKey="a"><span className='daism-color' ><SwapTokenSvg size={24}/></span> 中本聪 荣誉通证 </NavDropdown.Item>  */}
         <NavDropdown.Item eventKey="1"><span className='daism-color' ><WalletSvg  size={24}/></span> {t('myWalletText')}...</NavDropdown.Item>

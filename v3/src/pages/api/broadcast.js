@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 	else if(postbody.type==='recover')
 	{
 		let sql="call recover_follow(?,?)";
-		let paras=[postbody.user.account,postbody.actor.account];
+		let paras=[postbody.user.account,postbody.actor?.account];
 		await execute(sql,paras);
 	}
 	res.status(200).json({msg:'ok'})

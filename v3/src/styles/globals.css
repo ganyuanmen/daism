@@ -80,7 +80,7 @@ body {
   border-radius: 6px;
 }
 
-.daism-reply-item{background-color: white; padding: 8px 4px 0px 60px; }
+.daism-reply-item{background-color: white; padding: 8px 4px 0px 22px; }
 
 .daism-reply-item p{
   margin: 2px !important;
@@ -186,8 +186,8 @@ body {
   .honor{
     display: inline-block;
     margin: 0px 2px;
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     border: 1px solid gray ;
   }
@@ -500,4 +500,10 @@ blockquote p {
   margin: 0;
 }
 
-.daism-account{width: 70%; display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.daism-account{ display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.daism-ff{border:0;background-color:rgba(255, 255, 255, 0)}
+.daism-ff:hover{
+  background-color:#D7D8D9;
+  border-radius: 6px;
+  
+}

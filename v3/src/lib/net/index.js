@@ -72,7 +72,7 @@ export async function signAndSend(url,name,domain,message,privkey) {
           message={type,domain,user,actor,followId} 
         }
          else if(type==='removeFollow')  message={type,followId} //取消关注
-         else if(type==='addType') message={type,_desc:actor._desc,_type:actor._type}
+         else if(type==='addType') message={type,_desc:actor?._desc,_type:actor?._type}
          else if(type==='recover') message={type,user,actor} //转移关注
          else return false
         if(user?.domain!==element.domain && user?.domain!==element.domain ) 

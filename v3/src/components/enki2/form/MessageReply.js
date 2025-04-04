@@ -20,7 +20,7 @@ import { useTranslations } from 'next-intl'
  */
 
 const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,setReplyObj,
-     replyObj,isEdit,data_index,accountAr }, ref) => {
+     replyObj,isEdit,data_index,accountAr,bid,setBid, isTopShow }, ref) => {
 
     const [showWin, setShowWin] = useState(false); //回复窗口显示
     const dispatch = useDispatch();
@@ -68,16 +68,19 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
     }
 
     const submit = async () => {
+
         const contentHTML = getHTML();
         if(!contentHTML) return;
         setShowWin(false)
         showTip(t('submittingText'))
         const formData = new FormData();
-        formData.append('rid', replyObj ? replyObj.id : 0);  //修改id 
+        // formData.append('rid', replyObj ? replyObj.id : 0);  //修改id 
+        formData.append('rid', 0)
         formData.append('pid', currentObj.id);
+        formData.append('bid', isTopShow?'':bid);
         formData.append('ppid', currentObj.message_id);
         formData.append('content', contentHTML); //，内容
-        formData.append('actorid', actor.id); //，回复者id
+        formData.append('actorid', actor?.id); //，回复者id
         formData.append('inbox', currentObj.actor_inbox); //，回复者id
         formData.append('sctype', currentObj.dao_id > 0 ? 'sc' : '');
         formData.append('typeIndex', typeIndex);  //长或短
@@ -94,7 +97,7 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
                 closeTip()
                 let obj = await response.json()
                 if (obj.errMsg) { showClipError(obj.errMsg); return }
-                if (replyObj) afterEditcall.call(this,{...replyObj,...obj});
+                // if (replyObj) afterEditcall.call(this,{...replyObj,...obj});
                 else addReplyCallBack.call(this,obj,data_index); 
             })
             .catch(error => {
@@ -107,7 +110,7 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
  
     return (
         <>
-            <Button variant="light" disabled={!(isEdit && currentObj?.is_discussion == 1)} onClick={() => {setShowWin(true);
+            <Button variant="light" disabled={!(isEdit && currentObj?.is_discussion == 1)} onClick={() => {if(setBid) setBid(''); setShowWin(true);
                 if(setReplyObj) setReplyObj(null); //表示新增
                 }}  title={t('replyText')}>  
                 <ReplySvg size={24} />
@@ -123,8 +126,8 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
                     <Form.Check inline label={t('longText')} name="regroup1" type='radio' checked={typeIndex===1} 
                     onChange={e=> {if(e.target.checked) setTypeIndex(1)}}  id='reinline-1' />
                     </Form>
-                    {typeIndex===0?<Editor  ref={editorRef} currentObj={replyObj} nums={nums} accountAr={accountAr} showProperty={false} />
-                    :<RichEditor  ref={richEditorRef} currentObj={replyObj} />}
+                    {typeIndex===0?<Editor  ref={editorRef} currentObj={null} nums={nums} accountAr={accountAr} showProperty={false} />
+                    :<RichEditor  ref={richEditorRef} currentObj={null} />}
                     <div className='mt-2 mb-2' style={{ textAlign: 'center' }} >
                         <Button onClick={submit} variant="primary"> <ReplySvg size={16} /> {t('replyText')}</Button>
                     </div>

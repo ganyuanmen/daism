@@ -32,10 +32,11 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
  
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
-        ,sctype:currentObj.dao_id>0?'sc':''
+        ,sctype:currentObj?.dao_id>0?'sc':''
         ,ppid:currentObj.message_id
         ,pid:currentObj.id});
     const [data, setData] = useState([]);
+    const [bid, setBid] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [err,setErr]=useState("");
@@ -91,10 +92,10 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
                   //非本地登录
                 if(actor?.actor_account?.split('@')[1]!=env.domain) return false;
                 if(currentObj.send_type===0){ //本地
-                    if(actor.actor_account===currentObj.actor_account) return true;
+                    if(actor?.actor_account===currentObj.actor_account) return true;
                 }
                 // else { //接收
-                //     if(actor.actor_account===currentObj.receive_account) return true;
+                //     if(actor?.actor_account===currentObj.receive_account) return true;
                 // }
             }
             //超级管理员
@@ -123,10 +124,11 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
          
     } 
 
-    //修改评论前 ，弹出窗口
-    const preEditCallBack=(obj,reply_index)=>{
+    //回复评论前 ，弹出窗口
+    const preEditCallBack=(obj,reply_index,_bid)=>{
         setReplyObj(obj);
-        setReplyIndex(reply_index)
+        setReplyIndex(reply_index);
+        setBid(_bid);
         repluBtn.current.show();} 
     
     const afterEditcall=(obj)=>{
@@ -183,9 +185,10 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     }
 
     const addReplyCallBack=(obj)=>{
+        setFetchWhere({ ...fetchWhere });
         currentObj.total=currentObj.total+1;
-        data.unshift(obj);
-        setData([...data])
+        // data.unshift(obj);
+        // setData([...data])
     }
 
     
@@ -209,6 +212,19 @@ const handleClick = useCallback((event) => {
     } 
   } 
 }, []); // fi
+
+let lastArray = null;
+
+const renderedArrays = data.map((obj, idx) => {
+  const isSameAsLast = obj.bid === lastArray?.bid;
+  lastArray = obj;
+
+  return (
+    <ReplyItem pleft={isSameAsLast?40:10}  key={idx} locale={locale} isEdit={ableReply() && actor?.actor_account===obj.actor_account } 
+    replyObj={obj} delCallBack={replyDelCallBack}  domain={env.domain}
+    preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
+  );
+});
 
 
     return (
@@ -252,11 +268,11 @@ const handleClick = useCallback((event) => {
          
                 <MessageReply  ref={repluBtn} currentObj={currentObj} isEdit={ableReply()} accountAr={accountAr}
                  addReplyCallBack={addReplyCallBack} replyObj={replyObj} setReplyObj={setReplyObj} 
-                 afterEditcall={afterEditcall} />
+                 afterEditcall={afterEditcall}  isTopShow={false} bid={bid} setBid={setBid} />
 
                 <EnKiHeart isEdit={ableReply()} currentObj={currentObj} />
                 {/* 非注册地登录，不能收藏 */}
-                <EnKiBookmark isEdit={ableReply() && actor.actor_account.split('@')[1]==env.domain} currentObj={currentObj}/>
+                <EnKiBookmark isEdit={ableReply() && actor?.actor_account.split('@')[1]==env.domain} currentObj={currentObj}/>
               {currentObj.send_type===0 && <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={currentObj} />}
               <EnkiEditItem env={env} isEdit={isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
               preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} /> 
@@ -272,11 +288,12 @@ const handleClick = useCallback((event) => {
                     // loader={<Loadding />}
                     // endMessage={<div style={{textAlign:'center'}} >---{t('emprtyData')}---</div>}
                 >
-                    {data.map((obj, idx) => (
-                        <ReplyItem  key={idx} locale={locale} isEdit={ableReply() && actor.actor_account===obj.actor_account } 
+                    {/* {data.map((obj, idx) => (
+                        <ReplyItem pleft={10}  key={idx} locale={locale} isEdit={ableReply() && actor?.actor_account===obj.actor_account } 
                          replyObj={obj} delCallBack={replyDelCallBack}  domain={env.domain}
                          preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
-                    ))}
+                    ))} */}
+                    {renderedArrays}
             </InfiniteScroll>
 
             { footerdiv()}

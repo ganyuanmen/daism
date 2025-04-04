@@ -66,7 +66,7 @@ export default function EnKiRigester({setRegister,env})
                     fetch(`/api/admin/recover`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ actorName:`0x${actorName}`,domain:env.domain,oldAccount:actor.actor_account,sctype:'',daoid:0})
+                        body: JSON.stringify({ actorName:`0x${actorName}`,domain:env.domain,oldAccount:actor?.actor_account,sctype:'',daoid:0})
                     })
                     .then(async response => {console.info('recover ok') })
             }, 3000);

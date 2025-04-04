@@ -65,12 +65,12 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,fil
           }else { //个人
               if(path!=='enkier') return false;// 不是从个人社交模块进入，不允许修改
                 //非本地登录
-              if(actor.actor_account.split('@')[1]!=env.domain) return false;
+              if(actor?.actor_account.split('@')[1]!=env.domain) return false;
               if(messageObj.send_type===0){ //本地
-                  if(actor.actor_account===messageObj.actor_account) return true;
+                  if(actor?.actor_account===messageObj.actor_account) return true;
               }
               // else { //接收
-              //     if(actor.actor_account===messageObj.receive_account) return true;
+              //     if(actor?.actor_account===messageObj.receive_account) return true;
               // }
           }
           //超级管理员
@@ -155,7 +155,7 @@ const handleClick = useCallback((event) => {
                     <div className='fs-7 mb-2' style={{textAlign:'center'}} ><strong>{getMonth()}</strong></div>
                 </div>
                 }
-                { showBtn && <Button variant="light" onClick={(e) => {e.stopPropagation(); setShowAll(true);setShowBtn(false);}} 
+                { showBtn && <Button variant="light" onClick={handleClick}
                      style={{position:'absolute',right:0,bottom:0}} title={t('showmore')}>  
                         <Down size={24} />...
                     </Button>
@@ -186,12 +186,12 @@ const handleClick = useCallback((event) => {
 
            <div className="d-flex justify-content-between align-items-center" style={{padding:'4px 8px'}}  >
                 
-                <MessageReply currentObj={messageObj} isEdit={ableReply()}
+                <MessageReply currentObj={messageObj} isEdit={ableReply()} isTopShow={true}
                  addReplyCallBack={replyAddCallBack} data_index={data_index} accountAr={accountAr} />
 
                 <EnKiHeart isEdit={ableReply()} currentObj={messageObj} />
                 {/* 非注册地登录，不能收藏 */}
-                <EnKiBookmark isEdit={ableReply() && actor.actor_account.split('@')[1]==env.domain} currentObj={messageObj}/>
+                <EnKiBookmark isEdit={ableReply() && actor?.actor_account.split('@')[1]==env.domain} currentObj={messageObj}/>
 
               {messageObj.send_type===0 && 
               <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={messageObj}  />}

@@ -130,7 +130,7 @@ export async function getReplyTotal({sctype,pid})
 export async function replyPageData({pi,ppid,sctype,pid})
 {
 
-	let sql=`select * from v_message${sctype}_commont where ppid=? order by id desc limit ${pi*20},20`
+	let sql=`select * from v_message${sctype}_commont where ppid=? order by bid DESC,id ASC limit ${pi*20},20`
 	let re=await getData(sql,[ppid,pid]);
 	return re; 
 }

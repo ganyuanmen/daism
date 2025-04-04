@@ -25,7 +25,7 @@ export default withSession(async (req, res) => {
    
     const form = formidable({})
     const [fields, files] = await form.parse(req);
-    let {vedioURL,typeIndex,rid,pid,ppid,actorid,content,sctype,fileType,inbox} = fields  //rid 修改ID
+    let {vedioURL,typeIndex,rid,pid,ppid,actorid,content,sctype,fileType,inbox,bid} = fields  //rid 修改ID
     // const actorName=account[0].split('@')[0];
     const _path=new Date().toLocaleDateString().replaceAll('/','');
     const imgPath = saveImage(files, fileType[0],_path)
@@ -37,8 +37,9 @@ export default withSession(async (req, res) => {
          return res.status(err.httpCode || 500).json({errMsg: "invalid ID"}); 
       }
       else {
-          const sql=`INSERT INTO a_message${sctype[0]}_commont(manager,pid,ppid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`
-          const paras=[rows[0].manager,pid[0],ppid[0],message_id.replaceAll('-',''),rows[0].actor_name,rows[0].avatar,rows[0].actor_account,rows[0].actor_url,content[0],typeIndex[0],vedioURL[0],path]
+          const sql=`INSERT INTO a_message${sctype[0]}_commont(manager,pid,ppid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`
+          const paras=[rows[0].manager,pid[0],ppid[0],message_id.replaceAll('-',''),rows[0].actor_name,rows[0].avatar,rows[0].actor_account,rows[0].actor_url,content[0],typeIndex[0],vedioURL[0]
+          ,path,bid[0]?bid[0]:Math.floor(Date.now()/1000)]
           let insertId=await executeID(sql,paras);
           if(insertId) { 
             if(ppid[0].startsWith('http')){

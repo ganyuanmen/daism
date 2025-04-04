@@ -86,7 +86,7 @@ export  function findFirstURI(code) {
         const name=$('meta[property="profile:username"]').attr('content');
         if(!image && name){
           let actor=await getInboxFromAccount(name); 
-          image=actor.avatar;
+          image=actor?.avatar;
 
         }
         // 

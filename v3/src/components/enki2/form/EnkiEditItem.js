@@ -99,7 +99,7 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
 
 
     const [show,setShow]=useState(false)
-    const isDelete=isEdit || actor.actor_account===messageObj.receive_account;
+    const isDelete=isEdit || actor?.actor_account===messageObj.receive_account;
     const handleSelect = (eventKey) =>{ 
 
         switch(eventKey)
@@ -135,7 +135,7 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
                 
                 </NavDropdown>
             </Nav>
-            : <>{isEdit && <button  style={{border:0}} onClick={()=>{setShow(true)}}  > <DeleteSvg   size={16} /></button> }</>
+            : <>{isEdit && <button  style={{border:0}} onClick={()=>{setShow(true)}}  > <DeleteSvg   size={20} /></button> }</>
             }
             <ConfirmWin show={show} setShow={setShow} callBack={deldiscussions} question={t('deleteSureText')}/>
         </>

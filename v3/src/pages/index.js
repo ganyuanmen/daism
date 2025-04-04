@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 import PageLayout from '../components/PageLayout';
 import {getEnv} from '../lib/utils/getEnv'
 import Head from 'next/head';
-import { useRef, useEffect } from 'react';
+// import { useRef, useEffect } from 'react';
 export default function Home({locale,env}) {
   
     const t = useTranslations('iadd')

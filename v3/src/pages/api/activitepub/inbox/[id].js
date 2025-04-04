@@ -87,7 +87,7 @@ export default async function handler(req, res) {
 
 	}
 
-	if(!actor || !actor.pubkey || !actor.account) { 
+	if(!actor || !actor?.pubkey || !actor?.account) { 
 		console.log("actor not found",actor)
 		return res.status(404).json({errMsg:'actor not found'});
 	}
@@ -150,8 +150,8 @@ export default async function handler(req, res) {
 	// let tempAr=req.headers['signature'].split(",");
 	// const jsonObj = stringToJson(tempAr[tempAr.length-1]);
 	// console.log("4jsonObj:",jsonObj)
-	// const isVerified = verify.verify(actor.pubkey, jsonObj.signature, 'base64'); // 验证签名
-	// console.log("5verify:",actor.pubkey, jsonObj.signature)
+	// const isVerified = verify.verify(actor?.pubkey, jsonObj.signature, 'base64'); // 验证签名
+	// console.log("5verify:",actor?.pubkey, jsonObj.signature)
 	// if(!isVerified) {
 	// 	console.info("checks signature error")
 	// 	 return res.status(403).json({errMsg:'signature error'});
@@ -173,8 +173,8 @@ async function createMess(postbody,name,actor){ //对方的推送
 		execute("update a_message set content=?,top_img=? where message_id=?",[content,imgpath,postbody.object.id]);
 		return;
 	}
-	if(!actor.account) return;
-	const strs=actor.account.split('@') ;
+	if(!actor?.account) return;
+	const strs=actor?.account.split('@') ;
 	let localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
 	if(!localUser.manager) return;
 	if(postbody.type.toLowerCase()==='announce'){
@@ -190,8 +190,8 @@ async function createMess(postbody,name,actor){ //对方的推送
 				postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,user.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,postbody?.topImg,9,postbody?.vedioUrl,postbody?.contentLink]	;
 			} else 
 			{
-				paras=['', postbody.object,actor.name,actor.avatar,actor.account,actor.url,
-					`<a href='${postbody.object}' >${postbody.object}</a>`,actor.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,'',9,'',''];	
+				paras=['', postbody.object,actor?.name,actor?.avatar,actor?.account,actor?.url,
+					`<a href='${postbody.object}' >${postbody.object}</a>`,actor?.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,'',9,'',''];	
 			}
 			executeID(sql,paras).then((insertId)=>{
 				if(!postbody?.content) addAnnoceLink(postbody.object, insertId)
@@ -207,7 +207,7 @@ async function createMess(postbody,name,actor){ //对方的推送
 	
 		let linkUrl=postbody.object.url || postbody.object.atomUri
 		let sql="INSERT IGNORE INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-		let paras=[actor?.manager??'', postbody.object.id,strs[0],actor.avatar,actor.account,postbody.actor,content,actor.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,linkUrl,imgpath,1]	
+		let paras=[actor?.manager??'', postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content,actor?.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,linkUrl,imgpath,1]	
 		executeID(sql,paras).then((insertId)=>{addLink(content, insertId); //生成链接卡片
 		})
 	}
@@ -220,14 +220,14 @@ async function createMess(postbody,name,actor){ //对方的推送
 			if(message['is_discussion']==1) //允许讨论
 			{
 				execute(`INSERT IGNORE INTO a_message${sctype}_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
-				[id,message['id'],postbody.object.id,strs[0],actor.avatar,actor.account,postbody.actor,content]).then(()=>{});
+				[id,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content]).then(()=>{});
 			}
 		}
 		else {
 			let message=await getOne({replyType,sctype:''})
 			if(message?.id)
 			execute(`INSERT IGNORE INTO a_message_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
-				[replyType,message['id'],postbody.object.id,strs[0],actor.avatar,actor.account,postbody.actor,content]).then(()=>{});
+				[replyType,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content]).then(()=>{});
 			}
 	}
 	
@@ -266,10 +266,10 @@ async function follow(postbody,name,domain,actor) //别人的关注
 		console.info("follow get user:-----------------------------------------------------")
 		console.info(user)
 	}
-	if(!actor.inbox) return  `no found for ${postbody.actor}`;
+	if(!actor?.inbox) return  `no found for ${postbody.actor}`;
 	if(user.name.toLowerCase()!==name.toLowerCase() || user.domain.toLowerCase()!==domain.toLowerCase()) return 'activity error ';
 	let thebody=createAccept(postbody,name,domain);
-	let follow=await getFollow({actorAccount:user.account,userAccount:actor.account}); // 注：是actor 关注user
+	let follow=await getFollow({actorAccount:user.account,userAccount:actor?.account}); // 注：是actor 关注user
 	let localUser=await getUser('actor_account',user.account,'privkey,dao_id')
 	if(follow['follow_id']) { 
 	console.info("已关注"); //已关注
@@ -281,7 +281,7 @@ async function follow(postbody,name,domain,actor) //别人的关注
 	{
 		console.info("follow save is ok")
 		broadcast({type:'follow',domain,actor:user,user:actor,followId:postbody.id})  //广播信息
-		signAndSend(actor.inbox,name,domain,thebody,localUser.privkey);
+		signAndSend(actor?.inbox,name,domain,thebody,localUser.privkey);
 		return 'follow handle ok!'
 	}  
 	else  return 'server handle error';
@@ -336,8 +336,8 @@ async function verifySignature(req,actor,name) {
 	// let tempAr=req.headers['signature'].split(",");
 	// const jsonObj = stringToJson(tempAr[tempAr.length-1]);
 	// console.log("4jsonObj:",jsonObj)
-	// const isVerified = verify.verify(actor.pubkey, jsonObj.signature, 'base64'); // 验证签名
-	// console.log("5verify:",actor.pubkey, jsonObj.signature)
+	// const isVerified = verify.verify(actor?.pubkey, jsonObj.signature, 'base64'); // 验证签名
+	// console.log("5verify:",actor?.pubkey, jsonObj.signature)
 	// if(!isVerified) {
 	// 	console.info("checks signature error")
 	// 	 return res.status(403).json({errMsg:'signature error'});
@@ -350,7 +350,7 @@ async function verifySignature(req,actor,name) {
 	  const { keyId, algorithm, headers, signature } = parseSignatureHeader(signatureHeader);
   
 	  // 1. 获取Actor公钥
-	  const publicKey = actor.pubkey;
+	  const publicKey = actor?.pubkey;
   
 	  // 2. 构建签名字符串
 	  const stringToSign = createStringToSign(req, inboxFragment, headers);

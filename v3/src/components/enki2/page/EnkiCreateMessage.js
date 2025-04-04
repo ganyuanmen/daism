@@ -133,7 +133,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
         formData.append('vedioURL',(typeIndex===0?editorRef:richEditorRef).current.getVedioUrl());  //视频网址
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //
         formData.append('accountAt',(typeIndex===0?editorRef:richEditorRef).current.getAccount());  //@用户
-        formData.append('actorid', actor.id);
+        formData.append('actorid', actor?.id);
         formData.append('daoid', selectedDaoid);
         formData.append('_type', showEvent ? 1 : 0);  //活动还是普通 
         // formData.append('title', titleText);  //标题

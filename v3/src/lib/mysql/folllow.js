@@ -35,7 +35,7 @@ export async function getFollowees ({account}) {
   export  async function saveFollow({actor,user,followId})
   {
     return await execute("INSERT INTO a_follow(follow_id,actor_account,actor_url,actor_inbox,actor_avatar,user_account,user_url,user_avatar,user_inbox) VALUES(?,?,?,?,?,?,?,?,?)",
-    [followId,actor.account,actor.url,actor.inbox,actor.avatar,user.account,user.url,user.avatar,user.inbox]);
+    [followId,actor?.account,actor?.url,actor?.inbox,actor?.avatar,user.account,user.url,user.avatar,user.inbox]);
   }
   
     // 删除

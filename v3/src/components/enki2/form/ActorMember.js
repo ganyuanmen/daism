@@ -90,7 +90,7 @@ export default function ActorMember({locale,env,accountAr}){
         <div className='col-auto' >
             {actor?.manager.toLowerCase()===user.account.toLowerCase() &&
             <> 
-            {actor?.actor_account?.includes('@') && env.domain!=actor.actor_account.split('@')[1] && 
+            {actor?.actor_account?.includes('@') && env.domain!=actor?.actor_account.split('@')[1] && 
             <Button onClick={()=>{setRegister(true)}} ><UploadSvg size={18}/> {t('reRegisterText')}</Button>}{'  '}
             <Button onClick={()=>{setShow(true)}} ><EditSvg size={18}/> {t('editText')}</Button>
             </>
@@ -100,7 +100,7 @@ export default function ActorMember({locale,env,accountAr}){
     <hr/>
     <div>
         <div className='mb-2' ><b>{t('persionInfomation')}:</b></div>
-        <div dangerouslySetInnerHTML={{__html: actor.actor_desc}}></div>
+        <div dangerouslySetInnerHTML={{__html: actor?.actor_desc}}></div>
     </div>
     <hr/>
 

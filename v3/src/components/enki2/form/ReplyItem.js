@@ -1,10 +1,11 @@
-import TimesItem from "../../federation/TimesItem";
+import TimesItem_m from "../../federation/TimesItem_m";
 import EnkiMember from "./EnkiMember"
 import EnkiEditItem from "./EnkiEditItem"
 import ShowVedio from "./ShowVedio";
 import EnKiFollow from "./EnKiFollow";
 import { useState,useEffect } from "react";
 import { useSelector } from 'react-redux';
+import { ReplySvg } from "../../../lib/jssvg/SvgCollection";
 
 
 
@@ -18,12 +19,12 @@ import { useSelector } from 'react-redux';
  * @sctype sc:社区嗯文 空：个人嗯文
  * @reply_index 回复列表中的序号
  */
-export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCall,sctype,reply_index,domain}) {
+export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCall,sctype,reply_index,domain,pleft}) {
     const [isFollow,setIsFollow]=useState(true) //默认已关注
     const myFollow = useSelector((state) => state.valueData.myFollow)
     const actor = useSelector((state) => state.valueData.actor)
- const editCallBack=()=>{
-    preEditCall.call(this,replyObj,reply_index)
+ const editCallBack=(bid)=>{
+    preEditCall.call(this,replyObj,reply_index,bid)
  }
 
  const callBack=()=>{
@@ -45,20 +46,21 @@ export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCal
 
 
     return (
-        <div style={{borderBottom:'1px solid #D2D2D2'}}>
+        <div style={{borderBottom:'1px solid #D2D2D2',width:'100%',paddingLeft:`${pleft}px`}}>
            <div style={{width:'100%',paddingLeft:"10px"}} className="d-inline-flex justify-content-between align-items-center"   >
-                <EnkiMember messageObj={replyObj} isLocal={false} hw={32} locale={locale} />
+               <div style={{width:'50%'}} > <EnkiMember messageObj={replyObj} isLocal={false} hw={32} locale={locale} /></div>
+               {isEdit && <div><button onClick={e=>editCallBack(replyObj.bid)} className="daism-ff"> <ReplySvg size={24} /></button></div>}
                 {!isFollow && <div><EnKiFollow searObj={replyObj} /> </div>}
                 
                 <div  style={{paddingRight:'10px'}}  >
                     <EnkiEditItem isEdit={isEdit} actor={actor} messageObj={replyObj} delCallBack={callBack} 
                     preEditCall={editCallBack} type={1} sctype={sctype} />
-                    {/* <TimesItem currentObj={replyObj} />  */}
-                   <span style={{display:'inline-block',paddingLeft:'10px'}} > {`${month}-${day}`}</span>
+                    <TimesItem_m currentObj={replyObj} /> 
+                  
                 </div>
             </div> 
-            <div className="daism-reply-item" style={{paddingBottom:'20px'}} >
-                <div style={{minHeight:'60px'}} dangerouslySetInnerHTML={{__html: replyObj.content}}></div>
+            <div className="daism-reply-item" style={{paddingBottom:'10px'}} >
+                <div style={{minHeight:'40px'}} dangerouslySetInnerHTML={{__html: replyObj.content}}></div>
                 {replyObj?.content_link && <div dangerouslySetInnerHTML={{__html: replyObj.content_link}}></div>}
                 {replyObj?.top_img && <img  className="mt-2 mb-2" alt="" src={replyObj.top_img} style={{maxWidth:'100%'}} />
                 }

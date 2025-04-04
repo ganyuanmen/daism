@@ -24,7 +24,7 @@ export default function EnKiFollow({searObj,showText=false}) {
 
     const followHandle=async ()=>{
         showTip(t('submittingText'))   
-        let re=await  client.get(`/api/activitepub/follow?account=${actor?.actor_account}&inbox=${searObj.inbox || searObj.actor_inbox}&url=${searObj.url || searObj.actor_url }&id=${actor.id}`,'');
+        let re=await  client.get(`/api/activitepub/follow?account=${actor?.actor_account}&inbox=${searObj.inbox || searObj.actor_inbox}&url=${searObj.url || searObj.actor_url }&id=${actor?.id}`,'');
         if(re.status!==200  )
         {
             showClipError(re.statusText);
@@ -40,7 +40,7 @@ export default function EnKiFollow({searObj,showText=false}) {
       
     return <> {showText?
         <>{showBtn?<Button onClick={followHandle} > {t('follow')}</Button>:<div>{t('alreadysubmitText')}...</div>}</>:
-        <>{showBtn && <Button variant="light" onClick={followHandle} title={t('follow')}><Follow size={24}/></Button>}</>
+        <>{showBtn && <button className="daism-ff"  onClick={followHandle} title={t('follow')}><Follow size={24}/></button>}</>
         }    
     </>
     
