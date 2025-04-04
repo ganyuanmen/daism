@@ -38,10 +38,10 @@ export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCal
 }, [myFollow]);  
 
 
-    const createtime=new Date(replyObj.createtime);
+    // const createtime=new Date(replyObj.createtime);
 
-    const month = String(createtime.getMonth() + 1).padStart(2, '0'); // 月份是从 0 开始的，需要加 1 并补零
-    const day = String(createtime.getDate()).padStart(2, '0'); // 天数补零
+    // const month = String(createtime.getMonth() + 1).padStart(2, '0'); // 月份是从 0 开始的，需要加 1 并补零
+    // const day = String(createtime.getDate()).padStart(2, '0'); // 天数补零
     
 
 
@@ -53,7 +53,7 @@ export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCal
                 {!isFollow && <div><EnKiFollow searObj={replyObj} /> </div>}
                 
                 <div  style={{paddingRight:'10px'}}  >
-                    <EnkiEditItem isEdit={isEdit} actor={actor} messageObj={replyObj} delCallBack={callBack} 
+                    <EnkiEditItem isEdit={isEdit  && actor?.actor_account===replyObj.actor_account} actor={actor} messageObj={replyObj} delCallBack={callBack} 
                     preEditCall={editCallBack} type={1} sctype={sctype} />
                     <TimesItem_m currentObj={replyObj} /> 
                   

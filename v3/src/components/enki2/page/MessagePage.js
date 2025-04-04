@@ -220,7 +220,7 @@ const renderedArrays = data.map((obj, idx) => {
   lastArray = obj;
 
   return (
-    <ReplyItem pleft={isSameAsLast?40:10}  key={idx} locale={locale} isEdit={ableReply() && actor?.actor_account===obj.actor_account } 
+    <ReplyItem pleft={isSameAsLast?40:10}  key={idx} locale={locale} isEdit={ableReply()} 
     replyObj={obj} delCallBack={replyDelCallBack}  domain={env.domain}
     preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
   );
