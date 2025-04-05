@@ -5,6 +5,12 @@
 /listen/uploads
 /v3/node_modules
 /listen/node_modules
+/nginx
+/发布费用
+/sepolia
+/aws
+/contracts
+
 
 
 # next.js

@@ -97,7 +97,7 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
                 closeTip()
                 let obj = await response.json()
                 if (obj.errMsg) { showClipError(obj.errMsg); return }
-                // if (replyObj) afterEditcall.call(this,{...replyObj,...obj});
+                if (replyObj) afterEditcall.call(this,obj,data_index); //其实是新增，没有修改
                 else addReplyCallBack.call(this,obj,data_index); 
             })
             .catch(error => {
@@ -110,7 +110,9 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
  
     return (
         <>
-            <Button variant="light" disabled={!(isEdit && currentObj?.is_discussion == 1)} onClick={() => {if(setBid) setBid(''); setShowWin(true);
+            <Button variant="light" disabled={!(isEdit && currentObj?.is_discussion == 1)} onClick={() => {
+                if(setBid) setBid(''); 
+                setShowWin(true);
                 if(setReplyObj) setReplyObj(null); //表示新增
                 }}  title={t('replyText')}>  
                 <ReplySvg size={24} />

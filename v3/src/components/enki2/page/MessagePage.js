@@ -132,10 +132,12 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         repluBtn.current.show();} 
     
     const afterEditcall=(obj)=>{
-        data[replyIndex].content=obj.content;
-        data[replyIndex].top_img=obj.top_img;
-        data[replyIndex].type_index=obj.type_index;
-        data[replyIndex].vedio_url=obj.vedio_url;
+        currentObj.total=currentObj.total+1;
+        setData.splice(replyIndex, 0, obj);  // 从索引1开始，不删除元素，插入 'a'
+        // data[replyIndex].content=obj.content;
+        // data[replyIndex].top_img=obj.top_img;
+        // data[replyIndex].type_index=obj.type_index;
+        // data[replyIndex].vedio_url=obj.vedio_url;
         setData([...data])
     }  //修改讨论回调
     
@@ -185,10 +187,10 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     }
 
     const addReplyCallBack=(obj)=>{
-        setFetchWhere({ ...fetchWhere });
+        // setFetchWhere({ ...fetchWhere });
         currentObj.total=currentObj.total+1;
-        // data.unshift(obj);
-        // setData([...data])
+        data.unshift(obj);
+        setData([...data])
     }
 
     
