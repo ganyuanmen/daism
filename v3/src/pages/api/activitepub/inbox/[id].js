@@ -107,13 +107,18 @@ export default async function handler(req, res) {
 					undo(postbody).then(()=>{});
 					break;
 				case 'block':break;
-				case 'create': 
-				case 'update':
 				case 'delete':
-				case 'announce':
+					handle_delete(postbody?.object?.id);
+					break;
+				case 'update':
+					handle_update(postbody);
+					break;
+				case 'create': 	
 					createMess(postbody,name,actor).then(()=>{}); 
 					break;
-				
+				case 'announce':
+					handle_announce(postbody,name,actor).then(()=>{});;
+					break;
 				case 'like':break;
 				
 				case 'add':break;
@@ -134,84 +139,72 @@ export default async function handler(req, res) {
 	  }
 
 	
-	// console.log("1req.url:",req.url)
-	// let inboxFragment = `/api/activitepub/inbox/${name}`;
-	// console.log("2inboxFragment:",inboxFragment)
-	// if(!req.headers.host || !req.headers.date || !req.headers.digest || !req.headers['signature']) {
-	// 	console.info("no signature item error")
-	// 	return res.status(403).json({errMsg:'signature error'});
-	// }
-	// let stringToSign = `(request-target): post ${inboxFragment}\nhost: ${req.headers.host}\ndate: ${req.headers.date}\ndigest: ${req.headers.digest}\ncontent-type: application/activity+json`;
-	// console.log("3stringToSign:",stringToSign)
-	// const verify = crypto.createVerify('RSA-SHA256');
-	// verify.update(stringToSign);
-	// verify.end();
-
-	// let tempAr=req.headers['signature'].split(",");
-	// const jsonObj = stringToJson(tempAr[tempAr.length-1]);
-	// console.log("4jsonObj:",jsonObj)
-	// const isVerified = verify.verify(actor?.pubkey, jsonObj.signature, 'base64'); // 验证签名
-	// console.log("5verify:",actor?.pubkey, jsonObj.signature)
-	// if(!isVerified) {
-	// 	console.info("checks signature error")
-	// 	 return res.status(403).json({errMsg:'signature error'});
-	// }
-
-	
 }
 
-
-async function createMess(postbody,name,actor){ //对方的推送
-	if(postbody.type.toLowerCase()==='delete'){
-		execute("delete from a_message where message_id=?",[postbody.object.id]);
-		return;
+async function handle_announce(postbody,name,actor){
+	if(postbody?.object && typeof(postbody.object)==='string' && postbody.object.startsWith('http')) {
+		let sql="INSERT IGNORE INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type,vedio_url,content_link) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		let paras;
+		if(postbody.attributedTo){
+			let user=await getLocalInboxFromUrl(postbody.attributedTo);
+			if(!user.name) user=await getInboxFromUrl(postbody.attributedTo);
+			if(!user.name) return;
+			paras=[user.manager??'', postbody.object,user.name,user.avatar,user.account,user.url,
+			postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,user.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,postbody?.topImg,9,postbody?.vedioUrl,postbody?.contentLink]	;
+		} else 
+		{
+			paras=['', postbody.object,actor?.name,actor?.avatar,actor?.account,actor?.url,
+				`<a href='${postbody.object}' >${postbody.object}</a>`,actor?.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,'',9,'',''];	
+		}
+		executeID(sql,paras).then((insertId)=>{
+			if(!postbody?.content) addAnnoceLink(postbody.object, insertId)
+		})
 	}
+	return;
+}
+
+function handle_update(postbody) {
+	if(!postbody?.object?.id) return;
 	const content=(postbody?.object?.content?new String(postbody.object.content).toString():'')
 	const imgpath=(postbody?.object?.imgpath?new String(postbody.object.imgpath).toString():'')
-	if(postbody.type.toLowerCase()==='update'){
-		
-		execute("update a_message set content=?,top_img=? where message_id=?",[content,imgpath,postbody.object.id]);
-		return;
-	}
+	execute("update a_message set content=?,top_img=? where message_id=?",[content,imgpath,postbody?.object?.id]);
+	return;
+}	
+
+
+function handle_delete(rid) {
+	if(!rid) return;
+	if(rid.includes('communities/enki')) execute("delete from a_message where message_id=?",[rid]);
+	else if(rid.includes('commont/enki/')) execute("delete from a_messagesc_commont where message_id=?",[rid]);
+	else if(rid.includes('commont/enkier/')) execute("delete from a_message_commont where message_id=?",[rid]);
+	else {
+		execute("delete from a_message where message_id=?",[rid]);
+		execute("delete from a_message_commont where message_id=?",[rid]);
+		execute("delete from a_messagesc_commont where message_id=?",[rid]);
+   }
+	
+	return;
+}	
+
+async function createMess(postbody,name,actor){ //对方的推送
+	
+	const content=(postbody?.object?.content?new String(postbody.object.content).toString():'')
+	const imgpath=(postbody?.object?.imgpath?new String(postbody.object.imgpath).toString():'')
+	
 	if(!actor?.account) return;
 	const strs=actor?.account.split('@') ;
 	let localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
 	if(!localUser.manager) return;
-	if(postbody.type.toLowerCase()==='announce'){
-		
-		if(postbody?.object && typeof(postbody.object)==='string' && postbody.object.startsWith('http')) {
-			let sql="INSERT IGNORE INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type,vedio_url,content_link) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			let paras;
-			if(postbody.attributedTo){
-				let user=await getLocalInboxFromUrl(postbody.attributedTo);
-				if(!user.name) user=await getInboxFromUrl(postbody.attributedTo);
-				if(!user.name) return;
-				paras=[user.manager??'', postbody.object,user.name,user.avatar,user.account,user.url,
-				postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,user.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,postbody?.topImg,9,postbody?.vedioUrl,postbody?.contentLink]	;
-			} else 
-			{
-				paras=['', postbody.object,actor?.name,actor?.avatar,actor?.account,actor?.url,
-					`<a href='${postbody.object}' >${postbody.object}</a>`,actor?.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,'',9,'',''];	
-			}
-			executeID(sql,paras).then((insertId)=>{
-				if(!postbody?.content) addAnnoceLink(postbody.object, insertId)
-			})
-		}
-		return;
-	}
-	
 	const replyType=postbody.object.inReplyTo || postbody.object.inReplyToAtomUri || null;  //inReplyTo:
-	
-	if(!replyType )
+	if(!replyType ) //不是回复
 	{
-	
 		let linkUrl=postbody.object.url || postbody.object.atomUri
 		let sql="INSERT IGNORE INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 		let paras=[actor?.manager??'', postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content,actor?.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,linkUrl,imgpath,1]	
 		executeID(sql,paras).then((insertId)=>{addLink(content, insertId); //生成链接卡片
 		})
 	}
-	else {
+	else { //回复
 		if(replyType.includes('communities/enki')){
 		const ids=replyType.split('/');
 		const id=ids[ids.length-1];
@@ -450,3 +443,28 @@ async function addLink(content, id) {
 }
 
 
+
+
+
+	// console.log("1req.url:",req.url)
+	// let inboxFragment = `/api/activitepub/inbox/${name}`;
+	// console.log("2inboxFragment:",inboxFragment)
+	// if(!req.headers.host || !req.headers.date || !req.headers.digest || !req.headers['signature']) {
+	// 	console.info("no signature item error")
+	// 	return res.status(403).json({errMsg:'signature error'});
+	// }
+	// let stringToSign = `(request-target): post ${inboxFragment}\nhost: ${req.headers.host}\ndate: ${req.headers.date}\ndigest: ${req.headers.digest}\ncontent-type: application/activity+json`;
+	// console.log("3stringToSign:",stringToSign)
+	// const verify = crypto.createVerify('RSA-SHA256');
+	// verify.update(stringToSign);
+	// verify.end();
+
+	// let tempAr=req.headers['signature'].split(",");
+	// const jsonObj = stringToJson(tempAr[tempAr.length-1]);
+	// console.log("4jsonObj:",jsonObj)
+	// const isVerified = verify.verify(actor?.pubkey, jsonObj.signature, 'base64'); // 验证签名
+	// console.log("5verify:",actor?.pubkey, jsonObj.signature)
+	// if(!isVerified) {
+	// 	console.info("checks signature error")
+	// 	 return res.status(403).json({errMsg:'signature error'});
+	// }

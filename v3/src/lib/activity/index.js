@@ -270,3 +270,23 @@ export function createUndo(userName, domain,actorUrl,followId) {
      return createMessage;
  }
  
+ //删除 回复
+ export function createNoteDel(userName,domain,id,message_domain)
+ {   
+     userName=userName.toLowerCase()
+     let d=new Date();  
+       
+    return {
+       '@context': 'https://www.w3.org/ns/activitystreams',
+       'id': `https://${message_domain}/commont/enkier/${id}#delete`,
+       'type': 'Delete',
+       'published': d.toISOString(),
+       'actor': `https://${domain}/api/activitepub/users/${userName}`,
+       'object': {
+          'id': `https://${message_domain}/commont/enkier/${id}`,
+          'atomUri': `https://${message_domain}/commont/enkier/${id}`
+      },
+     };
+
+ }
+

@@ -133,7 +133,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     
     const afterEditcall=(obj)=>{
         currentObj.total=currentObj.total+1;
-        setData.splice(replyIndex, 0, obj);  // 从索引1开始，不删除元素，插入 'a'
+        data.splice(replyIndex+1, 0, obj);  // 从索引1开始，不删除元素，插入 'a'
         // data[replyIndex].content=obj.content;
         // data[replyIndex].top_img=obj.top_img;
         // data[replyIndex].type_index=obj.type_index;
