@@ -83,6 +83,7 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
                 toUrl:messageObj.actor_url,
                 id:messageObj.message_id,
                 recordId:messageObj.id,
+                fromAccount:messageObj.actor_account,
                 content:messageObj.content,
                 topImg:messageObj.top_img,
                 contentLink:messageObj.content_link,
@@ -121,7 +122,6 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
     const deldiscussions=()=>{
         handle('messageDel',{
             id:messageObj.id,
-            pid:messageObj?.pid??0,
             type,
             sctype,
             ppid:messageObj?.ppid??'',

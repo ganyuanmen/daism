@@ -1,4 +1,4 @@
-export function createMessage(userName,domain,text,imgPath,id,message_domain,pathtype,contentType)
+export function createMessage(userName,domain,text,imgPath,id,message_domain,pathtype,contentType,isNoEnki)
 {   
     userName=userName.toLowerCase()
     let d=new Date();  
@@ -12,7 +12,7 @@ export function createMessage(userName,domain,text,imgPath,id,message_domain,pat
       'type':'Note',
       'published': d.toISOString(),
       'attributedTo': `https://${domain}/api/activitepub/users/${userName}`,
-      'content': `${text}<p><a href='https://${message_domain}/communities/${pathtype}/${id}'>https://${message_domain}/communities/${pathtype}/${id}</a></p>`,
+      'content':isNoEnki?`${text}<p><a href='https://${message_domain}/communities/${pathtype}/${id}'>https://${message_domain}/communities/${pathtype}/${id}</a></p>`:text,
       'draft': false,
       // 'name':text,
       // 'title':text,

@@ -144,16 +144,12 @@ export async function setTopMessage({id,sctype,flag})
 
 
 //删除
-export async function messageDel({id,type,sctype,pid})
+export async function messageDel({id,type,sctype})
 {
     if(type==='0') return await execute(`delete from a_message${sctype} where id=?`,[id]);
-    else {
+    else return await execute(`delete from a_message${sctype}_commont where id=?`,[id]);
+		
 	
-			let lok= await execute(`delete from a_message${sctype}_commont where id=?`,[id]);
-			if(lok) await execute(`update a_message${sctype} set total=total-1 where id=? `,[pid]);
-			return lok;
-
-	}
 }
 
 //获取所有已注册的dao
@@ -180,7 +176,7 @@ export async function handleHeartAndBook({account,pid,flag,table,sctype})
     else return await execute(`insert into a_${table}${sctype}(account,pid) values(?,?)`,[account,pid]);
 }
 //转发
-export async function setAnnounce({account,id,content,pathtype,topImg,contentLink,vedioUrl,toUrl,recordId})
+export async function setAnnounce({account,id,content,pathtype,topImg,contentLink,vedioUrl,toUrl,recordId,fromAccount})
 {	
 	// topImg:messageObj.top_img,
 	// contentLink:messageObj.content_link,
@@ -207,6 +203,7 @@ export async function setAnnounce({account,id,content,pathtype,topImg,contentLin
 		getFollowers({account}).then(async data=>{
 			
 			data.forEach(element => {
+				if(element.user_account!==fromAccount)
 				if(element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
                     // paras=[id,re.manager,re.actor_name,re.avatar,re.account,re.actor_url,re.actor_inbox,id,content,0,1,'',element.user_account,9];
 					paras=[
@@ -217,7 +214,7 @@ export async function setAnnounce({account,id,content,pathtype,topImg,contentLin
 					execute(sql,paras);  
 				}else {
 					signAndSend(element.user_inbox,re.actor_name,re.domain,sendbody,re.privkey);
-				  }
+				}
 			});
 		})
 	}catch(e1){ console.error(e1)}

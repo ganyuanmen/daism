@@ -1,4 +1,4 @@
-import {Button,Form,Popover,OverlayTrigger} from "react-bootstrap";
+import {Button,Form} from "react-bootstrap";
 import { useRef, useState } from 'react';
 import { useDispatch} from 'react-redux';
 import {setTipText,setMessageText} from '../../data/valueData';

@@ -22,7 +22,7 @@ export function send(account,content,textContent,imgpath,message_id,pathtype,con
           message_id,
           process.env.LOCAL_DOMAIN,
           pathtype,
-          contentType);
+          contentType,false);
         
           //非enki 传的是短文
           const thebody2=createMessage(
@@ -33,7 +33,8 @@ export function send(account,content,textContent,imgpath,message_id,pathtype,con
             message_id,
             process.env.LOCAL_DOMAIN,
             pathtype,
-            contentType);
+            contentType,
+            true);
 
         getFollowers({account:localUser.account}).then(data=>{
             data.forEach(element => {

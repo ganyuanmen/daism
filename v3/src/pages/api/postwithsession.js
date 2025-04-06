@@ -22,7 +22,7 @@ export default withSession(async (req, res) => {
     if (!sessionUser) return res.status(406).json({errMsg:'No wallet signature login'})
     try{
         if(req.headers.method==='messageDel' ){
-            if(req.body.type=='0'){ //delete message 
+            if(req.body.type==='0'){ //delete message 
                 const {id,type,sctype}=req.body;
                 let rear = await getData(`select actor_account,message_id from a_message${sctype} where id=?`, [id],true)
                 if(type=='0') {
@@ -37,7 +37,7 @@ export default withSession(async (req, res) => {
                     ) 
                 }
             }else { //delete message_commont
-                const {id,type,sctype,ppid,account}=req.body;
+                const {id,sctype,ppid,account}=req.body;
                 if(sctype!=='sc' && ppid && ppid.startsWith('http') && account && account.includes('@')){
                     const obj=await getData("SELECT actor_inbox FROM a_message WHERE message_id=?",[ppid],true);
                     const user= await getUser('actor_account',account,'privkey,actor_name,domain')                  
