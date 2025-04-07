@@ -27,7 +27,7 @@ export default function sc({env,locale,accountAr,openObj }) {
         where: '', //查询条件
         menutype: 2,
         v:0, 
-        order: 'reply_time', //排序
+        order: 'createtime', //排序
         eventnum: 0  //0 活动 1 非活动
      });
  

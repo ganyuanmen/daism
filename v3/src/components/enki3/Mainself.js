@@ -58,7 +58,7 @@ export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhe
                 const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&menutype=${fetchWhere.menutype}&daoid=${fetchWhere.daoid}&actorid=${fetchWhere.actorid}&w=${fetchWhere.where}&order=${fetchWhere.order}&eventnum=${fetchWhere.eventnum}&account=${fetchWhere.account}&v=${fetchWhere.v}`, 'messagePageData');
                 if(res.status===200){
                     if(Array.isArray(res.data)){
-                        setHasMore(res.data.length >= 12);
+                        setHasMore(res.data.length > 0);
                         setPageNum((pageNum) => pageNum + 1)
                         if (fetchWhere.currentPageNum === 0) setData(res.data);
                         else setData([...data, ...res.data]);
