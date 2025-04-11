@@ -22,10 +22,10 @@ export default withSession(async (req, res) => {
     if (!sessionUser) return res.status(406).json({errMsg:'No wallet signature login'})
     try{
         if(req.headers.method==='messageDel' ){
-            if(req.body.type==='0'){ //delete message 
+            if(parseInt(req.body.type)===0){ //delete message 
                 const {id,type,sctype}=req.body;
                 let rear = await getData(`select actor_account,message_id from a_message${sctype} where id=?`, [id],true)
-                if(type=='0') {
+                if(parseInt(type)===0) {
                     send(
                        rear.actor_account,
                         '',

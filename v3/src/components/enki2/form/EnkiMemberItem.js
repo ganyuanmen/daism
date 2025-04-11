@@ -15,7 +15,7 @@ import { MoreBtn,PinTop } from "../../../lib/jssvg/SvgCollection";
  * @messageObj 嗯文对象
  * @domain 当前服务器域名
  */
-export default function EnkiMemberItem({locale,messageObj,domain}) {
+export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
     const [honor,setHonor]=useState([])
     const [isTop,setIsTop]=useState(false)
     const [isFollow,setIsFollow]=useState(true) //默认已关注
@@ -44,7 +44,7 @@ export default function EnkiMemberItem({locale,messageObj,domain}) {
         };
 
         if (messageObj.dao_id === 0 && messageObj.manager) fetchData();
-        else if (messageObj.dao_id > 0 && messageObj.is_top) setIsTop(true);
+        else if (messageObj.dao_id > 0 && messageObj.is_top ) setIsTop(true);
 
     },[messageObj]) 
  
@@ -56,7 +56,7 @@ export default function EnkiMemberItem({locale,messageObj,domain}) {
             <div style={{width:'50%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
             {honor.length>0 && <div><Honor honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
             {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
-            {isTop &&  <div ><PinTop size={24} /></div>}
+            {(isTop || (messageObj.is_top && fromPerson)) &&  <div ><PinTop size={24} /></div>}
             <div style={{paddingLeft:'4px'}} ><TimesItem currentObj={messageObj} /></div>
         </div>
         </div>

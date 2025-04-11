@@ -162,7 +162,11 @@
     "notSelect":"No community selected for publication",
     "setTopText":"Pin the post",
     "dropTopText":"Unpin the post",
-    "amouseText":"Retweet"
+    "amouseText":"Retweet",
+    "accountInfoText":"account information",
+    "myEnkiText":"Personal community({num})",
+    "myCompanyEnkiText":"Public community({num})",
+    "receiveEnkiText":"Received({num})"
 
   }
 }

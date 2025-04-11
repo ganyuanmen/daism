@@ -507,3 +507,58 @@ blockquote p {
   border-radius: 6px;
   
 }
+
+
+.donation-container {
+  width: 60%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+}
+
+.intro {
+  font-size: 16px;
+  margin: 20px 0;
+}
+
+.donation-form {
+  margin-bottom: 20px;
+}
+
+.donation-form input {
+  padding: 10px;
+  width: 200px;
+  margin: 10px 0;
+}
+
+.donate-btn, .connect-wallet-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.donate-btn:hover, .connect-wallet-btn:hover {
+  background-color: #45a049;
+}
+
+.qr-code {
+  margin: 20px 0;
+}
+
+.donation-feedback {
+  background-color: #f0f0f0;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+}

@@ -20,8 +20,8 @@ import { useTranslations } from 'next-intl'
  * @daoData 个人所属的smart common 集合
  * @isSelf 是否从我的帐号中打开
  */
-export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhere,filterTag,
-     setFetchWhere,afterEditCall,delCallBack,accountAr,path,daoData,isSelf=false}) {
+export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhere,filterTag, tabIndex,
+     setFetchWhere,afterEditCall,delCallBack,accountAr,path,isPersonEdit,daoData,fromPerson=false,isSelf=false}) {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -125,10 +125,10 @@ export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhe
                     hasMore={hasMore}
                 >
                     {data.map((obj,idx) => (
-                        <Contentdiv path={path} env={env} locale={locale} messageObj={obj} 
+                        <Contentdiv path={path} env={env} locale={locale} messageObj={obj} tabIndex={tabIndex}
                         key={idx} afterEditCall={afterEditCall} data_index={idx} filterTag={filterTag}
                         setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} replyAddCallBack={replyAddCallBack} 
-                        delCallBack={delCallBack} accountAr={accountAr} daoData={daoData} />
+                        delCallBack={delCallBack} accountAr={accountAr} daoData={daoData} isPersonEdit={isPersonEdit} fromPerson={fromPerson} />
                     ))}
                 </InfiniteScroll> 
             </div>

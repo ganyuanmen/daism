@@ -30,6 +30,7 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			if(parseInt(daoid)>0) where=`where dao_id=${daoid}`; //单个dao
 			else if(parseInt(eventnum)===1) where="where _type=1"; //活动
 			else if(parseInt(eventnum)===8) where=`where id in(select cid from t_tagmesssc where name='${w}')`; //过滤
+			else if(parseInt(eventnum)===9) where=`where actor_id=${actorid}`; //个人发布的
 			sctype='sc';
 			break;
 		default: //个人
@@ -47,7 +48,9 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 
 	let sql=`select * from v_message${sctype} ${where} order by ${order} desc limit ${pi*12},12`;
 	let re=await getData(sql,[]);
-	if(parseInt(menutype)===1 || parseInt(menutype)===2){
+
+	if(parseInt(menutype)===1 || parseInt(menutype)===2 || parseInt(v)===9999){
+
 		re=re.filter(obj => obj.is_top===0);
 		if(parseInt(pi)===0){ //首页
 			where=where?`${where} and is_top=1`:`where is_top=1`;
@@ -79,6 +82,11 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 	return re; 
 }
 
+export async function getEnkiTotal({account,actorid}) {
+	let sql='SELECT COUNT(*) AS total FROM a_message WHERE LOWER(actor_account)=? AND send_type=0 UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_message WHERE LOWER(receive_account)=?';
+	let re=await getData(sql,[account,actorid,account]);
+	return re; 
+}
 
 //dao 注册帐号列表
 export async function daoPageData({pi,w})
@@ -146,10 +154,8 @@ export async function setTopMessage({id,sctype,flag})
 //删除
 export async function messageDel({id,type,sctype})
 {
-    if(type==='0') return await execute(`delete from a_message${sctype} where id=?`,[id]);
+    if(parseInt(type)===0) return await execute(`delete from a_message${sctype} where id=?`,[id]);
     else return await execute(`delete from a_message${sctype}_commont where id=?`,[id]);
-		
-	
 }
 
 //获取所有已注册的dao

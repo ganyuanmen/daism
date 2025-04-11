@@ -30,7 +30,7 @@ export default withSession(async (req, res) => {
     const _path=new Date().toLocaleDateString().replaceAll('/','');
     const imgPath = saveImage(files, fileType[0],_path)
     let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${_path}/${imgPath}` : '';
-    if(rid[0]=='0') { //add
+    if(parseInt(rid[0])===0) { //add
       let message_id=uuidv4()
       let rows=await getData("select manager,domain,actor_name,avatar,actor_account,actor_url,privkey from a_account where id=?",[actorid[0]])
       if(rows.length===0){

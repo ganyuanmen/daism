@@ -1,67 +1,187 @@
 
-import {Card,Tab,Tabs,Accordion } from 'react-bootstrap';
+
 import withSession from '../../../lib/session';
 import PageLayout from '../../../components/PageLayout';
 import { useTranslations } from 'next-intl'
-import DaoItem from '../../../components/federation/DaoItem';
-import { getJsonArray } from '../../../lib/mysql/common';
+import { getData, getJsonArray } from '../../../lib/mysql/common';
 import EnkiMember from '../../../components/enki2/form/EnkiMember'
-import FollowItem0 from '../../../components/enki2/form/FollowItem0';
-import FollowItem1 from '../../../components/enki2/form/FollowItem1';
 import { getEnv } from '../../../lib/utils/getEnv';
 import { getUser } from '../../../lib/mysql/user';
 import Head from 'next/head';
+import Mainself from '../../../components/enki3/Mainself';
+import MessagePage from '../../../components/enki2/page/MessagePage';
+import CreateMess from '../../../components/enki3/CreateMess';
+import { useState,useRef,useEffect } from 'react';
+import { Home,BookSvg,BackSvg,MyPost,ReceiveSvg } from '../../../lib/jssvg/SvgCollection';
+import MyInfomation from '../../../components/enki3/MyInfomation';
+import EnkiCreateMessage from '../../../components/enki2/page/EnkiCreateMessage';
+import { NavDropdown } from 'react-bootstrap';
 /**
  * 指定个人帐号
  */
-export default function MyActor({daoActor,actor,follow0,follow1,locale,env}) {
-  let t = useTranslations('ff')
-  let tc = useTranslations('Common')
+export default function MyActor({daoActor,actor,follow0,follow1,locale,env,personNum,companyNum,receiveNum}) {
+  const [fetchWhere, setFetchWhere] = useState({
+    currentPageNum: 0,  //当前页 初始不摘取数据
+    daoid: 0,  //此处不用
+    actorid: actor?.id, 
+    account: actor?.actor_account,
+    where: '', //查询条件
+    menutype: 3,
+    v:9999,
+    order: 'createTime', //排序
+    eventnum: 2  //默认 我发布嗯文
+});
+
+const [leftHidden,setLeftHidden]=useState(false)
+const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
+const [activeTab, setActiveTab] = useState(4);
+const leftDivRef = useRef(null);
+const parentDivRef = useRef(null);
+
+const tc = useTranslations('Common')
+const t = useTranslations('ff')
+const [topText,setTopText]=useState(t('accountInfoText'))
+
+const paras={
+  home:'home',  //个人信息
+  mypost:'mypost',  //我的嗯文
+  myreceive:'myreceive', // 我的接收
+  myCompanyPost:'myCompanyPost'
+}
+
+const svgs={
+  home:<Home size={24} />,
+  mypost:<MyPost size={24} />,
+  myreceive:<ReceiveSvg size={24} />,   
+  myCompanyPost:<BookSvg size={24} />
+}
+
+const [navIndex,setNavIndex]=useState(paras.home) 
+
+
+useEffect(() => {
+   const resizeObserver = new ResizeObserver(() => {
+    if (leftDivRef.current) {
+      const style = window.getComputedStyle(leftDivRef.current);
+      const display = style.getPropertyValue('display');
+      setLeftHidden(display === 'none')
+    }
+  });
+
+  if (parentDivRef.current) {  
+    resizeObserver.observe(parentDivRef.current);
+  }
+
+  return () =>{ 
+      resizeObserver.disconnect();
+  }
+}, []);
+
+
+  const homeHandle=()=>{ //个人信息
+    setActiveTab(4);
+    setTopText(t('accountInfoText'));
+    setNavIndex(paras.home);
+   }
+
+  const myPostHandle=()=>{ //发布的嗯文
+    setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 2, menutype: 3 });
+    setActiveTab(0);
+    setTopText(t('myEnkiText',{num:personNum}));
+    setNavIndex(paras.mypost);
+   }
+
+
+   const companyHadler=()=>{ //发布的公共
+    setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 9, menutype: 2 });
+    setActiveTab(0);
+    setTopText(t('myCompanyEnkiText',{num:companyNum}));
+    setNavIndex(paras.myCompanyPost);
+   }
+
+
+  const recerveHadler=()=>{ //接收
+    setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 4, menutype: 3 });
+    setActiveTab(0);
+    setTopText(t('receiveEnkiText',{num:receiveNum}));
+    setNavIndex(paras.myreceive);
+   }
+
+   const afterEditCall=(messageObj)=>{
+    setCurrentObj(messageObj);
+    setActiveTab(2);
+    sessionStorage.setItem("daism-list-id",messageObj.id)
+  }
+  
+  const callBack=()=>{  //回退处理，包括删除
+   if(navIndex===paras.home) homeHandle(false);
+   else if(navIndex===paras.mypost) myPostHandle(false);
+    else if(navIndex===paras.myreceive) recerveHadler(false);
+    else if(navIndex===paras.myCompanyPost) myBookHandle(false);
+  
+  
+  }
 
     return (<>
       <Head>
           <title>{tc('myAccountTitle',{name:actor?.actor_name})}</title>
       </Head>
       <PageLayout env={env}>
-        <Card className='daism-title mt-3'>
-        <Card.Header>{t('myAccount')}</Card.Header>
-        <Card.Body>
-            <div className='d-flex justify-content-between align-items-center' >
-              <EnkiMember messageObj={actor} isLocal={true} locale={locale} />
-              {actor?.dao_id>0?t('groupAccount'):t('selfAccount')}
+      <div ref={parentDivRef}  className='d-flex justify-content-center' style={{position:'sticky',top:'70px'}} >
+                <div  ref={leftDivRef} className='scsidebar scleft' >
+                    <div className='mb-3' style={{overflow:'hidden'}} >
+                        <EnkiMember messageObj={actor} isLocal={true} locale={locale} hw={64} /> 
+                    </div>
+                    <ul >
+                      <li className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></li>
+                      <li className={navIndex===paras.mypost?'scli':''}><span onClick={myPostHandle} >{svgs.mypost} {t('myEnkiText',{num:personNum})}</span></li>
+                      <li className={navIndex===paras.myCompanyPost?'scli':''}><span onClick={companyHadler} >{svgs.myCompanyPost} {t('myCompanyEnkiText',{num:companyNum})}</span></li>
+                      <li className={navIndex===paras.myreceive?'scli':''}><span onClick={recerveHadler} >{svgs.myreceive} {t('receiveEnkiText',{num:receiveNum})}</span></li>
+                
+                    </ul>
+                   
+                </div>
+             
+                <div className='sccontent' >
+                <div className='d-flex justify-content-between align-items-center' style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
+                
+                  <div className='selectText' style={{paddingLeft:'12px'}} >
+                    {activeTab===2 ? <span className='daism-a selectText' onClick={callBack} ><BackSvg size={24} />{t('esctext')} </span>
+                    :<>{svgs[navIndex]} {topText}</>}
+                   
+                    </div>  
+                  {leftHidden && <NavDropdown className='daism-a' title="..." >
+                    <NavDropdown.Item  className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.mypost?'scli':''}><span onClick={myPostHandle} >{svgs.mypost} {t('myEnkiText',{num:personNum})}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.myCompanyPost?'scli':''}><span onClick={companyHadler} >{svgs.myCompanyPost} {t('myCompanyEnkiText',{num:companyNum})}</span></NavDropdown.Item>
+                    <NavDropdown.Item className={navIndex===paras.myreceive?'scli':''}><span onClick={recerveHadler} >{svgs.myreceive} {t('receiveEnkiText',{num:receiveNum})}</span></NavDropdown.Item>
+                    
+                    </NavDropdown> } 
+                </div>
+           
+                    {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
+                    fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={callBack} fromPerson={true} 
+                    tabIndex={fetchWhere.menutype===3?1:3}
+                    afterEditCall={afterEditCall} isPersonEdit={actor?.actor_account===actor?.actor_account} path='enkier' />
+
+                    :activeTab === 1 ? <CreateMess addCallBack={homeHandle}  currentObj={currentObj} 
+                    afterEditCall={afterEditCall}  
+                    callBack={callBack} />
+
+                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj}  fromPerson={true}
+                    delCallBack={callBack} setActiveTab={setActiveTab} isPersonEdit={actor?.actor_account===actor?.actor_account} />
+
+                    :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack}
+                     currentObj={currentObj} afterEditCall={afterEditCall} />
+                      :<MyInfomation daoActor={daoActor} actor={actor} follow0={follow0} follow1={follow1} locale={locale} />
+                  }
+
+                </div>
+              
             </div>
-            <hr/>
-            <div>
-                <div className='mb-2' ><b>{t('persionInfomation')}:</b></div>
-                <div dangerouslySetInnerHTML={{__html: actor?.actor_desc}}></div>
-            </div>
-            <hr/>
-            {actor?.dao_id===0 &&
-              <Accordion>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header><b>{t('daoGroupText')}:</b></Accordion.Header>
-                <Accordion.Body>
-               {daoActor.map((obj)=>(<DaoItem key={obj.dao_id} t={t} record={obj} />))}
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-            }
-         
-         
-            <Tabs defaultActiveKey="follow0" className="mb-3 mt-3" >
-            <Tab eventKey="follow0" title={t('followingText',{num:follow0.length})}>
-              <div>
-                {follow0.map((obj)=> <FollowItem0 key={obj.id} locale={locale}  messageObj={obj} isEdit={false} />)}
-              </div>
-            </Tab>
-            <Tab eventKey="follow1" title={t('followedText',{num:follow1.length})}>
-              <div>
-                {follow1.map((obj)=> <FollowItem1 locale={locale} key={obj.id}  messageObj={obj} isEdit={false} />)}
-              </div>
-            </Tab>
-          </Tabs>
-        </Card.Body>
-        </Card>
+
+
+
         </PageLayout></>
     );
 }
@@ -71,6 +191,9 @@ export const getServerSideProps = withSession(async ({locale,query }) => {
   const daoActor=await getJsonArray('daoactorbyid',[actor?.id])
   const follow0=await getJsonArray('follow0',[actor?.actor_account])
   const follow1=await getJsonArray('follow1',[actor?.actor_account])
+  const personNum=await getData("select count(*) as total from a_message where lower(actor_account)=? and send_type=0",[query?.id?.toLowerCase()],true);
+  const companyNum=await getData("select count(*) as total from a_messagesc where actor_id=?",[actor?.id],true);
+  const receiveNum=await getData("select count(*) as total from a_message where lower(receive_account)=?",[query?.id?.toLowerCase()],true);
   
     return {
       props: {
@@ -78,12 +201,13 @@ export const getServerSideProps = withSession(async ({locale,query }) => {
           ...require(`../../../messages/shared/${locale}.json`),
           ...require(`../../../messages/federation/${locale}.json`),
         },
-        daoActor,actor,follow0,follow1,locale
+        daoActor,actor,follow0,follow1,locale,
+        personNum:personNum?.total,
+        companyNum:companyNum?.total,
+        receiveNum:receiveNum?.total
         ,env:getEnv()
       }
     }
   }
 
 )
-
-  

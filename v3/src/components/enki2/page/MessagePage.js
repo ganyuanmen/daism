@@ -28,7 +28,7 @@ import ShowAddress from "../../ShowAddress";
  * @daoData 个人所属的smart common 集合
  */
 
-export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,filterTag}) {
+export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,isPersonEdit,filterTag,fromPerson=false}) {
  
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
@@ -197,7 +197,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
 const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
 
 const filter = (para) => {
- filterTag.call(null,para)
+ if(typeof filterTag === 'function') filterTag.call(null,para)
 };
  const replacedText = currentObj?.content.replace(regex, (match, p1) => {
   const escapedParam = p1.replace(/"/g, '&quot;');
@@ -234,7 +234,7 @@ const renderedArrays = data.map((obj, idx) => {
 
         <Card className=" mt-2 mb-3" >
             <Card.Header>
-                <EnkiMemberItem messageObj={currentObj} domain={env.domain} locale={locale} />
+                <EnkiMemberItem messageObj={currentObj} domain={env.domain} locale={locale} fromPerson={fromPerson} />
                {/* 活动 */}
                {currentObj?._type===1 && <EventItem currentObj={currentObj} /> }
             </Card.Header>
@@ -276,8 +276,8 @@ const renderedArrays = data.map((obj, idx) => {
                 {/* 非注册地登录，不能收藏 */}
                 <EnKiBookmark isEdit={ableReply() && actor?.actor_account.split('@')[1]==env.domain} currentObj={currentObj}/>
               {currentObj.send_type===0 && <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={currentObj} />}
-              <EnkiEditItem env={env} isEdit={isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
-              preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} /> 
+              <EnkiEditItem env={env} isEdit={isPersonEdit && isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
+              preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} fromPerson={fromPerson} /> 
             </div>
             {currentObj?.link_url && <div className="mt-2 mb-2" style={{textAlign:'center'}}>
                     <a target="_blank" href={currentObj?.link_url} >{t('origlText')}......</a>

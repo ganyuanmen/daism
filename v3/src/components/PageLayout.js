@@ -65,7 +65,7 @@ export default function PageLayout({children,env}) {
         </div>
     
     </Container>
-    {!route.startsWith('/communities') && <footer className="d-flex justify-content-center daism-foot align-items-center flex-column  " style={{margin:'10px',padding:'20px'}} >
+    {!route.startsWith('/communities') && !route.startsWith('/smartcommons/actor') && <footer className="d-flex justify-content-center daism-foot align-items-center flex-column  " style={{margin:'10px',padding:'20px'}} >
           
           <div className="fs-4 mb-2"><strong> DAism.io</strong></div>
          

@@ -13,7 +13,6 @@ import { useFollow } from '../../../hooks/useMessageData';
 import FollowItem0 from './FollowItem0';
 import FollowItem1 from './FollowItem1';
 import EnKiRigester from './EnKiRigester';
-import EnkiView from '../../enki3/EnkiView';
 import { useTranslations } from 'next-intl'
 
 /**
@@ -21,7 +20,7 @@ import { useTranslations } from 'next-intl'
  * @locale zh/cn 
  * @env 环境变量 
  */
-export default function ActorMember({locale,env,accountAr}){
+export default function ActorMember({locale,env}){
   const user = useSelector((state) => state.valueData.user)
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
     
@@ -130,7 +129,7 @@ export default function ActorMember({locale,env,accountAr}){
     </Card.Body>
     </Card>
   
-    {actor?.actor_account && <EnkiView env={env} locale={locale} accountAr={accountAr} /> }
+    {/* {actor?.actor_account && <EnkiView env={env} locale={locale} accountAr={accountAr} /> } */}
 
   
     <Modal className='daism-title' size="lg" show={show} onHide={(e) => {setShow(false)}}>

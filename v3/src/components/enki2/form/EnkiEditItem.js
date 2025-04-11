@@ -16,8 +16,8 @@ import { useTranslations } from 'next-intl'
  * @isEdit 允许修改或删除
  * @type 0 对象是嗯文， 1 对象是回复
  */
-//type 默认是 0嗯文 1-> 是回复 preEditCall 修改前操作  delCallBack 删除后回调  
-export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEditCall,sctype,isEdit,type=0})
+//type 默认是 0嗯文 1-> 是回复 preEditCall 修改前操作  delCallBack 删除后回调 fromPerson 个人信息中有置顶功能 
+export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEditCall,sctype,isEdit,fromPerson=false,type=0})
 {
     
     const t = useTranslations('ff')
@@ -137,8 +137,8 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
                 <NavDropdown  title=' ......' active={false} drop={type===0?"up":'down'} >
                     <NavDropdown.Item disabled={!isEdit} eventKey="1"> <span style={{color:isEdit?'black':'gray'}}><EditSvg size={24} /> {t('editText')}...</span></NavDropdown.Item> 
                     <NavDropdown.Item disabled={!isDelete} eventKey="2"> <span style={{color:isDelete?'black':'gray'}}><DeleteSvg size={24} /> {t('deleteText')}...</span></NavDropdown.Item> 
-                   { isAn && <NavDropdown.Item eventKey="4"> <span><AnnounceSvg size={24} /> {t('amouseText')}...</span></NavDropdown.Item>  }       
-                   {messageObj.dao_id>0 && <NavDropdown.Item disabled={!isEdit} eventKey="3"> <span style={{color:isEdit?'black':'gray'}}><Pin size={24} /> {messageObj.is_top?t('dropTopText'):t('setTopText')}...</span></NavDropdown.Item>}     
+                   { isAn && !fromPerson && <NavDropdown.Item eventKey="4"> <span><AnnounceSvg size={24} /> {t('amouseText')}...</span></NavDropdown.Item>  }       
+                   {(messageObj.dao_id>0 || fromPerson) && <NavDropdown.Item disabled={!isEdit} eventKey="3"> <span style={{color:isEdit?'black':'gray'}}><Pin size={24} /> {messageObj.is_top?t('dropTopText'):t('setTopText')}...</span></NavDropdown.Item>}     
                 
                 </NavDropdown>
             </Nav>

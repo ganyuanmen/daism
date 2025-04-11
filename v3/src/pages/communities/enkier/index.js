@@ -363,14 +363,14 @@ export default function enkier({openObj,env,locale,accountAr }) {
                 </div>
            
                     {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
-                    fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} filterTag={filterTag}
+                    fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} filterTag={filterTag} isPersonEdit={true} tabIndex={1}
                     delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr} path='enkier' />
 
                     :activeTab === 1 ? <CreateMess addCallBack={homeHandle} accountAr={accountAr} currentObj={currentObj} 
                     afterEditCall={afterEditCall}  
                     callBack={callBack} />
 
-                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj} 
+                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj} isPersonEdit={true}
                     delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} filterTag={filterTag} />
 
                     :activeTab===3 && <FollowCollection locale={locale}  method={followMethod}/>}

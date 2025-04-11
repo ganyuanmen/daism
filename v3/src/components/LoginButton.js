@@ -37,9 +37,9 @@ const LoginButton = forwardRef((props, ref) => {
         setSingering(true)
         const messageObj = await createSiweMessage();
         const message=messageObj.prepareMessage();
-        // console.log("begin --------->signature",window.daism_signer)
+
         window.daism_signer.signMessage(message).then(async (signature)=>{
-            // console.log("signature begin --------->")
+
             const timeoutId = setTimeout(() => {controller.abort();}, 5000); 
             try {
                 const res = await fetch(`/api/siwe/login`, {

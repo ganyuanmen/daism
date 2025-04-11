@@ -270,14 +270,14 @@ export default function enki({openObj,env,locale,accountAr }) {
 
                         {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} 
                         setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} filterTag={filterTag}
-                        delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr} 
-                        path='enki' daoData={daoData}  />
+                        delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr}  tabIndex={1}
+                        path='enki' daoData={daoData} isPersonEdit={true}  />
 
                         :activeTab === 1 ? <EnkiCreateMessage env={env} daoData={daoData} callBack={callBack}
                          addCallBack={latestHandle} currentObj={currentObj} afterEditCall={afterEditCall} 
                          accountAr={accountAr} />
                          
-                        :activeTab === 2 && <MessagePage  path="enki" locale={locale} env={env} currentObj={currentObj} 
+                        :activeTab === 2 && <MessagePage isPersonEdit={true}  path="enki" locale={locale} env={env} currentObj={currentObj} 
                         delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} daoData={daoData}
                         filterTag={filterTag} />
 }

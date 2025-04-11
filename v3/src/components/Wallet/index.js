@@ -125,7 +125,7 @@ function Wallet({env,query,route,otherLocale,tc}) {
                 dispatch(setUser({connected:1,account:tempAccount,networkName:network.name, chainId:tempChainId}))
                 provider.getBalance(tempAccount).then(_balance=>{setEth(ethers.formatEther(_balance))})
                 
-                if(route==='/' ) getTokens(tempAccount)
+                if(route==='/deval' ) getTokens(tempAccount)
                 providerWithInfo.provider.on('accountsChanged', _account=>{switchDisconnect(); window.location.reload();});
             }
             window.sessionStorage.setItem("isLogin", "1")

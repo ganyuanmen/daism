@@ -154,7 +154,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
                 let re = await response.json()
                 if (re.errMsg) { showClipError(re.errMsg); return }
                 if (currentObj) afterEditCall.call(this,{...currentObj,...re}); //修改回调
-                else addCallBack.call();  //新增回调
+                else if(typeof addCallBack === 'function') addCallBack.call();  //新增回调
             })
             .catch(error => {
                 closeTip()

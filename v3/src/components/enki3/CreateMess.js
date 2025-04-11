@@ -91,7 +91,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         let obj=await response.json()
         if(obj.errMsg) { showClipError(obj.errMsg|| 'fail'); return }
         if(currentObj) afterEditCall.call(this,obj)  //修改回调
-        else addCallBack.call(this); //新增回调
+        else if(typeof addCallBack === 'function') addCallBack.call(this); //新增回调
         })
         .catch(error => {
         closeTip()

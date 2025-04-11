@@ -219,7 +219,7 @@ export default function sc({env,locale,accountAr,openObj }) {
                         </div>
                      
                         {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} 
-                        setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere}
+                        setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} tabIndex={1}
                         delCallBack={callBack} afterEditCall={afterEditCall}  path='enki' daoData={daoActor}
                         filterTag={filterTag} />
                         

@@ -27,10 +27,11 @@ import ShowAddress from "../ShowAddress";
  * @data_index 主页嗯文列表中的当前序号
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  * @daoData 个人所属的smart common 集合
+ * @isPersonEdit 个人信息、中允许修改
  */
 
 export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,filterTag,
-  setActiveTab,replyAddCallBack,delCallBack,afterEditCall,data_index,accountAr,daoData}) {
+  setActiveTab,replyAddCallBack,delCallBack,afterEditCall,data_index,accountAr,isPersonEdit,daoData,tabIndex,fromPerson=false}) {
     
     const actor = useSelector((state) => state.valueData.actor)
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
@@ -114,7 +115,7 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,fil
 const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
 
 const filter = (para) => {
- filterTag.call(null,para)
+if(typeof filterTag === 'function') filterTag.call(null,para)
 };
  const replacedText = messageObj?.content.replace(regex, (match, p1) => {
   const escapedParam = p1.replace(/"/g, '&quot;');
@@ -139,7 +140,7 @@ const handleClick = useCallback((event) => {
    
 
        <div id={`item-${messageObj.id}`}  style={{padding:'10px',borderBottom:'1px solid #D9D9E8'}}>
-           <EnkiMemberItem messageObj={messageObj} domain={env.domain} locale={locale} />
+           <EnkiMemberItem messageObj={messageObj} domain={env.domain} locale={locale} fromPerson={fromPerson} />
 
             <div style={{position:'relative'}}  className="daism-a mt-2 mb-3"  onClick={handleClick}
                > 
@@ -196,8 +197,8 @@ const handleClick = useCallback((event) => {
               {messageObj.send_type===0 && 
               <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={messageObj}  />}
             
-              <EnkiEditItem isEdit={isEdit} env={env} actor={actor} messageObj={messageObj} delCallBack={delCallBack}
-               preEditCall={()=>{ setCurrentObj(messageObj);setActiveTab(1);}} sctype={messageObj?.dao_id>0?'sc':''} /> 
+              <EnkiEditItem isEdit={isPersonEdit && isEdit} env={env} actor={actor} messageObj={messageObj} delCallBack={delCallBack}
+               preEditCall={()=>{ setCurrentObj(messageObj);setActiveTab(tabIndex);}} sctype={messageObj?.dao_id>0?'sc':''} fromPerson={fromPerson}  /> 
             </div>
 
         </div>

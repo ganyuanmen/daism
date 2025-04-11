@@ -162,7 +162,12 @@
     "notSelect":"没有选择发布的社区",
     "setTopText":"置顶",
     "dropTopText":"取消置顶",
-    "amouseText":"转发"
+    "amouseText":"转发",
+    "accountInfoText":"帐户信息",
+    "myEnkiText":"个人社区嗯文({num})",
+    "myCompanyEnkiText":"公共社区嗯文({num})",
+    "receiveEnkiText":"接收的嗯文({num})"
+
 
 
   
