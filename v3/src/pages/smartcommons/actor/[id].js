@@ -34,13 +34,13 @@ export default function MyActor({daoActor,actor,follow0,follow1,locale,env,perso
 
 const [leftHidden,setLeftHidden]=useState(false)
 const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
-const [activeTab, setActiveTab] = useState(4);
+const [activeTab, setActiveTab] = useState(0);
 const leftDivRef = useRef(null);
 const parentDivRef = useRef(null);
 
 const tc = useTranslations('Common')
 const t = useTranslations('ff')
-const [topText,setTopText]=useState(t('accountInfoText'))
+const [topText,setTopText]=useState(t('myEnkiText',{num:personNum}))
 
 const paras={
   home:'home',  //个人信息
@@ -56,7 +56,7 @@ const svgs={
   myCompanyPost:<BookSvg size={24} />
 }
 
-const [navIndex,setNavIndex]=useState(paras.home) 
+const [navIndex,setNavIndex]=useState(paras.mypost) 
 
 
 useEffect(() => {
@@ -116,8 +116,8 @@ useEffect(() => {
   const callBack=()=>{  //回退处理，包括删除
    if(navIndex===paras.home) homeHandle(false);
    else if(navIndex===paras.mypost) myPostHandle(false);
+    else if(navIndex===paras.myCompanyPost) companyHadler(false);
     else if(navIndex===paras.myreceive) recerveHadler(false);
-    else if(navIndex===paras.myCompanyPost) myBookHandle(false);
   
   
   }
@@ -133,11 +133,11 @@ useEffect(() => {
                         <EnkiMember messageObj={actor} isLocal={true} locale={locale} hw={64} /> 
                     </div>
                     <ul >
-                      <li className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></li>
+                      
                       <li className={navIndex===paras.mypost?'scli':''}><span onClick={myPostHandle} >{svgs.mypost} {t('myEnkiText',{num:personNum})}</span></li>
                       <li className={navIndex===paras.myCompanyPost?'scli':''}><span onClick={companyHadler} >{svgs.myCompanyPost} {t('myCompanyEnkiText',{num:companyNum})}</span></li>
                       <li className={navIndex===paras.myreceive?'scli':''}><span onClick={recerveHadler} >{svgs.myreceive} {t('receiveEnkiText',{num:receiveNum})}</span></li>
-                
+                      <li className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></li>
                     </ul>
                    
                 </div>
@@ -151,24 +151,24 @@ useEffect(() => {
                    
                     </div>  
                   {leftHidden && <NavDropdown className='daism-a' title="..." >
-                    <NavDropdown.Item  className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></NavDropdown.Item>
+                   
                     <NavDropdown.Item className={navIndex===paras.mypost?'scli':''}><span onClick={myPostHandle} >{svgs.mypost} {t('myEnkiText',{num:personNum})}</span></NavDropdown.Item>
                     <NavDropdown.Item className={navIndex===paras.myCompanyPost?'scli':''}><span onClick={companyHadler} >{svgs.myCompanyPost} {t('myCompanyEnkiText',{num:companyNum})}</span></NavDropdown.Item>
                     <NavDropdown.Item className={navIndex===paras.myreceive?'scli':''}><span onClick={recerveHadler} >{svgs.myreceive} {t('receiveEnkiText',{num:receiveNum})}</span></NavDropdown.Item>
-                    
+                    <NavDropdown.Item  className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></NavDropdown.Item>
                     </NavDropdown> } 
                 </div>
            
                     {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
                     fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={callBack} fromPerson={true} 
-                    tabIndex={fetchWhere.menutype===3?1:3}
-                    afterEditCall={afterEditCall} isPersonEdit={actor?.actor_account===actor?.actor_account} path='enkier' />
+                    tabIndex={fetchWhere.menutype===3?1:3} daoData={daoActor}
+                    afterEditCall={afterEditCall} isPersonEdit={actor?.actor_account===actor?.actor_account}  path={fetchWhere.menutype===3?'enkier':'enki'} />
 
                     :activeTab === 1 ? <CreateMess addCallBack={homeHandle}  currentObj={currentObj} 
                     afterEditCall={afterEditCall}  
                     callBack={callBack} />
 
-                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj}  fromPerson={true}
+                    :activeTab === 2 ? <MessagePage daoData={daoActor} path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} env={env} currentObj={currentObj}  fromPerson={true}
                     delCallBack={callBack} setActiveTab={setActiveTab} isPersonEdit={actor?.actor_account===actor?.actor_account} />
 
                     :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack}

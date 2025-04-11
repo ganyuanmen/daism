@@ -100,7 +100,8 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
 
 
     const [show,setShow]=useState(false)
-    const isDelete=isEdit || actor?.actor_account===messageObj.receive_account;
+
+    const isDelete=isEdit || (actor?.actor_account && messageObj?.receive_account && actor?.actor_account===messageObj.receive_account);
     const handleSelect = (eventKey) =>{ 
 
         switch(eventKey)

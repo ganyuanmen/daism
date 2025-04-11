@@ -29,12 +29,12 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
   
   const [leftHidden,setLeftHidden]=useState(false)
   const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
-  const [activeTab, setActiveTab] = useState(4);
+  const [activeTab, setActiveTab] = useState(0);
   const leftDivRef = useRef(null);
   const parentDivRef = useRef(null);
   
   const t = useTranslations('ff')
-  const [topText,setTopText]=useState(t('accountInfoText'))
+  const [topText,setTopText]=useState(t('myEnkiText',{num:personNum}))
 
   
   const paras={
@@ -51,7 +51,7 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
     myCompanyPost:<BookSvg size={24} />
   }
   
-  const [navIndex,setNavIndex]=useState(paras.home) ;
+  const [navIndex,setNavIndex]=useState(paras.mypost) ;
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -144,11 +144,11 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
                           <EnkiMember messageObj={actor} isLocal={true} locale={locale} hw={64} /> 
                       </div>
                       <ul >
-                        <li className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></li>
+                       
                         <li className={navIndex===paras.mypost?'scli':''}><span onClick={myPostHandle} >{svgs.mypost} {t('myEnkiText',{num:personNum})}</span></li>
                         <li className={navIndex===paras.myCompanyPost?'scli':''}><span onClick={companyHadler} >{svgs.myCompanyPost} {t('myCompanyEnkiText',{num:companyNum})}</span></li>
                         <li className={navIndex===paras.myreceive?'scli':''}><span onClick={recerveHadler} >{svgs.myreceive} {t('receiveEnkiText',{num:receiveNum})}</span></li>
-                  
+                        <li className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></li>
                       </ul>
                      
                   </div>
@@ -162,11 +162,11 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
                      
                       </div>  
                     {leftHidden && <NavDropdown className='daism-a' title="..." >
-                      <NavDropdown.Item  className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></NavDropdown.Item>
+                    
                       <NavDropdown.Item className={navIndex===paras.mypost?'scli':''}><span onClick={myPostHandle} >{svgs.mypost} {t('myEnkiText',{num:personNum})}</span></NavDropdown.Item>
                       <NavDropdown.Item className={navIndex===paras.myCompanyPost?'scli':''}><span onClick={companyHadler} >{svgs.myCompanyPost} {t('myCompanyEnkiText',{num:companyNum})}</span></NavDropdown.Item>
                       <NavDropdown.Item className={navIndex===paras.myreceive?'scli':''}><span onClick={recerveHadler} >{svgs.myreceive} {t('receiveEnkiText',{num:receiveNum})}</span></NavDropdown.Item>
-                      
+                      <NavDropdown.Item  className={navIndex===paras.home?'scli':''}><span onClick={homeHandle} >{svgs.home} {t('accountInfoText')}</span></NavDropdown.Item>
                       </NavDropdown> } 
                   </div>
              
@@ -178,7 +178,7 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
                       afterEditCall={afterEditCall}  
                       callBack={callBack} />
   
-                      :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj} 
+                      :activeTab === 2 ? <MessagePage  path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} daoData={daoActor} env={env} currentObj={currentObj} 
                       delCallBack={callBack} setActiveTab={setActiveTab} isPersonEdit={true} fromPerson={true} />
   
                       :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack} 
