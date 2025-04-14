@@ -53,16 +53,16 @@ export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
     return (<>
         <div className="desktop-only ">
         <div style={{width:'100%'}} className="d-inline-flex justify-content-between align-items-center"   >
-            <div style={{width:'50%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
+            <div style={{width:'56%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
             {honor.length>0 && <div><Honor honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
             {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
-            {(isTop || (messageObj.is_top && fromPerson)) &&  <div ><PinTop size={24} /></div>}
+            {(isTop || (messageObj.is_top===1 && fromPerson)) &&  <div ><PinTop size={24} /></div>}
             <div style={{paddingLeft:'4px'}} ><TimesItem currentObj={messageObj} /></div>
         </div>
         </div>
         <div className="mobile-only">
         <div style={{width:'100%'}} className="d-inline-flex justify-content-between align-items-center"   >
-          <div style={{width:'50%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
+          <div style={{width:'56%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
           {honor.length>0 && <div style={{paddingLeft:'8px'}}><Honor_m honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
           {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
           <div style={{paddingLeft:'4px'}} ><TimesItem_m currentObj={messageObj} /></div>

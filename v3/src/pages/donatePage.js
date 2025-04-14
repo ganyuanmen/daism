@@ -16,11 +16,11 @@ export default function donatePage({locale,env}) {
 
     return (<>
       <Head>
-          <title>捐赠</title>
+          <title>Donation</title>
       </Head>
       <PageLayout env={env}>
       
-        <DonationPage env={env} />
+        <DonationPage env={env} locale={locale} />
 
         </PageLayout></>
     );
@@ -32,7 +32,7 @@ export const getServerSideProps = withSession(async ({locale,query }) => {
       props: {
         messages: {
           ...require(`../messages/shared/${locale}.json`),
-          ...require(`../messages/federation/${locale}.json`),
+          ...require(`../messages/wallet/${locale}.json`),
         },
         locale
         ,env:getEnv()

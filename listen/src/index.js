@@ -12,6 +12,7 @@ const Daismnft=require("./api/Daismnft")
 const UnitNFT=require("./api/UnitNFT")
 const SatoshiUTOFund=require("./api/SatoshiUTOFund")
 const Daismnftsing=require("./api/Daismnftsing")
+const Donate=require("./api/Donate")
 const ethers=require('ethers')
 const utils = require("./utils");
 const abiDecoder = require('abi-decoder'); // NodeJS
@@ -245,6 +246,7 @@ class DaoApi {
         this.DaismNft.unsub();
         this.UnitNFT.unsub();
         this.Daismnftsing.unsub();
+        this.Donate.unsub();
 
         
 
@@ -309,10 +311,12 @@ class DaoApi {
     return this.dao_Daismnftsing_obj; 
     }
     
-    get Domain() { if (!this.dao_domain_obj) this.dao_domain_obj = new Domain(this.web3, this.account,daismAddress['DAismDomain'],this.DaoToken); return this.dao_domain_obj; }
+    get Domain() { if (!this.dao_domain_obj) this.dao_domain_obj = new Domain(this.web3, this.account,daismAddress['DAismDomain'],this.DaoToken); return this.dao_domain_obj; } 
 
     get EventSum() { if (!this.dao_eventSum_obj) this.dao_eventSum_obj = new EventSum(this.web3, this.account,daismAddress['SCEventEmit']); return this.dao_eventSum_obj; }
  
+    get Donate() { if (!this.dao_Donate_obj) this.dao_Donate_obj = new Donate(this.web3, this.account,daismAddress['Donation'],this.EventSum); return this.dao_Donate_obj; }
+
     constructor(_web3, _account,_network) {
         this.web3 = _web3;
         this.running=false

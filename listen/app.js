@@ -59,7 +59,9 @@ async function hand() {
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_nft'  //19 
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_nft_transfer'  //20 发布时mint nft
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_updatedaocreator'  //21 
-        + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_nft_swap';  //22 打赏 mint nft
+        + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_nft_swap'  //22 打赏 mint nft
+        + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_donate';  //23 捐赠
+      //   + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_donateerc20';  //24 打赏 mint nft
         
    const rows=await promisePool.query(sql,[]);
    rows[0].forEach(element => {maxData.push(element.s>start_block?element.s:start_block)});
@@ -80,9 +82,12 @@ function daoListen() {
    p('begin listent...')
    // addLogoEvent()  
    // SatoshiUTOFund()
-  // daofund()
+ 
   daoCreate() //创建dao事件处理
   domainsing()  //个人社区帐号建立
+
+  DonationReceived(); //捐赠
+//   ERC20Withdraw(); //erc 捐赠
 
   publishTolen()  // dao发布token事件
   // //以下的监听需要dao条件下才能处理，所以延迟监听
@@ -218,8 +223,18 @@ function mintEvent()
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
       let tokenSvg=await server1.daoapi.DaismNft.getNFT(data['tokenId'])
+      let _tips;
+      if(tokenSvg[1].length===6 && tokenSvg[1][5]==='events: Donation in support of Proof of Love')
+      {
+         let _uto=tokenSvg[1][4].split(':');
+         let _eth=tokenSvg[1][3].split(':');
+         _tips=`Donation in support of Proof of Love(${parseFloat(server1.web3.utils.fromWei(_eth[1],'ether')).toFixed(4)}ETH => ${parseFloat(_uto[1])/100000000}UTO)`;
+
+
+      }else _tips=tokenSvg[1].join(',');
+      console.log(tokenSvg[1])
       let sql ="INSERT IGNORE INTO t_nft(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
-      let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.DaismNft.address,tokenSvg[1].join(',')];
+      let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.DaismNft.address,_tips];
       maxData[16] = obj.blockNumber+1n;  //Cache last block number
       await executeSql(sql, params); //dao 信息
    });
@@ -266,6 +281,8 @@ function daoCreate()
       //    await executeSql("call i_daodetail(?,?,?,?)",[data['dividendRights'][i],data['members'][i],data['delegator'],data['daoId']]);
       // }
    });
+
+
    server1.daoapi.DaoRegistrar.daoCreateEvent(maxData[0],async (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
@@ -287,10 +304,40 @@ function publishTolen()
       if(process.env.IS_DEBUGGER==='1') console.info(obj);
       let sql = "call i_token(?,?,?,?)";
       let params = [data['daoId'],data['tokenId'],obj.blockNumber, data['timestamp']];
-      maxData[3] = obj.blockNumber+1n ; //Cache last block number
+      maxData[23] = obj.blockNumber+1n ; //Cache last block number
       await executeSql(sql, params);
    })
 }
+
+
+function DonationReceived()
+{
+   server1.daoapi.Donate.DonationReceived(maxData[23], async obj => {
+      const {data}=obj
+      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      let sql = "INSERT INTO t_donate(block_num,donor_address,donationAmount,uTokenAmount,totalDonationETH,donationTime,tokenid) VALUES(?,?,?,?,?,?,?)";
+      let params = [obj.blockNumber,data['donor'],data['donationAmount'],data['uTokenAmount'],data['totalDonationETH'], data['donationTime'], data['tokenId']];
+      maxData[23] = obj.blockNumber+1n ; //Cache last block number
+      await executeSql(sql, params);
+     
+   })
+}
+
+
+// function ERC20Withdraw()
+// {
+//    server1.daoapi.Donate.ERC20Withdraw(maxData[24], async obj => {
+//       const {data}=obj
+//       if(process.env.IS_DEBUGGER==='1') console.info(obj);
+//       let sql = "INSERT INTO t_donateerc20(block_num,from_address,to_address,amount) VALUES(?,?,?,?)";
+//       let params = [obj.blockNumber,data['token'],data['to'],data['amount']];
+//       maxData[24] = obj.blockNumber+1n ; //Cache last block number
+//       await executeSql(sql, params);
+     
+//    })
+// }
+
+
 
 async function geneU2t(obj)
 {

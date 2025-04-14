@@ -127,15 +127,22 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
       sessionStorage.setItem("daism-list-id",messageObj.id)
     }
     
-    const callBack=()=>{  //回退处理，包括删除
+    const callBack=()=>{  //
      if(navIndex===paras.home) homeHandle(false);
      else if(navIndex===paras.mypost) myPostHandle(false);
       else if(navIndex===paras.myreceive) recerveHadler(false);
       else if(navIndex===paras.myCompanyPost) companyHadler(false);
-    
-    
     }
   
+       
+    const delcallBack=()=>{  //删除
+      callBack();
+      if(navIndex===paras.mypost) setPersonNum(personNum-1)
+      else  if(navIndex===paras.myreceive) setReceiveNum(receiveNum-1)
+        else  if(navIndex===paras.myCompanyPost) setCompanyNum(companyNum-1)
+
+     }
+   
       return (
     
         <div ref={parentDivRef}  className='d-flex justify-content-center' style={{position:'sticky',top:'70px'}} >
@@ -171,7 +178,7 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
                   </div>
              
                       {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
-                      fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={callBack} afterEditCall={afterEditCall} 
+                      fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={delcallBack} afterEditCall={afterEditCall} 
                       isPersonEdit={true} tabIndex={fetchWhere.menutype===3?1:3} path={fetchWhere.menutype===3?'enkier':'enki'} daoData={daoActor} fromPerson={true} />
   
                       :activeTab === 1 ? <CreateMess addCallBack={homeHandle}  currentObj={currentObj} 
@@ -179,7 +186,7 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
                       callBack={callBack} />
   
                       :activeTab === 2 ? <MessagePage  path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} daoData={daoActor} env={env} currentObj={currentObj} 
-                      delCallBack={callBack} setActiveTab={setActiveTab} isPersonEdit={true} fromPerson={true} />
+                      delCallBack={delcallBack} setActiveTab={setActiveTab} isPersonEdit={true} fromPerson={true} />
   
                       :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack} 
                       currentObj={currentObj} afterEditCall={afterEditCall} />

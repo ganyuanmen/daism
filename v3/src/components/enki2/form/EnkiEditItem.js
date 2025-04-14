@@ -62,7 +62,7 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
         showTip(t('submittingText')) 
         let res=await client.post('/api/postwithsession',method,body)
         closeTip()
-        if(res.status===200) delCallBack.call() 
+        if(res.status===200) if(typeof delCallBack === 'function') delCallBack.call() 
         else showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
       
     }
@@ -70,7 +70,7 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
         showTip(t('submittingText')) 
         let res=await client.post('/api/postwithsession',"setTopMessage",{sctype,flag,id})
         closeTip()
-        if(res.status===200) delCallBack.call() 
+        if(res.status===200) if(typeof delCallBack === 'function') delCallBack.call() 
         else showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
       
     }

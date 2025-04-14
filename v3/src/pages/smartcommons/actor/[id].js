@@ -119,8 +119,18 @@ useEffect(() => {
     else if(navIndex===paras.myCompanyPost) companyHadler(false);
     else if(navIndex===paras.myreceive) recerveHadler(false);
   
-  
   }
+
+  
+       
+  const delcallBack=()=>{  //删除
+    callBack();
+    if(navIndex===paras.mypost) setPersonNum(personNum-1)
+    else  if(navIndex===paras.myreceive) setReceiveNum(receiveNum-1)
+      else  if(navIndex===paras.myCompanyPost) setCompanyNum(companyNum-1)
+
+   }
+
 
     return (<>
       <Head>
@@ -160,7 +170,7 @@ useEffect(() => {
                 </div>
            
                     {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
-                    fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={callBack} fromPerson={true} 
+                    fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={delcallBack} fromPerson={true} 
                     tabIndex={fetchWhere.menutype===3?1:3} daoData={daoActor}
                     afterEditCall={afterEditCall} isPersonEdit={actor?.actor_account===actor?.actor_account}  path={fetchWhere.menutype===3?'enkier':'enki'} />
 
@@ -169,7 +179,7 @@ useEffect(() => {
                     callBack={callBack} />
 
                     :activeTab === 2 ? <MessagePage daoData={daoActor} path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} env={env} currentObj={currentObj}  fromPerson={true}
-                    delCallBack={callBack} setActiveTab={setActiveTab} isPersonEdit={actor?.actor_account===actor?.actor_account} />
+                    delCallBack={delcallBack} setActiveTab={setActiveTab} isPersonEdit={actor?.actor_account===actor?.actor_account} />
 
                     :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack}
                      currentObj={currentObj} afterEditCall={afterEditCall} />

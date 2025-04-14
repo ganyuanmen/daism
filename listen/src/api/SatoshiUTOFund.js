@@ -12,7 +12,7 @@ class SatoshiUTOFund {
         this.addappObj1=this.contract.events.AddRule({filter: {},fromBlock: maxBlockNumber});
         this.addappObj1.on('data', async function (data,_error) {
                 if(!data || !data.returnValues) {utils.log("addRuleEvent error:"+_error);throw _error;}
-                console.log(data)
+                console.log(data.returnValues)
             }
         )
     }

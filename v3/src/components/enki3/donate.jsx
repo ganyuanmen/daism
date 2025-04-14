@@ -1,80 +1,121 @@
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
+import { InputGroup,Button,Form } from 'react-bootstrap';
+import { useDispatch} from 'react-redux';
+import {setTipText,setMessageText} from '../../data/valueData'
+// import { EditSvg } from '../../lib/jssvg/SvgCollection';
+// import { useTranslations } from 'next-intl'
+import ConfirmWin from '../federation/ConfirmWin';
+import { client } from '../../lib/api/client';
+
 
 // 引入二维码生成库
 
 import ShowErrorBar from '../ShowErrorBar';
+import ShowAddress from '../ShowAddress';
 
-const DonationPage = ({env}) => {
+const DonationPage = ({env,locale}) => {
+
   const [donationAmount, setDonationAmount] = useState('');
-  const [donationStatus, setDonationStatus] = useState('');
-  const contractAddress = '0xdBAEECD7E8e5396B0c6aC74488f576ec3aA3DD9d'; 
-  const user = useSelector((state) => state.valueData.user)
+  const [donationStatus, setDonationStatus] = useState({});
+  const [show,setShow]=useState(false);
+
+  const user = useSelector((state) => state.valueData.user);
+  const inputRef=useRef();
 
   let tc = useTranslations('Common')
-  let t = useTranslations('ff')
+  let t = useTranslations('wallet')
+  const dispatch = useDispatch();
+  function showError(str){dispatch(setMessageText(str))}
+  function showTip(str){dispatch(setTipText(str))}
+  function closeTip(){dispatch(setTipText(''))}
 
-  const handleConnectWallet = () => {
-    // 此处添加连接钱包的逻辑（如使用MetaMask等）
-    console.log('Connecting to wallet...');
-  };
+  const donateHandle=()=>{
+    const v=parseFloat(donationAmount|| 0);
+    showTip( t('submitDonate'))
+    window.daismDaoapi.Donate.donate(v).then(() => {
+      setShow(false)
+        setTimeout(async () => {
+          const res = await client.get(`/api/getData?did=${user.account}`,'getLastDonate');
+          console.log(res)
+          if(res.status===200){
+            setDonationStatus(res.data);
+          }
+          closeTip();
+        }, 2000);
+       
+      }, err => {
+          console.error(err);
+          closeTip();
+          showError(tc('errorText')+(err.message?err.message:err));
+      }
+    );
+
+  }
 
   const handleDonation = () => {
-    // 此处添加捐赠逻辑，可能会调用合约或者其他API
-    console.log(`Donating ${donationAmount} ETH to contract address: ${contractAddress}`);
-    setDonationStatus('Donation Successful! Thank you for your support!');
+    if(isNaN(donationAmount)){showError(t('donateMinDonate'));return;}
+    const v=parseFloat(donationAmount || 0);
+    if(v<=0){showError(t('donateMinDonate'));return;}
+    if(v>100){showError(t('donateMaxDonate'));return;}
+    if(v>10) setShow(true); else donateHandle();
+
   };
 
   return (
-    <div className="donation-container">
-      <div className="header">
-        <img src="/path-to-your-logo.png" alt="道易程 Logo" className="logo" />
-        <h1>Donation</h1>
+    <div style={{maxWidth:'600px',margin:'0 auto',fontSize:'1.2em'}} >
+     
+        <h1><img src="/logo.svg" alt="道易程" className="logo" /> Donation</h1>
+      
+
+      <div  >
+        <p>{t('donatePromptText')}</p>
+        <p><a href="https://learn.daism.io/zh/blogcn/136-pol.html" target="_blank" rel="noopener noreferrer">{t('loveText')}</a></p>
+      </div>
+     <div className='mt-3 mb-3' style={{maxWidth:'340px'}} >
+      <InputGroup>
+                    <InputGroup.Text>{t('donateNum')}</InputGroup.Text>
+                    <Form.Control value={donationAmount} onChange={e=>{setDonationAmount(e.target.value)}}  style={{textAlign:"right"}}  />
+                    <InputGroup.Text>ETH</InputGroup.Text>
+                </InputGroup> 
+      <div style={{textAlign:'right'}} >
+          <Button variant="light" onClick={()=>{setDonationAmount(0.1)}}>0.1</Button>
+          <Button variant="light" onClick={()=>{setDonationAmount(0.2)}}>0.2</Button>
+          <Button variant="light" onClick={()=>{setDonationAmount(0.5)}}>0.5</Button>
+          <Button variant="light" onClick={()=>{setDonationAmount(1)}}>1</Button>
+          <Button variant="light" onClick={()=>{setDonationAmount(2)}}>2</Button>
       </div>
 
-      <div className="intro">
-        <p>Support Proof of Love (Support SCC0 License) – Make a Donation</p>
-        <p>支持我们的开源项目 ，您的捐赠帮助我们维持项目的开发和维护，感谢您的支持</p>
-        <p>By donating, you agree to our <a href="https://learn.daism.io/zh/blogcn/136-pol.html" target="_blank" rel="noopener noreferrer">Terms</a> which include experimental rewards.</p>
       </div>
+    
+   <ConfirmWin show={show} setShow={setShow} callBack={donateHandle} question={t('donateConfirmText',{num:donationAmount})}/>
 
-      <div className="donation-form">
-        <label htmlFor="donation-amount">捐赠数量 (ETH): </label>
-        <input
-          type="number"
-          id="donation-amount"
-          value={donationAmount}
-          onChange={(e) => setDonationAmount(e.target.value)}
-          placeholder="请输入捐赠数量"
-        />
-
-        <div className="contract-address">
-          <p>捐赠合约地址: {contractAddress}</p>
-        </div>
-
-        {/* <button onClick={handleConnectWallet} className="connect-wallet-btn">
-          连接钱包
-        </button> */}
 
         {user.connected!==1?<ShowErrorBar errStr={tc('noConnectText')} />
 
-        :<button onClick={handleDonation} className="donate-btn">
-          捐赠
-        </button>}
+        :<><div style={{maxWidth:'340px'}}><Button style={{width:'100%'}} onClick={handleDonation} >{t('donateText')}</Button></div>
+        
+        <div className='mb-3' style={{color:'#999',fontSize:'0.9em'}} >{t('donateCSS0Text')}</div></>
+        }
 
-        <div className="qr-code">
-          <p>扫描二维码直接向我们的合约地址捐赠ETH：</p>
-          {/* <QRCode value={contractAddress} size={128} /> */}
+   
+        <p>{t('donatrQcodeText')}：</p>
+        <p><img src='/donate.png'  /> </p>
+
+        <div className='mt-3 mb-t' >
+          <div> {t('donateAddress')}:{' '} <ShowAddress address={env?.Donation} /></div>
+          <pre>{env?.Donation}</pre>
         </div>
-      </div>
 
-      {donationStatus && (
-        <div className="donation-feedback">
-          <p>{donationStatus}</p>
-          <p>荣誉通证已发放，感谢您的支持！</p>
-          <p>奖励UTO信息：XXX</p>
-          <p>引导注册enki账号以获取更多奖励。</p>
+      {donationStatus?.block_num && (
+        <div>
+          <p>{t('donationStatusText',{num:donationAmount})}</p>
+          <p>{t('donorText')} <a href='/honortokens'>{t('donorTextLink')}</a></p>
+          <p>{t('rewardUTOText')}:{donationStatus?.uTokenAmount} </p>
+          <p>{t('registerText')}</p>
+          <p> <a href='/smartcommons/actor' > {t('justRegister')} </a></p>
+          <p> <a href='/smartcommons/actor' > {t('alreadyRegister')} </a></p>
         </div>
       )}
     </div>

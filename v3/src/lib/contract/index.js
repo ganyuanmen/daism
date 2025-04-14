@@ -11,8 +11,18 @@ const Domain=require("./api/Domain")
 const Register=require("./api/Register")
 const IADD_EX=require("./api/IADD_EX")
 const Unft=require("./api/Unft")
+const Donate=require("./api/Donate")
  
 export default class  DaoApi {
+
+    get Donate() { 
+        if (!this.dao_Donate_obj) 
+            this.dao_Donate_obj = new Donate(
+                this.ethers,this.signer,this.account,
+                this.daismAddress['Donation']
+            ); 
+        return this.dao_Donate_obj; 
+    }
 
     get Unft() { 
         if (!this.dao_unft_obj) 
@@ -22,6 +32,7 @@ export default class  DaoApi {
             ); 
         return this.dao_unft_obj; 
     }
+
 
     get Register() { 
         if (!this.dao_register_obj) 

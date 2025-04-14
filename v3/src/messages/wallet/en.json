@@ -7,6 +7,25 @@
     "unauthorizedingText": "Revoking authorization, please wait...",
     "accountText":"Login Account",
     "chainText":"Network",
-    "balanceText":"balance"
+    "balanceText":"balance",
+    "donatePromptText":"Support Proof of Love (Support SCC0 License) – Make a Donation",
+    "donateCSS0Text":"By donating, you agree to our [Terms] which include experimental rewards.",
+    "donateNum":"Donation amount",
+    "donatePromptNum":"Please enter the donation amount",
+    "donateAddress":"Donation Contract Address",
+    "donateText":"Donate",
+    "donatrQcodeText":"Scan the QR code to donate ETH directly to our contract address",
+    "loveText":"Proof of Love",
+    "submitDonate": "Submitting donation......",
+    "donateMinDonate":"Incorrect donation amount, please re-enter!",
+    "donateMaxDonate":"The donation amount cannot exceed 100ETH",
+    "donateConfirmText":"Are you sure to donate {num} ETH?" ,
+    "donationStatusText":"Successfully donated {num} ETH",
+    "rewardUTOText":"Reward UTO",
+    "donorText":"The honor token has been issued, thank you for your support!",
+    "donorTextLink":"Click to view",
+    "registerText":"Registering an Enki account and participating in community activities can earn you more rewards.",
+    "justRegister":"Register Now",
+    "alreadyRegister":"I already have an account, go to my personal community"
   }
 }

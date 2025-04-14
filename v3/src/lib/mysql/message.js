@@ -227,6 +227,13 @@ export async function setAnnounce({account,id,content,pathtype,topImg,contentLin
   
 }
 
+//获取捐赠的嗫后一条
+export async function getLastDonate({did})
+{
+	const sql='SELECT * FROM t_donate WHERE donor_address=? ORDER BY block_num DESC LIMIT 1';
+	let re= await getData(sql,[did]);
+	return  re[0] || {};
+}
 
 //获取一条嗯文
 export async function getOne({id,sctype})
