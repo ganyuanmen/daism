@@ -8,7 +8,9 @@
     "accountText":"Login Account",
     "chainText":"Network",
     "balanceText":"balance",
-    "donatePromptText":"Support Proof of Love (Support SCC0 License) – Make a Donation",
+    "donatePromptText":"Your donation will be used for the development and maintenance of \"Proof of Love\".",
+    "donatePromptText1":"The Satoshi UTO Fund will provide UTO incentives to donors.‌",
+    "donatePromptText2":"Thank you for your support.",
     "donateCSS0Text":"By donating, you agree to our [Terms] which include experimental rewards.",
     "donateNum":"Donation amount",
     "donatePromptNum":"Please enter the donation amount",
@@ -26,6 +28,10 @@
     "donorTextLink":"Click to view",
     "registerText":"Registering an Enki account and participating in community activities can earn you more rewards.",
     "justRegister":"Register Now",
-    "alreadyRegister":"I already have an account, go to my personal community"
+    "alreadyRegister":"I already have an account, go to my personal community",
+    "donateTitle":"Fuel the Future with Love",
+    "donateTop1":"Every act of love fuels our journey forward.",
+    "donateTop2":"Support",
+    "donateTop3":" a new consensus built on love, openness, and smart commons."
   }
 }

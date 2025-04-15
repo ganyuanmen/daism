@@ -2,7 +2,7 @@
 
 import withSession from '../lib/session';
 import PageLayout from '../components/PageLayout'
-//'../../../components/PageLayout';
+import { useTranslations } from 'next-intl'
 
 import DonationPage from '../components/enki3/donate'
 import { getEnv } from '../lib/utils/getEnv';
@@ -12,11 +12,11 @@ import Head from 'next/head';
  * 指定个人帐号
  */
 export default function donatePage({locale,env}) {
- 
+  let t = useTranslations('wallet')
 
     return (<>
       <Head>
-          <title>Donation</title>
+          <title>{t('donateTitle')}</title>
       </Head>
       <PageLayout env={env}>
       

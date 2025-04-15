@@ -5,7 +5,7 @@ import { InputGroup,Button,Form } from 'react-bootstrap';
 import { useDispatch} from 'react-redux';
 import {setTipText,setMessageText} from '../../data/valueData'
 // import { EditSvg } from '../../lib/jssvg/SvgCollection';
-// import { useTranslations } from 'next-intl'
+// 
 import ConfirmWin from '../federation/ConfirmWin';
 import { client } from '../../lib/api/client';
 
@@ -64,14 +64,20 @@ const DonationPage = ({env,locale}) => {
   };
 
   return (
-    <div style={{maxWidth:'600px',margin:'0 auto',fontSize:'1.2em'}} >
+    <div style={{maxWidth:'700px',margin:'0 auto',fontSize:'1.2em'}} >
      
-        <h1><img src="/logo.svg" alt="道易程" className="logo" /> Donation</h1>
+        <h1><img src="/logo.svg" alt="道易程" className="logo" /> {t('donateTitle')}</h1>
       
 
-      <div  >
-        <p>{t('donatePromptText')}</p>
-        <p><a href="https://learn.daism.io/zh/blogcn/136-pol.html" target="_blank" rel="noopener noreferrer">{t('loveText')}</a></p>
+      <div>
+        <p>{t('donateTop1')}
+        {t('donateTop2')} (<a href={locale==='zh'?`https://learn.daism.io/zh/blogcn/136-pol.html`:'https://learn.daism.io/coreblog/138-pol?format=html'} target="_blank" rel="noopener noreferrer">{t('loveText')}</a>)
+        —— {t('donateTop3')}
+        </p>
+        <p>{t('donatePromptText')}<br/>
+        {t('donatePromptText1')}<br/>
+        {t('donatePromptText2')}</p>
+       
       </div>
      <div className='mt-3 mb-3' style={{maxWidth:'340px'}} >
       <InputGroup>

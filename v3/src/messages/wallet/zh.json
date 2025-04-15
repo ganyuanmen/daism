@@ -8,7 +8,9 @@
     "accountText":"登录帐号",
     "chainText":"网络",
     "balanceText":"余额",
-    "donatePromptText":"支持我们的开源项目，您的捐赠帮助我们维持项目的开发和维护，感谢您的支持。",
+    "donatePromptText":"您的捐赠将用于“爱的证明”的开发和维护。",
+    "donatePromptText1":"Satoshi UTO Fund 将为捐助者提供UTO奖励。",
+    "donatePromptText2":"感谢您的支持",
     "donateCSS0Text":"通过捐赠，您同意我们的[条款]，其中包括实验奖励。",
     "donateNum":"捐赠数量",
     "donatePromptNum":"请输入捐赠数量",
@@ -26,6 +28,11 @@
     "donorTextLink":"单击查看",
     "registerText":"注册enki账号，参与社区活动可以获取更多奖励。",
     "justRegister":"马上注册",
-    "alreadyRegister":"已有帐号，前往个人社区"
+    "alreadyRegister":"已有帐号，前往个人社区",
+    "donateTitle":"让爱驱动未来",
+    "donateTop1":"每一份爱的行动，都是我们前行的动力。",
+    "donateTop2":"支持",
+    "donateTop3":"一种以爱、开源与智能公器为基础的新共识。"
+
   }
 }
