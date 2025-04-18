@@ -40,7 +40,7 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
             }
         
             <div style={{paddingLeft:'2px',width:'100%'}} >
-                {messageObj?.send_type>7?<>
+                {messageObj?.send_type>7 || (messageObj?.send_type===0 && messageObj?.receive_account) ?<>
                 <div  className="daism-account" >{t('amouseText')}: {messageObj?.actor_account || messageObj?.account}</div>
                 <div className="daism-account" >to: {messageObj?.receive_account} </div>
                 </>:<>

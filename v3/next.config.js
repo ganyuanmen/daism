@@ -22,6 +22,12 @@ experimental: {
         destination: '/api/activitepub/getuserfromurl',
         permanent: true,
       },
+      {
+        source: '/.well-known/acme-challenge',
+        destination: '/api/activitepub/certbot',
+        permanent: true,
+      },
+
     ]
   },
 }

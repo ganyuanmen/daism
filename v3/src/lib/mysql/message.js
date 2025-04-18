@@ -202,7 +202,7 @@ export async function setAnnounce({account,id,content,pathtype,topImg,contentLin
 			id,
 			 user.manager??'',user.name,user.avatar,user.account,user.url,user.inbox,
 			 id,
-			 content,0,1,topImg,account,8,vedioUrl,contentLink]
+			 content,0,1,topImg,account,0,vedioUrl,contentLink]
 		execute(sql,paras);
 		execute("insert IGNORE into a_annoce(id,sctype,account) values(?,?,?)",[recordId,pathtype==='enki'?'sc':'',account])
 		const sendbody=createAnnounce(re.actor_name,process.env.LOCAL_DOMAIN,id,content,topImg,contentLink,vedioUrl,toUrl) 

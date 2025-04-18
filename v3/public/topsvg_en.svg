@@ -74,9 +74,9 @@
 			<use href="#250s" x="236" y="78" transform="rotate(-14)" class="st3" />
 			<use href="#250s" x="8" y="325" transform="rotate(-28)" class="st4" />
 			<use href="#250s" x="-292" y="524" transform="rotate(-43)" class="st5" />
-			<text x="50%" y="30%" class="sufb"><a target="_blank" xlink:href="https://learn.daism.io/docs/pov.html"  fill="#D44117" >Proof of Value</a></text>
+			<text x="50%" y="30%" class="sufb"><a target="_blank" xlink:href="https://learn.daism.io/coreblog/138-pol.html"  fill="#D44117" >Proof of Love</a></text>
 			<text x="50%" y="35%" class="suft">Leading to Universal Value by Joining Blockchain and AI Together!</text>
-			<text x="50%" y="44%" class="suft2"><a target="_blank" xlink:href="https://learn.daism.io/docs/whitepaper.html#scc0-license" fill="#D44117" >Smart Creative Commons 0 (SCC0)</a></text>
+			<text x="50%" y="44%" class="suft2"><a target="_blank" xlink:href="https://github.com/DAism2019/SCC0" fill="#D44117" >Smart Creative Commons 0 (SCC0)</a></text>
 			<text x="50%" y="48%" class="suft3">A governance license for Smart Commons (public goods).</text>
 			<text x="50%" y="52%" class="suft2"><a target="_blank" xlink:href="https://etherscan.io/token/0xe40b05570d2760102c59bf4ffc9b47f921b67a1f" fill="#D44117" >Satoshi UTO Fund</a></text>
 			<text x="50%" y="56%" class="suft3">1.15792 × 10^69 UTO for universal value.</text>
