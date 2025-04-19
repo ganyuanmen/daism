@@ -29,7 +29,7 @@ export default function MyActor({env,locale,accountAr}) {
       </Head>
       <PageLayout env={env}>
         <div style={{marginTop:'10px'}} >
-            {user.connected!==1?<ShowErrorBar errStr={tc('noConnectText')} />
+            {user?.connected!==1?<ShowErrorBar errStr={tc('noConnectText')} />
             :!loginsiwe?<Wecome />
             :<ActorInfo t={t} env={env} locale={locale} actor={actor}  accountAr={accountAr} daoActor ={daoActor } />
             }  

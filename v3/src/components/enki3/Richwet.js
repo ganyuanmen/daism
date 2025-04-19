@@ -1,19 +1,21 @@
 
 import JoditEditor from 'jodit-react';
 
-const Richwet = ({defaultValue,editorRef}) => {
+const Richwet = ({defaultValue,editorRef,isFix=false}) => {
   
   const config = {
+    toolbarSticky: isFix,              // ✅ 固定工具栏
+    height: isFix?'500':'auto',
     buttons: [
         // 'image',
         'source', '|',
         'bold', 'italic', 'underline', '|',
         'ul', 'ol', 'brush', 'paragraph', '|',
         'outdent', 'indent', '|',
-        'fontsize',  '|',
+        'fontsize', 'link', '|',
         'table','superscript','subscript', '|',
         'left', 'center', 'right', 'justify', '|',
-        // 'undo', 'redo', '|',
+        'undo', 'redo', '|',
          'preview', 'fullsize','eraser'
       ],
       toolbarAdaptive: false,

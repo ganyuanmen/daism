@@ -20,7 +20,7 @@
     "titileText":"标题",
     "titleValidText":"标题不能为空，或大于256个字符",
     "saveprimarysText":"保存成功",
-    "persionInfomation":"个人介绍",
+    "persionInfomation":"个人介绍:",
     "startDateText":"开始时间",
     "endDateText":"结束时间",
     "followerText":"关注者",
@@ -166,7 +166,8 @@
     "accountInfoText":"帐户信息",
     "myEnkiText":"个人社区嗯文({num})",
     "myCompanyEnkiText":"公共社区嗯文({num})",
-    "receiveEnkiText":"接收的嗯文({num})"
+    "receiveEnkiText":"接收的嗯文({num})",
+    "isFixButton":"固定工具栏"
 
 
 

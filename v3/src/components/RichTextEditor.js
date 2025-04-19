@@ -3,8 +3,9 @@ import JoditEditor from 'jodit-react';
 import {setTipText} from '../data/valueData'
 import { useDispatch} from 'react-redux';
 import { useTranslations } from 'next-intl'
+//isFix固定标题
 
-const RichTextEditor = ({title,defaultValue,editorRef}) => {
+const RichTextEditor = ({title,defaultValue,editorRef,isFix=false}) => {
   const t = useTranslations('ff')
   const dispatch = useDispatch();
   // function showError(str){dispatch(setMessageText(str))}
@@ -13,15 +14,18 @@ const RichTextEditor = ({title,defaultValue,editorRef}) => {
 
  
   const config = {
+    toolbarSticky: isFix,              // ✅ 固定工具栏
+    height: isFix?'500':'auto',     
+
     buttons: [
       'image','source', '|',
         'bold', 'italic', 'underline', '|',
         'ul', 'ol', 'brush', 'paragraph', '|',
         'outdent', 'indent', '|',
-        'fontsize',  '|',
+        'fontsize','link' , '|',
         'table','superscript','subscript', '|',
         'left', 'center', 'right', 'justify', '|',
-        // 'undo', 'redo', '|',
+         'undo', 'redo', '|',
          'preview', 'fullsize','eraser'
       ],
       toolbarAdaptive: false,
@@ -64,7 +68,8 @@ const RichTextEditor = ({title,defaultValue,editorRef}) => {
 
   return (
     <>
-      <label className="mb-0" style={{marginLeft:'6px'}}><b>{title}:</b></label>
+    
+    {title &&<label className="mb-0" style={{marginLeft:'6px'}}><b>{title}</b></label>}
       <JoditEditor
       value={defaultValue}
       config={config}

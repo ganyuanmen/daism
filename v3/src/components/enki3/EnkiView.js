@@ -74,16 +74,16 @@ export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(() => {
-      if (leftDivRef.current) {
-        const style = window.getComputedStyle(leftDivRef.current);
+      if (leftDivRef?.current) {
+        const style = window.getComputedStyle(leftDivRef?.current);
         const display = style.getPropertyValue('display');
         setLeftHidden(display === 'none')
       }
     });
    
   
-    if (parentDivRef.current) {  
-      resizeObserver.observe(parentDivRef.current);
+    if (parentDivRef?.current) {  
+      resizeObserver.observe(parentDivRef?.current);
     }
   
     return () =>{ 

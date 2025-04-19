@@ -28,7 +28,7 @@ async function createConnection() {
 
 export async function getData(sql, sqlParams, is_object = false) {
   const pool = await createConnection(); // 只调用一次 createConnection
-  // if (process.env.IS_DEBUGGER === '1') console.info(`getData: ${sql}-->` + sqlParams.join());
+  if (process.env.IS_DEBUGGER === '1') console.info(`getData: ${sql}-->` + sqlParams.join());
 
   try {
     const [rows, ] = await pool.query(sql, sqlParams);

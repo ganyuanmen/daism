@@ -20,7 +20,7 @@
     "titileText":"Title",
     "titleValidText":"Title cannot be empty or exceed 256 characters",
     "saveprimarysText":"Save primaryful",
-    "persionInfomation":"Personal information",
+    "persionInfomation":"Personal information:",
     "startDateText":"Start date",
     "endDateText":"End date",
     "followerText":"Followers",
@@ -166,7 +166,8 @@
     "accountInfoText":"account information",
     "myEnkiText":"Personal community({num})",
     "myCompanyEnkiText":"Public community({num})",
-    "receiveEnkiText":"Received({num})"
+    "receiveEnkiText":"Received({num})",
+    "isFixButton":"Fixed toolbar"
 
   }
 }

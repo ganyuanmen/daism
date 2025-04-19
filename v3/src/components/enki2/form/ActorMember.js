@@ -1,5 +1,5 @@
 
-import {Button,Card,Modal,Tabs,Tab,Accordion } from 'react-bootstrap';
+import {Button,Card,Modal,Tabs,Tab,Accordion,Form } from 'react-bootstrap';
 import { useSelector,useDispatch} from 'react-redux';
 import { useRef, useState } from 'react';
 import {setTipText,setMessageText,setActor} from '../../../data/valueData'
@@ -27,6 +27,7 @@ export default function ActorMember({locale,env}){
     let tc = useTranslations('Common')
     let t = useTranslations('ff')
   
+
 
     const [show,setShow]=useState(false)
     const [register,setRegister]=useState(false)  // 显示个人注册窗口
@@ -138,8 +139,8 @@ export default function ActorMember({locale,env}){
     <div className='mb-2' style={{paddingLeft:'10px'}} > {t('nickNameText')} : <strong>{actor?.actor_account} </strong> </div>
     
     <DaismImg ref={imgRef} title={t('uploadImgText')} defaultValue={actor?.avatar} maxSize={1024*500} fileTypes='svg,jpg,jpeg,png,gif,webp'  />
-    
-    <RichTextEditor  defaultValue={actor?.actor_desc} title={t('persionInfomation')}  editorRef={editorRef} /> 
+  
+    <RichTextEditor  defaultValue={actor?.actor_desc} title={t('persionInfomation')} editorRef={editorRef} /> 
     
     <div style={{textAlign:'center'}} >
     <Button variant='primary' onClick={handleSubmit}>{t('saveText')}</Button>
