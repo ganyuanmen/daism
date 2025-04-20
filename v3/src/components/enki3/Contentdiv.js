@@ -36,19 +36,17 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,fil
     const actor = useSelector((state) => state.valueData.actor)
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
     const t = useTranslations('ff')
-    
-    const contentDiv=useRef()
-    const [isEdit,setIsEdit]=useState(false);
-    const [showAll, setShowAll] = useState(false);
-    const [showBtn, setShowBtn] = useState(false);
+    const [divContent, setDivContent] = useState(null);
 
-    useEffect(() => {
-        if (contentDiv.current) {
-          if (contentDiv.current.scrollHeight > 400) {
-            setShowBtn(true)
-          }
-        }
-      }, []);
+    const handleDivRef = useCallback((node) => {
+      if (node !== null) setDivContent(node?.textContent.slice(0,120).replaceAll('\n',''));
+      if(node?.scrollHeight > 400) setShowBtn(true)
+    }, [messageObj]); 
+
+    const [isEdit,setIsEdit]=useState(false);
+    // const [showAll, setShowAll] = useState(false);
+    const [showBtn, setShowBtn] = useState(false);
+   
    
     useEffect(()=>{
       const checkIsEdit=()=>{  //是否允许修改
@@ -134,7 +132,8 @@ const handleClick = useCallback((event) => {
   afterEditCall.call(this,messageObj)
 }, []); // fi
 
-   
+
+
 
     return (
    
@@ -144,9 +143,9 @@ const handleClick = useCallback((event) => {
 
             <div style={{position:'relative'}}  className="daism-a mt-2 mb-3"  onClick={handleClick}
                > 
-                <div className="daismCard" ref={contentDiv} style={messageObj._type===1?{paddingLeft:'90px',minHeight:'80px',
-                    maxHeight: showAll ? 'unset' : '400px', overflow: 'hidden'}
-                    :{maxHeight: showAll ? 'unset' : '400px', overflow: 'hidden'}} 
+                <div className="daismCard"  ref={handleDivRef} style={messageObj._type===1?{paddingLeft:'90px',minHeight:'80px',
+                    maxHeight: '400px', overflow: 'hidden'}
+                    :{maxHeight: '400px', overflow: 'hidden'}} 
                     dangerouslySetInnerHTML={{__html:replacedText}}>
                 </div>
                 {messageObj._type===1 && 
@@ -194,8 +193,8 @@ const handleClick = useCallback((event) => {
                 {/* 非注册地登录，不能收藏 */}
                 <EnKiBookmark isEdit={ableReply() && actor?.actor_account.split('@')[1]==env.domain} currentObj={messageObj}/>
 
-              {messageObj.send_type===0 && 
-              <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={messageObj}  />}
+              {messageObj.send_type===0 && divContent && 
+              <EnkiShare  content={divContent} locale={locale} currentObj={messageObj}  />}
             
               <EnkiEditItem isEdit={isPersonEdit && isEdit} env={env} actor={actor} messageObj={messageObj} delCallBack={delCallBack}
                preEditCall={()=>{ setCurrentObj(messageObj);setActiveTab(tabIndex);}} sctype={messageObj?.dao_id>0?'sc':''} fromPerson={fromPerson}  /> 

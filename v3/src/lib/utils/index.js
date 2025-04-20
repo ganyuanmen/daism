@@ -6,7 +6,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 import { getInboxFromAccount } from '../../lib/mysql/message'
 
-export function saveHTML(actorName,content,title,mid)
+export function saveHTML(actorName,content,title,mid,textContent,avatar)
 {
   console.log("---------->",actorName,content,title,mid)
   const directoryPath=`./enki/${actorName?.toLowerCase()}`;
@@ -22,11 +22,23 @@ export function saveHTML(actorName,content,title,mid)
     }
   }
   const filePath = `${directoryPath}/${mid.toLowerCase()}.html`  // 指定文件保存路径
+  const MAX_DESCRIPTION_LENGTH = 80; // 按字节计算
+
+  const truncatedDescription = textContent.slice(0, MAX_DESCRIPTION_LENGTH).replaceAll('<p>','').replaceAll('</p>','').replace(/\s+\S*$/, '') + '...';
+  const url=`https://${process.env.LOCAL_DOMAIN}/enki/${actorName?.toLowerCase()}/${mid.toLowerCase()}.html`
+
+
   const html=`<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
 		<title>${title}</title>
+    <link rel="canonical" href="${url}" />
+    <meta content="${avatar}" property="og:image" />
+    <meta name="description" content="${truncatedDescription}" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${truncatedDescription}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/staticHTML.css" />
 	</head>
 	<body>

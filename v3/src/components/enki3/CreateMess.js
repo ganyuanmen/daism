@@ -68,6 +68,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         showTip(t('submittingText'))  
         const formData = new FormData();
         formData.append('id', currentObj?currentObj.id:0);  
+        formData.append('avatar', actor?.avatar);
         formData.append('account',actor?.actor_account); //社交帐号
         formData.append('vedioURL',(typeIndex===0?editorRef:richEditorRef).current.getVedioUrl());  //视频网址
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //

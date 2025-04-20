@@ -22,7 +22,7 @@ export default withSession(async (req, res) => {
 
         const form = formidable({})
         const [fields, files] = await form.parse(req);
-        const {actorName,title, vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
+        const {avatar, actorName,title, vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
         // const actorName=account[0].split('@')[0];
         const _path=new Date().toLocaleDateString().replaceAll('/','');
         const imgPath = saveImage(files, fileType[0],_path)
@@ -57,7 +57,7 @@ export default withSession(async (req, res) => {
 
             let insertId = await executeID(sql, paras);
             if (insertId) {
-                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id)
+                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id,textContent[0],path?path:avatar[0])
                 // if (parseInt(isSend[0]) === 1) {
                     //account,textContent,imgpath,message_id,pathtype,contentType
                 send(
@@ -109,7 +109,7 @@ export default withSession(async (req, res) => {
 
             let lok = await execute(sql,paras);
             if(lok) {  
-                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],rear.message_id)
+                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],rear.message_id,textContent[0],path?path:avatar[0])
                 // if (parseInt(isSend[0]) === 1) {
                     //account,textContent,imgpath,message_id,pathtype,contentType
                 send(

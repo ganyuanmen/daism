@@ -11,6 +11,7 @@ import { useTranslations } from 'next-intl'
  */
 export default function EnkiShare({content, locale, currentObj})
 {
+
     const t = useTranslations('ff')
     const tc = useTranslations('Common')
     const [show,setShow]=useState(false)
@@ -43,7 +44,7 @@ export default function EnkiShare({content, locale, currentObj})
         <div style="width:100%" >
             <div style="padding:2px 8px 2px 8px" >${localDomain}</div>
             <div style="padding:2px 8px 2px 8px" >${currentObj.actor_name} (${currentObj.actor_account})</div>
-            <div style="width:calc(100% - 120px);padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;" > ${content?.replaceAll('\n','')}</div>	
+            <div style="width:100%;padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;" > ${content}</div>	
         </div>
         </a>` ;
 

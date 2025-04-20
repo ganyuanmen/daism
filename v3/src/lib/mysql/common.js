@@ -32,7 +32,7 @@ export async function getData(sql, sqlParams, is_object = false) {
 
   try {
     const [rows, ] = await pool.query(sql, sqlParams);
-    return is_object ? rows[0] : rows;
+    return is_object ? (rows.length?rows[0]:{}) : rows;
   } catch (error) {
     console.info(`error for getData: ${sql}-->` + sqlParams.join());
     console.error('Database query error:', error); 

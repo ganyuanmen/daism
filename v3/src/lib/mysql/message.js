@@ -155,7 +155,15 @@ export async function setTopMessage({id,sctype,flag})
 export async function messageDel({id,type,sctype})
 {
     if(parseInt(type)===0) return await execute(`delete from a_message${sctype} where id=?`,[id]);
-    else return await execute(`delete from a_message${sctype}_commont where id=?`,[id]);
+    else{ 
+		 const row=await getData(`select ppid from a_message${sctype}_commont where id=?`,[id],true)
+		 if(row.ppid){
+			execute(`delete from a_message${sctype}_commont where id=?`,[id]); //删除回复
+			execute(`UPDATE a_message${sctype} SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+		 }
+		
+
+	}
 }
 
 //获取所有已注册的dao
@@ -239,7 +247,8 @@ export async function getLastDonate({did})
 export async function getOne({id,sctype})
 {
     let re= await getData(`select * from v_message${sctype} where ${id.length<10?'id':'message_id'}=?`,[id]);
-    return  re[0] || {}
+	if(re.length) return  re[0]
+	else return {}
 }
 
 //获取是否已转发

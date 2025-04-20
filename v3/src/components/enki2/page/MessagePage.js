@@ -1,4 +1,4 @@
-import { Card,Button } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { useState,useEffect, useRef,useCallback } from 'react';
 import EnkiMemberItem from "../form/EnkiMemberItem";
 import EventItem from "../form/EventItem";
@@ -44,9 +44,15 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     const [replyIndex,setReplyIndex]=useState(-1) //保存修改讨论的数组序号
     const [replyObj,setReplyObj]=useState(null) //回复内容，用于修改，为null表示新增
     const [pageNum, setPageNum] = useState(0);
-    const [selectTag, setSelectTag] = useState([]);
+    // const [selectTag, setSelectTag] = useState([]);
     const repluBtn=useRef()
-    const contentDiv=useRef()
+
+    const [divContent, setDivContent] = useState(null);
+
+      const handleDivRef = useCallback((node) => {
+      if (node !== null) setDivContent(node?.textContent.slice(0,120).replaceAll('\n',''));
+     
+    }, [currentObj]); 
 
     const actor = useSelector((state) => state.valueData.actor)
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
@@ -56,21 +62,21 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         if(fetchWhere.currentPageNum===0) setPageNum(0);
     },[fetchWhere])
 
-    useEffect(()=>{
-        const fetchData = async () => {
-            try {
-                const res = await client.get(`/api/getData?cid=${currentObj?.id}&type=${currentObj?.dao_id>0?'sc':''}`,'getMessTag' );
-                if(res.status===200)
-                    if(Array.isArray(res.data)) setSelectTag(res.data)
-            } catch (error) {
-                console.error(error);
-            } 
-        };
+    // useEffect(()=>{
+    //     const fetchData = async () => {
+    //         try {
+    //             const res = await client.get(`/api/getData?cid=${currentObj?.id}&type=${currentObj?.dao_id>0?'sc':''}`,'getMessTag' );
+    //             if(res.status===200)
+    //                 if(Array.isArray(res.data)) setSelectTag(res.data)
+    //         } catch (error) {
+    //             console.error(error);
+    //         } 
+    //     };
     
-        fetchData();
-        // return () => controller.abort();
+    //     fetchData();
+    //     // return () => controller.abort();
     
-    },[currentObj]) 
+    // },[currentObj]) 
     
     
 
@@ -244,7 +250,7 @@ const renderedArrays = data.map((obj, idx) => {
           {tag.name}
         </Button>
       ))} */}
-            <div className="daismCard"  onClick={handleClick} ref={contentDiv} dangerouslySetInnerHTML={{__html: replacedText}}></div>
+            <div className="daismCard"  onClick={handleClick} ref={handleDivRef} dangerouslySetInnerHTML={{__html: replacedText}}></div>
             {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
             {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{maxWidth:'100%'}} /> }
             {currentObj?.vedio_url && <ShowVedio vedioUrl={currentObj.vedio_url} /> }
@@ -275,7 +281,7 @@ const renderedArrays = data.map((obj, idx) => {
                 <EnKiHeart isEdit={ableReply()} currentObj={currentObj} />
                 {/* 非注册地登录，不能收藏 */}
                 <EnKiBookmark isEdit={ableReply() && actor?.actor_account.split('@')[1]==env.domain} currentObj={currentObj}/>
-              {currentObj.send_type===0 && <EnkiShare content={contentDiv.current?.textContent} locale={locale} currentObj={currentObj} />}
+              {currentObj.send_type===0 && divContent && <EnkiShare content={divContent} locale={locale} currentObj={currentObj} />}
               <EnkiEditItem env={env} isEdit={isPersonEdit && isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
               preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} fromPerson={fromPerson} /> 
             </div>

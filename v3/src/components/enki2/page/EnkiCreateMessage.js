@@ -109,17 +109,20 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
 
 
         showTip(t('submittingText'))
+        console.log("actor",actor)
 
         const formData = new FormData();
         if(currentObj?.id){  //修改
             formData.append('id', currentObj.id);
             formData.append('account', currentObj.actor_account); //社交帐号
             formData.append('actorName', currentObj?.actor_name);
+            formData.append('avatar', currentObj?.avatar);
 
         } else { //新增
             formData.append('id', 0);
             const selectDao=daoData.find((obj)=>{return obj.dao_id===parseInt(selectedDaoid)});
             formData.append('account', selectDao.actor_account); //社交帐号
+            formData.append('avatar', selectDao?.dao_logo);
             formData.append('actorName', selectDao?.dao_name);
         }
       

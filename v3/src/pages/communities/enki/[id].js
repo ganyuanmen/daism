@@ -18,7 +18,8 @@ export default function Message({currentObj,locale,env}) {
   const t = useTranslations('ff');
   const tc = useTranslations('Common');
   const root = parse(currentObj.content);
-  const content=root.textContent.slice(0, 150);
+  const MAX_DESCRIPTION_currentDiv = 80; // 按字节计算
+  const content=root.textContent.slice(0, MAX_DESCRIPTION_currentDiv).replaceAll('<p>','').replaceAll('</p>','').replace(/\s+\S*$/, '') + '...';
   
     return (
       <>
@@ -35,7 +36,8 @@ export default function Message({currentObj,locale,env}) {
         <meta content={content} name="description" />
         <meta content={content} property="og:description" />
         <meta content={currentObj.top_img ? currentObj.top_img : currentObj.avatar} property="og:image" />
-
+        <meta name="fragment" content="!" />
+        <link rel="canonical" href={`https://${env.domain}${router.asPath}`} />
         {/* Twitter Card Tags */}
         <meta content="summary" property="twitter:card" />
         <meta content={content} property="twitter:description" />
@@ -76,6 +78,7 @@ export default function Message({currentObj,locale,env}) {
 export const getServerSideProps =async ({locale,query }) => {
 
   const currentObj=await getOne({id:query.id,sctype:'sc'})
+  if(!currentObj?.content) return { notFound: true };
   
   if(currentObj?.createtime) currentObj.createtime=new Date(currentObj.createtime).toJSON();
   if(currentObj?.currentTime) currentObj.currentTime=new Date(currentObj.currentTime).toJSON();

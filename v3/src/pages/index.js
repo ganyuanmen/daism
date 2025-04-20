@@ -19,7 +19,7 @@ export default function Home({locale,env}) {
         <title>{t('indexTitleText')}</title>
         {locale==='en'?<meta name="keywords" lang="en" content="Satoshi UTO Fund, SUF, Universal Value, SufAIthon, DAism"/>
         :<meta name="keywords" lang="zh-cmn-Hans" content="中本聪UTO基金, Satoshi UTO Fund, SUF, 普世价值, 速发赛, 道易程"/>} Leading to PoL Civ
-        {locale==='en'?<meta name="description" lang="en" content="DAism's Proof-of-Live Leading to PoL Civ by Joining Blockchain & AI Together."/>
+        {locale==='en'?<meta name="description" lang="en" content="Leading to Proof-of-Love Civilization by Joining Blockchain & AI Together - DAism"/>
         :<meta name="description" lang="zh-cmn-Hans" content="道易程的PoV价值证明治理共识，将区块链与人工智能融合在一起，引领人类奔赴以爱的证明为共识的新文明。"/>}
 
 

@@ -172,16 +172,33 @@ function handle_update(postbody) {
 }	
 
 
-function handle_delete(rid) {
+async function handle_delete(rid) {
 	if(!rid) return;
 	if(rid.includes('communities/enki')) execute("delete from a_message where message_id=?",[rid]);
-	else if(rid.includes('commont/enki/')) execute("delete from a_messagesc_commont where message_id=?",[rid]);
-	else if(rid.includes('commont/enkier/')) execute("delete from a_message_commont where message_id=?",[rid]);
-	else {
-		execute("delete from a_message where message_id=?",[rid]);
-		execute("delete from a_message_commont where message_id=?",[rid]);
-		execute("delete from a_messagesc_commont where message_id=?",[rid]);
-   }
+	else if(rid.includes('commont/enki/')) { 
+		const row=await getData(`select ppid from a_messagesc_commont where message_id=?`,[id],true)
+		if(row.ppid){
+			execute("delete from a_messagesc_commont where message_id=?",[rid]); //删除回复
+		    execute(`UPDATE a_messagesc SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+		}
+		
+
+	}
+	else if(rid.includes('commont/enkier/')) { 
+		const row=await getData(`select ppid from a_message_commont where message_id=?`,[id],true)
+		if(row.ppid){
+			execute("delete from a_message_commont where message_id=?",[rid]); //删除回复
+		    execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+		}
+
+		
+
+	}
+// 	else {
+// 		execute("delete from a_message where message_id=?",[rid]);
+// 		execute("delete from a_message_commont where message_id=?",[rid]);
+// 		execute("delete from a_messagesc_commont where message_id=?",[rid]);
+//    }
 	
 	return;
 }	
