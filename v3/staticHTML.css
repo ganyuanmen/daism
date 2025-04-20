@@ -1,0 +1,99 @@
+body{
+  font-size: 1rem;
+}
+
+/* 一级标题 (<h1>) */
+h1 {
+    font-size: 1.75rem; /* 相对字体大小，比正文大 */
+    font-weight: bold; /* 加粗 */
+    text-align: center; /* 居中对齐 */
+    margin-top: 1rem; /* 上边距，与上方内容隔开 */
+    margin-bottom: 1rem; /* 下边距，与下方内容隔开 */
+    color: #000; /* 标题颜色，黑色 */
+    border-bottom: 2px solid #000; /* 下划线 */
+    padding-bottom: 0.3rem; /* 下划线与文字的间距 */
+  }
+  
+  /* 二级标题 (<h2>) */
+  h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.2rem;
+  }
+  
+  /* 二级标题 (<h2>) */
+  h3 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+  
+    padding-bottom: 0.2rem;
+  }
+  
+  /* 二级标题 (<h2>) */
+  h4 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+    padding-bottom: 0.2rem;
+  }
+  
+  /* 正文段落 (通常用 <p> 标签) */
+  p {
+    /*text-indent: 2em;  首行缩进 */
+    margin-bottom: 0.8rem; /* 段落间距 */
+    text-align: justify; /* 两端对齐 */
+  }
+  
+  /* 特殊样式：代码块 */
+  pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ddd;
+    overflow-x: auto; /* 水平滚动条，防止代码溢出 */
+    font-family: 'Courier New', monospace; /* 等宽字体 */
+    font-size: 0.9rem;
+  }
+  
+  blockquote {
+    font-style: italic;
+    background-color: #f9f9f9;
+    border-left: 5px solid #ccc;
+    padding: 10px 20px;
+    margin: 20px 0;
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.6;
+  }
+  
+  blockquote p {
+    margin: 0;
+  }
+   img{
+    max-width: 100%;
+  }
+   td{
+    border: 1px solid #DADADA;
+  }
+
+
+  .static-content{
+    width: 800px;
+    margin: 20px auto;
+  }
+
+  
+@media (max-width: 800px) {
+    .static-content {
+      width: 100%;
+      margin: 20px 10px;
+    }
+    
+ 
+  }

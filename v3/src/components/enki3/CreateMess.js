@@ -7,6 +7,7 @@ import RichEditor from "./RichEditor";
 import Editor from "../enki2/form/Editor";
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux';
+import DaismInputGroup from "../form/DaismInputGroup";
 // import TagShow from "./TagShow";
 /**
  * 个人嗯文编辑
@@ -27,6 +28,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
     const richEditorRef=useRef(); 
     const discussionRef=useRef();
     const sendRef=useRef();
+    const titleRef=useRef();
     // const inputRef=useRef();
     const nums=500;
     const t = useTranslations('ff')
@@ -74,6 +76,8 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         formData.append('typeIndex', typeIndex);  //长或短
         formData.append('content', contentHTML); //，html内容
         formData.append('actorid', actor?.id);
+        formData.append('title', titleRef.current.getData());  //标题
+        formData.append('actorName', actor?.actor_name);
         formData.append('image',(typeIndex===0?editorRef:richEditorRef).current.getImg()); //图片
         formData.append('fileType',(typeIndex===0?editorRef:richEditorRef).current.getFileType()); //后缀名
         formData.append('isSend',sendRef.current.checked?1:0);
@@ -109,6 +113,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
                  <Form.Check inline label={t('isFixButton')} name="group1" type='radio' defaultChecked={typeIndex===2} onClick={e=>
                     {if(e.target.checked) setTypeIndex(2)}}  id='inline-3' />
             </Form>
+            <DaismInputGroup  horizontal={true} title={t('htmlTitleText')}  ref={titleRef} defaultValue={currentObj ? currentObj.title : ''} />
         {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} accountAr={accountAr} showProperty={true} />
         :<RichEditor  ref={richEditorRef} currentObj={currentObj} accountAr={accountAr} isFix={typeIndex===2} />}
      

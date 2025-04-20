@@ -2,7 +2,7 @@ import withSession from "../../../lib/session";
 import formidable from 'formidable';
 import { executeID, getData, execute } from "../../../lib/mysql/common";
 import { send } from "../../../lib/utils/send";
-import { saveImage, findFirstURI, getTootContent } from "../../../lib/utils";
+import { saveImage, findFirstURI, getTootContent,saveHTML } from "../../../lib/utils";
 
 const { v4: uuidv4 } = require("uuid");
 
@@ -22,7 +22,7 @@ export default withSession(async (req, res) => {
 
         const form = formidable({})
         const [fields, files] = await form.parse(req);
-        const {vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
+        const {actorName,title, vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
         // const actorName=account[0].split('@')[0];
         const _path=new Date().toLocaleDateString().replaceAll('/','');
         const imgPath = saveImage(files, fileType[0],_path)
@@ -36,27 +36,28 @@ export default withSession(async (req, res) => {
         const pathtype=daoid?'enki':'enkier';
 
         if (id[0] == '0') { //增加
-            let message_id = uuidv4().replaceAll('-','')
+            let message_id = uuidv4().replaceAll('-','')?.toLowerCase()
             if (daoid) { //enki
                 const re=await getData("SELECT 1 AS c  WHERE (SELECT manager FROM a_account WHERE id=?) IN (SELECT member_address FROM t_daodetail WHERE dao_id=?)",[actorid[0],daoid[0]]);
                 if(!re.length) return res.status(406).json({ errMsg: 'Non smart common members!' });
-                paras = [propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],message_id,actorid[0], daoid[0], content[0], isSend[0], isDiscussion[0], path, _type[0]]
+                paras = [title[0],propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],message_id,actorid[0], daoid[0], content[0], isSend[0], isDiscussion[0], path, _type[0]]
                 if (_type[0] == '1') { //活动嗯文
-                    sql = 'INSERT INTO a_messagesc(property_index,type_index,vedio_url,account_at,message_id,actor_id,dao_id,content,is_send,is_discussion,top_img,_type,start_time,end_time,event_url,event_address,time_event) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+                    sql = 'INSERT INTO a_messagesc(title, property_index,type_index,vedio_url,account_at,message_id,actor_id,dao_id,content,is_send,is_discussion,top_img,_type,start_time,end_time,event_url,event_address,time_event) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
                     paras = paras.concat([startTime[0], endTime[0], eventUrl[0], eventAddress[0], time_event[0]])
                 }
                 else {  //普通嗯文
-                    sql = 'INSERT INTO a_messagesc(property_index,type_index,vedio_url,account_at,message_id,actor_id,dao_id,content,is_send,is_discussion,top_img,_type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)';
+                    sql = 'INSERT INTO a_messagesc(title,property_index,type_index,vedio_url,account_at,message_id,actor_id,dao_id,content,is_send,is_discussion,top_img,_type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
                 }
             } else  //个人
             {
-                sql = "INSERT INTO a_message(property_index,type_index,vedio_url,account_at,message_id,manager,actor_name,avatar,actor_account,actor_url,content,is_send,is_discussion,top_img,actor_inbox) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                sql = "INSERT INTO a_message(title, property_index,type_index,vedio_url,account_at,message_id,manager,actor_name,avatar,actor_account,actor_url,content,is_send,is_discussion,top_img,actor_inbox) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 let rows = await getData("select actor_name,avatar,actor_url,actor_inbox,manager from v_account where actor_account=?", [account[0]])
-                paras = [propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],message_id, rows[0].manager, rows[0].actor_name, rows[0].avatar, account[0], rows[0].actor_url, content[0], isSend[0], isDiscussion[0], path, rows[0].actor_inbox]
+                paras = [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],message_id, rows[0].manager, rows[0].actor_name, rows[0].avatar, account[0], rows[0].actor_url, content[0], isSend[0], isDiscussion[0], path, rows[0].actor_inbox]
             }
 
             let insertId = await executeID(sql, paras);
             if (insertId) {
+                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id)
                 // if (parseInt(isSend[0]) === 1) {
                     //account,textContent,imgpath,message_id,pathtype,contentType
                 send(
@@ -95,19 +96,20 @@ export default withSession(async (req, res) => {
            
             if (daoid) {     
                 if (_type[0] == '1') { //活动嗯文
-                    sql = "update a_messagesc set property_index=?,type_index=?,vedio_url=?,account_at=?,_type=1,content=?,is_send=?,is_discussion=?,top_img=?,start_time=?,end_time=?,event_url=?,event_address=?,time_event=? where id=?"
-                    paras= [propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],content[0], isSend[0], isDiscussion[0], path, startTime[0], endTime[0], eventUrl[0], eventAddress[0], time_event[0], id[0]];
+                    sql = "update a_messagesc set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,_type=1,content=?,is_send=?,is_discussion=?,top_img=?,start_time=?,end_time=?,event_url=?,event_address=?,time_event=? where id=?"
+                    paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],content[0], isSend[0], isDiscussion[0], path, startTime[0], endTime[0], eventUrl[0], eventAddress[0], time_event[0], id[0]];
                 } else {//普通嗯文
-                    sql = "update a_messagesc set property_index=?,type_index=?,vedio_url=?,account_at=?,_type=0,content=?,is_send=?,is_discussion=?,top_img=?,start_time=NULL,end_time=NULL,event_url=NULL,event_address=NULL,time_event=-1 where id=?";
-                    paras=[propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, id[0]];
+                    sql = "update a_messagesc set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,_type=0,content=?,is_send=?,is_discussion=?,top_img=?,start_time=NULL,end_time=NULL,event_url=NULL,event_address=NULL,time_event=-1 where id=?";
+                    paras=[title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, id[0]];
                  }
             } else {
-                sql = "update a_message set property_index=?,type_index=?,vedio_url=?,account_at=?,content=?,is_send=?,is_discussion=?,top_img=? where message_id=?";
-                paras= [propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, rear.message_id];
+                sql = "update a_message set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,content=?,is_send=?,is_discussion=?,top_img=? where message_id=?";
+                paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, rear.message_id];
              }
 
             let lok = await execute(sql,paras);
             if(lok) {  
+                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],rear.message_id)
                 // if (parseInt(isSend[0]) === 1) {
                     //account,textContent,imgpath,message_id,pathtype,contentType
                 send(

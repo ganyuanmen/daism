@@ -10,6 +10,7 @@ import RichEditor from "../../enki3/RichEditor";
 import Editor from "../form/Editor";
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux';
+
 // import TagShow from '../../enki3/TagShow';
 
 /**
@@ -49,7 +50,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
     const addressRef = useRef()
     const timeRef = useRef()
     const selectRef = useRef()
-    // const inputRef=useRef();
+    const titleRef=useRef();
 
     useEffect(() => { //为select 设默认值 
         if(Array.isArray(daoData)){
@@ -113,11 +114,13 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
         if(currentObj?.id){  //修改
             formData.append('id', currentObj.id);
             formData.append('account', currentObj.actor_account); //社交帐号
+            formData.append('actorName', currentObj?.actor_name);
 
         } else { //新增
             formData.append('id', 0);
             const selectDao=daoData.find((obj)=>{return obj.dao_id===parseInt(selectedDaoid)});
             formData.append('account', selectDao.actor_account); //社交帐号
+            formData.append('actorName', selectDao?.dao_name);
         }
       
 
@@ -134,9 +137,10 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //
         formData.append('accountAt',(typeIndex===0?editorRef:richEditorRef).current.getAccount());  //@用户
         formData.append('actorid', actor?.id);
+        
         formData.append('daoid', selectedDaoid);
         formData.append('_type', showEvent ? 1 : 0);  //活动还是普通 
-        // formData.append('title', titleText);  //标题
+        formData.append('title', titleRef.current.getData());  //标题
         formData.append('content', contentHTML); //，内容
         formData.append('image',(typeIndex===0?editorRef:richEditorRef).current.getImg()); //图片
         formData.append('fileType',(typeIndex===0?editorRef:richEditorRef).current.getFileType()); //后缀名
@@ -205,6 +209,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
               <Form.Check inline label={t('isFixButton')} name="group1" type='radio' defaultChecked={typeIndex===2} onClick={e=>
                     {if(e.target.checked) setTypeIndex(2)}}  id='inline-3' />
           </Form>
+          <DaismInputGroup horizontal={true} title={t('htmlTitleText')} ref={titleRef} defaultValue={currentObj ? currentObj.title : ''} />
       {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} isSC={true} accountAr={accountAr} showProperty={true}/>
       :<RichEditor  ref={richEditorRef} currentObj={currentObj} isSC={true} accountAr={accountAr} isFix={typeIndex===2} />}
         

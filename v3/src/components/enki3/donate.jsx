@@ -38,7 +38,6 @@ const DonationPage = ({env,locale}) => {
       setShow(false)
         setTimeout(async () => {
           const res = await client.get(`/api/getData?did=${user.account}`,'getLastDonate');
-          console.log(res)
           if(res.status===200){
             setDonationStatus(res.data);
           }

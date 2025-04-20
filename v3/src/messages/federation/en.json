@@ -167,7 +167,10 @@
     "myEnkiText":"Personal community({num})",
     "myCompanyEnkiText":"Public community({num})",
     "receiveEnkiText":"Received({num})",
-    "isFixButton":"Fixed toolbar"
+    "isFixButton":"Fixed toolbar",
+    "htmlTitleText":"Page Title",
+    "staticLinkText":"static Web page"
+
 
   }
 }

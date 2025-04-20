@@ -6,6 +6,46 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 import { getInboxFromAccount } from '../../lib/mysql/message'
 
+export function saveHTML(actorName,content,title,mid)
+{
+  console.log("---------->",actorName,content,title,mid)
+  const directoryPath=`./enki/${actorName?.toLowerCase()}`;
+  try {fs.accessSync(directoryPath, fs.constants.F_OK);} 
+  catch (err) {
+    if (err.code === 'ENOENT') {
+      try {fs.mkdirSync(directoryPath, { recursive: true });} 
+      catch (error123) {
+        console.error("mkdir error>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",error123)
+      }
+    } else {
+      console.error("mkdir error99999999999999999999999999999999999", err); 
+    }
+  }
+  const filePath = `${directoryPath}/${mid.toLowerCase()}.html`  // 指定文件保存路径
+  const html=`<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>${title}</title>
+    <link rel="stylesheet" href="/staticHTML.css" />
+	</head>
+	<body>
+  <div class='static-content' >
+  ${content}
+  </div>
+	</body>
+</html>`
+  fs.writeFile(filePath, html, 'utf8', (err) => {
+    if (err) {
+      console.error(`${actorName}写入失败:`, err);
+    } else {
+      console.log(`${actorName}文件写入成功`);
+    }
+  });
+
+
+}
+
 export function saveImage(files,fileType,actorName)
 {
  
