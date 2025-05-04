@@ -7,7 +7,7 @@ import { insertMessage } from '../mysql/message';
 //id 增加后的自增ID
 export function send(account,content,textContent,imgpath,message_id,pathtype,contentType) 
 {
-
+// console.log("sendsendsendsendsendsendsendsendsendsendsendsendsendsendsend")
   getUser('actor_account',account,'privkey,Lower(actor_account) account,actor_name,domain').then(localUser=>{
     try{
         if(!localUser.account) return;

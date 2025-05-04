@@ -58,12 +58,12 @@ export async function execute(sql, sqlParams) {
   let result;
   while (attempt < maxRetries) {
     try {
-      await connection.beginTransaction();
+      // await connection.beginTransaction();
        result= await connection.execute(sql,sqlParams)
-      await connection.commit();
+      // await connection.commit();
       break;
     } catch (err) {
-      await connection.rollback();
+      // await connection.rollback();
       if (err.code === 'ER_LOCK_DEADLOCK') {
         attempt++;
         console.warn(`⚠️ Deadlock, retrying...`);

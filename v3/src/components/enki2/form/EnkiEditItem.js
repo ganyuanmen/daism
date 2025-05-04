@@ -123,14 +123,19 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
     const deldiscussions=()=>{
         handle('messageDel',{
             id:messageObj.id,
+            mid:messageObj?.message_id,
+            account:messageObj?.actor_account,
             type,
             sctype,
             ppid:messageObj?.ppid??'',
-            account:actor?.actor_account??''
+            sendType:messageObj?.send_type??'-1',
+            actorAccount:actor?.actor_account??''
         });
         setShow(false);
         
     }
+
+
 
     return(
         <> {type===0?

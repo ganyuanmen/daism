@@ -21,26 +21,26 @@ export default withSession(async (req, res) => {
     const sessionUser = req.session.get('user');
     if (!sessionUser) return res.status(406).json({errMsg:'No wallet signature login'})
     try{
-        if(req.headers.method==='messageDel' ){
+        if(req.headers.method==='messageDel'){ 
             if(parseInt(req.body.type)===0){ //delete message 
-                const {id,type,sctype}=req.body;
-                let rear = await getData(`select actor_account,message_id from a_message${sctype} where id=?`, [id],true)
-                if(parseInt(type)===0) {
+                if(parseInt(req.body.sendType)===0){ //删除主嗯文才处理
+                    const {mid,account,sctype}=req.body;
                     send(
-                       rear.actor_account,
+                        account,
                         '',
                         '',
                         '',
-                        rear.message_id,
+                        mid,
                         sctype==='sc'?'enki':'enkier',
                         'Delete'
                     ) 
-                }
+            }
+                
             }else { //delete message_commont
-                const {id,sctype,ppid,account}=req.body;
-                if(sctype!=='sc' && ppid && ppid.startsWith('http') && account && account.includes('@')){
+                const {id,sctype,ppid,actorAccount}=req.body;
+                if(sctype!=='sc' && ppid && ppid.startsWith('http') && actorAccount && actorAccount.includes('@')){
                     const obj=await getData("SELECT actor_inbox FROM a_message WHERE message_id=?",[ppid],true);
-                    const user= await getUser('actor_account',account,'privkey,actor_name,domain')                  
+                    const user= await getUser('actor_account',actorAccount,'privkey,actor_name,domain')                  
                     if(obj?.actor_inbox && user.domain && user.actor_name){
                         const send_body=createNoteDel(user.actor_name,user.domain,id,process.env.LOCAL_DOMAIN);
                         signAndSend(obj.actor_inbox,user.actor_name,user.domain,send_body,user.privkey);

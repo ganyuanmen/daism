@@ -110,8 +110,6 @@ export default withSession(async (req, res) => {
             let lok = await execute(sql,paras);
             if(lok) {  
                 if(title && title[0]) saveHTML(actorName[0],content[0],title[0],rear.message_id,textContent[0],path?path:avatar[0])
-                // if (parseInt(isSend[0]) === 1) {
-                    //account,textContent,imgpath,message_id,pathtype,contentType
                 send(
                     account[0],
                     content[0],

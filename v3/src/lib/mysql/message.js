@@ -112,17 +112,22 @@ export async function insertMessage(account,message_id,pathtype,contentType,idx)
 	if(contentType==='Create') {
 		sql="INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,title,content,is_send,is_discussion,top_img,receive_account,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 		paras=[re.message_id,re.manager,re.actor_name,re.avatar,re.actor_account,re.actor_url,re.actor_inbox,linkUrl,re.title,re.content,0,1,re.top_img,account,1]
-	} else if(contentType==='Update' && idx===0)
+		execute(sql,paras);
+	} else if(contentType==='Update' && sctype==='sc' && idx===0)
 	{
+		// console.log("updateupdateupdateupdateupdate")
 		sql="update a_message set content=?,top_img=? where message_id=? and send_type>0";
-		paras=[re.content,re.top_img,re.message_id]
+		paras=[re.content,re.top_img,re.message_id];
+		execute(sql,paras)
 
-	} else if(contentType==='Delete' && idx===0 )
-	{
-		sql="delete from a_message where message_id=?";
-		paras=[re.message_id]
-	}
-	await execute(sql,paras)
+	} 
+	// else if(contentType==='Delete' && idx===0 )
+	// {
+	// 	sql="delete from a_message where message_id=?";
+	// 	paras=[re.message_id]
+	// }
+
+	
 }
  //获取回复总数
 export async function getReplyTotal({sctype,pid})
@@ -152,18 +157,22 @@ export async function setTopMessage({id,sctype,flag})
 
 
 //删除
-export async function messageDel({id,type,sctype})
+export async function messageDel({id,mid,type,sctype,ppid,sendType})
 {
-    if(parseInt(type)===0) return await execute(`delete from a_message${sctype} where message_id =?`,[id]);
+    if(parseInt(type)===0) {
+		if(parseInt(sendType)===0){ //主嗯文
+			if(sctype==='sc') execute(`delete from a_message where message_id =?`,[mid]); //更新所有父记录
+			return await execute(`delete from a_message${sctype} where message_id =?`,[mid]);
+		}else { // 接收嗯文
+			return await execute(`delete from a_message${sctype} where id =?`,[id]);
+		}
+	}
     else{ 
-		 const row=await getData(`select ppid from a_message${sctype}_commont where id=?`,[id],true)
-		 if(row.ppid){
-			execute(`delete from a_message${sctype}_commont where id=?`,[id]); //删除回复
-			execute(`UPDATE a_message${sctype} SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
-			if(sctype==='sc') execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
-		 }
 		
-
+			execute(`delete from a_message${sctype}_commont where id=?`,[id]); //删除回复
+			execute(`UPDATE a_message${sctype} SET total=total-1 WHERE message_id=?`,[ppid]); //更新所有父记录
+			if(sctype==='sc') execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[ppid]); //更新所有父记录
+		
 	}
 }
 
