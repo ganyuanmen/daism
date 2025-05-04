@@ -170,7 +170,7 @@ const handleClick = useCallback((event) => {
         
             
             {/* 发起者 */}
-            {messageObj?.dao_id>0 && messageObj?.send_type===0  &&<div className="d-flex align-items-center mt-1">
+            {messageObj?.dao_id>0 && messageObj?.send_type===0 && !messageObj?.receive_account  &&<div className="d-flex align-items-center mt-1">
               <div className="d-inline-flex align-items-center" >
                  <span style={{display:'inline-block',paddingRight:'4px'}} >{t('proposedText')}:</span>
                  <img src={messageObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 

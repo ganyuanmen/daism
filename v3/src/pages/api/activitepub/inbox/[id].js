@@ -59,7 +59,7 @@ export default async function handler(req, res) {
 		return 	res.status(202).send('Accepted');
 	}
 	const name = req.query.id;
-	console.info(`inbox-----${name}-${_type}-${postbody.actor}`);
+	console.info(`${new Date().toLocaleString()}:inbox-----${name}-${_type}-${postbody.actor}`);
 	if( process.env.IS_DEBUGGER==='1') { 
 		console.info(postbody);
 		// console.info(req.headers)
@@ -174,18 +174,19 @@ function handle_update(postbody) {
 
 async function handle_delete(rid) {
 	if(!rid) return;
-	if(rid.includes('communities/enki')) execute("delete from a_message where message_id=?",[rid]);
+	if(rid.includes('communities/enki'))  execute("delete from a_message where message_id=?",[rid]);
 	else if(rid.includes('commont/enki/')) { 
-		const row=await getData(`select ppid from a_messagesc_commont where message_id=?`,[id],true)
+		const row=await getData(`select ppid from a_messagesc_commont where message_id=?`,[rid],true)
 		if(row.ppid){
 			execute("delete from a_messagesc_commont where message_id=?",[rid]); //删除回复
 		    execute(`UPDATE a_messagesc SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+			execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
 		}
 		
 
 	}
 	else if(rid.includes('commont/enkier/')) { 
-		const row=await getData(`select ppid from a_message_commont where message_id=?`,[id],true)
+		const row=await getData(`select ppid from a_message_commont where message_id=?`,[rid],true)
 		if(row.ppid){
 			execute("delete from a_message_commont where message_id=?",[rid]); //删除回复
 		    execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录

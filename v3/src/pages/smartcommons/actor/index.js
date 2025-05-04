@@ -8,14 +8,13 @@ import Wecome from '../../../components/federation/Wecome'
 import EnKiRigester from '../../../components/enki2/form/EnKiRigester';
 import { getEnv } from '../../../lib/utils/getEnv';
 import Head from 'next/head';
-import { getJsonArray } from '../../../lib/mysql/common';
 import EnkiView from '../../../components/enki3/EnkiView';
 /**
  * 登录后个人信息
  * @env 环境变量
  * @locale zh/cn
  */
-export default function MyActor({env,locale,accountAr}) {
+export default function MyActor({env,locale}) {
     const user = useSelector((state) => state.valueData.user)
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
@@ -31,18 +30,18 @@ export default function MyActor({env,locale,accountAr}) {
         <div style={{marginTop:'10px'}} >
             {user?.connected!==1?<ShowErrorBar errStr={tc('noConnectText')} />
             :!loginsiwe?<Wecome />
-            :<ActorInfo t={t} env={env} locale={locale} actor={actor}  accountAr={accountAr} daoActor ={daoActor } />
+            :<ActorInfo t={t} env={env} locale={locale} actor={actor}  daoActor ={daoActor } />
             }  
         </div>
       </PageLayout></>
     );
 }
 
-function ActorInfo({t,env,locale,actor,accountAr,daoActor })
+function ActorInfo({t,env,locale,actor,daoActor })
 {
 
   return  <> 
-      {(actor?.actor_account)? <EnkiView daoActor={daoActor} accountAr={accountAr}  actor={actor} locale={locale} env={env}  />
+      {(actor?.actor_account)? <EnkiView daoActor={daoActor}  actor={actor} locale={locale} env={env}  />
         :<div>    {/* 未注册帐号  */}
           <Alert>{t('noregisterText')} </Alert>
           <EnKiRigester  env={env} />
@@ -52,17 +51,16 @@ function ActorInfo({t,env,locale,actor,accountAr,daoActor })
 }
 
 
-export const getServerSideProps = async ( { locale }) => {
-  const env=getEnv();
-  const accountAr=await getJsonArray('accountAr',[env?.domain])
+export const getStaticProps = async ( { locale }) => {
+
     return {
       props: {
         messages: {
           ...require(`../../../messages/shared/${locale}.json`),
           ...require(`../../../messages/federation/${locale}.json`),
         }
-        ,env
-        ,locale,accountAr
+        ,env:getEnv()
+        ,locale
       }
     }
 

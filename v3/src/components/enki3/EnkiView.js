@@ -10,7 +10,7 @@ import { client } from "../../lib/api/client"
 import { Home,BookSvg,BackSvg,MyPost,ReceiveSvg } from '../../lib/jssvg/SvgCollection';
 
 
-export default function EnkiView({accountAr,actor,locale,env,daoActor}) {
+export default function EnkiView({actor,locale,env,daoActor}) {
     const [fetchWhere, setFetchWhere] = useState({
       currentPageNum: 0,  //当前页 初始不摘取数据
       daoid: 0,  //此处不用

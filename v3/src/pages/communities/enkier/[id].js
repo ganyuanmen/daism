@@ -1,24 +1,26 @@
 
 import { useTranslations } from 'next-intl'
-import MessagePage from '../../../components/enki2/page/MessagePage';
-import { getOne } from '../../../lib/mysql/message';
-import ShowErrorBar from '../../../components/ShowErrorBar';
+import EnkiMess from '../../../components/enki2/page/EnkiMess';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
 import PageLayout from '../../../components/PageLayout'
 import { getEnv } from '../../../lib/utils/getEnv';
+import { getData } from '../../../lib/mysql/common';
 const { parse } = require('node-html-parser');
 // import { useSelector } from 'react-redux';
 /**
  * 个人社区 单个发文信息
  */
-export default function Message({currentObj,locale,env}) {
+
+
+
+export default function Message({currentObj,locale,env,replyData,honor,heartTotal,bookTotal}) {
   const router = useRouter();
 
   const t = useTranslations('ff');
   const tc = useTranslations('Common');
   const root = parse(currentObj.content);
-  const MAX_DESCRIPTION_currentDiv = 80; // 按字节计算
+  const MAX_DESCRIPTION_currentDiv = 160; // 按字节计算
   const content=root.textContent.slice(0, MAX_DESCRIPTION_currentDiv).replaceAll('<p>','').replaceAll('</p>','').replace(/\s+\S*$/, '') + '...';
 
   
@@ -28,6 +30,7 @@ export default function Message({currentObj,locale,env}) {
        <Head>
        <meta content="text/html; charset=UTF-8" name="Content-Type" />
         <title>{currentObj?.title?currentObj.title: tc('enkierTitle')}</title>
+       
         {/* Open Graph Tags */}
         <meta content="article" property="og:type" />
         <meta content={env.domain} property="og:site_name" />
@@ -70,22 +73,36 @@ export default function Message({currentObj,locale,env}) {
       </Head> */}
     
       <PageLayout env={env}>
-        {currentObj?.id? <MessagePage path="noedit" locale={locale}  currentObj={currentObj} env={env} />
-        :<ShowErrorBar errStr={t('noPostingText')} />
-        }
+        
+         <EnkiMess locale={locale}  currentObj={currentObj} env={env} 
+             replyData={replyData} honor={honor} bookTotal={bookTotal} heartTotal={heartTotal}/>
+        
         </PageLayout>
         </>
     );
 }
 
-export const getServerSideProps =async ({locale,query }) => {
+export const getServerSideProps =async ({locale,query,res }) => {
+  res.setHeader('Cache-Control', 'public, s-maxage=10');
+  const currentObj=await getData('select * from v_message where message_id=?',[query.id],true);
+  if(!currentObj?.manager) return { notFound: true };
+  const honor=await getData('select tokensvg from v_mynft where to_address=? order by _time',[currentObj.manager]);
+  const data=await getData("SELECT * FROM v_message_commont WHERE ppid=?",[currentObj.message_id]);
+  const replyData = data.map(item => ({
+    ...item,
+    createtime: item.createtime.toJSON(), 
+    currentTime:item.currentTime.toJSON(), 
+  }));
 
-  const currentObj=await getOne({id:query.id,sctype:''})
-  if(!currentObj?.content) return { notFound: true };
+  const heartTotal=await getData("select count(*) as total from a_heart where pid=?",[currentObj.id],true)
+  const bookTotal=await getData("select count(*) as total from a_bookmark where pid=?",[currentObj.id],true)
+  
+  
 
   if(currentObj?.createtime) currentObj.createtime=new Date(currentObj.createtime).toJSON();
   if(currentObj?.currentTime) currentObj.currentTime=new Date(currentObj.currentTime).toJSON();
   if(currentObj?.reply_time) currentObj.reply_time=new Date(currentObj.reply_time).toJSON();
+
 
 
     return {
@@ -94,7 +111,9 @@ export const getServerSideProps =async ({locale,query }) => {
           ...require(`../../../messages/shared/${locale}.json`),
           ...require(`../../../messages/federation/${locale}.json`),
         },
-        currentObj,locale
+        currentObj,locale,honor,replyData
+        ,heartTotal:heartTotal?.total?heartTotal.total:0
+        ,bookTotal:bookTotal?.total?bookTotal.total:0
         ,env:getEnv()
       }
     }
@@ -102,4 +121,12 @@ export const getServerSideProps =async ({locale,query }) => {
 
 
 
-  
+  // <script type="application/ld+json">
+  // {
+  //   "@context": "https://schema.org",
+  //   "@type": "Article",
+  //   "headline": "如何优化HTML文件",
+  //   "datePublished": "2023-10-01",
+  //   "author": { "@type": "Person", "name": "John Doe" }
+  // }
+  // </script>

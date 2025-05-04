@@ -28,7 +28,7 @@ async function createConnection() {
 
 export async function getData(sql, sqlParams, is_object = false) {
   const pool = await createConnection(); // 只调用一次 createConnection
-  if (process.env.IS_DEBUGGER === '1') console.info(`getData: ${sql}-->` + sqlParams.join());
+  if (process.env.IS_DEBUGGER === '1') console.info(`${new Date().toLocaleString()}: getData: ${sql}-->` + sqlParams.join());
 
   try {
     const [rows, ] = await pool.query(sql, sqlParams);
@@ -42,22 +42,51 @@ export async function getData(sql, sqlParams, is_object = false) {
 
 //mysql 处理
 export async function execute(sql, sqlParams) {
-  const pool = await createConnection(); // 只调用一次 createConnection
-  if(process.env.IS_DEBUGGER==='1')  console.info(`execute: ${sql}-->`+sqlParams.join())
-  try {
-    const result = await pool.execute(sql,sqlParams)
-    return result
-  } catch (error) {
-    console.info(`error for execute: ${sql}-->`+sqlParams.join())
-    console.error(error)
-    return 0
+  const connection = await createConnection(); // 只调用一次 createConnection
+  if(process.env.IS_DEBUGGER==='1')  console.info(`${new Date().toLocaleString()}: execute: ${sql}-->`+sqlParams.join())
+  // try {
+  //   const result = await pool.execute(sql,sqlParams)
+  //   return result
+  // } catch (error) {
+  //   console.info(`error for execute: ${sql}-->`+sqlParams.join())
+  //   console.error(error)
+  //   return 0
+  // }
+
+  let attempt = 0;
+  const maxRetries = 3;
+  let result;
+  while (attempt < maxRetries) {
+    try {
+      await connection.beginTransaction();
+       result= await connection.execute(sql,sqlParams)
+      await connection.commit();
+      break;
+    } catch (err) {
+      await connection.rollback();
+      if (err.code === 'ER_LOCK_DEADLOCK') {
+        attempt++;
+        console.warn(`⚠️ Deadlock, retrying...`);
+        await new Promise(res => setTimeout(res, 200 * attempt)); // 可线性增加等待时间
+      } else {
+        // 非死锁错误，直接抛出
+        console.info(`error for execute: ${sql}-->`+sqlParams.join());
+        console.error(err);
+        result=0;
+        break;
+      }
+    }
   }
+
+  
+  return result;
+
 }
 
 //mysql 返回自增ID
 export async function executeID(sql, sqlParams) {
   const pool = await createConnection(); // 只调用一次 createConnection
-  if(process.env.IS_DEBUGGER==='1')  console.info(`executeID: ${sql}-->`+sqlParams.join())
+  if(process.env.IS_DEBUGGER==='1')  console.info(`${new Date().toLocaleString()}: executeID: ${sql}-->`+sqlParams.join())
   try {
     const result = await pool.execute(sql,sqlParams)
     return result[0].insertId
@@ -75,7 +104,7 @@ export async function getJsonArray(cid, sqlParams,object_false)
   const [rows,] = await pool.query("select sqls from aux_tree where id=?",[cid]);
   let sql=rows[0].sqls;
 
-  // if(process.env.IS_DEBUGGER==='1')  console.info(`${cid}--> getJsonArray: ${sql}-->`+sqlParams.join())
+   if(process.env.IS_DEBUGGER==='1')  console.info(`${new Date().toLocaleString()}: ${cid}--> getJsonArray: ${sql}-->`+sqlParams.join())
   try {
     const [rows,fields] = await pool.query(sql,sqlParams);
     if(rows && rows.length)
@@ -110,7 +139,7 @@ export async function getJsonArray(cid, sqlParams,object_false)
   */
  export async function getPageData(tid,ps,pi,s,a,w)
  {
-  if(process.env.IS_DEBUGGER==='1')  console.info(`getPageData: -->`+[tid,ps,pi,s,a,w].join())
+  if(process.env.IS_DEBUGGER==='1')  console.info(`${new Date().toLocaleString()}: getPageData: -->`+[tid,ps,pi,s,a,w].join())
   let re= await getData('call get_page(?,?,?,?,?,?)',[tid,ps,pi,s,a,w]);
   return {
     rows:re[0],

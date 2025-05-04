@@ -11,13 +11,11 @@ import usePrice from "../hooks/usePrice";
 import ShowErrorBar from "../components/ShowErrorBar";
 import { useTranslations } from 'next-intl'
 import PageLayout from '../components/PageLayout';
-// import { client } from '../lib/api/client';
 import {getEnv} from '../lib/utils/getEnv'
 
 const commulate_abi=require('../lib/contract/data/commulate.json')
 const uToken_abi=require('../lib/contract/data/unitToken.json')
 const iadd_abi=require('../lib/contract/data/iadd.json')
-
 
 /**
  * IADD兑换
@@ -113,7 +111,7 @@ export default function IADD({locale,env}) {
     }
 
     
-export const getServerSideProps  = async ({locale }) => {
+export const getStaticProps  = async ({locale }) => {
     // const messages = await import(`../messages/shared/${locale}.json`);
 
     return {

@@ -1,31 +1,42 @@
 
-// import fs from 'fs';
 const fs = require('node:fs');
-// const path = require('node:path');
 const axios = require('axios');
 const cheerio = require('cheerio');
 import { getInboxFromAccount } from '../../lib/mysql/message'
 
-export function saveHTML(actorName,content,title,mid,textContent,avatar)
+
+
+// async function downloadRenderedPage(url, savePath) {
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
+//   await page.goto(url, { waitUntil: 'networkidle0' });
+
+//   const html = await page.content();
+//   fs.writeFileSync(savePath, html, 'utf-8');
+
+//   await browser.close();
+//   console.log(`✅ 渲染后的 HTML 已保存到: ${savePath}`);
+// }
+
+// const url = 'https://example.com';
+// const savePath = path.resolve(__dirname, 'rendered.html');
+
+// downloadRenderedPage(url, savePath);
+
+
+export async function saveHTML(actorName,content,title,mid,textContent,avatar)
 {
-  console.log("---------->",actorName,content,title,mid)
-  const directoryPath=`./enki/${actorName?.toLowerCase()}`;
-  try {fs.accessSync(directoryPath, fs.constants.F_OK);} 
-  catch (err) {
-    if (err.code === 'ENOENT') {
-      try {fs.mkdirSync(directoryPath, { recursive: true });} 
-      catch (error123) {
-        console.error("mkdir error>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",error123)
-      }
-    } else {
-      console.error("mkdir error99999999999999999999999999999999999", err); 
-    }
-  }
-  const filePath = `${directoryPath}/${mid.toLowerCase()}.html`  // 指定文件保存路径
-  const MAX_DESCRIPTION_LENGTH = 80; // 按字节计算
+ 
+  const filePath = `./enki/${mid.toLowerCase()}.html`  // 指定文件保存路径
+  const MAX_DESCRIPTION_LENGTH = 160; // 按字节计算
 
   const truncatedDescription = textContent.slice(0, MAX_DESCRIPTION_LENGTH).replaceAll('<p>','').replaceAll('</p>','').replace(/\s+\S*$/, '') + '...';
-  const url=`https://${process.env.LOCAL_DOMAIN}/enki/${actorName?.toLowerCase()}/${mid.toLowerCase()}.html`
+  const url=`https://${process.env.LOCAL_DOMAIN}/enki/${mid.toLowerCase()}.html`
+  // const browser = await puppeteer.launch();
+  // const page = await browser.newPage();
+  // await page.goto(url, { waitUntil: 'networkidle0' });
+
+  // const html = await page.content();
 
 
   const html=`<!DOCTYPE html>
@@ -34,15 +45,25 @@ export function saveHTML(actorName,content,title,mid,textContent,avatar)
 		<meta charset="utf-8">
 		<title>${title}</title>
     <link rel="canonical" href="${url}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
     <meta content="${avatar}" property="og:image" />
     <meta name="description" content="${truncatedDescription}" />
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${truncatedDescription}" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="/staticHTML.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "${url}",
+        "@type": "Article",
+        "headline": "${title}",
+        "datePublished": "${new Date().toISOString()}",
+        "author": { "@type": "Person", "name": "${actorName}" }
+      }
+    </script>
 	</head>
 	<body>
-  <div class='static-content' >
+  <div class="container mt-3 mb-3">
   ${content}
   </div>
 	</body>

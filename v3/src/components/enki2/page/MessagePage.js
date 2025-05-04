@@ -259,7 +259,7 @@ const renderedArrays = data.map((obj, idx) => {
         <Card.Footer style={{padding:0}} >
 
             {/* 发起者 */}
-            {currentObj?.dao_id>0 && currentObj?.send_type===0 &&<div className="d-flex align-items-center mt-1">
+            {currentObj?.dao_id>0 && currentObj?.send_type===0 && !currentObj?.receive_account &&<div className="d-flex align-items-center mt-1">
               <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center" >
                  <span style={{display:'inline-block',paddingRight:'4px'}}>{t('proposedText')}:</span>{' '}
                  <img src={currentObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 

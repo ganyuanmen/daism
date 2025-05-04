@@ -100,7 +100,7 @@ export async function daoPageData({pi,w})
 
 //element.user_account--->receive_account
 //`https://${process.env.LOCAL_DOMAIN}/communities/${sctype}/${id}`--->linkUrl
-export async function insertMessage(account,message_id,pathtype,contentType)
+export async function insertMessage(account,message_id,pathtype,contentType,idx)
 {
 	let sctype=pathtype==='enkier'?'':'sc';
 	let re=await getData(`SELECT message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,title,content,top_img FROM v_message${sctype} where message_id=?`
@@ -112,12 +112,12 @@ export async function insertMessage(account,message_id,pathtype,contentType)
 	if(contentType==='Create') {
 		sql="INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,title,content,is_send,is_discussion,top_img,receive_account,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 		paras=[re.message_id,re.manager,re.actor_name,re.avatar,re.actor_account,re.actor_url,re.actor_inbox,linkUrl,re.title,re.content,0,1,re.top_img,account,1]
-	} else if(contentType==='Update')
+	} else if(contentType==='Update' && idx===0)
 	{
 		sql="update a_message set content=?,top_img=? where message_id=? and send_type>0";
 		paras=[re.content,re.top_img,re.message_id]
 
-	} else 
+	} else if(contentType==='Delete' && idx===0 )
 	{
 		sql="delete from a_message where message_id=?";
 		paras=[re.message_id]
@@ -154,12 +154,13 @@ export async function setTopMessage({id,sctype,flag})
 //删除
 export async function messageDel({id,type,sctype})
 {
-    if(parseInt(type)===0) return await execute(`delete from a_message${sctype} where id=?`,[id]);
+    if(parseInt(type)===0) return await execute(`delete from a_message${sctype} where message_id =?`,[id]);
     else{ 
 		 const row=await getData(`select ppid from a_message${sctype}_commont where id=?`,[id],true)
 		 if(row.ppid){
 			execute(`delete from a_message${sctype}_commont where id=?`,[id]); //删除回复
 			execute(`UPDATE a_message${sctype} SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+			if(sctype==='sc') execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
 		 }
 		
 
@@ -197,7 +198,8 @@ export async function setAnnounce({account,id,content,pathtype,topImg,contentLin
 	// vedioUrl:messageObj.vedio_url,
 
 	try{
-		if(!id.startsWith('http')) id=`https://${process.env.LOCAL_DOMAIN}/communities/${pathtype}/${id}`
+		// if(!id.startsWith('http'))
+		const cid=id.startsWith('http')?id:`https://${process.env.LOCAL_DOMAIN}/communities/${pathtype}/${id}`;
 		let user=await getLocalInboxFromUrl(toUrl);
 		if(!user.name) user=await getInboxFromUrl(toUrl);
 		if(!user.name) return;
@@ -209,7 +211,7 @@ export async function setAnnounce({account,id,content,pathtype,topImg,contentLin
 		let paras=[
 			id,
 			 user.manager??'',user.name,user.avatar,user.account,user.url,user.inbox,
-			 id,
+			 cid,
 			 content,0,1,topImg,account,0,vedioUrl,contentLink]
 		execute(sql,paras);
 		execute("insert IGNORE into a_annoce(id,sctype,account) values(?,?,?)",[recordId,pathtype==='enki'?'sc':'',account])

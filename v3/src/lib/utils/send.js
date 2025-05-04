@@ -37,10 +37,10 @@ export function send(account,content,textContent,imgpath,message_id,pathtype,con
             true);
 
         getFollowers({account:localUser.account}).then(data=>{
-            data.forEach(element => {
+            data.forEach((element,idx) => {
                 try{
                   if(element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
-                    insertMessage(element.user_account,message_id,pathtype,contentType).then(()=>{})
+                    insertMessage(element.user_account,message_id,pathtype,contentType,idx).then(()=>{})
                   }else {
                     if(element.user_inbox.includes('/api/activitepub/inbox')) //enki
                     signAndSend(element.user_inbox,localUser.actor_name,localUser.domain,thebody1,localUser.privkey);

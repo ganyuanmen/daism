@@ -82,18 +82,3 @@ h1 {
     border: 1px solid #DADADA;
   }
 
-
-  .static-content{
-    width: 800px;
-    margin: 20px auto;
-  }
-
-  
-@media (max-width: 800px) {
-    .static-content {
-      width: 100%;
-      margin: 20px 10px;
-    }
-    
- 
-  }

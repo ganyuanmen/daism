@@ -31,8 +31,17 @@ export default function EnkiShare({content, locale, currentObj})
    try{
     const myURL = new URL(currentObj.actor_url);
     localDomain= myURL.hostname;
-    url=`https://${localDomain}/${locale==='zh'?'zh/':''}communities/${path}/${currentObj.message_id}`;
-    urlStatic=`https://${localDomain}/enki/${currentObj?.actor_name?.toLowerCase()}/${currentObj.message_id.toLowerCase()}.html`
+    if(currentObj.message_id.startsWith("https:")){
+        url=currentObj.message_id;
+        let strs=currentObj.message_id.split('/');
+        let mid=strs[strs.length-1];
+        urlStatic=`https://${localDomain}/enki/${mid.toLowerCase()}.html`
+    }else {
+        url=`https://${localDomain}/${locale==='zh'?'zh/':''}communities/${path}/${currentObj.message_id}`;
+        urlStatic=`https://${localDomain}/enki/${currentObj.message_id.toLowerCase()}.html`
+    }
+    
+   
 
    }catch(e){}
     

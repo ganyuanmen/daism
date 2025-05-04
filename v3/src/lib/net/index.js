@@ -3,7 +3,7 @@ const crypto = require('crypto')
 import { getData } from '../mysql/common';
 
 export async function signAndSend(url,name,domain,message,privkey) {
-    if( process.env.IS_DEBUGGER==='1') console.info("signAndSend--->",[url,name,domain,message])
+    if( process.env.IS_DEBUGGER==='1') console.info(`${new Date().toLocaleString()}:signAndSend--->`,[url,name,domain,message])
     const myURL = new URL(url);
     let targetDomain = myURL.hostname;
     let inboxFragment = url.replace('https://'+targetDomain,'');
@@ -44,7 +44,7 @@ export async function signAndSend(url,name,domain,message,privkey) {
 }
   
  export function httpGet(url, headers={},method='GET') {
-     if(process.env.IS_DEBUGGER==='1') console.info('request: ',url)
+     if(process.env.IS_DEBUGGER==='1') console.info(`${new Date().toLocaleString()}: request: `,url)
     return new Promise(function (resolve, reject) { request({url,headers,method,json: true}, 
         function (error, response){
         if (error) {

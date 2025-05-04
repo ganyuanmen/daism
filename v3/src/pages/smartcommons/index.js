@@ -44,7 +44,7 @@ export default function Home({env,locale}) {
   )
 }
 
-export const getServerSideProps  = ({ locale }) => {
+export const getStaticProps  = ({ locale }) => {
  
   
     return {

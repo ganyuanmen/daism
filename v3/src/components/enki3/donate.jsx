@@ -1,17 +1,11 @@
-import React, { useState,useRef } from 'react';
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { InputGroup,Button,Form } from 'react-bootstrap';
 import { useDispatch} from 'react-redux';
 import {setTipText,setMessageText} from '../../data/valueData'
-// import { EditSvg } from '../../lib/jssvg/SvgCollection';
-// 
 import ConfirmWin from '../federation/ConfirmWin';
 import { client } from '../../lib/api/client';
-
-
-// 引入二维码生成库
-
 import ShowErrorBar from '../ShowErrorBar';
 import ShowAddress from '../ShowAddress';
 
@@ -22,7 +16,7 @@ const DonationPage = ({env,locale}) => {
   const [show,setShow]=useState(false);
 
   const user = useSelector((state) => state.valueData.user);
-  const inputRef=useRef();
+
 
   let tc = useTranslations('Common')
   let t = useTranslations('wallet')
@@ -125,10 +119,6 @@ const DonationPage = ({env,locale}) => {
 
        <span style={{color:'#777',fontSize:'0.9em'}} > {t('donatePromptText2')} </span>
       </div>
-
-
-
-
       <ConfirmWin show={show} setShow={setShow} callBack={donateHandle} question={t('donateConfirmText',{num:donationAmount})}/>
     </div>
   );
