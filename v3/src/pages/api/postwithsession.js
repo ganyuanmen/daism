@@ -23,7 +23,7 @@ export default withSession(async (req, res) => {
     try{
         if(req.headers.method==='messageDel'){ 
             if(parseInt(req.body.type)===0){ //delete message 
-                if(parseInt(req.body.sendType)===0){ //删除主嗯文才处理
+                if(parseInt(req.body.sendType)===0 && !req.body.rAccount){ //删除主嗯文才处理
                     const {mid,account,sctype}=req.body;
                     send(
                         account,

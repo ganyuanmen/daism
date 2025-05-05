@@ -116,7 +116,7 @@ export async function insertMessage(account,message_id,pathtype,contentType,idx)
 	} else if(contentType==='Update' && sctype==='sc' && idx===0)
 	{
 		// console.log("updateupdateupdateupdateupdate")
-		sql="update a_message set content=?,top_img=? where message_id=? and send_type>0";
+		sql="update a_message set content=?,top_img=? where message_id=? and receive_account!=''";
 		paras=[re.content,re.top_img,re.message_id];
 		execute(sql,paras)
 
@@ -157,10 +157,10 @@ export async function setTopMessage({id,sctype,flag})
 
 
 //删除
-export async function messageDel({id,mid,type,sctype,ppid,sendType})
+export async function messageDel({id,mid,type,sctype,ppid,sendType,rAccount})
 {
     if(parseInt(type)===0) {
-		if(parseInt(sendType)===0){ //主嗯文
+		if(parseInt(sendType)===0 && !rAccount){ //主嗯文
 			if(sctype==='sc') execute(`delete from a_message where message_id =?`,[mid]); //更新所有父记录
 			return await execute(`delete from a_message${sctype} where message_id =?`,[mid]);
 		}else { // 接收嗯文

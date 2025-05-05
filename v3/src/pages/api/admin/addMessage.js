@@ -89,7 +89,7 @@ export default withSession(async (req, res) => {
                 res.status(200).json({ msg: 'handle ok', id: insertId });
             } else res.status(500).json({ errMsg: 'fail' });
         } else { //修改
-            let rear = await getData(`select message_id,top_img from a_message${sctype} where id=?`, [id[0]],true)
+            let rear = await getData(`select message_id,top_img,send_type from v_message${sctype} where id=?`, [id[0]],true)
             if (!path && fileType[0]) { //不修改img
                 path = rear['top_img']
             }
@@ -103,23 +103,31 @@ export default withSession(async (req, res) => {
                     paras=[title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, id[0]];
                  }
             } else {
+                if(rear?.send_type===0){ //修改主嗯文
                 sql = "update a_message set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,content=?,is_send=?,is_discussion=?,top_img=? where message_id=?";
                 paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, rear.message_id];
-             }
+                }
+                else {
+                    sql = "update a_message set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,content=?,is_send=?,is_discussion=?,top_img=? where id=?";
+                    paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, id[0]];
+                } 
+            }
 
             let lok = await execute(sql,paras);
             if(lok) {  
-                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],rear.message_id,textContent[0],path?path:avatar[0])
-                send(
-                    account[0],
-                    content[0],
-                    textContent[0],
-                    // parseInt(typeIndex[0])===0?content[0]:textContent[0],
-                    path,
-                    rear.message_id,
-                    pathtype,
-                    'Update'
-                ) 
+                if(title && title[0]) 
+                    saveHTML(actorName[0],content[0],title[0],rear.message_id,textContent[0],path?path:avatar[0]);
+                if(rear?.send_type===0) //修改主嗯文才处理
+                    send(
+                        account[0],
+                        content[0],
+                        textContent[0],
+                        // parseInt(typeIndex[0])===0?content[0]:textContent[0],
+                        path,
+                        rear.message_id,
+                        pathtype,
+                        'Update'
+                    ) 
                 // }     
                 setTimeout(async () => {  //生成链接卡片
                     await addLink(content[0],rear.message_id,sctype);

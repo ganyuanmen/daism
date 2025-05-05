@@ -129,7 +129,8 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
             sctype,
             ppid:messageObj?.ppid??'',
             sendType:messageObj?.send_type??'-1',
-            actorAccount:actor?.actor_account??''
+            actorAccount:actor?.actor_account??'',
+            rAccount:messageObj?.receive_account??''
         });
         setShow(false);
         

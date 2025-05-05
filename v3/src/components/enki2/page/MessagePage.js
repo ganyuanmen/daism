@@ -117,10 +117,11 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         if(!loginsiwe) return false;
         if(!actor?.actor_account || !actor?.actor_account?.includes('@')) return false;
         //发布帐号，用于判断是否本域名
-        let _account=currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account;
-        if(!_account || !_account?.includes('@'))  return false;
-        const [, messDomain] = _account.split('@');
-        return env.domain === messDomain; //本域名发布，可以回复
+        // let _account=currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account;
+        // if(!_account || !_account?.includes('@'))  return false;
+        // const [, messDomain] = _account.split('@');
+        // return env.domain === messDomain; //本域名发布，可以回复
+        return true;
     }
   
     const replyDelCallBack=(index)=>{

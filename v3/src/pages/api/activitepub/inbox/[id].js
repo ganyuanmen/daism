@@ -4,7 +4,7 @@ import {createAccept} from '../../../../lib/activity'
 import { getUser } from "../../../../lib/mysql/user";
 import {signAndSend,broadcast} from '../../../../lib/net'
 import { getOne } from "../../../../lib/mysql/message";
-import { execute, executeID } from "../../../../lib/mysql/common";
+import { execute, executeID, getData } from "../../../../lib/mysql/common";
 import { getInboxFromUrl,getLocalInboxFromUrl } from '../../../../lib/mysql/message';
 import { LRUCache } from 'lru-cache'
 import { getTootContent,findFirstURI } from '../../../../lib/utils'
@@ -230,8 +230,11 @@ async function createMess(postbody,name,actor){ //对方的推送
 			let message=await getOne({id,sctype})
 			if(message['is_discussion']==1) //允许讨论
 			{
-				execute(`INSERT IGNORE INTO a_message${sctype}_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
-				[id,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content]).then(()=>{});
+				const re=await getData(`select message_id from a_message${sctype} where message_id=? or message_id=?`,[replyType,id],true);
+				if(re?.message_id)
+					execute(`INSERT IGNORE INTO a_message${sctype}_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
+					[re?.message_id,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content]).then(()=>{});
+
 			}
 		}
 		else {
