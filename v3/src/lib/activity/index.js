@@ -239,8 +239,8 @@ export function createUndo(userName, domain,actorUrl,followId) {
     "cc": ["https://example.com/users/alice/followers"]
   };
  }
-//pid 回复ID
- export function createNote(userName,domain,pid,id,message_domain,pathtype,content)
+//pid 回复ID bid 回复排序 type_index,vedio_url,top_img,bid
+ export function createNote(userName,domain,pid,id,message_domain,pathtype,content,bid,typeIndex,vedioUrl,topImg,manager)
  {   
      userName=userName.toLowerCase()
      let d=new Date();  
@@ -249,6 +249,7 @@ export function createUndo(userName, domain,actorUrl,followId) {
        'id': `https://${message_domain}/commont/${pathtype}/${id}`,
        'url':pid,
        content,
+       bid,typeIndex,vedioUrl,topImg,manager,
        'type':'Note',
        'published': d.toISOString(),
        'inReplyTo':pid,

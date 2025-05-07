@@ -1,8 +1,13 @@
-import { getData,execute, executeID } from './common'
+import { getData,execute } from './common'
 import { httpGet,signAndSend } from "../net"; 
 import { getUser } from './user';
 import {getFollowers} from '../mysql/folllow';
-import {createAnnounce} from '../../lib/activity'
+import {createAnnounce,createNoteDel} from '../../lib/activity'
+import { send } from '../utils/send';
+
+
+
+
 
  
 ////pi,menutype,daoid,w,actorid:嗯文人ID,account,order,eventnum
@@ -157,12 +162,23 @@ export async function setTopMessage({id,sctype,flag})
 
 
 //删除
-export async function messageDel({id,mid,type,sctype,ppid,sendType,rAccount})
+export async function messageDel({id,mid,type,sctype,ppid,sendType,rAccount,account,actorAccount})
 {
     if(parseInt(type)===0) {
 		if(parseInt(sendType)===0 && !rAccount){ //主嗯文
 			if(sctype==='sc') execute(`delete from a_message where message_id =?`,[mid]); //更新所有父记录
-			return await execute(`delete from a_message${sctype} where message_id =?`,[mid]);
+			let lok= await execute(`delete from a_message${sctype} where message_id =?`,[mid]);
+			if(lok){
+                    send(
+                        account,
+                        '',
+                        '',
+                        '',
+                        mid,
+                        sctype==='sc'?'enki':'enkier',
+                        'Delete'
+                    ) 
+			}
 		}else { // 接收嗯文
 			return await execute(`delete from a_message${sctype} where id =?`,[id]);
 		}
@@ -172,6 +188,18 @@ export async function messageDel({id,mid,type,sctype,ppid,sendType,rAccount})
 			execute(`delete from a_message${sctype}_commont where id=?`,[id]); //删除回复
 			execute(`UPDATE a_message${sctype} SET total=total-1 WHERE message_id=?`,[ppid]); //更新所有父记录
 			if(sctype==='sc') execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[ppid]); //更新所有父记录
+
+			getFollowers({account}).then(async data=>{
+				const user= await getUser('actor_account',actorAccount,'privkey,Lower(actor_account) account,actor_name,domain');
+				const send_body=createNoteDel(user.actor_name,user.domain,id,process.env.LOCAL_DOMAIN);
+				data.forEach((element) => {
+					try{
+					  if(!element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
+						signAndSend(element.user_inbox,user.actor_name,user.domain,send_body,user.privkey);
+					  }
+					}catch(e1){ console.error(e1)}
+				});
+			  })
 		
 	}
 }
@@ -258,6 +286,14 @@ export async function getLastDonate({did})
 export async function getOne({id,sctype})
 {
     let re= await getData(`select * from v_message${sctype} where ${id.length<10?'id':'message_id'}=?`,[id]);
+	if(re.length) return  re[0]
+	else return {}
+}
+
+//获取一条嗯文
+export async function getOneByMessageId(id1,id2,sctype)
+{
+    let re= await getData(`select * from v_message${sctype} where message_id=? or message_id=?`,[id1,id2]);
 	if(re.length) return  re[0]
 	else return {}
 }

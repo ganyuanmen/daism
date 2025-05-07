@@ -58,7 +58,9 @@ export default function ShowWalletInfo({env,locale}) {
 
 
 
-export const getStaticProps = ({ locale }) => {
+
+// export const getServerSideProps = ({ locale }) => {
+  export const getStaticProps = ({ locale }) => {
   
       return {
         props: {

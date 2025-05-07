@@ -51,7 +51,9 @@ function ActorInfo({t,env,locale,actor,daoActor })
 }
 
 
+
 export const getStaticProps = async ( { locale }) => {
+  // export const getServerSideProps = async ( { locale }) => {
 
     return {
       props: {

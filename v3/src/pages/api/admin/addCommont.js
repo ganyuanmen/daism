@@ -6,6 +6,8 @@ import { executeID,getData,execute } from "../../../lib/mysql/common";
 import { saveImage, findFirstURI, getTootContent } from "../../../lib/utils";
 import {createNote} from '../../../lib/activity/index'
 import { signAndSend } from "../../../lib/net";
+import { getFollowers } from "../../../lib/mysql/folllow";
+import { getUser } from "../../../lib/mysql/user";
 
 const { v4: uuidv4 } = require("uuid");
 
@@ -42,14 +44,17 @@ export default withSession(async (req, res) => {
           ,path,bid[0]?bid[0]:Math.floor(Date.now()/1000)]
           let insertId=await executeID(sql,paras);
           if(insertId) { 
+            let url=ppid[0];
+            if(!url.startsWith('http')) url= `https://${account[0].split('@')[1]}/communities/${sctype==='sc'?'enki':'enkier'}/${ppid[0]}`;
+            const sendbody= createNote(rows[0].actor_name,rows[0].domain,url,message_id.replaceAll('-',''), 
+              process.env.LOCAL_DOMAIN,sctype==='sc'?'enki':'enkier',content[0]
+              ,bid[0]?bid[0]:Math.floor(Date.now()/1000),typeIndex[0],vedioURL[0],path,rows[0].manager);
             if(ppid[0].startsWith('http')){ //别人推送的，推回源服务器
-              const sendbody= createNote(rows[0].actor_name,rows[0].domain,ppid[0],insertId, process.env.LOCAL_DOMAIN,sctype==='sc'?'enki':'enkier',content[0]);
               signAndSend(inbox[0],rows[0].actor_name,rows[0].domain,sendbody,rows[0].privkey);
-
             }else { //推送给各服务器
-
               getFollowers({account:account[0]}).then(async data=>{
                 const localUser= await getUser('actor_account',rows[0].actor_account,'privkey,Lower(actor_account) account,actor_name,domain');
+                
                 data.forEach((element) => {
                     try{
                       if(!element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){

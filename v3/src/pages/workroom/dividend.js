@@ -80,8 +80,10 @@ export default function Dividend({env,locale}) {
 
 
     
+    
 
 export const getStaticProps = ({locale }) => {  
+  // export const getServerSideProps = ({locale }) => {  
     
   
     return {

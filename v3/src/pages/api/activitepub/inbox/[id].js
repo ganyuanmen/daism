@@ -8,6 +8,7 @@ import { execute, executeID, getData } from "../../../../lib/mysql/common";
 import { getInboxFromUrl,getLocalInboxFromUrl } from '../../../../lib/mysql/message';
 import { LRUCache } from 'lru-cache'
 import { getTootContent,findFirstURI } from '../../../../lib/utils'
+import { getOneByMessageId } from '../../../../lib/mysql/message';
 
 //'../../lib/utils'
 
@@ -75,7 +76,6 @@ export default async function handler(req, res) {
 		console.info(`begin getInboxFromUrl from ${name}:`,postbody.actor)
 		try {
 		    actor=await getInboxFromUrl(postbody.actor); 
-			// console.log("first get actor:",actor)
 			if(!cache.get(postbody.actor)){
 				console.info("setting time:",new Date().getTime())
 				cache.set(postbody.actor, actor); // 将新数据存入缓存
@@ -174,32 +174,42 @@ function handle_update(postbody) {
 
 async function handle_delete(rid) {
 	if(!rid) return;
-	if(rid.includes('communities/enki'))  execute("delete from a_message where message_id=?",[rid]);
-	else if(rid.includes('commont/enki/')) { 
+	if(rid.includes('communities/enki'))  //远程删除嗯文
+		execute("delete from a_message where message_id=?",[rid]);
+	else if(rid.includes('commont/enki/')) {  //远程删除回复
 		const row=await getData(`select ppid from a_messagesc_commont where message_id=?`,[rid],true)
 		if(row.ppid){
-			execute("delete from a_messagesc_commont where message_id=?",[rid]); //删除回复
-		    execute(`UPDATE a_messagesc SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
-			execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+			let lok=await execute("delete from a_messagesc_commont where message_id=?",[rid]); //删除回复
+			if(lok) {
+		   		execute(`UPDATE a_messagesc SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+				execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+			}
 		}
 		
 
 	}
-	else if(rid.includes('commont/enkier/')) { 
+	else if(rid.includes('commont/enkier/')) {  //远程删除回复
 		const row=await getData(`select ppid from a_message_commont where message_id=?`,[rid],true)
 		if(row.ppid){
-			execute("delete from a_message_commont where message_id=?",[rid]); //删除回复
-		    execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+			let lok=await execute("delete from a_message_commont where message_id=?",[rid]); //删除回复
+			if(lok)
+		    	execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
 		}
 
 		
 
 	}
-// 	else {
-// 		execute("delete from a_message where message_id=?",[rid]);
-// 		execute("delete from a_message_commont where message_id=?",[rid]);
-// 		execute("delete from a_messagesc_commont where message_id=?",[rid]);
-//    }
+	else { //非enki 嗯文
+		execute("delete from a_message where message_id=?",[rid]); //试删除嗯文
+		const row=await getData(`select ppid from a_message_commont where message_id=?`,[rid],true)
+		if(row.ppid){ //删除回复，如果有
+			let lok=await execute("delete from a_message_commont where message_id=?",[rid]);
+			if(lok){
+				execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
+			}
+	
+		}
+   }
 	
 	return;
 }	
@@ -227,21 +237,36 @@ async function createMess(postbody,name,actor){ //对方的推送
 		const ids=replyType.split('/');
 		const id=ids[ids.length-1];
 			const sctype=ids[ids.length-2]==='enki'?'sc':'';
-			let message=await getOne({id,sctype})
-			if(message['is_discussion']==1) //允许讨论
+			let re=await getOneByMessageId(id,replyType,sctype)
+			if(re['is_discussion']==1 && re?.message_id) //允许讨论
 			{
-				const re=await getData(`select message_id from a_message${sctype} where message_id=? or message_id=?`,[replyType,id],true);
-				if(re?.message_id){
-					execute(`INSERT IGNORE INTO a_message${sctype}_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
-					[re?.message_id,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content]).then(()=>{});
-				}
+				const sql=`INSERT IGNORE INTO a_message${sctype}_commont(manager,pid,ppid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`
+				const paras=[
+					postbody?.object?.manager??'',
+					re['id'],
+					re?.message_id,
+					postbody.object.id,
+					strs[0],
+					actor?.avatar,
+					actor?.account,
+					postbody.actor,
+					content,
+					postbody?.object?.typeIndex??'',
+					postbody?.object?.vedioUrl??'',
+					postbody?.object?.topImg??'',
+					postbody?.object?.bid??''
+				];
+
+				
+				execute(sql,paras).then(()=>{});
+				
 			}
 		}
 		else { // 非enki 服务推送的
 			let message=await getOne({replyType,sctype:''})
 			if(message?.id)
-			execute(`INSERT IGNORE INTO a_message_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
-				[replyType,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content]).then(()=>{});
+			execute(`INSERT IGNORE INTO a_message_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content,bid) values(?,?,?,?,?,?,?,?,?)`,
+				[replyType,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content,Math.floor(Date.now()/1000)]).then(()=>{});
 			}
 	}
 	
