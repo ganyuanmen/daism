@@ -223,7 +223,7 @@ async function createMess(postbody,name,actor){ //对方的推送
 		})
 	}
 	else { //回复
-		if(replyType.includes('communities/enki')){
+		if(replyType.includes('communities/enki')){ //是enki 服务推送的
 		const ids=replyType.split('/');
 		const id=ids[ids.length-1];
 			const sctype=ids[ids.length-2]==='enki'?'sc':'';
@@ -231,13 +231,13 @@ async function createMess(postbody,name,actor){ //对方的推送
 			if(message['is_discussion']==1) //允许讨论
 			{
 				const re=await getData(`select message_id from a_message${sctype} where message_id=? or message_id=?`,[replyType,id],true);
-				if(re?.message_id)
+				if(re?.message_id){
 					execute(`INSERT IGNORE INTO a_message${sctype}_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,
 					[re?.message_id,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content]).then(()=>{});
-
+				}
 			}
 		}
-		else {
+		else { // 非enki 服务推送的
 			let message=await getOne({replyType,sctype:''})
 			if(message?.id)
 			execute(`INSERT IGNORE INTO a_message_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content) values(?,?,?,?,?,?,?,?)`,

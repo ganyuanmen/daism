@@ -82,3 +82,25 @@ h1 {
     border: 1px solid #DADADA;
   }
 
+
+  /* 全局设置 */
+  body {
+    margin: 0;padding: 0;
+    font-family: 'Times New Roman', Times, serif; /* 衬线字体，适合正文 */
+    font-size: 12pt; /* 正文字体大小 */
+    line-height: 1.6; /* 行高，增加可读性 */
+    color: #333; /* 正文颜色，深灰色 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+    *{box-sizing:border-box;}
+     
+    .daism-a{color:black; text-decoration: none;}
+    .daism-a:hover{ cursor: pointer;}
+.daismCard img{
+    max-width: 100%;
+  }
+  .daismCard td{
+    border: 1px solid #DADADA;
+  }

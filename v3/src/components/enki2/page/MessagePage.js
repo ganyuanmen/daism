@@ -31,7 +31,7 @@ import ShowAddress from "../../ShowAddress";
 export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,isPersonEdit,filterTag,fromPerson=false}) {
  
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
-        ,account:currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account 
+        ,account:currentObj?.receive_account?currentObj?.receive_account:currentObj?.actor_account
         ,sctype:currentObj?.dao_id>0?'sc':''
         ,ppid:currentObj.message_id
         ,pid:currentObj.id});

@@ -79,6 +79,7 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
         formData.append('pid', currentObj.id);
         formData.append('bid', isTopShow?'':bid);
         formData.append('ppid', currentObj.message_id);
+        formData.append('account', currentObj.actor_account);
         formData.append('content', contentHTML); //，内容
         formData.append('actorid', actor?.id); //，回复者id
         formData.append('inbox', currentObj.actor_inbox); //，回复者id

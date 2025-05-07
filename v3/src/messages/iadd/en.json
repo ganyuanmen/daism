@@ -23,6 +23,12 @@
     "tipTextE2U":"Burn Honor Token",
     "minthonorText":"Tip Honor Tokens",
     "notEnoughTip":"Plus the bonus, the balance is insufficient!",
+    "xuanyan-01":"Declaration of Proof-of-Love Civilization",
+    "xuanyan-02":"We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.",
+    "xuanyan-03":"These words were written in the Declaration of Independence in 1776.  In January 2014, the 85 richest individuals in the world owned as much wealth as the bottom 3.5 billion people—half of humanity.  By 2017, the combined wealth of the top 8 billionaires had surpassed that of this half of humanity. In January 2024, wealth of 5 richest men doubles since 2020 as five billion people made poorer, and 1 in 11 people worldwide are chronically hungry.",
+    "xuanyan-04":"248 years have passed. Now it is time for us, the people, to exercise our rights—with the power of love and the force of technology, especially artificial intelligence as the crystallization of humanity's collective wisdom—to ensure that \"all men are created equal\" is no longer an empty slogan, but becomes part of our daily lives!",
+    "xuanyan-05":"Our consensus for action is \"Proof of Love\"—placing love at the heart of a new human civilization’s ethical foundation.By making all human resources—especially artificial intelligence—common and decentralized, we aim to complete a revolution in the relations of production. And at the same time, we will launch a dynamic solution called the Universal Love Engine (ULE), focused on key goals such as Universal Abundant Supply (UAS), Universal Healthcare for All Humanity (UHAH), and Universal Crisis Relief. Moreover, until these goals are achieved, transitional measures like Universal Basic Income (UBI) will help humanity move smoothly through this civilizational transformation.",
+    "xuanyan-06":"Yes, we are exercising the rights of the people to co-create a new human civilization governed by the consensus of \"Proof of Love\", with love as its core ethic—we call it the Proof-of-Love Civilization—a civilization not only committed to the realization of \"All men are created equal\" and \"All people are born free\", but also to the fulfillment of a higher truth: \"All people are born happy\"—yes, All People Are Born to be Loved.",	
     "pol-01":"In Q2 of 2020, after nearly a year of development, we completed the ",
     "pol-02":". Our Innovation revealed that all current DEXs have become accomplices to scammers through an capitalistic secret. This insight has also inspired us to rethink how we govern the applications necessary for the future.",
     "pol-03":"This is a crucial governance license that ensures AI can lead us to a new civilization. It's published on Github with ERC-7914 included.",
@@ -37,8 +43,6 @@
     "pol2-01":"The Fusion of Smart Contracts and AI.",
     "pol2-02":"Transform Ethereum through AI, and elevate SCAI to 2.0.",
     "indexTitleText":"Leading to PoL Civ - DAism"
-
-
 
   }
 }

@@ -4,27 +4,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 import { getInboxFromAccount } from '../../lib/mysql/message'
 
-
-
-// async function downloadRenderedPage(url, savePath) {
-//   const browser = await puppeteer.launch();
-//   const page = await browser.newPage();
-//   await page.goto(url, { waitUntil: 'networkidle0' });
-
-//   const html = await page.content();
-//   fs.writeFileSync(savePath, html, 'utf-8');
-
-//   await browser.close();
-//   console.log(`✅ 渲染后的 HTML 已保存到: ${savePath}`);
-// }
-
-// const url = 'https://example.com';
-// const savePath = path.resolve(__dirname, 'rendered.html');
-
-// downloadRenderedPage(url, savePath);
-
-
-export async function saveHTML(actorName,content,title,mid,textContent,avatar)
+export async function saveHTML(actorName,content,title,mid,textContent,avatar,account,manager,avatar1)
 {
  
   const filePath = `./enki/${mid.toLowerCase()}.html`  // 指定文件保存路径
@@ -46,6 +26,7 @@ export async function saveHTML(actorName,content,title,mid,textContent,avatar)
 		<title>${title}</title>
     <link rel="canonical" href="${url}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <meta content="${avatar}" property="og:image" />
     <meta name="description" content="${truncatedDescription}" />
     <meta property="og:title" content="${title}" />
@@ -63,8 +44,57 @@ export async function saveHTML(actorName,content,title,mid,textContent,avatar)
     </script>
 	</head>
 	<body>
+
   <div class="container mt-3 mb-3">
-  ${content}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+		  <div class="container-fluid">
+		     <a href="/" class="navbar-brand"><img src="/logo.svg" alt="daism Logo" width="32" height="32"></a>
+		    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		      <span class="navbar-toggler-icon"></span>
+		    </button>
+		    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+		        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+		        <li class="nav-item"><a class="nav-link" href="/deval">DeVal</a></li>
+				<li class="nav-item"><a class="nav-link" href="/smartcommons">Smart Commons</a></li>
+				<li class="nav-item"><a class="nav-link" href="/honortokens">Honor Tokens</a></li>
+				<li class="nav-item"><a class="nav-link" href="/workroom">My Workroom</a></li>
+		        <li class="nav-item dropdown">
+		          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Social</a>
+		          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+		            <li><a class="dropdown-item" href="/communities/enki">My Community</a></li>
+		            <li><a class="dropdown-item" href="/communities/SC">Public Communities</a></li>
+		            <li><a class="dropdown-item" href="/communities/enkier">Personal Socia</a></li>
+		          </ul>
+		        </li>
+				<li class="nav-item dropdown">
+				  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">College</a>
+				  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+				    <li><a class="dropdown-item" href="https://learn.daism.io/">Overview</a></li>
+				    <li><a class="dropdown-item" href="https://learn.daism.io/docs.html">Documentation</a></li>
+				  </ul>
+				</li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+
+    <div class=" mt-2 mb-3 card">
+      <div class="card-header">
+        <div class="d-inline-flex align-items-center">
+        <a href="/smartcommons/actor/${account}" class="daism-a"><img src="${avatar1}" alt="" width="48" height="48" style="border-radius:10px"></a>
+        <div style="padding-left:2px;width:100%">
+          <div>${account}</div> 
+          <div>${manager}</div>
+        </div>
+      </div>
+      </div>
+      <div class="card-body">
+        <div class="daismCard">
+        ${content}
+        </div>
+      </div>
+    </div>
   </div>
 	</body>
 </html>`
@@ -119,7 +149,6 @@ export function delOldImage(path)
   fs.unlink(`./uploads/${path}`, (err) => {if (err) console.error('delete file error:', err)})
 }
 
-
 export function readImg(path,res){
         fs.readFile(`./uploads/${path}`,'binary',function(err,file){
             if(err){
@@ -130,7 +159,7 @@ export function readImg(path,res){
                 res.end();
             }
         });
-    }
+}
 
 //非a标签 img 标签中的第一个URI
 export  function findFirstURI(code) {
@@ -139,8 +168,6 @@ export  function findFirstURI(code) {
   return match ? match[0] : null;
   }
 
-
-    
   export  async function getTootContent(tootUrl,domain) {
       try {
          const myURL = new URL(tootUrl);
@@ -193,7 +220,7 @@ export  function findFirstURI(code) {
         console.error('get content from url error:', error.message);
         return null;
       }
-    }
+  }
     
 
     

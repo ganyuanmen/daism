@@ -2,8 +2,8 @@ const crypto = require('crypto');
 
 export function getEnv()
 {
- const  LOCAL_DOMAIN='sepolia.50satoshis.com';
-//  const  LOCAL_DOMAIN='holesky.50satoshis.com';
+//  const  LOCAL_DOMAIN='sepolia.50satoshis.com';
+ const  LOCAL_DOMAIN='holesky.50satoshis.com';
 //  const  LOCAL_DOMAIN='daism.io';
   
   const BLOCKCHAIN_NETWORK='sepolia';

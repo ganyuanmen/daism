@@ -57,7 +57,7 @@ export default withSession(async (req, res) => {
 
             let insertId = await executeID(sql, paras);
             if (insertId) {
-                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id,textContent[0],path?path:avatar[0])
+                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id,textContent[0],path?path:avatar[0],account[0],sessionUser.did,avatar[0])
                 // if (parseInt(isSend[0]) === 1) {
                     //account,textContent,imgpath,message_id,pathtype,contentType
                 send(
@@ -116,7 +116,7 @@ export default withSession(async (req, res) => {
             let lok = await execute(sql,paras);
             if(lok) {  
                 if(title && title[0]) 
-                    saveHTML(actorName[0],content[0],title[0],rear.message_id,textContent[0],path?path:avatar[0]);
+                    saveHTML(actorName[0],content[0],title[0],rear.message_id,textContent[0],path?path:avatar[0],account[0],sessionUser.did,avatar[0]);
                 if(rear?.send_type===0) //修改主嗯文才处理
                     send(
                         account[0],

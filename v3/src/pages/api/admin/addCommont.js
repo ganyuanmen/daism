@@ -25,7 +25,7 @@ export default withSession(async (req, res) => {
    
     const form = formidable({})
     const [fields, files] = await form.parse(req);
-    let {vedioURL,typeIndex,rid,pid,ppid,actorid,content,sctype,fileType,inbox,bid} = fields  //rid 修改ID
+    let {vedioURL,typeIndex,rid,pid,ppid,actorid,content,sctype,fileType,inbox,bid,account} = fields  //rid 修改ID
     // const actorName=account[0].split('@')[0];
     const _path=new Date().toLocaleDateString().replaceAll('/','');
     const imgPath = saveImage(files, fileType[0],_path)
@@ -42,11 +42,25 @@ export default withSession(async (req, res) => {
           ,path,bid[0]?bid[0]:Math.floor(Date.now()/1000)]
           let insertId=await executeID(sql,paras);
           if(insertId) { 
-            if(ppid[0].startsWith('http')){
+            if(ppid[0].startsWith('http')){ //别人推送的，推回源服务器
               const sendbody= createNote(rows[0].actor_name,rows[0].domain,ppid[0],insertId, process.env.LOCAL_DOMAIN,sctype==='sc'?'enki':'enkier',content[0]);
               signAndSend(inbox[0],rows[0].actor_name,rows[0].domain,sendbody,rows[0].privkey);
 
+            }else { //推送给各服务器
+
+              getFollowers({account:account[0]}).then(async data=>{
+                const localUser= await getUser('actor_account',rows[0].actor_account,'privkey,Lower(actor_account) account,actor_name,domain');
+                data.forEach((element) => {
+                    try{
+                      if(!element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
+                        signAndSend(element.user_inbox,localUser.actor_name,localUser.domain,sendbody,localUser.privkey);
+                      }
+                    }catch(e1){ console.error(e1)}
+                });
+              })
+
             }
+            
             setTimeout(async () => {await addLink(content[0], insertId,sctype[0])}, 1);//生成链接卡片
             return  res.status(200).json(await getData(`select * from v_message${sctype[0]}_commont where id=?`, [insertId],true));
         }
