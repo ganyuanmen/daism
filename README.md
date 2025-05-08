@@ -21,14 +21,14 @@ docker compose up -d
 NODE_ENV=production
 
 #domain
-LOCAL_DOMAIN=daism.io
+LOCAL_DOMAIN=your domain
 
 #Blockchain Network 
 BLOCKCHAIN_NETWORK=mainnet
 
 #Connect account information
-HTTPS_URL=https://${BLOCKCHAIN_NETWORK}.infura.io/v3/982d49c829f4428db93d5a077085d995
-WSS_URL=wss://${BLOCKCHAIN_NETWORK}.infura.io/ws/v3/9676a35d629d488fb90d7eac1348c838
+HTTPS_URL=https://${BLOCKCHAIN_NETWORK}.infura.io/v3/${your key}
+WSS_URL=wss://${BLOCKCHAIN_NETWORK}.infura.io/ws/v3/${your key}
 ETHERSCAN_URL=https://${BLOCKCHAIN_NETWORK}.etherscan.io/tx/
 
 IS_DEBUGGER=1
