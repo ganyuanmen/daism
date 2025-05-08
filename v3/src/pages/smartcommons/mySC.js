@@ -53,8 +53,8 @@ export default function MyDao({locale,env}) {
 }
 
 
-// export const getServerSideProps = ({locale }) => {
-  export const getStaticProps = ({locale }) => {
+export const getServerSideProps = ({locale }) => {
+  // export const getStaticProps = ({locale }) => {
       return {
         props: {
           messages: {

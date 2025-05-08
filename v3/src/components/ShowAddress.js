@@ -22,7 +22,8 @@ export default function ShowAddress({address,isb=false}) {  //isb 字体是否�
     }
 
     return (
-       <>
+       <div style={{whiteSpace: 'nowrap'}}>
+
             <span >{isb?<b>{getAccount()}</b>:getAccount()} </span> {' '}
             
             <img alt=''  width={20} height={20}
@@ -45,7 +46,7 @@ export default function ShowAddress({address,isb=false}) {  //isb 字体是否�
                     </Tooltip>
                     )}
             </Overlay>
-        </>
+        </div>
     );
 }
 
