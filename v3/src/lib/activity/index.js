@@ -222,7 +222,7 @@ export function createUndo(userName, domain,actorUrl,followId) {
  }
 
  
- export function createAnnounce(userName,domain,id,content,topImg,contentLink,vedioUrl,toUrl)  //id 嗯文ID pathtype:enki/enkier
+ export function createAnnounce(userName,domain,id,content,topImg,vedioUrl,toUrl)  //id 嗯文ID pathtype:enki/enkier
  {
   userName=userName.toLowerCase();
   let d=new Date();  
@@ -233,7 +233,7 @@ export function createUndo(userName, domain,actorUrl,followId) {
     'actor': `https://${domain}/api/activitepub/users/${userName}`,
     'attributedTo':toUrl,
     "object": id, // 转发 的帖子 ID
-    content,topImg,contentLink,vedioUrl,
+    content,topImg,vedioUrl,
     "published": d.toISOString(),
     "to": ["https://www.w3.org/ns/activitystreams#Public"],
     "cc": ["https://example.com/users/alice/followers"]
@@ -272,20 +272,20 @@ export function createUndo(userName, domain,actorUrl,followId) {
  }
  
  //删除 回复
- export function createNoteDel(userName,domain,id,message_domain)
+ export function createNoteDel(userName,domain,messageId,message_domain,pathtype)
  {   
      userName=userName.toLowerCase()
      let d=new Date();  
        
     return {
        '@context': 'https://www.w3.org/ns/activitystreams',
-       'id': `https://${message_domain}/commont/enkier/${id}#delete`,
+       'id': `https://${message_domain}/commont/${pathtype}/${messageId}#delete`,
        'type': 'Delete',
        'published': d.toISOString(),
        'actor': `https://${domain}/api/activitepub/users/${userName}`,
        'object': {
-          'id': `https://${message_domain}/commont/enkier/${id}`,
-          'atomUri': `https://${message_domain}/commont/enkier/${id}`
+          'id': `https://${message_domain}/commont/${pathtype}/${messageId}`,
+          'atomUri': `https://${message_domain}/commont/${pathtype}/${messageId}`
       },
      };
 

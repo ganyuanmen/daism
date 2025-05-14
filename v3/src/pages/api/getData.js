@@ -1,4 +1,4 @@
-import {getUser,getIsDaoMember, getEipTypes, getDappVersion, getDividend,getDappOwner,getProsData,getMynft, getSelfAccount,getDaoVote,getLastPro, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail,getMessTag } from "../../lib/mysql/daism";
+import {getUser,getIsDaoMember, getEipTypes, getDappVersion, getDividend,getDappOwner,getProsData,getMynft, getSelfAccount,getDaoVote,getLastPro, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail } from "../../lib/mysql/daism";
 import {getLastDonate,getEnkiTotal, messagePageData,replyPageData,getAllSmartCommon,getHeartAndBook,fromAccount,getReplyTotal,daoPageData,getUserFromUrl,getOne,getAnnoce } from "../../lib/mysql/message";
 import { getFollowers,getFollowees,getFollow,getFollow0,getFollow1 } from "../../lib/mysql/folllow";
 import { httpGet } from "../../lib/net";
@@ -38,7 +38,6 @@ const methods={
     daoPageData, //获取注册dao帐号列表
     getUserFromUrl, //从网页获取个人信息
     getOne, //获取一条嗯文
-    getMessTag, // 当前嗯文的标签
     getAnnoce, //获取是否已转发
     getEnkiTotal, //获取嗯文总数
     getLastDonate, //获取捐赠最后一条
@@ -56,7 +55,9 @@ export default async function handler(req, res) {
                 res.status(200).json(await methods[req.headers.method](req.query))
            else { //其它域名
                 let response=await httpGet(`https://${domain}/api/getData?pi=${pi}&menutype=${menutype}&daoid=${daoid}&actorid=${actorid}&w=${w}&order=${order}&eventnum=${eventnum}&account=${account}&v=${v}`,{'Content-Type': 'application/json',method:'messagePageData'})
-                if(response?.message) res.status(200).json(response.message)
+                if(response?.message) {
+                    response.message.forEach(obj => { obj.httpNetWork =true; });
+                    res.status(200).json(response.message);}
                 else  res.status(500).json({errMsg: 'fail'});
            }
         }  //向原帐号所在域名请求
@@ -67,7 +68,11 @@ export default async function handler(req, res) {
                  res.status(200).json(await methods[req.headers.method](req.query))
             else { //其它域名
                  let response=await httpGet(`https://${domain}/api/getData?pi=${pi}&ppid=${ppid}&sctype=${sctype}&account=`,{'Content-Type': 'application/json',method:'replyPageData'})
-                 if(response?.message) res.status(200).json(response.message)
+                 if(response?.message) {
+                    response.message.forEach(obj => { obj.httpNetWork =true; });
+                    res.status(200).json(response.message);
+
+                 }
                  else  res.status(500).json({errMsg: 'fail'});
             }
         }

@@ -35,8 +35,8 @@ export default function enki({openObj,env,locale,accountAr }) {
  
     const [leftHidden,setLeftHidden]=useState(false)
     const [rightHidden,setRightHidden]=useState(false)
-    const [currentObj, setCurrentObj] = useState(openObj?.id?openObj:null);  //用户选择的发文对象
-    const [activeTab, setActiveTab] = useState(openObj?.id ? 2 : 0);
+    const [currentObj, setCurrentObj] = useState(openObj?.message_id?openObj:null);  //用户选择的发文对象
+    const [activeTab, setActiveTab] = useState(openObj?.message_id ? 2 : 0);
     
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
     // const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
@@ -130,7 +130,7 @@ export default function enki({openObj,env,locale,accountAr }) {
 
     const eventHandle=()=>{ //活动
         removeUrlParams();
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, order: 'id', account: '',v:'0', eventnum: 1, where: '', daoid: daoData.map((item) => { return item.dao_id }).join(',') })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, account: '',v:'0', eventnum: 1, where: '', daoid: daoData.map((item) => { return item.dao_id }).join(',') })
         setActiveTab(0);
         setNavObj(svgs[1]);
     }
@@ -166,7 +166,7 @@ export default function enki({openObj,env,locale,accountAr }) {
 
     const daoSelectHandle=(obj)=>{ //选择dao后
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum:0,where: '',order:'id',eventnum:0,where:'',v:0,daoid:obj.dao_id,account:obj.actor_account});
+        setFetchWhere({ ...fetchWhere, currentPageNum:0,where: '',eventnum:0,where:'',v:0,daoid:obj.dao_id,account:obj.actor_account});
         setActiveTab(0);
         setNavObj(obj);
     }
@@ -179,8 +179,8 @@ export default function enki({openObj,env,locale,accountAr }) {
     const afterEditCall=(messageObj)=>{
         setCurrentObj(messageObj);
         setActiveTab(2);
-        sessionStorage.setItem("daism-list-id",messageObj.id)
-        history.pushState({ id: messageObj?.id }, `id:${messageObj?.id}`, `?d=${encrypt(`${messageObj.id},${getDomain(messageObj)}`,env)}`);
+        sessionStorage.setItem("daism-list-id",messageObj.message_id)
+        history.pushState({ id: messageObj?.message_id }, `id:${messageObj?.message_id}`, `?d=${encrypt(`${messageObj.message_id},${getDomain(messageObj)}`,env)}`);
       }
 
     const callBack=()=>{  //回退处理，包括删除
@@ -271,13 +271,13 @@ export default function enki({openObj,env,locale,accountAr }) {
                         {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} 
                         setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} filterTag={filterTag}
                         delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr}  tabIndex={1}
-                        path='enki' daoData={daoData} isPersonEdit={true}  />
+                        path='enki' daoData={daoData}  />
 
                         :activeTab === 1 ? <EnkiCreateMessage env={env} daoData={daoData} callBack={callBack}
                          addCallBack={latestHandle} currentObj={currentObj} afterEditCall={afterEditCall} 
                          accountAr={accountAr} />
                          
-                        :activeTab === 2 && <MessagePage isPersonEdit={true}  path="enki" locale={locale} env={env} currentObj={currentObj} 
+                        :activeTab === 2 && <MessagePage  path="enki" locale={locale} env={env} currentObj={currentObj} 
                         delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} daoData={daoData}
                         filterTag={filterTag} />
 }

@@ -58,9 +58,7 @@ export async function execute(sql, sqlParams) {
   let result;
   while (attempt < maxRetries) {
     try {
-      // await connection.beginTransaction();
        result= await connection.execute(sql,sqlParams)
-      // await connection.commit();
       break;
     } catch (err) {
       // await connection.rollback();

@@ -169,8 +169,8 @@
     "receiveEnkiText":"Received({num})",
     "isFixButton":"Fixed toolbar",
     "htmlTitleText":"Page Title",
-    "staticLinkText":"static Web page"
-
+    "staticLinkText":"static Web page",
+    "footText":"Already at the bottom"
 
   }
 }

@@ -67,14 +67,14 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
      
         showTip(t('submittingText'))  
         const formData = new FormData();
-        formData.append('id', currentObj?currentObj.id:0);  
+        if(currentObj?.message_id) formData.append('messageId', currentObj.message_id);  
         formData.append('avatar', actor?.avatar);
         formData.append('account',actor?.actor_account); //社交帐号
         formData.append('vedioURL',(typeIndex===0?editorRef:richEditorRef).current.getVedioUrl());  //视频网址
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //
         formData.append('accountAt',(typeIndex===0?editorRef:richEditorRef).current.getAccount());  //@用户
         formData.append('textContent', typeIndex===0?contentHTML:richEditorRef.current.getTextContent());  //文本
-        formData.append('typeIndex', typeIndex);  //长或短
+        formData.append('typeIndex', typeIndex>0?1:0);  //长或短
         formData.append('content', contentHTML); //，html内容
         formData.append('actorid', actor?.id);
         formData.append('title', titleRef.current.getData());  //标题

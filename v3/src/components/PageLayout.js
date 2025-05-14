@@ -38,6 +38,9 @@ export default function PageLayout({children,env}) {
                   <Nav.Link className={route === '/deval'  ? 'pnavactive'  : ''}  href={`${locale!='zh'?'':'/zh'}/deval`}>{t('iadd')}</Nav.Link>
                   <Nav.Link className={route === '/smartcommons' ? 'pnavactive' : ''} href={`${locale!='zh'?'':'/zh'}/smartcommons`}>{t('smarcommon')}</Nav.Link> 
                   <Nav.Link className={route === '/honortokens' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/honortokens`} >{t('nft')}</Nav.Link> 
+                  
+                  <Nav.Link style={{display:'none'}} href='/listbook' >listBook</Nav.Link> 
+
                   </div>
                   <div  className="d-flex flex-row flex-sm-wrap p-0 m-0 ">
                   <Nav.Link className={route === '/workroom' ? 'pnavactive'  : ''}  href={`${locale!='zh'?'':'/zh'}/workroom`} >{t('my')}</Nav.Link>

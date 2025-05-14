@@ -1,4 +1,4 @@
-export function createMessage(userName,domain,text,imgPath,id,message_domain,pathtype,contentType,isNoEnki)
+export function createMessage(userName,domain,text,imgPath,id,message_domain,pathtype,contentType,vedioURL,isNoEnki)
 {   
     userName=userName.toLowerCase()
     let d=new Date();  
@@ -16,7 +16,7 @@ export function createMessage(userName,domain,text,imgPath,id,message_domain,pat
       'draft': false,
       // 'name':text,
       // 'title':text,
-      "imgpath":imgPath,
+      imgPath,vedioURL,
       'to': ['https://www.w3.org/ns/activitystreams#Public'],
       'cc':[`https://${domain}/api/activitepub/follower/${userName}`]
     };

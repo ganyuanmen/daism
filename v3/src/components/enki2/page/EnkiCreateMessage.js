@@ -90,7 +90,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
             }
         }
     const submit = async () => {
-        if(!currentObj?.id) {
+        if(!currentObj?.message_id) {
             if (errorSelect) return showClipError(t('loginDomainText', { domain: loginDomain }));
             if (!selectedDaoid) return showClipError(t('notSelect'))
         }
@@ -112,14 +112,13 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
         console.log("actor",actor)
 
         const formData = new FormData();
-        if(currentObj?.id){  //修改
-            formData.append('id', currentObj.id);
+        if(currentObj?.message_id){  //修改
+            formData.append('messageId', currentObj.message_id);
             formData.append('account', currentObj.actor_account); //社交帐号
             formData.append('actorName', currentObj?.actor_name);
             formData.append('avatar', currentObj?.avatar);
 
         } else { //新增
-            formData.append('id', 0);
             const selectDao=daoData.find((obj)=>{return obj.dao_id===parseInt(selectedDaoid)});
             formData.append('account', selectDao.actor_account); //社交帐号
             formData.append('avatar', selectDao?.dao_logo);
@@ -135,7 +134,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
             formData.append('time_event', timeRef.current.getData());
         }
         formData.append('textContent', typeIndex===0?contentHTML:richEditorRef.current.getTextContent());  //文本非enki 推送
-        formData.append('typeIndex', typeIndex);  //长或短
+        formData.append('typeIndex', typeIndex>1?1:0);  //长或短
         formData.append('vedioURL',(typeIndex===0?editorRef:richEditorRef).current.getVedioUrl());  //视频网址
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //
         formData.append('accountAt',(typeIndex===0?editorRef:richEditorRef).current.getAccount());  //@用户
@@ -189,7 +188,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
         <div style={{padding:'20px'}} >
           <InputGroup className="mb-3">
                     <InputGroup.Text>{t('publishCompany')}:</InputGroup.Text>
-                    {currentObj?.id ?<Form.Control readOnly={true} disabled={true} defaultValue={currentObj.actor_account} />
+                    {currentObj?.message_id ?<Form.Control readOnly={true} disabled={true} defaultValue={currentObj.actor_account} />
                     :<Form.Select ref={selectRef} value={selectedDaoid} onChange={handleSelectChange}
                         isInvalid={errorSelect ? true : false} onFocus={e => { setErrorSelect(false) }}>
                         <option value=''>{t('selectText')}</option>

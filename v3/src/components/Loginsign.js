@@ -15,7 +15,7 @@ export default function Loginsign({}) {
     const tc=useTranslations('Common')
     const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
     return (<>{user.connected===1?
-                <Button variant="primary" onClick={()=>loginRef.current.siweLogin()} >
+                <Button variant="primary"  onClick={()=>loginRef.current.siweLogin()} >
                   <img alt='' src='/loginbutton.svg' width={18} height={18} style={{color:'white'}} />  {'  '}
                   <LoginButton  ref={loginRef} ></LoginButton>
                 </Button>

@@ -1,13 +1,10 @@
 import { getData,execute } from './common'
 import { httpGet,signAndSend } from "../net"; 
 import { getUser } from './user';
-import {getFollowers} from '../mysql/folllow';
-import {createAnnounce,createNoteDel} from '../../lib/activity'
-import { send } from '../utils/send';
-
-
-
-
+import {getFollowers_send} from '../mysql/folllow';
+import {createAnnounce} from '../../lib/activity'
+import { sendfollow } from '../utils/sendfollow';
+import { sendcommont } from '../utils/sendcommont';
 
  
 ////pi,menutype,daoid,w,actorid:嗯文人ID,account,order,eventnum
@@ -16,51 +13,50 @@ import { send } from '../utils/send';
 // v: 1 我关注的社区
 export async function messagePageData({pi,menutype,daoid,w,actorid,account,order,eventnum,v})
 {
-	let where='';
+	let sql=`select a.* from v_message${parseInt(menutype)===3?'':'sc'} a where 1=1`;
 	let sctype='';
 	switch(parseInt(menutype))
 	{
 		case 1: //我的社区
-			if(parseInt(v)===3) where=`where id in(select pid from a_bookmarksc where account='${account}')`; //我的收藏
-			else if(parseInt(v)===6) where=`where id in(select pid from a_heartsc where account='${account}')`; //喜欢
-			else if(parseInt(v)===1) where=`WHERE actor_account IN(SELECT actor_account FROM a_follow WHERE user_account='${account}')`; //我关注的社区
+			if(parseInt(v)===3) sql=`select a.* from v_messagesc a join a_bookmarksc b on a.message_id=b.pid where b.account='${account}'`; //我的收藏
+			else if(parseInt(v)===6) sql=`select a.* from v_messagesc a join a_heartsc b on a.message_id=b.pid where b.account='${account}'`; //喜欢
+			else if(parseInt(v)===1) sql=`select a.* from v_messagesc a join a_follow b on a.actor_account=b.actor_account WHERE b.user_account='${account}'`; //我关注的社区
 			else{ 
-				if(daoid.includes(',')) where=`where dao_id in(${daoid})`;else where=`where dao_id=${daoid}`;
-				if(parseInt(eventnum)===1) where=`${where} and _type=1`;
-				else if(parseInt(eventnum)===8) where=`where id in(select cid from t_tagmesssc where name='${w}')`; //过滤
+				if(daoid.includes(',')) sql=`select a.* from v_messagesc a where dao_id in(${daoid})`;
+				else sql=`select a.* from v_messagesc a where dao_id=${daoid}`;
+				if(parseInt(eventnum)===1) sql=`${sql} and _type=1`;
+				else if(parseInt(eventnum)===8) sql=`select a.* from v_messagesc a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`; //过滤
 			}
 			sctype='sc'
 			break;
 		case 2: //公区社区
-			if(parseInt(daoid)>0) where=`where dao_id=${daoid}`; //单个dao
-			else if(parseInt(eventnum)===1) where="where _type=1"; //活动
-			else if(parseInt(eventnum)===8) where=`where id in(select cid from t_tagmesssc where name='${w}')`; //过滤
-			else if(parseInt(eventnum)===9) where=`where actor_id=${actorid}`; //个人发布的
+			if(parseInt(daoid)>0) sql=`select * from v_messagesc a where dao_id=${daoid}`; //单个dao
+			else if(parseInt(eventnum)===1) sql="select * from v_messagesc a where _type=1"; //活动
+			else if(parseInt(eventnum)===8) sql=`select * from v_messagesc a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`; //过滤
+			else if(parseInt(eventnum)===9) sql=`select * from v_messagesc a where actor_id=${actorid}`; //个人发布的
 			sctype='sc';
 			break;
 		default: //个人
-			if(parseInt(eventnum)===1) where=`where (send_type=0 and actor_account='${account}') or receive_account='${account}'`; //首页
-			else if(parseInt(eventnum)===2) where=`where actor_account='${account}' and send_type=0`; //我发布的嗯文
-			else if(parseInt(eventnum)===3) where=`where id in(select pid from a_bookmark where account='${account}')`; //我的收藏
-			else if(parseInt(eventnum)===4) where=`where receive_account='${account}'`; //我的接收嗯文
-			else if(parseInt(eventnum)===5)	where='where send_type=0 and property_index=1'; //公开
-			else if(parseInt(eventnum)===6) where=`where id in(select pid from a_heart where account='${account}')`; //喜欢
-			else if(parseInt(eventnum)===7) where=`where receive_account='${account}' and send_type=2`; //@
-			else if(parseInt(eventnum)===8) where=`where id in(select cid from t_tagmess where name='${w}')`; //过滤
+			if(parseInt(eventnum)===1) sql=`select a.* from v_message a where (send_type=0 and actor_account='${account}') or receive_account='${account}'`; //首页
+			else if(parseInt(eventnum)===2) sql=`select a.* from vv_message a where actor_account='${account}'`; //我发布的嗯文
+			else if(parseInt(eventnum)===3) sql=`select a.* from vv_message a join a_bookmark b on a.message_id=b.pid where b.account='${account}'`; //我的收藏
+			else if(parseInt(eventnum)===4) sql=`select a.* from v_message a where receive_account='${account}'`; //我的接收嗯文
+			else if(parseInt(eventnum)===5)	sql='select a.* from v_message a where send_type=0 and property_index=1'; //公开
+			else if(parseInt(eventnum)===6) sql=`select a.* from vv_message a join a_heart b on a.message_id=b.pid where b.account='${account}'`; //喜欢
+			else if(parseInt(eventnum)===7) sql=`select a.* from v_message a where receive_account='${account}' and send_type=2`; //@
+			else if(parseInt(eventnum)===8) sql=`select a.* from vv_message a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`; //过滤
 			break;
 	}
 	// if(w) where=where?`${where} and title like '%${w}%'`:`where title like '%${w}%'`;
 
-	let sql=`select * from v_message${sctype} ${where} order by ${order} desc limit ${pi*12},12`;
-	let re=await getData(sql,[]);
+	// let sql=`select * from v_message${sctype} ${where} order by ${order} desc limit ${pi*12},12`;
+	let re=await getData(`${sql} order by ${order} desc limit ${pi*12},12`,[]);
 
 	if(parseInt(menutype)===1 || parseInt(menutype)===2 || parseInt(v)===9999){
 
 		re=re.filter(obj => obj.is_top===0);
 		if(parseInt(pi)===0){ //首页
-			where=where?`${where} and is_top=1`:`where is_top=1`;
-			sql=`select * from v_message${sctype} ${where} order by ${order} desc`;
-			let re1=await getData(sql,[]);
+			let re1=await getData(`${sql} and a.is_top=1 order by ${order} desc`,[]);
 			re= [...re1, ...re]
 		}
 	} 
@@ -88,7 +84,7 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 }
 
 export async function getEnkiTotal({account,actorid}) {
-	let sql='SELECT COUNT(*) AS total FROM a_message WHERE LOWER(actor_account)=? AND send_type=0 UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_message WHERE LOWER(receive_account)=?';
+	let sql='SELECT COUNT(*) AS total FROM a_message WHERE LOWER(actor_account)=? UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
 	let re=await getData(sql,[account,actorid,account]);
 	return re; 
 }
@@ -145,62 +141,45 @@ export async function getReplyTotal({sctype,pid})
 
 
 //所有回复
-export async function replyPageData({pi,ppid,sctype,pid})
+export async function replyPageData({pi,sctype,pid})
 {
 
-	let sql=`select * from v_message${sctype}_commont where ppid=? order by bid DESC,id ASC limit ${pi*20},20`
-	let re=await getData(sql,[ppid,pid]);
+	let sql=`select * from v_message${sctype}_commont where pid=? order by bid DESC,createtime ASC limit ${pi*20},20`
+	let re=await getData(sql,[pid]);
 	return re; 
 }
 
 //取置顶
 export async function setTopMessage({id,sctype,flag})
 {
-    return await execute(`update a_message${sctype} set is_top=? where id=?`,[flag,id]);
+    return await execute(`update a_message${sctype} set is_top=? where message_id=?`,[flag,id]);
 	
 }
 
 
-//删除
-export async function messageDel({id,mid,type,sctype,ppid,sendType,rAccount,account,actorAccount})
+//删除 注： 此处的path 仅表示从哪里删除，与sctype 无关
+export async function messageDel({mid,type,path,sctype,pid,rAccount,account})
 {
+	console.log("--------------------------------------------------",{mid,type,path,sctype,pid,rAccount,account})
     if(parseInt(type)===0) {
-		if(parseInt(sendType)===0 && !rAccount){ //主嗯文
-			if(sctype==='sc') execute(`delete from a_message where message_id =?`,[mid]); //更新所有父记录
-			let lok= await execute(`delete from a_message${sctype} where message_id =?`,[mid]);
-			if(lok){
-                    send(
-                        account,
-                        '',
-                        '',
-                        '',
-                        mid,
-                        sctype==='sc'?'enki':'enkier',
-                        'Delete'
-                    ) 
-			}
-		}else { // 接收嗯文
-			return await execute(`delete from a_message${sctype} where id =?`,[id]);
+		let lok;
+		if(path==='enki'){
+			lok=await execute(`delete from a_messagesc where message_id =?`,[mid]);
+		} else if(path==='enkier'){
+			if(rAccount) lok=execute(`delete from a_sendmessage where message_id =? and receive_account=?`,[mid,rAccount]);
+			else lok=execute(`delete from a_message where message_id =?`,[mid]);
+		}
+		if(lok && !rAccount){ //主嗯文
+			sendfollow(account,'','','',mid,sctype==='sc'?'enki':'enkier','','Delete'); 
 		}
 	}
     else{ 
-		
-			execute(`delete from a_message${sctype}_commont where id=?`,[id]); //删除回复
-			execute(`UPDATE a_message${sctype} SET total=total-1 WHERE message_id=?`,[ppid]); //更新所有父记录
-			if(sctype==='sc') execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[ppid]); //更新所有父记录
-
-			getFollowers({account}).then(async data=>{
-				const user= await getUser('actor_account',actorAccount,'privkey,Lower(actor_account) account,actor_name,domain');
-				const send_body=createNoteDel(user.actor_name,user.domain,id,process.env.LOCAL_DOMAIN);
-				data.forEach((element) => {
-					try{
-					  if(!element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
-						signAndSend(element.user_inbox,user.actor_name,user.domain,send_body,user.privkey);
-					  }
-					}catch(e1){ console.error(e1)}
-				});
-			  })
-		
+		let lok=await execute(`call del_commont(?,?,?)`,[sctype,mid,pid]); //删除回复
+		if(lok){
+			const data=await getData("select actor_account from a_message where message_id=?",[pid],true);
+			if(data?.actor_account) 
+				sendcommont(data?.actor_account,mid,sctype==='sc'?'enki':'enkier') 
+		}	
 	}
 }
 
@@ -215,8 +194,8 @@ export async function getAllSmartCommon()
 //获取点赞数量及是否已点赞heart  获取收藏数量及是否已收藏bookmark  account:人id pid:嗯文id
 export async function getHeartAndBook({pid,account,table,sctype})
 {
-    let sql=`SELECT a.total,IFNULL(b.pid,0) pid FROM (SELECT COUNT(*) total FROM a_${table}${sctype} WHERE pid=?) a LEFT JOIN (SELECT pid FROM a_${table}${sctype} WHERE pid=? and account=?) b ON 1=1`
-    let re= await getData(sql,[pid,pid,account]);
+    let sql=`SELECT a.total,IFNULL(b.pid,'') pid FROM (SELECT COUNT(*) total FROM a_${table}${sctype} WHERE pid=?) a LEFT JOIN (SELECT pid FROM a_${table}${sctype} WHERE pid=? and account=?) b ON 1=1`;
+	let re= await getData(sql,[pid,pid,account]);
     return re || []
 }
 
@@ -227,50 +206,24 @@ export async function handleHeartAndBook({account,pid,flag,table,sctype})
     if(flag==0) return await execute(`delete from a_${table}${sctype} where pid=? and account=?`,[pid,account]);
     else return await execute(`insert into a_${table}${sctype}(account,pid) values(?,?)`,[account,pid]);
 }
-//转发
-export async function setAnnounce({account,id,content,pathtype,topImg,contentLink,vedioUrl,toUrl,recordId,fromAccount})
-{	
-	// topImg:messageObj.top_img,
-	// contentLink:messageObj.content_link,
-	// vedioUrl:messageObj.vedio_url,
+//转发 linkurl 用于远程
 
-	try{
-		// if(!id.startsWith('http'))
-		const cid=id.startsWith('http')?id:`https://${process.env.LOCAL_DOMAIN}/communities/${pathtype}/${id}`;
-		let user=await getLocalInboxFromUrl(toUrl);
-		if(!user.name) user=await getInboxFromUrl(toUrl);
-		if(!user.name) return;
-	
-		const re=await getData("select domain,actor_name,privkey from v_account where actor_account=?"
-		,[account],true);
-		
-		let sql="INSERT IGNORE INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,content,is_send,is_discussion,top_img,receive_account,send_type,vedio_url,content_link) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-		let paras=[
-			id,
-			 user.manager??'',user.name,user.avatar,user.account,user.url,user.inbox,
-			 cid,
-			 content,0,1,topImg,account,0,vedioUrl,contentLink]
-		execute(sql,paras);
-		execute("insert IGNORE into a_annoce(id,sctype,account) values(?,?,?)",[recordId,pathtype==='enki'?'sc':'',account])
-		const sendbody=createAnnounce(re.actor_name,process.env.LOCAL_DOMAIN,id,content,topImg,contentLink,vedioUrl,toUrl) 
-		getFollowers({account}).then(async data=>{
-			
-			data.forEach(element => {
-				if(element.user_account!==fromAccount)
-				if(element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
-                    // paras=[id,re.manager,re.actor_name,re.avatar,re.account,re.actor_url,re.actor_inbox,id,content,0,1,'',element.user_account,9];
-					paras=[
-						id,
-						 user.manager??'',user.name,user.avatar,user.account,user.url,user.inbox,
-						 id,
-						 content,0,1,topImg,,element.user_account,9,vedioUrl,contentLink]
-					execute(sql,paras);  
-				}else {
+export async function setAnnounce({account,id,content,sctype,topImg,vedioUrl,toUrl,linkurl})
+{	
+	let lok=await execute('call send_annoce(?,?,?)',[sctype,id,account]);
+	if(lok){
+		try{		
+			const re=await getData("select domain,actor_name,privkey from v_account where actor_account=?"
+			,[account],true);
+			let sendbody;
+			getFollowers_send({account}).then(async data=>{
+				data.forEach(element => {
+					if(!sendbody) sendbody=createAnnounce(re.actor_name,process.env.LOCAL_DOMAIN,linkurl,content,topImg,vedioUrl,toUrl) ;
 					signAndSend(element.user_inbox,re.actor_name,re.domain,sendbody,re.privkey);
-				}
-			});
-		})
-	}catch(e1){ console.error(e1)}
+				});
+			})
+		}catch(e1){ console.error(e1)}
+	}
   
 }
 
@@ -285,7 +238,7 @@ export async function getLastDonate({did})
 //获取一条嗯文
 export async function getOne({id,sctype})
 {
-    let re= await getData(`select * from v_message${sctype} where ${id.length<10?'id':'message_id'}=?`,[id]);
+    let re= await getData(`select * from v_message${sctype} where message_id=?`,[id]);
 	if(re.length) return  re[0]
 	else return {}
 }
@@ -299,9 +252,9 @@ export async function getOneByMessageId(id1,id2,sctype)
 }
 
 //获取是否已转发
-export async function getAnnoce({id,sctype,account})
+export async function getAnnoce({id,account})
 {
-    let re= await getData(`select id from a_annoce where id=? and sctype=? and account=?`,[id,sctype,account]);
+    let re= await getData(`select 1 from a_annoce where pid=? and account=?`,[id,account]);
     return  re || []
 }
 

@@ -37,7 +37,7 @@ export default function EnkiShare({content, locale, currentObj})
         let mid=strs[strs.length-1];
         urlStatic=`https://${localDomain}/enki/${mid.toLowerCase()}.html`
     }else {
-        url=`https://${localDomain}/${locale==='zh'?'zh/':''}communities/${path}/${currentObj.message_id}`;
+        url=currentObj.link_url;
         urlStatic=`https://${localDomain}/enki/${currentObj.message_id.toLowerCase()}.html`
     }
     

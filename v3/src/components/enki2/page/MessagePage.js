@@ -14,6 +14,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import ShowVedio from "../form/ShowVedio";
 import EnkiEditItem from "../form/EnkiEditItem";
 import { useTranslations } from 'next-intl'
+import Loadding from "../../Loadding";
+
 import ShowAddress from "../../ShowAddress";
 
 /**
@@ -26,15 +28,15 @@ import ShowAddress from "../../ShowAddress";
  * @setActiveTab 设置主页上的模块
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  * @daoData 个人所属的smart common 集合
+ * @fromPerson 是否从 个人帐户 中打开
  */
 
-export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,isPersonEdit,filterTag,fromPerson=false}) {
+export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,filterTag,fromPerson=false}) {
  
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
-        ,account:currentObj?.receive_account?currentObj?.receive_account:currentObj?.actor_account
+        // ,account:currentObj?.receive_account?currentObj?.receive_account:currentObj?.actor_account
         ,sctype:currentObj?.dao_id>0?'sc':''
-        ,ppid:currentObj.message_id
-        ,pid:currentObj.id});
+        ,pid:currentObj.message_id});
     const [data, setData] = useState([]);
     const [bid, setBid] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -62,50 +64,23 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         if(fetchWhere.currentPageNum===0) setPageNum(0);
     },[fetchWhere])
 
-    // useEffect(()=>{
-    //     const fetchData = async () => {
-    //         try {
-    //             const res = await client.get(`/api/getData?cid=${currentObj?.id}&type=${currentObj?.dao_id>0?'sc':''}`,'getMessTag' );
-    //             if(res.status===200)
-    //                 if(Array.isArray(res.data)) setSelectTag(res.data)
-    //         } catch (error) {
-    //             console.error(error);
-    //         } 
-    //     };
-    
-    //     fetchData();
-    //     // return () => controller.abort();
-    
-    // },[currentObj]) 
-    
+
     
 
     useEffect(()=>{
         const checkIsEdit=()=>{  //是否允许修改 
-            if(!loginsiwe) return false;
-            if(!currentObj?.actor_account && !currentObj?.actor_account?.includes('@')) return false;
-            if(!actor?.actor_account || !actor?.actor_account?.includes('@')) return false;
-            //远程读取不可修改
-            if(env.domain!=currentObj?.actor_account?.split('@')[1]) return false;
-            if(currentObj.dao_id>0){  //SC
-                if(path!=='enki') return false; // 不是从我的社区模块进入，不允许修改
-                let _member=daoData.find((obj)=>{return obj.dao_id===currentObj.dao_id})
-                if(_member){
-                     return true;
-                } 
-            }else { //个人
-                if(path!=='enkier') return false;// 不是从个人社交模块进入，不允许修改
-                  //非本地登录
-                if(actor?.actor_account?.split('@')[1]!=env.domain) return false;
-                if(currentObj.send_type===0){ //本地
-                    if(actor?.actor_account===currentObj.actor_account) return true;
-                }
-                // else { //接收
-                //     if(actor?.actor_account===currentObj.receive_account) return true;
-                // }
-            }
+            if(!loginsiwe || !actor?.actor_account) return false;
+            if(currentObj?.httpNetWork) return false;  //远程读取不可修改
+            if(actor?.domain!==env.domain) return false; //非注册地登录 
+            if(env.domain!==currentObj?.actor_account?.split('@')[1]) return false; //非发贴服务器
             //超级管理员
-            if(actor?.manager?.toLowerCase()==env.administrator.toLowerCase()) return true;
+            if(actor?.manager?.toLowerCase()===env.administrator.toLowerCase()) return true;
+            if(path==='enki'){
+                let _member=daoData.find((obj)=>{return obj.dao_id===currentObj.dao_id})
+                return !!_member;
+            }else if(path!=='enkier'){
+                if(!currentObj.receive_account && actor?.actor_account===currentObj.actor_account && currentObj.dao_id===0) return true;
+            }
             return false;
         }
 
@@ -114,13 +89,8 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
     },[actor,currentObj,loginsiwe])
 
     const ableReply = () => { //是否允许回复，点赞，书签
-        if(!loginsiwe) return false;
-        if(!actor?.actor_account || !actor?.actor_account?.includes('@')) return false;
-        //发布帐号，用于判断是否本域名
-        // let _account=currentObj?.send_type==0?currentObj?.actor_account:currentObj?.receive_account;
-        // if(!_account || !_account?.includes('@'))  return false;
-        // const [, messDomain] = _account.split('@');
-        // return env.domain === messDomain; //本域名发布，可以回复
+        if(!loginsiwe || !actor?.actor_account) return false;
+        if(currentObj?.httpNetWork) return false; // 远程服务器不可回复
         return true;
     }
   
@@ -152,7 +122,7 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&ppid=${fetchWhere.ppid}&account=${fetchWhere.account}&sctype=${fetchWhere.sctype}&pid=${fetchWhere.pid}`,'replyPageData');
+                const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&sctype=${fetchWhere.sctype}&pid=${fetchWhere.pid}`,'replyPageData');
                 if(res.status===200){
                     if(Array.isArray(res.data)){
                         setHasMore(res.data.length >= 20);
@@ -187,9 +157,12 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
           setFetchWhere({ ...fetchWhere, currentPageNum: pageNum });
       };
 
-    const footerdiv=()=>{
-        if(!isLoading) {
+      const footerdiv=()=>{
+        if(isLoading) return <Loadding />
+        else 
+        {
             if(err) return <ShowErrorBar errStr={err} />
+            else if(!hasMore && pageNum>1) return <div style={{width:'100%',textAlign:'center'}}>{t('footText')}</div>
         }
     }
 
@@ -229,7 +202,7 @@ const renderedArrays = data.map((obj, idx) => {
   lastArray = obj;
 
   return (
-    <ReplyItem pleft={isSameAsLast?40:10}  key={idx} locale={locale} isEdit={ableReply()} 
+    <ReplyItem pleft={isSameAsLast?40:10}  key={idx} locale={locale}  actor={actor} loginsiwe={loginsiwe} 
     replyObj={obj} delCallBack={replyDelCallBack}  domain={env.domain}
     preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
   );
@@ -260,7 +233,7 @@ const renderedArrays = data.map((obj, idx) => {
         <Card.Footer style={{padding:0}} >
 
             {/* 发起者 */}
-            {currentObj?.dao_id>0 && currentObj?.send_type===0 && !currentObj?.receive_account &&<div className="d-flex align-items-center mt-1">
+            {path==='enki' &&<div className="d-flex align-items-center mt-1">
               <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center" >
                  <span style={{display:'inline-block',paddingRight:'4px'}}>{t('proposedText')}:</span>{' '}
                  <img src={currentObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 
@@ -279,14 +252,13 @@ const renderedArrays = data.map((obj, idx) => {
                  addReplyCallBack={addReplyCallBack} replyObj={replyObj} setReplyObj={setReplyObj} 
                  afterEditcall={afterEditcall}  isTopShow={false} bid={bid} setBid={setBid} />
 
-                <EnKiHeart isEdit={ableReply()} currentObj={currentObj} />
-                {/* 非注册地登录，不能收藏 */}
-                <EnKiBookmark isEdit={ableReply() && actor?.actor_account.split('@')[1]==env.domain} currentObj={currentObj}/>
-              {currentObj.send_type===0 && divContent && <EnkiShare content={divContent} locale={locale} currentObj={currentObj} />}
-              <EnkiEditItem env={env} isEdit={isPersonEdit && isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
-              preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} fromPerson={fromPerson} /> 
+                <EnKiHeart isEdit={ableReply() && actor?.domain===env.domain} currentObj={currentObj} path={path} />
+                <EnKiBookmark isEdit={ableReply() && actor?.domain===env.domain} currentObj={currentObj} path={path}/>
+              {divContent && <EnkiShare content={divContent} locale={locale} currentObj={currentObj} />}
+             {path!=='SC' && actor?.domain===env.domain && <EnkiEditItem path={path} env={env} isEdit={!fromPerson && isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
+              preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} fromPerson={fromPerson} /> }
             </div>
-            {currentObj?.link_url && <div className="mt-2 mb-2" style={{textAlign:'center'}}>
+            {!currentObj.httpNetWork && !currentObj.actor_account.endsWith(env.domain) && <div className="mt-2 mb-2" style={{textAlign:'center'}}>
                     <a target="_blank" href={currentObj?.link_url} >{t('origlText')}......</a>
                     </div> 
             }

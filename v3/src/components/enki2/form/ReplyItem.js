@@ -19,10 +19,9 @@ import { ReplySvg } from "../../../lib/jssvg/SvgCollection";
  * @sctype sc:社区嗯文 空：个人嗯文
  * @reply_index 回复列表中的序号
  */
-export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCall,sctype,reply_index,domain,pleft}) {
+export default function ReplyItem({locale,actor,loginsiwe,replyObj,delCallBack,preEditCall,sctype,reply_index,domain,pleft,canEdit=true}) {
     const [isFollow,setIsFollow]=useState(true) //默认已关注
     const myFollow = useSelector((state) => state.valueData.myFollow)
-    const actor = useSelector((state) => state.valueData.actor)
  const editCallBack=(bid)=>{
     preEditCall.call(this,replyObj,reply_index,bid)
  }
@@ -41,19 +40,24 @@ export default function ReplyItem({locale,isEdit,replyObj,delCallBack,preEditCal
     // const createtime=new Date(replyObj.createtime);
 
     // const month = String(createtime.getMonth() + 1).padStart(2, '0'); // 月份是从 0 开始的，需要加 1 并补零
-    // const day = String(createtime.getDate()).padStart(2, '0'); // 天数补零
+    // const day = String(createtime.getDate()).padStart(2, '0'); // 天数补零 isEdit
     
-
+    const ableReply = () => { //是否允许回复，点赞，书签
+        if(!loginsiwe) return false;
+        if(!actor?.actor_account || !actor?.actor_account?.includes('@')) return false;
+        if(replyObj?.httpNetWork) return false; // 远程服务器不可回复
+        return actor?.actor_account===replyObj.actor_account;
+    }
 
     return (
         <div style={{borderBottom:'1px solid #D2D2D2',width:'100%',paddingLeft:`${pleft}px`}}>
            <div style={{width:'100%',paddingLeft:"10px"}} className="d-inline-flex justify-content-between align-items-center"   >
                <div style={{width:'50%'}} > <EnkiMember messageObj={replyObj} isLocal={false} hw={32} locale={locale} /></div>
-               {isEdit && <div><button onClick={e=>editCallBack(replyObj.bid)} className="daism-ff"> <ReplySvg size={24} /></button></div>}
-                {!isFollow && <div><EnKiFollow searObj={replyObj} /> </div>}
+               {canEdit && loginsiwe && actor?.actor_account && <div><button onClick={e=>editCallBack(replyObj.bid)} className="daism-ff"> <ReplySvg size={24} /></button></div>}
+                {canEdit && !isFollow && <div><EnKiFollow searObj={replyObj} /> </div>}
                 
                 <div  style={{paddingRight:'10px'}}  >
-                    <EnkiEditItem isEdit={isEdit  && actor?.actor_account===replyObj.actor_account} actor={actor} messageObj={replyObj} delCallBack={callBack} 
+                    <EnkiEditItem path="reply" isEdit={ableReply()} actor={actor} messageObj={replyObj} delCallBack={callBack} 
                     preEditCall={editCallBack} type={1} sctype={sctype} />
                     <TimesItem_m currentObj={replyObj} /> 
                   

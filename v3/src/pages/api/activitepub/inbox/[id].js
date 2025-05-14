@@ -143,82 +143,64 @@ export default async function handler(req, res) {
 
 async function handle_announce(postbody,name,actor){
 	if(postbody?.object && typeof(postbody.object)==='string' && postbody.object.startsWith('http')) {
-		let sql="INSERT IGNORE INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type,vedio_url,content_link) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		let paras;
-		if(postbody.attributedTo){
+		if(postbody.attributedTo){ //enki 嗯文
 			let user=await getLocalInboxFromUrl(postbody.attributedTo);
 			if(!user.name) user=await getInboxFromUrl(postbody.attributedTo);
 			if(!user.name) return;
-			paras=[user.manager??'', postbody.object,user.name,user.avatar,user.account,user.url,
-			postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,user.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,postbody?.topImg,9,postbody?.vedioUrl,postbody?.contentLink]	;
-		} else 
+			paras=[user?.manager??'',postbody.object,user.name,user?.avatar,user.account,user.url,
+				postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,
+			,user.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,postbody.object,postbody?.topImg??'',postbody?.vedioUrl??'',9]
+		} else  //非enki 嗯文
 		{
-			paras=['', postbody.object,actor?.name,actor?.avatar,actor?.account,actor?.url,
-				`<a href='${postbody.object}' >${postbody.object}</a>`,actor?.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,postbody.object,'',9,'',''];	
+			paras=['',postbody.object,actor?.name,actor?.avatar,actor.account,actor.url,
+				postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,
+			,actor.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,postbody.object,postbody?.topImg??'',postbody?.vedioUrl??'',9]
 		}
-		executeID(sql,paras).then((insertId)=>{
-			if(!postbody?.content) addAnnoceLink(postbody.object, insertId)
-		})
+		executeID("call inbox_in(?,?,?,?,?,?,?,?,?,?,?,?,?)",paras)
+		.then(()=>{addLink(postbody?.content,postbody.object ,'annoce')});
 	}
 	return;
 }
 
-function handle_update(postbody) {
+async function handle_update(postbody) {
 	if(!postbody?.object?.id) return;
 	const content=(postbody?.object?.content?new String(postbody.object.content).toString():'')
 	const imgpath=(postbody?.object?.imgpath?new String(postbody.object.imgpath).toString():'')
-	execute("update a_message set content=?,top_img=? where message_id=?",[content,imgpath,postbody?.object?.id]);
+	const vedioUrl=(postbody?.object?.vedioURL?new String(postbody.object.vedioURL).toString():'')
+
+	execute("update a_message set content=?,top_img=?,vedio_url=? where message_id=?"
+		,[content,imgpath,postbody?.object?.id,vedioUrl])
+		.then(()=>{addLink(content,postbody?.object?.id ,'update')});
 	return;
 }	
 
 
 async function handle_delete(rid) {
 	if(!rid) return;
-	if(rid.includes('communities/enki'))  //远程删除嗯文
-		execute("delete from a_message where message_id=?",[rid]);
-	else if(rid.includes('commont/enki/')) {  //远程删除回复
-		const row=await getData(`select ppid from a_messagesc_commont where message_id=?`,[rid],true)
-		if(row.ppid){
-			let lok=await execute("delete from a_messagesc_commont where message_id=?",[rid]); //删除回复
-			if(lok) {
-		   		execute(`UPDATE a_messagesc SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
-				execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
-			}
-		}
-		
-
+	if(rid.includes('communities/enki')) { //删除 嗯文
+		 execute(`delete from a_sendmessage where message_id =? and receive_account=?`,[rid]);
 	}
-	else if(rid.includes('commont/enkier/')) {  //远程删除回复
-		const row=await getData(`select ppid from a_message_commont where message_id=?`,[rid],true)
-		if(row.ppid){
-			let lok=await execute("delete from a_message_commont where message_id=?",[rid]); //删除回复
-			if(lok)
-		    	execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
-		}
-
-		
-
+    else if(rid.includes('commont/enki')){  //删除回复
+		const sctype=rid.includes('commont/enkier/')?'':'sc';
+		const row=await getData(`select pid from a_message${sctype}_commont where message_id=?`,[rid],true);
+		if(row.pid)
+		 execute(`call del_commont(?,?,?)`,[sctype,rid,row.pid]); //删除回复
 	}
+
 	else { //非enki 嗯文
-		execute("delete from a_message where message_id=?",[rid]); //试删除嗯文
-		const row=await getData(`select ppid from a_message_commont where message_id=?`,[rid],true)
-		if(row.ppid){ //删除回复，如果有
-			let lok=await execute("delete from a_message_commont where message_id=?",[rid]);
-			if(lok){
-				execute(`UPDATE a_message SET total=total-1 WHERE message_id=?`,[row.ppid]); //更新所有父记录
-			}
-	
-		}
-   }
+		execute("delete from a_message where message_id=?;delete from a_message_commont where message_id=?;delete from a_messagesc_commont where message_id=?"
+			,[rid,rid,rid]); 
+    }
 	
 	return;
 }	
 
 async function createMess(postbody,name,actor){ //对方的推送
 	
-	const content=(postbody?.object?.content?new String(postbody.object.content).toString():'')
-	const imgpath=(postbody?.object?.imgpath?new String(postbody.object.imgpath).toString():'')
-	
+	const content=(postbody?.object?.content?new String(postbody.object.content).toString():'');
+	const imgpath=(postbody?.object?.imgpath?new String(postbody.object.imgpath).toString():'');
+
 	if(!actor?.account) return;
 	const strs=actor?.account.split('@') ;
 	let localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
@@ -227,9 +209,10 @@ async function createMess(postbody,name,actor){ //对方的推送
 	if(!replyType ) //不是回复
 	{
 		let linkUrl=postbody.object.url || postbody.object.atomUri
-		let sql="INSERT IGNORE INTO a_message(manager,message_id,actor_name,avatar,actor_account,actor_url,content,actor_inbox,receive_account,is_send,is_discussion,link_url,top_img,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-		let paras=[actor?.manager??'', postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content,actor?.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,0,1,linkUrl,imgpath,1]	
-		executeID(sql,paras).then((insertId)=>{addLink(content, insertId); //生成链接卡片
+		execute("call inbox_in(?,?,?,?,?,?,?,?,?,?,?,?,?)",[
+			actor?.manager??'',postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content,actor?.inbox,
+			`${name}@${process.env.LOCAL_DOMAIN}`,linkUrl,imgpath,postbody?.object?.vedioURL??'',1]).then(()=>{
+			addLink(content, postbody.object.id,'create')
 		})
 	}
 	else { //回复
@@ -240,10 +223,9 @@ async function createMess(postbody,name,actor){ //对方的推送
 			let re=await getOneByMessageId(id,replyType,sctype)
 			if(re['is_discussion']==1 && re?.message_id) //允许讨论
 			{
-				const sql=`INSERT IGNORE INTO a_message${sctype}_commont(manager,pid,ppid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`
+				const sql=`INSERT IGNORE INTO a_message${sctype}_commont(manager,pid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`
 				const paras=[
 					postbody?.object?.manager??'',
-					re['id'],
 					re?.message_id,
 					postbody.object.id,
 					strs[0],
@@ -461,34 +443,21 @@ async function verifySignature(req,actor,name) {
 	}
   }
 
-  
-
-async function addAnnoceLink(url, id) {
-
-        let tootContent = await getTootContent(url, process.env.LOCAL_DOMAIN)
-        if (tootContent) {
-            await execute('update a_message set content_link=? where id=?', [tootContent, id]);
-        } 
-  
-}
 
 
-async function addLink(content, id) {
+
+  async function addLink(content, id,flag) {
     const furl = findFirstURI(content)
-    const sql = `update a_message set content_link=? where id=?`
+    const sql = `update a_message set content_link=? where message_id=?`
     if (furl) {
         let tootContent = await getTootContent(furl, process.env.LOCAL_DOMAIN)
         if (tootContent) {
-            await execute(sql, [tootContent, id]);
-        } else {
-            await execute(sql, ['', id]);
-        }
+             execute(sql, [tootContent, id]);
+        } 
     }else {
-        await execute(sql, ['', id]);
+        if(flag==='update')   execute(sql, ['', id]);
     }
 }
-
-
 
 
 

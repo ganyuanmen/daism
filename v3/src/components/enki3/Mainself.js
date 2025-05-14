@@ -21,7 +21,7 @@ import { useTranslations } from 'next-intl'
  * @isSelf 是否从我的帐号中打开
  */
 export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhere,filterTag, tabIndex,
-     setFetchWhere,afterEditCall,delCallBack,accountAr,path,isPersonEdit,daoData,fromPerson=false,isSelf=false}) {
+     setFetchWhere,afterEditCall,delCallBack,accountAr,path,daoData,fromPerson=false,isSelf=false}) {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -128,7 +128,7 @@ export default function Mainself({env,locale,setCurrentObj,setActiveTab,fetchWhe
                         <Contentdiv path={path} env={env} locale={locale} messageObj={obj} tabIndex={tabIndex}
                         key={idx} afterEditCall={afterEditCall} data_index={idx} filterTag={filterTag}
                         setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} replyAddCallBack={replyAddCallBack} 
-                        delCallBack={delCallBack} accountAr={accountAr} daoData={daoData} isPersonEdit={isPersonEdit} fromPerson={fromPerson} />
+                        delCallBack={delCallBack} accountAr={accountAr} daoData={daoData} fromPerson={fromPerson} />
                     ))}
                 </InfiniteScroll> 
             </div>

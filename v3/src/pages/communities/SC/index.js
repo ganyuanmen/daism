@@ -127,7 +127,7 @@ export default function sc({env,locale,accountAr,openObj }) {
 
     const eventHandle=()=>{ //活动
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, daoid:0,order: 'id', account: '',eventnum: 1, where: '' })
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, daoid:0,order: 'createtime', account: '',eventnum: 1, where: '' })
         setActiveTab(0);
         setNavObj(svgs[1]);
     }
@@ -135,7 +135,7 @@ export default function sc({env,locale,accountAr,openObj }) {
    
     const daoSelectHandle=(obj)=>{ //选择dao后
         
-        setFetchWhere({ ...fetchWhere, currentPageNum:0,order:'id',eventnum:0,where:'',v:0,daoid:obj.dao_id,account:obj.actor_account});
+        setFetchWhere({ ...fetchWhere, currentPageNum:0,order:'createtime',eventnum:0,where:'',v:0,daoid:obj.dao_id,account:obj.actor_account});
         setActiveTab(0);
         setNavObj(obj);
         history.pushState({}, '', `?d=${obj.actor_account}`);
@@ -220,13 +220,13 @@ export default function sc({env,locale,accountAr,openObj }) {
                      
                         {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} 
                         setActiveTab={setActiveTab} fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} tabIndex={1}
-                        delCallBack={callBack} afterEditCall={afterEditCall}  path='enki' daoData={daoActor}
+                        delCallBack={callBack} afterEditCall={afterEditCall}  path='SC' daoData={daoActor}
                         filterTag={filterTag} />
                         
                         :activeTab === 1 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack}
                          currentObj={currentObj} afterEditCall={afterEditCall} accountAr={accountAr}/>
                      
-                        :activeTab === 2 && <MessagePage  path="enki" locale={locale} env={env} currentObj={currentObj} 
+                        :activeTab === 2 && <MessagePage  path="SC" locale={locale} env={env} currentObj={currentObj} 
                         delCallBack={callBack} setActiveTab={setActiveTab} daoData={daoActor} filterTag={filterTag} />
 }
                         </>}

@@ -172,14 +172,14 @@ useEffect(() => {
                     {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
                     fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={delcallBack} fromPerson={true} 
                     tabIndex={fetchWhere.menutype===3?1:3} daoData={daoActor}
-                    afterEditCall={afterEditCall} isPersonEdit={actor?.actor_account===actor?.actor_account}  path={fetchWhere.menutype===3?'enkier':'enki'} />
+                    afterEditCall={afterEditCall} path={fetchWhere.menutype===3?'enkier':'enki'} />
 
                     :activeTab === 1 ? <CreateMess addCallBack={homeHandle}  currentObj={currentObj} 
                     afterEditCall={afterEditCall}  
                     callBack={callBack} />
 
                     :activeTab === 2 ? <MessagePage daoData={daoActor} path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} env={env} currentObj={currentObj}  fromPerson={true}
-                    delCallBack={delcallBack} setActiveTab={setActiveTab} isPersonEdit={actor?.actor_account===actor?.actor_account} />
+                    delCallBack={delcallBack} setActiveTab={setActiveTab} />
 
                     :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack}
                      currentObj={currentObj} afterEditCall={afterEditCall} />
@@ -201,9 +201,9 @@ export const getServerSideProps = withSession(async ({locale,query }) => {
   const daoActor=await getJsonArray('daoactorbyid',[actor?.id])
   const follow0=await getJsonArray('follow0',[actor?.actor_account])
   const follow1=await getJsonArray('follow1',[actor?.actor_account])
-  const personNum=await getData("select count(*) as total from a_message where lower(actor_account)=? and send_type=0",[query?.id?.toLowerCase()],true);
+  const personNum=await getData("select count(*) as total from v_message where lower(actor_account)=? and send_type=0",[query?.id?.toLowerCase()],true);
   const companyNum=await getData("select count(*) as total from a_messagesc where actor_id=?",[actor?.id],true);
-  const receiveNum=await getData("select count(*) as total from a_message where lower(receive_account)=?",[query?.id?.toLowerCase()],true);
+  const receiveNum=await getData("select count(*) as total from v_message where lower(receive_account)=?",[query?.id?.toLowerCase()],true);
   
     return {
       props: {

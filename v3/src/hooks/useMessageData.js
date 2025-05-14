@@ -21,23 +21,7 @@ import {client} from '../lib/api/client'
   }
 
   
-// export function useReply({account,replyPageNum,refresh,pid,dao_id}) {
 
-//     const [data, setData] = useState({rows:[],pages:0,total:0,status:'pending',error:''}); 
-
-//     useEffect(() => {
-//         let ignore = false;
-//         client.get(`/api/getData?ps=10&pi=${replyPageNum}&pid=${pid}&account=${account}&dao_id=${dao_id}`,'replyPageData').then(res =>{ 
-//             if (!ignore) 
-//             if (res.status===200) setData({...res.data,status:'succeeded',error:''})
-//             else setData({rows:[],pages:0,total:0,status:'failed',error:res.statusText})
-//         });
-//         return () => {ignore = true}
-        
-//     }, [replyPageNum,refresh,account]);
-
-//     return data;
-//   }
 
   export  function useFollow(actor,method) {
     const [data, setData] = useState({data:[],status:'pending'}); 
@@ -87,7 +71,7 @@ export  function useGetHeartAndBook({account,pid,refresh,table,sctype}) {
         });
         return () => {ignore = true}
         
-    }, [refresh]);
+    }, [refresh,account,pid,table,sctype]);
     return data;
 }
 

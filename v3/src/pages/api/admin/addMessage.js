@@ -1,7 +1,7 @@
 import withSession from "../../../lib/session";
 import formidable from 'formidable';
-import { executeID, getData, execute } from "../../../lib/mysql/common";
-import { send } from "../../../lib/utils/send";
+import { getData, execute } from "../../../lib/mysql/common";
+import { sendfollow } from "../../../lib/utils/sendfollow";
 import { saveImage, findFirstURI, getTootContent,saveHTML } from "../../../lib/utils";
 
 const { v4: uuidv4 } = require("uuid");
@@ -22,7 +22,7 @@ export default withSession(async (req, res) => {
 
         const form = formidable({})
         const [fields, files] = await form.parse(req);
-        const {avatar, actorName,title, vedioURL,propertyIndex,accountAt,typeIndex,id, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
+        const {avatar, actorName,title, vedioURL,propertyIndex,accountAt,typeIndex,messageId, startTime, endTime, eventUrl, eventAddress, time_event, actorid, daoid, _type, account, content, fileType, isSend, isDiscussion,textContent } = fields
         // const actorName=account[0].split('@')[0];
         const _path=new Date().toLocaleDateString().replaceAll('/','');
         const imgPath = saveImage(files, fileType[0],_path)
@@ -35,106 +35,96 @@ export default withSession(async (req, res) => {
         // console.log(tagar)
         const pathtype=daoid?'enki':'enkier';
 
-        if (id[0] == '0') { //增加
-            let message_id = uuidv4().replaceAll('-','')?.toLowerCase()
-            if (daoid) { //enki
-                const re=await getData("SELECT 1 AS c  WHERE (SELECT manager FROM a_account WHERE id=?) IN (SELECT member_address FROM t_daodetail WHERE dao_id=?)",[actorid[0],daoid[0]]);
+        if (!messageId) { //增加
+            if (daoid && actorid){  //检测是否为公器成员
+                const re=await getData("SELECT 1 AS c  WHERE (SELECT manager FROM a_account WHERE id=?) IN (SELECT member_address FROM t_daodetail WHERE dao_id=?)"
+                    ,[actorid[0],daoid[0]]);
                 if(!re.length) return res.status(406).json({ errMsg: 'Non smart common members!' });
-                paras = [title[0],propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],message_id,actorid[0], daoid[0], content[0], isSend[0], isDiscussion[0], path, _type[0]]
-                if (_type[0] == '1') { //活动嗯文
-                    sql = 'INSERT INTO a_messagesc(title, property_index,type_index,vedio_url,account_at,message_id,actor_id,dao_id,content,is_send,is_discussion,top_img,_type,start_time,end_time,event_url,event_address,time_event) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-                    paras = paras.concat([startTime[0], endTime[0], eventUrl[0], eventAddress[0], time_event[0]])
-                }
-                else {  //普通嗯文
-                    sql = 'INSERT INTO a_messagesc(title,property_index,type_index,vedio_url,account_at,message_id,actor_id,dao_id,content,is_send,is_discussion,top_img,_type) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
-                }
-            } else  //个人
-            {
-                sql = "INSERT INTO a_message(title, property_index,type_index,vedio_url,account_at,message_id,manager,actor_name,avatar,actor_account,actor_url,content,is_send,is_discussion,top_img,actor_inbox) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-                let rows = await getData("select actor_name,avatar,actor_url,actor_inbox,manager from v_account where actor_account=?", [account[0]])
-                paras = [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],message_id, rows[0].manager, rows[0].actor_name, rows[0].avatar, account[0], rows[0].actor_url, content[0], isSend[0], isDiscussion[0], path, rows[0].actor_inbox]
             }
 
-            let insertId = await executeID(sql, paras);
-            if (insertId) {
-                if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id,textContent[0],path?path:avatar[0],account[0],sessionUser.did,avatar[0])
-                // if (parseInt(isSend[0]) === 1) {
-                    //account,textContent,imgpath,message_id,pathtype,contentType
-                send(
-                    account[0],
-                    content[0],
-                    textContent[0],
-                    // parseInt(typeIndex[0])===0?content[0]:textContent[0],
-                    path,
-                    message_id,
-                    pathtype,
-                    'Create'
-                ) 
-                // }
-                if(accountAt && accountAt[0]){
-                    const ar=JSON.parse(accountAt[0]);
-                    sql='INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,content,is_send,is_discussion,top_img,receive_account,send_type,vedio_url,property_index,type_index) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
-                    let re=await getData(`SELECT manager,actor_name,avatar,actor_account,actor_url,actor_inbox FROM v_message${sctype} where id=?`,[insertId],true);
-                    let linkUrl=`https://${process.env.LOCAL_DOMAIN}/communities/${daoid?'enki':'enkier'}/${message_id}`
-                   
-                    ar.forEach(async namestr=> {
-                        paras=[message_id,re.manager,re.actor_name,re.avatar,re.actor_account,re.actor_url,re.actor_inbox,linkUrl,content[0],0,1,path,`${namestr}@${process.env.LOCAL_DOMAIN}`,2,vedioURL[0],propertyIndex[0],typeIndex[0]]
-                        await executeID(sql, paras);
-                    })
-                }
+            let message_id = uuidv4().replaceAll('-','')?.toLowerCase();
+            let insert_type=2; //默认是个人嗯文
+            if(_type) insert_type=parseInt(_type[0]);
+            let linkUrl=`https://${process.env.LOCAL_DOMAIN}/communities/${daoid?'enki':'enkier'}/${message_id}`
+            sql = "call in_message(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            paras = [insert_type,title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],message_id,account[0],
+                content[0], isSend[0], isDiscussion[0], path,linkUrl,
+                actorid?actorid[0]:0,
+                daoid?daoid[0]:0,
+                _type?_type[0]:0,
+                startTime?startTime[0]:'', 
+                endTime?endTime[0]:'', 
+                eventUrl?eventUrl[0]:'', 
+                eventAddress?eventAddress[0]:'', 
+                time_event?time_event[0]:0
+            ];
+            let lok = await execute(sql, paras);
+            if (lok) {
                 setTimeout(async () => {
-                    await addLink(content[0], message_id,sctype); //生成链接卡片
-                    if(tagar.length) await execute(`call in_tag(?,?,?)`,[insertId,tagar.join(','), sctype])
+                    await addLink(content[0], message_id,sctype,'insert'); //生成链接卡片
+
+                    if(tagar.length) execute(`call in_tag(?,?)`,[message_id, JSON.stringify(tagar)]);
+
+                    if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id,textContent[0]
+                        ,path?path:avatar[0],account[0],sessionUser.did,avatar[0]);
+                    sendfollow(
+                        account[0],
+                        content[0],
+                        textContent[0],
+                        path,
+                        message_id,
+                        pathtype,
+                        vedioURL,
+                        'Create'
+                    ); 
                 },1);
-                res.status(200).json({ msg: 'handle ok', id: insertId });
+                res.status(200).json({ msg: 'handle ok'});
             } else res.status(500).json({ errMsg: 'fail' });
         } else { //修改
-            let rear = await getData(`select message_id,top_img,send_type from v_message${sctype} where id=?`, [id[0]],true)
+            let rear = await getData(`select actor_name,actor_account,avatar,manager,top_img from v_message${sctype} where message_id=?`, [messageId[0]],true)
             if (!path && fileType[0]) { //不修改img
                 path = rear['top_img']
             }
            
             if (daoid) {     
-                if (_type[0] == '1') { //活动嗯文
-                    sql = "update a_messagesc set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,_type=1,content=?,is_send=?,is_discussion=?,top_img=?,start_time=?,end_time=?,event_url=?,event_address=?,time_event=? where id=?"
-                    paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],content[0], isSend[0], isDiscussion[0], path, startTime[0], endTime[0], eventUrl[0], eventAddress[0], time_event[0], id[0]];
+                if (parseInt(_type[0]) === 1) { //活动嗯文
+                    sql = "update a_messagesc set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,_type=1,content=?,is_send=?,is_discussion=?,top_img=?,start_time=?,end_time=?,event_url=?,event_address=?,time_event=? where message_id=?"
+                    paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0],content[0], isSend[0], isDiscussion[0], path, startTime[0], endTime[0], eventUrl[0], eventAddress[0], time_event[0], messageId[0]];
                 } else {//普通嗯文
-                    sql = "update a_messagesc set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,_type=0,content=?,is_send=?,is_discussion=?,top_img=?,start_time=NULL,end_time=NULL,event_url=NULL,event_address=NULL,time_event=-1 where id=?";
-                    paras=[title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, id[0]];
+                    sql = "update a_messagesc set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,_type=0,content=?,is_send=?,is_discussion=?,top_img=?,start_time=NULL,end_time=NULL,event_url=NULL,event_address=NULL,time_event=-1 where message_id=?";
+                    paras=[title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, messageId[0]];
                  }
             } else {
-                if(rear?.send_type===0){ //修改主嗯文
                 sql = "update a_message set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,content=?,is_send=?,is_discussion=?,top_img=? where message_id=?";
-                paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, rear.message_id];
-                }
-                else {
-                    sql = "update a_message set title=?, property_index=?,type_index=?,vedio_url=?,account_at=?,content=?,is_send=?,is_discussion=?,top_img=? where id=?";
-                    paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, id[0]];
-                } 
+                paras= [title[0], propertyIndex[0],typeIndex[0],vedioURL[0],accountAt[0], content[0], isSend[0], isDiscussion[0], path, messageId[0]];
+               
             }
 
             let lok = await execute(sql,paras);
             if(lok) {  
-                if(title && title[0]) 
-                    saveHTML(actorName[0],content[0],title[0],rear.message_id,textContent[0],path?path:avatar[0],account[0],sessionUser.did,avatar[0]);
-                if(rear?.send_type===0) //修改主嗯文才处理
-                    send(
+                setTimeout(async () => {  //生成链接卡片
+                    if(title && title[0]) saveHTML(rear.actor_name,content[0],title[0], messageId[0],textContent[0],path?path:rear?.avatar,
+                        rear?.actor_account,rear?.manager,rear?.avatar);
+
+                    addLink(content[0],messageId[0],sctype,'update');
+                    if(tagar.length)
+                        execute("delete from a_tag where pid=?",[messageId[0]]).then(()=>{
+                            execute(`call in_tag(?,?)`,[messageId[0], JSON.stringify(tagar)]);
+                        })
+                     
+                    sendfollow(
                         account[0],
                         content[0],
                         textContent[0],
-                        // parseInt(typeIndex[0])===0?content[0]:textContent[0],
                         path,
-                        rear.message_id,
+                        messageId[0],
                         pathtype,
+                        vedioURL,
                         'Update'
                     ) 
-                // }     
-                setTimeout(async () => {  //生成链接卡片
-                    await addLink(content[0],rear.message_id,sctype);
-                    await execute(`delete from t_tagmess${sctype} where cid=?`,[id[0]])
-                    if(tagar.length) await execute(`call in_tag(?,?,?)`,[id[0],tagar.join(','), sctype])
+
                 }, 1);
-                res.status(200).json(await getData(`select * from v_message${sctype} where id=?`, [id[0]],true));
+                res.status(200).json(await getData(`select * from v_message${sctype} where message_id=?`, [messageId[0]],true));
             }
             else res.status(500).json({ errMsg: 'save fail' });
 
@@ -148,19 +138,19 @@ export default withSession(async (req, res) => {
 });
 
 
-async function addLink(content, id,sctype) {
+async function addLink(content, id,sctype,flag) {
     const furl = findFirstURI(content)
     const sql = `update a_message${sctype} set content_link=? where message_id=?`
     if (furl) {
       
         let tootContent = await getTootContent(furl, process.env.LOCAL_DOMAIN)
         if (tootContent) {
-            await execute(sql, [tootContent, id]);
-        } else {
-            await execute(sql, ['', id]);
-        }
+             execute(sql, [tootContent, id]);
+        } 
+        // else {
+        //      execute(sql, ['', id]);
+        // }
     }else {
-        await execute(sql, ['', id]);
+        if(flag==='update')   execute(sql, ['', id]);
     }
 }
-

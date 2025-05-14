@@ -27,11 +27,11 @@ import ShowAddress from "../ShowAddress";
  * @data_index 主页嗯文列表中的当前序号
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  * @daoData 个人所属的smart common 集合
- * @isPersonEdit 个人信息、中允许修改
+ * @fromPerson 个人信息、中允许修改
  */
 
 export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,filterTag,
-  setActiveTab,replyAddCallBack,delCallBack,afterEditCall,data_index,accountAr,isPersonEdit,daoData,tabIndex,fromPerson=false}) {
+  setActiveTab,replyAddCallBack,delCallBack,afterEditCall,data_index,accountAr,daoData,tabIndex,fromPerson=false}) {
     
     const actor = useSelector((state) => state.valueData.actor)
     const loginsiwe = useSelector((state) => state.valueData.loginsiwe)
@@ -82,15 +82,11 @@ export default function Contentdiv({path,env,locale,messageObj,setCurrentObj,fil
     },[actor,messageObj])
 
     const ableReply = () => { //是否允许回复，点赞，书签
-      if(!loginsiwe) return false;
-      if(!messageObj?.actor_account && !messageObj?.actor_account?.includes('@')) return false;
-      if(!actor?.actor_account && !actor?.actor_account?.includes('@')) return false;
-      //发布帐号，用于判断是否本域名
-      let _account=messageObj?.send_type==0?messageObj?.actor_account:messageObj?.receive_account;
-      if(!_account || !_account.includes('@'))  return false;
-      const [, messDomain] = _account.split('@');
-      return env.domain === messDomain; //本域名发布，可以回复
-   }
+      if(!loginsiwe || !actor?.actor_account) return false;
+      if(messageObj?.httpNetWork) return false; // 远程服务器不可回复
+      return true;
+  }
+
     const months=t('monthText').split(',')
     const getMonth=()=>{
         let m=new Date(messageObj.start_time)
@@ -170,7 +166,7 @@ const handleClick = useCallback((event) => {
         
             
             {/* 发起者 */}
-            {messageObj?.dao_id>0 && messageObj?.send_type===0 && !messageObj?.receive_account  &&<div className="d-flex align-items-center mt-1">
+            {path==='enki'  &&<div className="d-flex align-items-center mt-1">
               <div className="d-inline-flex align-items-center" >
                  <span style={{display:'inline-block',paddingRight:'4px'}} >{t('proposedText')}:</span>
                  <img src={messageObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 
@@ -189,15 +185,14 @@ const handleClick = useCallback((event) => {
                 <MessageReply currentObj={messageObj} isEdit={ableReply()} isTopShow={true}
                  addReplyCallBack={replyAddCallBack} data_index={data_index} accountAr={accountAr} />
 
-                <EnKiHeart isEdit={ableReply()} currentObj={messageObj} />
+                <EnKiHeart isEdit={ableReply() && actor?.domain===env.domain} currentObj={messageObj} path={path} />
                 {/* 非注册地登录，不能收藏 */}
-                <EnKiBookmark isEdit={ableReply() && actor?.actor_account.split('@')[1]==env.domain} currentObj={messageObj}/>
+                <EnKiBookmark isEdit={ableReply() && actor?.domain===env.domain} currentObj={messageObj} path={path}/>
 
-              {messageObj.send_type===0 && divContent && 
-              <EnkiShare  content={divContent} locale={locale} currentObj={messageObj}  />}
+              {divContent && <EnkiShare  content={divContent} locale={locale} currentObj={messageObj}  />}
             
-              <EnkiEditItem isEdit={isPersonEdit && isEdit} env={env} actor={actor} messageObj={messageObj} delCallBack={delCallBack}
-               preEditCall={()=>{ setCurrentObj(messageObj);setActiveTab(tabIndex);}} sctype={messageObj?.dao_id>0?'sc':''} fromPerson={fromPerson}  /> 
+             {path!=='SC' && actor?.domain===env.domain && <EnkiEditItem path={path}  isEdit={isEdit} env={env} actor={actor} messageObj={messageObj} delCallBack={delCallBack}
+               preEditCall={()=>{ setCurrentObj(messageObj);setActiveTab(tabIndex);}} sctype={messageObj?.dao_id>0?'sc':''} fromPerson={fromPerson}  /> }
             </div>
 
         </div>

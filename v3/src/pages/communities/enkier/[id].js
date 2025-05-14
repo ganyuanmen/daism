@@ -14,7 +14,7 @@ const { parse } = require('node-html-parser');
 
 
 
-export default function Message({currentObj,locale,env,replyData,honor,heartTotal,bookTotal}) {
+export default function Message({currentObj,locale,env,honor}) {
   const router = useRouter();
 
   const t = useTranslations('ff');
@@ -74,8 +74,7 @@ export default function Message({currentObj,locale,env,replyData,honor,heartTota
     
       <PageLayout env={env}>
         
-         <EnkiMess locale={locale}  currentObj={currentObj} env={env} 
-             replyData={replyData} honor={honor} bookTotal={bookTotal} heartTotal={heartTotal}/>
+         <EnkiMess locale={locale}  currentObj={currentObj} env={env} honor={honor} />
         
         </PageLayout>
         </>
@@ -84,18 +83,18 @@ export default function Message({currentObj,locale,env,replyData,honor,heartTota
 
 export const getServerSideProps =async ({locale,query,res }) => {
   res.setHeader('Cache-Control', 'public, s-maxage=10');
-  const currentObj=await getData('select * from v_message where message_id=?',[query.id],true);
+  const currentObj=await getData('select * from vv_message where message_id=?',[query.id],true);
   if(!currentObj?.manager) return { notFound: true };
   const honor=await getData('select tokensvg from v_mynft where to_address=? order by _time',[currentObj.manager]);
-  const data=await getData("SELECT * FROM v_message_commont WHERE ppid=?",[currentObj.message_id]);
-  const replyData = data.map(item => ({
-    ...item,
-    createtime: item.createtime.toJSON(), 
-    currentTime:item.currentTime.toJSON(), 
-  }));
+  // const data=await getData("SELECT * FROM v_message_commont WHERE ppid=?",[currentObj.message_id]);
+  // const replyData = data.map(item => ({
+  //   ...item,
+  //   createtime: item.createtime.toJSON(), 
+  //   currentTime:item.currentTime.toJSON(), 
+  // }));
 
-  const heartTotal=await getData("select count(*) as total from a_heart where pid=?",[currentObj.id],true)
-  const bookTotal=await getData("select count(*) as total from a_bookmark where pid=?",[currentObj.id],true)
+  // const heartTotal=await getData("select count(*) as total from a_heart where pid=?",[currentObj.id],true)
+  // const bookTotal=await getData("select count(*) as total from a_bookmark where pid=?",[currentObj.id],true)
   
   
 
@@ -111,9 +110,8 @@ export const getServerSideProps =async ({locale,query,res }) => {
           ...require(`../../../messages/shared/${locale}.json`),
           ...require(`../../../messages/federation/${locale}.json`),
         },
-        currentObj,locale,honor,replyData
-        ,heartTotal:heartTotal?.total?heartTotal.total:0
-        ,bookTotal:bookTotal?.total?bookTotal.total:0
+        currentObj,locale,honor
+        // ,heartTotal:heartTotal?.total?heartTotal.total:0,replyData,   ,bookTotal:bookTotal?.total?bookTotal.total:0
         ,env:getEnv()
       }
     }

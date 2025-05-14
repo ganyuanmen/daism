@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { EditSvg,DeleteSvg,Pin,AnnounceSvg } from "../../../lib/jssvg/SvgCollection";
-import { Nav,NavDropdown,Button } from "react-bootstrap";
+import { Nav,NavDropdown } from "react-bootstrap";
 import ConfirmWin from "../../federation/ConfirmWin";
 import { client } from "../../../lib/api/client";
 import { useDispatch} from 'react-redux';
@@ -17,7 +17,8 @@ import { useTranslations } from 'next-intl'
  * @type 0 对象是嗯文， 1 对象是回复
  */
 //type 默认是 0嗯文 1-> 是回复 preEditCall 修改前操作  delCallBack 删除后回调 fromPerson 个人信息中有置顶功能 
-export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEditCall,sctype,isEdit,fromPerson=false,type=0})
+//path enki 公共嗯文操作， enkier 个人嗯 文操作
+export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,preEditCall,sctype,isEdit,fromPerson=false,type=0})
 {
     
     const t = useTranslations('ff')
@@ -42,7 +43,7 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
         if(_isAn){
             const fetchData = async () => {
                 try {
-                    const res = await client.get(`/api/getData?id=${messageObj.id}&sctype=${sctype}&account=${actor?.actor_account}`,'getAnnoce');
+                    const res = await client.get(`/api/getData?id=${messageObj.message_id}&account=${actor?.actor_account}`,'getAnnoce');
                     if(res.status===200)
                         if(Array.isArray(res.data) && res.data.length===0) setIsAn(true); 
                     
@@ -82,13 +83,11 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
                 account:actor?.actor_account,
                 toUrl:messageObj.actor_url,
                 id:messageObj.message_id,
-                recordId:messageObj.id,
-                fromAccount:messageObj.actor_account,
+                linkurl:messageObj.link_url, //转发的使用唯一uri
                 content:messageObj.content,
                 topImg:messageObj.top_img,
-                contentLink:messageObj.content_link,
                 vedioUrl:messageObj.vedio_url,
-                pathtype:messageObj.dao_id>0?'enki':'enkier'
+                sctype:messageObj.dao_id>0?'sc':''
             }
            
         );
@@ -113,7 +112,7 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
               setShow(true)
             break;
             case "3":
-                handlePin(messageObj.is_top?0:1,messageObj.id);
+                handlePin(messageObj.is_top?0:1,messageObj.message_id);
             case "4":
                 handleAnnounce();
             default:
@@ -122,14 +121,12 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
     }
     const deldiscussions=()=>{
         handle('messageDel',{
-            id:messageObj.id,
             mid:messageObj?.message_id,
             account:messageObj?.actor_account,
             type,
             sctype,
-            ppid:messageObj?.ppid??'',
-            sendType:messageObj?.send_type??'-1',
-            actorAccount:actor?.actor_account??'',
+            path,
+            pid:messageObj?.pid??'',
             rAccount:messageObj?.receive_account??''
         });
         setShow(false);
@@ -144,7 +141,7 @@ export default function EnkiEditItem({messageObj,env, actor, delCallBack,preEdit
                 <NavDropdown  title=' ......' active={false} drop={type===0?"up":'down'} >
                     <NavDropdown.Item disabled={!isEdit} eventKey="1"> <span style={{color:isEdit?'black':'gray'}}><EditSvg size={24} /> {t('editText')}...</span></NavDropdown.Item> 
                     <NavDropdown.Item disabled={!isDelete} eventKey="2"> <span style={{color:isDelete?'black':'gray'}}><DeleteSvg size={24} /> {t('deleteText')}...</span></NavDropdown.Item> 
-                   { isAn && !fromPerson && <NavDropdown.Item eventKey="4"> <span><AnnounceSvg size={24} /> {t('amouseText')}...</span></NavDropdown.Item>  }       
+                   { isAn && messageObj?.actor_account!==actor?.actor_account && !fromPerson && <NavDropdown.Item eventKey="4"> <span><AnnounceSvg size={24} /> {t('amouseText')}...</span></NavDropdown.Item>  }       
                    {(messageObj.dao_id>0 || fromPerson) && <NavDropdown.Item disabled={!isEdit} eventKey="3"> <span style={{color:isEdit?'black':'gray'}}><Pin size={24} /> {messageObj.is_top?t('dropTopText'):t('setTopText')}...</span></NavDropdown.Item>}     
                 
                 </NavDropdown>

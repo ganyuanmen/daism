@@ -128,6 +128,7 @@ export default function EnkiView({actor,locale,env,daoActor}) {
     }
     
     const callBack=()=>{  //
+      console.log("00000000000000000000000000000000000000000000000000000",navIndex)
      if(navIndex===paras.home) homeHandle(false);
      else if(navIndex===paras.mypost) myPostHandle(false);
       else if(navIndex===paras.myreceive) recerveHadler(false);
@@ -179,14 +180,14 @@ export default function EnkiView({actor,locale,env,daoActor}) {
              
                       {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
                       fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={delcallBack} afterEditCall={afterEditCall} 
-                      isPersonEdit={true} tabIndex={fetchWhere.menutype===3?1:3} path={fetchWhere.menutype===3?'enkier':'enki'} daoData={daoActor} fromPerson={true} />
+                      tabIndex={fetchWhere.menutype===3?1:3} path={fetchWhere.menutype===3?'enkier':'enki'} daoData={daoActor} fromPerson={true} />
   
                       :activeTab === 1 ? <CreateMess addCallBack={homeHandle}  currentObj={currentObj} 
                       afterEditCall={afterEditCall}  
                       callBack={callBack} />
   
                       :activeTab === 2 ? <MessagePage  path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} daoData={daoActor} env={env} currentObj={currentObj} 
-                      delCallBack={delcallBack} setActiveTab={setActiveTab} isPersonEdit={true} fromPerson={true} />
+                      delCallBack={delcallBack} setActiveTab={setActiveTab} fromPerson={true} />
   
                       :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack} 
                       currentObj={currentObj} afterEditCall={afterEditCall} />

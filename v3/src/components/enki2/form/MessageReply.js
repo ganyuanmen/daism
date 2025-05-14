@@ -17,10 +17,11 @@ import { useTranslations } from 'next-intl'
  * @isEdit 是否允许回复
  * @data_index 嗯文列表的序号，用于直接从嗯文列表中添加回复时，更新回复总数
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
+ * @isTopShow 从Contentdiv 回复，对嗯文回复 
  */
 
 const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,setReplyObj,
-     replyObj,isEdit,data_index,accountAr,bid,setBid, isTopShow }, ref) => {
+     replyObj,isEdit,data_index,bid,setBid, isTopShow }, ref) => {
 
     const [showWin, setShowWin] = useState(false); //回复窗口显示
     const dispatch = useDispatch();
@@ -74,11 +75,9 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
         setShowWin(false)
         showTip(t('submittingText'))
         const formData = new FormData();
-        // formData.append('rid', replyObj ? replyObj.id : 0);  //修改id 
-        formData.append('rid', 0)
-        formData.append('pid', currentObj.id);
+
         formData.append('bid', isTopShow?'':bid);
-        formData.append('ppid', currentObj.message_id);
+        formData.append('pid', currentObj.message_id);
         formData.append('account', currentObj.actor_account);
         formData.append('content', contentHTML); //，内容
         formData.append('actorid', actor?.id); //，回复者id
@@ -131,7 +130,7 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
                       <Form.Check inline label={t('isFixButton')} name="group1" type='radio' defaultChecked={typeIndex===2} onClick={e=>
                     {if(e.target.checked) setTypeIndex(2)}}  id='inline-3' />
                     </Form>
-                    {typeIndex===0?<Editor  ref={editorRef} currentObj={null} nums={nums} accountAr={accountAr} showProperty={false} />
+                    {typeIndex===0?<Editor  ref={editorRef} currentObj={null} nums={nums}  showProperty={false} />
                     :<RichEditor  ref={richEditorRef} currentObj={null}  isFix={typeIndex===2}  />}
                     <div className='mt-2 mb-2' style={{ textAlign: 'center' }} >
                         <Button onClick={submit} variant="primary"> <ReplySvg size={16} /> {t('replyText')}</Button>
