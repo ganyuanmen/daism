@@ -83,7 +83,12 @@ export default function Message({currentObj,locale,env,honor}) {
 
 export const getServerSideProps =async ({locale,query,res }) => {
   res.setHeader('Cache-Control', 'public, s-maxage=10');
-  const currentObj=await getData('select * from vv_message where message_id=?',[query.id],true);
+  let currentObj;
+  if(/^[0-9]+$/.test(query.id)){
+    currentObj=await getData('select * from v_message where id=?',[query.id],true);
+  }else {
+   currentObj=await getData('select * from vv_message where message_id=?',[query.id],true);
+  }
   if(!currentObj?.manager) return { notFound: true };
   const honor=await getData('select tokensvg from v_mynft where to_address=? order by _time',[currentObj.manager]);
   // const data=await getData("SELECT * FROM v_message_commont WHERE ppid=?",[currentObj.message_id]);

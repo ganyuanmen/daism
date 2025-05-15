@@ -128,7 +128,6 @@ export default function EnkiView({actor,locale,env,daoActor}) {
     }
     
     const callBack=()=>{  //
-      console.log("00000000000000000000000000000000000000000000000000000",navIndex)
      if(navIndex===paras.home) homeHandle(false);
      else if(navIndex===paras.mypost) myPostHandle(false);
       else if(navIndex===paras.myreceive) recerveHadler(false);

@@ -189,7 +189,7 @@ const handleClick = useCallback((event) => {
                 {/* 非注册地登录，不能收藏 */}
                 <EnKiBookmark isEdit={ableReply() && actor?.domain===env.domain} currentObj={messageObj} path={path}/>
 
-              {divContent && <EnkiShare  content={divContent} locale={locale} currentObj={messageObj}  />}
+              {divContent && <EnkiShare  content={divContent} env={env} currentObj={messageObj}  />}
             
              {path!=='SC' && actor?.domain===env.domain && <EnkiEditItem path={path}  isEdit={isEdit} env={env} actor={actor} messageObj={messageObj} delCallBack={delCallBack}
                preEditCall={()=>{ setCurrentObj(messageObj);setActiveTab(tabIndex);}} sctype={messageObj?.dao_id>0?'sc':''} fromPerson={fromPerson}  /> }

@@ -4,7 +4,6 @@ import { getData } from "../lib/mysql/common";
  * 我的奖励
  */
 export default function ListBook({data1,data2}) {
-    console.log(data1)
     const renderedArrays1 = data1.map((obj, idx) => {
        const [,domain]=obj.account.split('@');
        let url;

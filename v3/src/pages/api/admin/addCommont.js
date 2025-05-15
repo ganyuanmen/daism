@@ -32,7 +32,7 @@ export default withSession(async (req, res) => {
     const imgPath = saveImage(files, fileType[0],_path)
     let path = imgPath ? `https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${_path}/${imgPath}` : '';
     // if(parseInt(rid[0])===0) { //add
-      let message_id=uuidv4().replaceAll('-','');
+    let message_id = uuidv4().replaceAll('-','')?.toLowerCase();
       let rows=await getData("select manager,domain,actor_name,avatar,actor_account,actor_url,privkey from a_account where id=?",[actorid[0]])
       if(rows.length===0){
          return res.status(err.httpCode || 500).json({errMsg: "invalid ID"}); 

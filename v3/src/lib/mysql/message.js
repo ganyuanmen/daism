@@ -160,7 +160,6 @@ export async function setTopMessage({id,sctype,flag})
 //删除 注： 此处的path 仅表示从哪里删除，与sctype 无关
 export async function messageDel({mid,type,path,sctype,pid,rAccount,account})
 {
-	console.log("--------------------------------------------------",{mid,type,path,sctype,pid,rAccount,account})
     if(parseInt(type)===0) {
 		let lok;
 		if(path==='enki'){

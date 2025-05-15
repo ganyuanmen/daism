@@ -254,7 +254,7 @@ const renderedArrays = data.map((obj, idx) => {
 
                 <EnKiHeart isEdit={ableReply() && actor?.domain===env.domain} currentObj={currentObj} path={path} />
                 <EnKiBookmark isEdit={ableReply() && actor?.domain===env.domain} currentObj={currentObj} path={path}/>
-              {divContent && <EnkiShare content={divContent} locale={locale} currentObj={currentObj} />}
+              {divContent && <EnkiShare content={divContent} env={env} currentObj={currentObj} />}
              {path!=='SC' && actor?.domain===env.domain && <EnkiEditItem path={path} env={env} isEdit={!fromPerson && isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
               preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} fromPerson={fromPerson} /> }
             </div>

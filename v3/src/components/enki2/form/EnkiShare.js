@@ -9,7 +9,7 @@ import { useTranslations } from 'next-intl'
  * locale zh/cn
  * currentObj 嗯文对象
  */
-export default function EnkiShare({content, locale, currentObj})
+export default function EnkiShare({content, env, currentObj})
 {
 
     const t = useTranslations('ff')
@@ -21,25 +21,32 @@ export default function EnkiShare({content, locale, currentObj})
     const target1 = useRef(null);
     const target2 = useRef(null);
 
-    const path=currentObj.dao_id>0?'enki':'enkier';
     let url;
     let urlStatic;
      
     
     let delayTime=null;
-    let localDomain='';
-   try{
     const myURL = new URL(currentObj.actor_url);
-    localDomain= myURL.hostname;
-    if(currentObj.message_id.startsWith("https:")){
-        url=currentObj.message_id;
-        let strs=currentObj.message_id.split('/');
-        let mid=strs[strs.length-1];
-        urlStatic=`https://${localDomain}/enki/${mid.toLowerCase()}.html`
-    }else {
+    const localDomain=myURL.hostname;
+
+   try{
+    if(currentObj.link_url.includes('/communities/enki')){ //enki服务器的
+        if(currentObj.message_id.startsWith("https:")){
+            url=`https://${currentObj?.httpNetWork?localDomain:env.domain}/communities/enkier/${currentObj.id}`
+            let strs=currentObj.message_id.split('/');
+            let mid=strs[strs.length-1];
+            urlStatic=`https://${currentObj?.httpNetWork?localDomain:env.domain}/enki/${mid.toLowerCase()}.html`
+        }else {
+            url=currentObj.link_url;
+            urlStatic=`https://${localDomain}/enki/${currentObj.message_id.toLowerCase()}.html`
+        }
+    } else
+    {
         url=currentObj.link_url;
-        urlStatic=`https://${localDomain}/enki/${currentObj.message_id.toLowerCase()}.html`
+        urlStatic="";
     }
+   
+  
     
    
 
@@ -93,7 +100,7 @@ export default function EnkiShare({content, locale, currentObj})
             <div style={{textAlign:'right',padding:'16px'}} >
             <Button  ref={target2} variant="light" size="sm" onClick={getHtml} > <img src='/clipboard.svg' alt=""/> {t('copyLinkText')}html</Button>
             </div>
-            {currentObj?.title && <>
+            {currentObj?.title && urlStatic && <>
             <div> {t('staticLinkText')}：</div>
             <div className="d-flex align-items-center flex-wrap  mb-3" >
                 <div style={{wordWrap: 'break-word', wordBreak: 'break-all'}} >{urlStatic} </div>
