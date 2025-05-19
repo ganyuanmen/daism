@@ -175,9 +175,9 @@ export async function messageDel({mid,type,path,sctype,pid,rAccount,account})
     else{ 
 		let lok=await execute(`call del_commont(?,?,?)`,[sctype,mid,pid]); //删除回复
 		if(lok){
-			const data=await getData("select actor_account from a_message where message_id=?",[pid],true);
-			if(data?.actor_account) 
-				sendcommont(data?.actor_account,mid,sctype==='sc'?'enki':'enkier') 
+		//	const data=await getData("select actor_account from a_message where message_id=?",[pid],true);
+		//	if(data?.actor_account) 
+				sendcommont(account,mid,sctype==='sc'?'enki':'enkier') 
 		}	
 	}
 }

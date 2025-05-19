@@ -74,7 +74,7 @@ export default withSession(async (req, res) => {
                         path,
                         message_id,
                         pathtype,
-                        vedioURL,
+                        vedioURL[0],
                         'Create'
                     ); 
                 },1);
@@ -119,7 +119,7 @@ export default withSession(async (req, res) => {
                         path,
                         messageId[0],
                         pathtype,
-                        vedioURL,
+                        vedioURL[0],
                         'Update'
                     ) 
 

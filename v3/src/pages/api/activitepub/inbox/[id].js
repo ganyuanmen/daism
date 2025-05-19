@@ -63,6 +63,7 @@ export default async function handler(req, res) {
 	console.info(`${new Date().toLocaleString()}:inbox-----${name}-${_type}-${postbody.actor}`);
 	if( process.env.IS_DEBUGGER==='1') { 
 		console.info(postbody);
+		console.info(postbody?.object?.attachment);
 		// console.info(req.headers)
 	}
 	
@@ -117,7 +118,7 @@ export default async function handler(req, res) {
 					createMess(postbody,name,actor).then(()=>{}); 
 					break;
 				case 'announce':
-					handle_announce(postbody,name,actor).then(()=>{});;
+					handle_announce(postbody,name,actor).then(()=>{});
 					break;
 				case 'like':break;
 				
@@ -179,7 +180,7 @@ async function handle_update(postbody) {
 async function handle_delete(rid) {
 	if(!rid) return;
 	if(rid.includes('communities/enki')) { //删除 嗯文
-		 execute(`delete from a_sendmessage where message_id =? and receive_account=?`,[rid]);
+		 execute(`delete from a_message where message_id =?`,[rid]);
 	}
     else if(rid.includes('commont/enki')){  //删除回复
 		const sctype=rid.includes('commont/enkier/')?'':'sc';
@@ -189,8 +190,9 @@ async function handle_delete(rid) {
 	}
 
 	else { //非enki 嗯文
-		execute("delete from a_message where message_id=?;delete from a_message_commont where message_id=?;delete from a_messagesc_commont where message_id=?"
-			,[rid,rid,rid]); 
+		execute("delete from a_message where message_id=?",[rid]); 
+		execute("delete from a_message_commont where message_id=?",[rid]);
+		execute("delete from a_messagesc_commont where message_id=?",[rid]);
     }
 	
 	return;
@@ -199,8 +201,8 @@ async function handle_delete(rid) {
 async function createMess(postbody,name,actor){ //对方的推送
 	
 	const content=(postbody?.object?.content?new String(postbody.object.content).toString():'');
-	const imgpath=(postbody?.object?.imgpath?new String(postbody.object.imgpath).toString():'');
-
+	const imgpath=(postbody?.object?.imgPath?new String(postbody.object.imgPath).toString():'');
+	
 	if(!actor?.account) return;
 	const strs=actor?.account.split('@') ;
 	let localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
