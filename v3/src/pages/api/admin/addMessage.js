@@ -32,7 +32,7 @@ export default withSession(async (req, res) => {
         const sctype = daoid ? 'sc' : '';
         const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
         const tagar = content[0].match(regex)?.map(match => match.slice(1,40)) || [];
-        // console.log(tagar)
+
         const pathtype=daoid?'enki':'enkier';
 
         if (!messageId) { //增加

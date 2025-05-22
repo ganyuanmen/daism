@@ -39,7 +39,7 @@ export default async function handler(req, res) {
               // Write the decoded data to a file.  Critical error handling.
               try {
                 await fs.promises.writeFile(`./uploads/q1/${fileName}`, decoded);
-                console.log(`Image saved to: ${fileName}`);
+                console.info(`Image saved to: ${fileName}`);
                 img.setAttribute('src', `https://daism.io/uploads/q1/${fileName}`); // Use file:// for correct handling
               } catch (err) {
                 console.error(`Error saving image to ${fileName}:`, err);

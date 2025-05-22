@@ -116,7 +116,7 @@ export async function insertMessage(account,message_id,pathtype,contentType,idx)
 		execute(sql,paras);
 	} else if(contentType==='Update' && sctype==='sc' && idx===0)
 	{
-		// console.log("updateupdateupdateupdateupdate")
+		
 		sql="update a_message set content=?,top_img=? where message_id=? and receive_account!=''";
 		paras=[re.content,re.top_img,re.message_id];
 		execute(sql,paras)

@@ -140,7 +140,7 @@
     "moreText":"更多",
     "allPostText":"本站公开嗯文",
     "uploadPitruseText":"添加图片",
-    "uploadVedioText":"添加视频",
+    "uploadVedioText":"上传视频",
     "closeText":"关闭",
     "vedioUrlText":"视频地址" ,
     "titleText":"视频标题",
@@ -170,7 +170,11 @@
     "isFixButton":"固定工具栏",
     "htmlTitleText":"网页标题",
     "staticLinkText":"静态网页",
-    "footText":"已到底部"
+    "footText":"已到底部",
+    "vedioSizeText":"视频大小不能超过100MB",
+    "uploaddingText":"上传中...",
+    "vedioLinkText":"视频链接",
+    "selectVedioText":"请选择视频文件"
 
 
   

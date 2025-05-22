@@ -140,7 +140,7 @@
     "moreText":"more",
     "allPostText":"this website Public Post",
     "uploadPitruseText":"Add image",
-    "uploadVedioText":"Add vedio",
+    "uploadVedioText":"upload video",
     "closeText":"Close",
     "vedioUrlText":"Vedio URL" ,
     "titleText":"Vedio Title",
@@ -170,7 +170,12 @@
     "isFixButton":"Fixed toolbar",
     "htmlTitleText":"Page Title",
     "staticLinkText":"static Web page",
-    "footText":"Already at the bottom"
+    "footText":"Already at the bottom",
+    "vedioSizeText":"The video size cannot exceed 100MB",
+    "vedioButtonText":"upload video",
+    "uploaddingText":"Uploading ...",
+    "vedioLinkText":"Video link",
+    "selectVedioText":"Please select a video file"
 
   }
 }

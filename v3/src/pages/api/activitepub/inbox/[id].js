@@ -56,7 +56,7 @@ export default async function handler(req, res) {
 	if(!postbody.type || !postbody.actor) return res.status(404).json({errMsg:'Invalid JSON'})	
 	const _type=postbody.type.toLowerCase();
 	if(_type==='delete' && !postbody?.object?.id) {
-		console.log("no delete content--->")
+		console.info("no delete content--->")
 		return 	res.status(202).send('Accepted');
 	}
 	const name = req.query.id;
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
 	}
 
 	if(!actor || !actor?.pubkey || !actor?.account) { 
-		console.log("actor not found",actor)
+		console.info("actor not found",actor)
 		return res.status(404).json({errMsg:'actor not found'});
 	}
 
@@ -97,7 +97,7 @@ export default async function handler(req, res) {
 		const isVerified = await verifySignature(req,actor,name);
 	
 		if (isVerified) {
-		  	console.log("Signature verified successfully!");
+		  	console.info("Signature verified successfully!");
 		  // 在这里处理你的ActivityPub消息
 			switch (postbody.type.toLowerCase()) {
 				case 'accept': 
@@ -201,7 +201,14 @@ async function handle_delete(rid) {
 async function createMess(postbody,name,actor){ //对方的推送
 	
 	const content=(postbody?.object?.content?new String(postbody.object.content).toString():'');
-	const imgpath=(postbody?.object?.imgPath?new String(postbody.object.imgPath).toString():'');
+	let imgpath='';
+	let vedioURL='';
+	if(postbody?.object?.attachment && Array.isArray(postbody.object.attachment)){
+		postbody.object.attachment.forEach(element=>{
+			if(element?.mediaType.startsWith("image")) imgpath=element?.url;
+			else if(element?.mediaType.startsWith("video")) vedioURL=element?.url;
+		})
+	}
 	
 	if(!actor?.account) return;
 	const strs=actor?.account.split('@') ;
@@ -213,45 +220,43 @@ async function createMess(postbody,name,actor){ //对方的推送
 		let linkUrl=postbody.object.url || postbody.object.atomUri
 		execute("call inbox_in(?,?,?,?,?,?,?,?,?,?,?,?,?)",[
 			actor?.manager??'',postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content,actor?.inbox,
-			`${name}@${process.env.LOCAL_DOMAIN}`,linkUrl,imgpath,postbody?.object?.vedioURL??'',1]).then(()=>{
+			`${name}@${process.env.LOCAL_DOMAIN}`,linkUrl,imgpath,vedioURL,1]).then(()=>{
 			addLink(content, postbody.object.id,'create')
 		})
 	}
 	else { //回复
+		const sql=`INSERT IGNORE INTO a_message${sctype}_commont(manager,pid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`;
+		const paras=[
+			postbody?.object?.manager??'',
+			're?.message_id',
+			postbody.object.id,
+			strs[0],
+			actor?.avatar,
+			actor?.account,
+			postbody.actor,
+			content,
+			postbody?.object?.typeIndex??'0',
+			vedioURL,
+			imgpath,
+			postbody?.object?.bid??Math.floor(Date.now()/1000)
+		];
+		let re={};
 		if(replyType.includes('communities/enki')){ //是enki 服务推送的
 		const ids=replyType.split('/');
 		const id=ids[ids.length-1];
 			const sctype=ids[ids.length-2]==='enki'?'sc':'';
-			let re=await getOneByMessageId(id,replyType,sctype)
-			if(re['is_discussion']==1 && re?.message_id) //允许讨论
-			{
-				const sql=`INSERT IGNORE INTO a_message${sctype}_commont(manager,pid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`
-				const paras=[
-					postbody?.object?.manager??'',
-					re?.message_id,
-					postbody.object.id,
-					strs[0],
-					actor?.avatar,
-					actor?.account,
-					postbody.actor,
-					content,
-					postbody?.object?.typeIndex??'',
-					postbody?.object?.vedioUrl??'',
-					postbody?.object?.topImg??'',
-					postbody?.object?.bid??''
-				];
-
-				
-				execute(sql,paras).then(()=>{});
-				
-			}
+			re=await getOneByMessageId(id,replyType,sctype)
 		}
 		else { // 非enki 服务推送的
-			let message=await getOne({replyType,sctype:''})
-			if(message?.id)
-			execute(`INSERT IGNORE INTO a_message_commont(ppid,pid,message_id,actor_name,avatar,actor_account,actor_url,content,bid) values(?,?,?,?,?,?,?,?,?)`,
-				[replyType,message['id'],postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content,Math.floor(Date.now()/1000)]).then(()=>{});
-			}
+			re=await getOne({replyType,sctype:''})
+		}
+			
+		if(re?.message_id && re?.is_discussion===1 ) //允许讨论
+		{
+			paras[1]=re?.message_id;
+			execute(sql,paras).then(()=>{});
+			
+		}
 	}
 	
 }
@@ -342,29 +347,9 @@ async function verifySignature(req,actor,name) {
 		return false;
 	}
   
-	
-	// console.log("1req.url:",req.url)
-	let inboxFragment =req.url; // `/api/activitepub/inbox/${name}`;
-	// console.log("2inboxFragment:",inboxFragment)
-	// if(!req.headers.host || !req.headers.date || !req.headers.digest || !req.headers['signature']) {
-	// 	console.info("no signature item error")
-	// 	return res.status(403).json({errMsg:'signature error'});
-	// }
-	// let stringToSign = `(request-target): post ${inboxFragment}\nhost: ${req.headers.host}\ndate: ${req.headers.date}\ndigest: ${req.headers.digest}\ncontent-type: application/activity+json`;
-	// console.log("3stringToSign:",stringToSign)
-	// const verify = crypto.createVerify('RSA-SHA256');
-	// verify.update(stringToSign);
-	// verify.end();
 
-	// let tempAr=req.headers['signature'].split(",");
-	// const jsonObj = stringToJson(tempAr[tempAr.length-1]);
-	// console.log("4jsonObj:",jsonObj)
-	// const isVerified = verify.verify(actor?.pubkey, jsonObj.signature, 'base64'); // 验证签名
-	// console.log("5verify:",actor?.pubkey, jsonObj.signature)
-	// if(!isVerified) {
-	// 	console.info("checks signature error")
-	// 	 return res.status(403).json({errMsg:'signature error'});
-	// }
+	let inboxFragment =req.url; // `/api/activitepub/inbox/${name}`;
+
 
 
 	// const inboxFragment = '/inbox'; //  假设 inbox 的路径是 /inbox
@@ -377,7 +362,7 @@ async function verifySignature(req,actor,name) {
   
 	  // 2. 构建签名字符串
 	  const stringToSign = createStringToSign(req, inboxFragment, headers);
-		// console.log("stringToSign",stringToSign)
+		
 	  // 3. 验证签名
 	  const isVerified = await verifyRsaSignature(stringToSign, signature, publicKey, algorithm);
 	  return isVerified;
@@ -461,27 +446,3 @@ async function verifySignature(req,actor,name) {
     }
 }
 
-
-
-	// console.log("1req.url:",req.url)
-	// let inboxFragment = `/api/activitepub/inbox/${name}`;
-	// console.log("2inboxFragment:",inboxFragment)
-	// if(!req.headers.host || !req.headers.date || !req.headers.digest || !req.headers['signature']) {
-	// 	console.info("no signature item error")
-	// 	return res.status(403).json({errMsg:'signature error'});
-	// }
-	// let stringToSign = `(request-target): post ${inboxFragment}\nhost: ${req.headers.host}\ndate: ${req.headers.date}\ndigest: ${req.headers.digest}\ncontent-type: application/activity+json`;
-	// console.log("3stringToSign:",stringToSign)
-	// const verify = crypto.createVerify('RSA-SHA256');
-	// verify.update(stringToSign);
-	// verify.end();
-
-	// let tempAr=req.headers['signature'].split(",");
-	// const jsonObj = stringToJson(tempAr[tempAr.length-1]);
-	// console.log("4jsonObj:",jsonObj)
-	// const isVerified = verify.verify(actor?.pubkey, jsonObj.signature, 'base64'); // 验证签名
-	// console.log("5verify:",actor?.pubkey, jsonObj.signature)
-	// if(!isVerified) {
-	// 	console.info("checks signature error")
-	// 	 return res.status(403).json({errMsg:'signature error'});
-	// }

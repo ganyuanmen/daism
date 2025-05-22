@@ -102,7 +102,7 @@ export async function saveHTML(actorName,content,title,mid,textContent,avatar,ac
     if (err) {
       console.error(`${actorName}写入失败:`, err);
     } else {
-      console.log(`${actorName}文件写入成功`);
+      console.info(`${actorName}文件写入成功`);
     }
   });
 

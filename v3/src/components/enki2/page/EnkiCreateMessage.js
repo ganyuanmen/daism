@@ -109,7 +109,6 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
 
 
         showTip(t('submittingText'))
-        console.log("actor",actor)
 
         const formData = new FormData();
         if(currentObj?.message_id){  //修改
