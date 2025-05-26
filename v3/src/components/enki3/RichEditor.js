@@ -2,9 +2,11 @@ import React, {useImperativeHandle,useRef, forwardRef,useState } from "react";
 import Media from "./Media";
 import SCProperty from "./SCProperty";
 import dynamic from 'next/dynamic';
+import Loadding from '../Loadding'
 
-
-const Richwet = dynamic(() => import('../RichTextEditor'), { ssr: false });
+const Richwet = dynamic(() => import('../RichTextEditor'), { ssr: false,
+    loading: () => <Loadding />,
+ });
 
 
 /**
