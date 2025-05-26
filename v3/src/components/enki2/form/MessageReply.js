@@ -127,11 +127,10 @@ const MessageReply = forwardRef(({ currentObj, addReplyCallBack, afterEditcall,s
                     onChange={e=> {if(e.target.checked) setTypeIndex(0)}}  id='reinline-2' />
                     <Form.Check inline label={t('longText')} name="regroup1" type='radio' checked={typeIndex===1} 
                     onChange={e=> {if(e.target.checked) setTypeIndex(1)}}  id='reinline-1' />
-                      <Form.Check inline label={t('isFixButton')} name="group1" type='radio' defaultChecked={typeIndex===2} onClick={e=>
-                    {if(e.target.checked) setTypeIndex(2)}}  id='inline-3' />
+                    
                     </Form>
                     {typeIndex===0?<Editor  ref={editorRef} currentObj={null} nums={nums}  showProperty={false} />
-                    :<RichEditor  ref={richEditorRef} currentObj={null}  isFix={typeIndex===2}  />}
+                    :<RichEditor  ref={richEditorRef} currentObj={null}    />}
                     <div className='mt-2 mb-2' style={{ textAlign: 'center' }} >
                         <Button onClick={submit} variant="primary"> <ReplySvg size={16} /> {t('replyText')}</Button>
                     </div>

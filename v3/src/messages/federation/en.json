@@ -5,7 +5,7 @@
     "eventArtice":"Event posting",
     "esctext":"return",
     "submitText":"Submit",
-    "vedioText":"Vedio link",
+
     "contenValidText":"Content cannot be empty or less than 10 characters",
     "monthText":"Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sept,Oct,Nov,Dec",
     "loginText":"Login",
@@ -118,7 +118,7 @@
     "noHandleText": "Please log in to the {domain} domain to perform the operation",
     "linkText":"Link Address",
     "copyText":"copy",
-    "copyLinkText":"copy link",
+    "copyLinkText":"Copy article introduction",
     "publishText":"Publish Something",
     "noRegisterText":"You haven't registered a community account yet",
     "loginDomainText":"This account needs to log in to {domain} to publish articles",
@@ -175,7 +175,11 @@
     "vedioButtonText":"upload video",
     "uploaddingText":"Uploading ...",
     "vedioLinkText":"Video link",
-    "selectVedioText":"Please select a video file"
+    "selectVedioText":"Please select a video file",
+    "maxImageSize":"The file size cannot exceed {num} MB",
+    "videoURLValid":"Please enter a valid video URL (mp4 format or YouTube/Bilibili/Vimeo link)",
+    "noSupotVideo":"Your browser does not support HTML5 videos",
+    "noSuportType":"Unsupported video format"
 
   }
 }

@@ -182,19 +182,26 @@ async function handle_delete(rid) {
 	if(rid.includes('communities/enki')) { //删除 嗯文
 		 execute(`delete from a_message where message_id =?`,[rid]);
 	}
-    else if(rid.includes('commont/enki')){  //删除回复
-		const sctype=rid.includes('commont/enkier/')?'':'sc';
+    else{
+		let sctype='';
+		if(rid.includes('commont/enki')) sctype=rid.includes('commont/enkier/')?'':'sc';
 		const row=await getData(`select pid from a_message${sctype}_commont where message_id=?`,[rid],true);
-		if(row.pid)
-		 execute(`call del_commont(?,?,?)`,[sctype,rid,row.pid]); //删除回复
+		if(row.pid) execute(`call del_commont(?,?,?)`,[sctype,rid,row.pid]); 
 	}
-
-	else { //非enki 嗯文
-		execute("delete from a_message where message_id=?",[rid]); 
-		execute("delete from a_message_commont where message_id=?",[rid]);
-		execute("delete from a_messagesc_commont where message_id=?",[rid]);
-    }
 	
+	// if(rid.includes('commont/enki')){  //删除回复
+	// 	const sctype=rid.includes('commont/enkier/')?'':'sc';
+	// 	const row=await getData(`select pid from a_message${sctype}_commont where message_id=?`,[rid],true);
+	// 	if(row.pid)
+	// 	 execute(`call del_commont(?,?,?)`,[sctype,rid,row.pid]); //删除回复
+	// }
+
+	// else { //非enki 嗯文
+	// 	execute("delete from a_message where message_id=?",[rid]); 
+	// 	execute("delete from a_message_commont where message_id=?",[rid]);
+	// 	execute("delete from a_messagesc_commont where message_id=?",[rid]);
+    // }
+	// let lok=await execute(`call del_commont(?,?,?)`,[sctype,mid,pid]); //删除回复
 	return;
 }	
 
@@ -225,35 +232,35 @@ async function createMess(postbody,name,actor){ //对方的推送
 		})
 	}
 	else { //回复
-		const sql=`INSERT IGNORE INTO a_message${sctype}_commont(manager,pid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`;
-		const paras=[
-			postbody?.object?.manager??'',
-			're?.message_id',
-			postbody.object.id,
-			strs[0],
-			actor?.avatar,
-			actor?.account,
-			postbody.actor,
-			content,
-			postbody?.object?.typeIndex??'0',
-			vedioURL,
-			imgpath,
-			postbody?.object?.bid??Math.floor(Date.now()/1000)
-		];
+		let sctype='';
 		let re={};
 		if(replyType.includes('communities/enki')){ //是enki 服务推送的
 		const ids=replyType.split('/');
 		const id=ids[ids.length-1];
-			const sctype=ids[ids.length-2]==='enki'?'sc':'';
+			sctype=ids[ids.length-2]==='enki'?'sc':'';
 			re=await getOneByMessageId(id,replyType,sctype)
 		}
 		else { // 非enki 服务推送的
-			re=await getOne({replyType,sctype:''})
+			re=await getOne({id:replyType,sctype:''})
 		}
 			
 		if(re?.message_id && re?.is_discussion===1 ) //允许讨论
 		{
-			paras[1]=re?.message_id;
+			const paras=[
+				postbody?.object?.manager??'',
+				re?.message_id??'',
+				postbody.object.id,
+				strs[0],
+				actor?.avatar,
+				actor?.account,
+				postbody.actor,
+				content,
+				postbody?.object?.typeIndex??'0',
+				vedioURL,
+				imgpath,
+				postbody?.object?.bid??Math.floor(Date.now()/1000)
+			];
+			const sql=`INSERT IGNORE INTO a_message${sctype}_commont(manager,pid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`;
 			execute(sql,paras).then(()=>{});
 			
 		}

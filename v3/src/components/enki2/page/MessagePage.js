@@ -31,7 +31,7 @@ import ShowAddress from "../../ShowAddress";
  * @fromPerson 是否从 个人帐户 中打开
  */
 
-export default function MessagePage({path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,filterTag,fromPerson=false}) {
+export default function MessagePage({tabIndex,path,locale,env,currentObj,delCallBack,setActiveTab,accountAr,daoData,filterTag,fromPerson=false}) {
  
     const[fetchWhere, setFetchWhere] = useState({currentPageNum:0
         // ,account:currentObj?.receive_account?currentObj?.receive_account:currentObj?.actor_account
@@ -78,15 +78,14 @@ export default function MessagePage({path,locale,env,currentObj,delCallBack,setA
             if(path==='enki'){
                 let _member=daoData.find((obj)=>{return obj.dao_id===currentObj.dao_id})
                 return !!_member;
-            }else if(path!=='enkier'){
+            }else if(path==='enkier'){
                 if(!currentObj.receive_account && actor?.actor_account===currentObj.actor_account && currentObj.dao_id===0) return true;
             }
             return false;
         }
-
         setIsEdit(checkIsEdit())
 
-    },[actor,currentObj,loginsiwe])
+    },[actor,currentObj,loginsiwe,daoData])
 
     const ableReply = () => { //是否允许回复，点赞，书签
         if(!loginsiwe || !actor?.actor_account) return false;
@@ -226,7 +225,7 @@ const renderedArrays = data.map((obj, idx) => {
       ))} */}
             <div className="daismCard"  onClick={handleClick} ref={handleDivRef} dangerouslySetInnerHTML={{__html: replacedText}}></div>
             {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
-            {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{maxWidth:'100%'}} /> }
+            {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{width:'100%'}} /> }
             {currentObj?.vedio_url && <ShowVedio vedioUrl={currentObj.vedio_url} /> }
  
         </Card.Body>
@@ -255,8 +254,8 @@ const renderedArrays = data.map((obj, idx) => {
                 <EnKiHeart isEdit={ableReply() && actor?.domain===env.domain} currentObj={currentObj} path={path} />
                 <EnKiBookmark isEdit={ableReply() && actor?.domain===env.domain} currentObj={currentObj} path={path}/>
               {divContent && <EnkiShare content={divContent} env={env} currentObj={currentObj} />}
-             {path!=='SC' && actor?.domain===env.domain && <EnkiEditItem path={path} env={env} isEdit={!fromPerson && isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
-              preEditCall={e=>{setActiveTab(1)}} sctype={currentObj?.dao_id>0?'sc':''} fromPerson={fromPerson} /> }
+             {path!=='SC' && actor?.domain===env.domain && <EnkiEditItem path={path} env={env} isEdit={isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
+              preEditCall={e=>{if(setActiveTab) setActiveTab(tabIndex)}} sctype={currentObj?.dao_id>0?'sc':''} fromPerson={fromPerson} /> }
             </div>
             {!currentObj.httpNetWork && !currentObj.actor_account.endsWith(env.domain) && <div className="mt-2 mb-2" style={{textAlign:'center'}}>
                     <a target="_blank" href={currentObj?.link_url} >{t('origlText')}......</a>

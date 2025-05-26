@@ -18,7 +18,7 @@ import DaismInputGroup from "../form/DaismInputGroup";
  * @callBack 回退到主页处理 
  */
 export default function CreateMess({currentObj,afterEditCall,addCallBack,accountAr,callBack}) {
-    
+
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
@@ -74,7 +74,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //
         formData.append('accountAt',(typeIndex===0?editorRef:richEditorRef).current.getAccount());  //@用户
         formData.append('textContent', typeIndex===0?contentHTML:richEditorRef.current.getTextContent());  //文本
-        formData.append('typeIndex', typeIndex>0?1:0);  //长或短
+        formData.append('typeIndex', typeIndex);  //长或短
         formData.append('content', contentHTML); //，html内容
         formData.append('actorid', actor?.id);
         formData.append('title', titleRef.current.getData());  //标题
@@ -111,12 +111,10 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
                     {if(e.target.checked) setTypeIndex(0)}}  id='inline-2' />
                 <Form.Check inline label={t('longText')} name="group1" type='radio' defaultChecked={typeIndex===1} onClick={e=>
                     {if(e.target.checked) setTypeIndex(1)}}  id='inline-1' />
-                 <Form.Check inline label={t('isFixButton')} name="group1" type='radio' defaultChecked={typeIndex===2} onClick={e=>
-                    {if(e.target.checked) setTypeIndex(2)}}  id='inline-3' />
             </Form>
             <DaismInputGroup  horizontal={true} title={t('htmlTitleText')}  ref={titleRef} defaultValue={currentObj ? currentObj.title : ''} />
         {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} accountAr={accountAr} showProperty={true} />
-        :<RichEditor  ref={richEditorRef} currentObj={currentObj} accountAr={accountAr} isFix={typeIndex===2} />}
+        :<RichEditor  ref={richEditorRef} currentObj={currentObj} accountAr={accountAr}  />}
      
         {/* <TagShow ref={inputRef} cid={currentObj?.id} type='' t={t} /> */}
         <div className="form-check form-switch  mt-3">

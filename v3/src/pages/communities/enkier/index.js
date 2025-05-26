@@ -12,11 +12,11 @@ import ShowErrorBar from '../../../components/ShowErrorBar';
 import EnKiFollow from '../../../components/enki2/form/EnKiFollow';
 import EnKiUnFollow from '../../../components/enki2/form/EnKiUnFollow'
 import FollowCollection from '../../../components/enki3/FollowCollection';
-import { getEnv,decrypt } from '../../../lib/utils/getEnv';
-import { encrypt } from '../../../lib/utils/windowjs';
-import { getOne } from '../../../lib/mysql/message';
+import { getEnv, } from '../../../lib/utils/getEnv';
+// import { encrypt } from '../../../lib/utils/windowjs';
+// import { getOne } from '../../../lib/mysql/message';
 import { getJsonArray } from '../../../lib/mysql/common';
-import { httpGet } from '../../../lib/net';
+// import { httpGet } from '../../../lib/net';
 import Head from 'next/head';
 import Mainself from '../../../components/enki3/Mainself';
 import CreateMess from '../../../components/enki3/CreateMess';
@@ -27,12 +27,11 @@ import { Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,Rec
 
 /**
  * 个人社区
- * @openObj 查看单个嗯文
  * @env 环境变量
  * @locale zh/cn
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  */ 
-export default function enkier({openObj,env,locale,accountAr }) {
+export default function enkier({env,locale,accountAr }) {
     const [fetchWhere, setFetchWhere] = useState({
         currentPageNum: -1,  //当前页 初始不摘取数据
         daoid: 0,  //此处不用
@@ -46,8 +45,8 @@ export default function enkier({openObj,env,locale,accountAr }) {
  
     const [leftHidden,setLeftHidden]=useState(false)
     const [rightHidden,setRightHidden]=useState(false)
-    const [currentObj, setCurrentObj] = useState(openObj?.id?openObj:null);  //用户选择的发文对象
-    const [activeTab, setActiveTab] = useState(openObj?.id ? 2 : 0);
+    const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
+    const [activeTab, setActiveTab] = useState(0);
     const [followMethod,setFollowMethod]=useState('getFollow0') //默认显示我关注谁
     const [searObj,setSearObj]=useState(null) //查找到帐号的对象
     const [findErr,setFindErr]=useState(false) //搜索帐号没找到
@@ -65,11 +64,11 @@ export default function enkier({openObj,env,locale,accountAr }) {
    
     function removeUrlParams() {
         setCurrentObj(null);
-        if(window.location.href.includes('?d=')) {
-            const url = new URL(window.location.href);
-            url.search = ''; // 清空所有参数
-            window.history.replaceState({}, '', url.href);
-        }
+       // if(window.location.href.includes('?d=')) {
+         //   const url = new URL(window.location.href);
+         //   url.search = ''; // 清空所有参数
+            window.history.replaceState({}, '', `${locale==='en'?'':'/zh'}/communities/enkier`);
+       // }
       }
       
       const paras={
@@ -106,17 +105,16 @@ export default function enkier({openObj,env,locale,accountAr }) {
     
       useEffect(()=>{
         if(actor?.id) actorRef.current=actor;
-        if(!openObj?.id){  //不是详情页
-            if(window.sessionStorage.getItem("loginsiwe")==='1'){
-              setTimeout(() => {
-                homeHandle();
-              }, 200); 
-            }else 
-            {
-                allHandle();
-            }
-          
+        if(window.sessionStorage.getItem("loginsiwe")==='1'){
+            setTimeout(() => {
+            homeHandle();
+            }, 200); 
+        }else 
+        {
+            allHandle();
         }
+          
+        
     },[actor])
    
     useEffect(() => {
@@ -253,16 +251,24 @@ export default function enkier({openObj,env,locale,accountAr }) {
         // if(post) history.pushState({id:paras.at}, tc('enkierTitle'), `#${paras.at}`);
     }
 
-    const getDomain=(messageObj)=>{
-        let _account=(messageObj.send_type==0?messageObj.actor_account:messageObj.receive_account);
-        return _account.split('@')[1];
+    const getID=(messageObj)=>{
+      
+            if(messageObj?.receive_account){
+                return `${locale==='en'?'':'/zh'}/communities/enkier/${messageObj.id}`
+            }
+            else {
+                 return `${locale==='en'?'':'/zh'}/communities/enkier/${messageObj.message_id}`
+            }
+      
       }
     
     const afterEditCall=(messageObj)=>{
         setCurrentObj(messageObj);
         setActiveTab(2);
-        sessionStorage.setItem("daism-list-id",messageObj.id)
-        history.pushState({ id: messageObj?.id }, `id:${messageObj?.id}`, `?d=${encrypt(`${messageObj.id},${getDomain(messageObj)}`,env)}`);
+        sessionStorage.setItem("daism-list-id",messageObj.id);
+        if(!messageObj?.httpNetWork) //本地的
+            window.history.replaceState({}, '', getID(messageObj));
+       // history.pushState({ id: messageObj?.id }, `id:${messageObj?.id}`, `?d=${encrypt(`${messageObj.id},${getDomain(messageObj)}`,env)}`);
       }
 
 
@@ -367,10 +373,9 @@ export default function enkier({openObj,env,locale,accountAr }) {
                     delCallBack={callBack} afterEditCall={afterEditCall} accountAr={accountAr} path='enkier' />
 
                     :activeTab === 1 ? <CreateMess addCallBack={homeHandle} accountAr={accountAr} currentObj={currentObj} 
-                    afterEditCall={afterEditCall}  
-                    callBack={callBack} />
+                    afterEditCall={afterEditCall} callBack={callBack} />
 
-                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj} 
+                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale} env={env} currentObj={currentObj} tabIndex={1}
                     delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} filterTag={filterTag} />
 
                     :activeTab===3 && <FollowCollection locale={locale}  method={followMethod}/>}
@@ -392,25 +397,11 @@ export default function enkier({openObj,env,locale,accountAr }) {
 }
 
 
-export const getServerSideProps = async ({ locale,query }) => {
-    let openObj={}; 
+export const getServerSideProps = async ({ locale }) => {
+  
     const env=getEnv();
     const accountAr=await getJsonArray('accountAr',[env?.domain])
-    if(query.d){
-        const [id,domain]=decrypt(query.d).split(',');
-        if(domain==env.domain){
-            openObj=await getOne({id,sctype:''})
-        }
-        else 
-        {
-            let response=await httpGet(`https://${domain}/api/getData?id=${id}&sctype=`,{'Content-Type': 'application/json',method:'getOne'})
-            if(response?.message) openObj=response.message
-        }
-    }
-
-    if(openObj?.createtime) openObj.createtime=new Date(openObj.createtime).toJSON();
-    if(openObj?.currentTime) openObj.currentTime=new Date(openObj.currentTime).toJSON();
-    if(openObj?.reply_time) openObj.reply_time=new Date(openObj.reply_time).toJSON();
+  
 
     return {
         props: {
@@ -418,7 +409,7 @@ export const getServerSideProps = async ({ locale,query }) => {
                 ...require(`../../../messages/shared/${locale}.json`),
                 ...require(`../../../messages/federation/${locale}.json`),
             }, locale
-            ,env,openObj,accountAr
+            ,env,accountAr
         }
     }
 }

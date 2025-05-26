@@ -21,44 +21,17 @@ export default function EnkiShare({content, env, currentObj})
     const target1 = useRef(null);
     const target2 = useRef(null);
 
-    let url;
-    let urlStatic;
-     
-    
+
     let delayTime=null;
-    const myURL = new URL(currentObj.actor_url);
-    const localDomain=myURL.hostname;
 
-   try{
-    if(currentObj.link_url.includes('/communities/enki')){ //enki服务器的
-        if(currentObj.message_id.startsWith("https:")){
-            url=`https://${currentObj?.httpNetWork?localDomain:env.domain}/communities/enkier/${currentObj.id}`
-            let strs=currentObj.message_id.split('/');
-            let mid=strs[strs.length-1];
-            urlStatic=`https://${currentObj?.httpNetWork?localDomain:env.domain}/enki/${mid.toLowerCase()}.html`
-        }else {
-            url=currentObj.link_url;
-            urlStatic=`https://${localDomain}/enki/${currentObj.message_id.toLowerCase()}.html`
-        }
-    } else
-    {
-        url=currentObj.link_url;
-        urlStatic="";
-    }
-   
-  
-    
-   
 
-   }catch(e){}
-    
 
-    const uc=`<a href="${url}" target="_blank" style="width:100%; align-items:center;border:1px solid #ccc;font-size:1rem; color: currentColor;border-radius:8px;display:flex;text-decoration:none" >
+    const uc=`<a href="${currentObj.link_url}" target="_blank" style="width:100%; align-items:center;border:1px solid #ccc;font-size:1rem; color: currentColor;border-radius:8px;display:flex;text-decoration:none" >
         <div style="aspect-ratio:1;flex:0 0 auto;position:relative;width:120px;border-radius:8px 0 0 8px;" >
             <img src='${currentObj.top_img || currentObj.avatar}' alt="" style="background-position:50%;background-size:cover;display:block;height:100%;margin:0;object-fit:cover;width:100%;border-radius:8px 0 0 8px;">
         </div>
         <div style="width:100%" >
-            <div style="padding:2px 8px 2px 8px" >${localDomain}</div>
+            <div style="padding:2px 8px 2px 8px" >${currentObj.actor_account.split('@')[1]}</div>
             <div style="padding:2px 8px 2px 8px" >${currentObj.actor_name} (${currentObj.actor_account})</div>
             <div style="width:100%;padding:2px 8px 2px 8px;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;" > ${content}</div>	
         </div>
@@ -86,9 +59,9 @@ export default function EnkiShare({content, env, currentObj})
         <Modal.Body  >
             <div> {t('linkText')}：</div>
             <div className="d-flex align-items-center flex-wrap  mb-3" >
-                <div style={{wordWrap: 'break-word', wordBreak: 'break-all'}} >{url} </div>
+                <div style={{wordWrap: 'break-word', wordBreak: 'break-all'}} >{currentObj.link_url} </div>
                 <div><Button variant="light" size="sm"   onClick={(e) => { 
-                    if(navigator.clipboard) navigator.clipboard.writeText(url);
+                    if(navigator.clipboard) navigator.clipboard.writeText(currentObj.link_url);
                     else return;
                     setShowOver1(true); //显示提示
                     if(delayTime) return; //提示未到时间，不做处理
@@ -98,21 +71,9 @@ export default function EnkiShare({content, env, currentObj})
             </div>
             <div dangerouslySetInnerHTML={{__html: uc}}></div>
             <div style={{textAlign:'right',padding:'16px'}} >
-            <Button  ref={target2} variant="light" size="sm" onClick={getHtml} > <img src='/clipboard.svg' alt=""/> {t('copyLinkText')}html</Button>
+            <Button  ref={target2} variant="light" size="sm" onClick={getHtml} > <img src='/clipboard.svg' alt=""/> {t('copyLinkText')}</Button>
             </div>
-            {currentObj?.title && urlStatic && <>
-            <div> {t('staticLinkText')}：</div>
-            <div className="d-flex align-items-center flex-wrap  mb-3" >
-                <div style={{wordWrap: 'break-word', wordBreak: 'break-all'}} >{urlStatic} </div>
-                <div><Button variant="light" size="sm"   onClick={(e) => { 
-                    if(navigator.clipboard) navigator.clipboard.writeText(urlStatic);
-                    else return;
-                    setShowOver1(true); //显示提示
-                    if(delayTime) return; //提示未到时间，不做处理
-                    delayTime=setTimeout(() => { setShowOver1(false);delayTime=null;}, 1000);}
-                    }  ref={target1}  > <img src='/clipboard.svg' alt=""/>  {t('copyText')}</Button> </div>
-           
-            </div></>}
+         
 
             <Overlay target={target1.current} show={showOver1} placement="bottom">
                     {(props) => (

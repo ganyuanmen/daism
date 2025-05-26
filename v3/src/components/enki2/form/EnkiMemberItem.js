@@ -44,7 +44,7 @@ export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
         };
 
         if (messageObj.dao_id === 0 && messageObj.manager) fetchData();
-        else if (messageObj.dao_id > 0 && messageObj.is_top ) setIsTop(true);
+        else if (messageObj.dao_id > 0 && messageObj.is_top ) setIsTop(true); else  setIsTop(false);
 
     },[messageObj]) 
  

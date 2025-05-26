@@ -3,7 +3,7 @@
 import withSession from '../../../lib/session';
 import PageLayout from '../../../components/PageLayout';
 import { useTranslations } from 'next-intl'
-import { getData, getJsonArray } from '../../../lib/mysql/common';
+import { getJsonArray } from '../../../lib/mysql/common';
 import EnkiMember from '../../../components/enki2/form/EnkiMember'
 import { getEnv } from '../../../lib/utils/getEnv';
 import { getUser } from '../../../lib/mysql/user';
@@ -16,10 +16,11 @@ import { Home,BookSvg,BackSvg,MyPost,ReceiveSvg } from '../../../lib/jssvg/SvgCo
 import MyInfomation from '../../../components/enki3/MyInfomation';
 import EnkiCreateMessage from '../../../components/enki2/page/EnkiCreateMessage';
 import { NavDropdown } from 'react-bootstrap';
+import { client } from '../../../lib/api/client';
 /**
- * 指定个人帐号
+ * 指定个人帐号 daoActor,actor,follow0,follow1,locale,env,accountAr
  */
-export default function MyActor({daoActor,actor,follow0,follow1,locale,env,personNum,companyNum,receiveNum}) {
+export default function MyActor({daoActor,actor,follow0,follow1,locale,env,accountAr}) {
   const [fetchWhere, setFetchWhere] = useState({
     currentPageNum: 0,  //当前页 初始不摘取数据
     daoid: 0,  //此处不用
@@ -31,6 +32,10 @@ export default function MyActor({daoActor,actor,follow0,follow1,locale,env,perso
     order: 'createTime', //排序
     eventnum: 2  //默认 我发布嗯文
 });
+
+const [personNum,setPersonNum]=useState(0);
+const [companyNum,setCompanyNum]=useState(0);
+const [receiveNum,setReceiveNum]=useState(0);
 
 const [leftHidden,setLeftHidden]=useState(false)
 const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
@@ -57,9 +62,27 @@ const svgs={
 }
 
 const [navIndex,setNavIndex]=useState(paras.mypost) 
+useEffect(()=>{
+ 
+},[actor])
 
 
 useEffect(() => {
+  const fetchData = async () => {
+    try {
+        const res = await client.get(`/api/getData?account=${actor?.actor_account}&actorid=${actor?.id}`,'getEnkiTotal' );
+        if(res?.status===200 && Array.isArray(res?.data)) {
+        
+                 setPersonNum(res.data[0].total);
+                 setCompanyNum(res.data[1].total);
+                 setReceiveNum(res.data[2].total);
+            }
+    } catch (error) {
+        console.error(error);
+    } 
+};
+
+
    const resizeObserver = new ResizeObserver(() => {
     if (leftDivRef.current) {
       const style = window.getComputedStyle(leftDivRef.current);
@@ -71,6 +94,8 @@ useEffect(() => {
   if (parentDivRef.current) {  
     resizeObserver.observe(parentDivRef.current);
   }
+
+  fetchData();
 
   return () =>{ 
       resizeObserver.disconnect();
@@ -169,20 +194,21 @@ useEffect(() => {
                     </NavDropdown> } 
                 </div>
            
-                    {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
-                    fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={delcallBack} fromPerson={true} 
-                    tabIndex={fetchWhere.menutype===3?1:3} daoData={daoActor}
-                    afterEditCall={afterEditCall} path={fetchWhere.menutype===3?'enkier':'enki'} />
-
-                    :activeTab === 1 ? <CreateMess addCallBack={homeHandle}  currentObj={currentObj} 
-                    afterEditCall={afterEditCall}  
-                    callBack={callBack} />
-
-                    :activeTab === 2 ? <MessagePage daoData={daoActor} path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} env={env} currentObj={currentObj}  fromPerson={true}
-                    delCallBack={delcallBack} setActiveTab={setActiveTab} />
-
-                    :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack}
-                     currentObj={currentObj} afterEditCall={afterEditCall} />
+                {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
+                      fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={delcallBack} afterEditCall={afterEditCall} 
+                      tabIndex={fetchWhere.menutype===3?1:3} path={fetchWhere.menutype===3?'enkier':'enki'}
+                      accountAr={accountAr} daoData={daoActor} fromPerson={true} />
+  
+                      :activeTab === 1 ? <CreateMess addCallBack={homeHandle}  currentObj={currentObj} 
+                      afterEditCall={afterEditCall}  accountAr={accountAr}  callBack={callBack} />
+  
+                      :activeTab === 2 ? <MessagePage  path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} daoData={daoActor} env={env} currentObj={currentObj} 
+                      delCallBack={delcallBack}  tabIndex={fetchWhere.menutype===3?1:3} setActiveTab={setActiveTab}
+                      accountAr={accountAr} fromPerson={true} />
+  
+                      :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack} 
+                      currentObj={currentObj} afterEditCall={afterEditCall} accountAr={accountAr} />
+                      
                       :<MyInfomation daoActor={daoActor} actor={actor} follow0={follow0} follow1={follow1} locale={locale} />
                   }
 
@@ -197,25 +223,23 @@ useEffect(() => {
 }
 
 export const getServerSideProps = withSession(async ({locale,query }) => {
+  const env=getEnv();
   const actor=await getUser('actor_account',query.id,'id,dao_id,actor_name,domain,manager,actor_account,actor_url,avatar,actor_desc')
   const daoActor=await getJsonArray('daoactorbyid',[actor?.id])
   const follow0=await getJsonArray('follow0',[actor?.actor_account])
   const follow1=await getJsonArray('follow1',[actor?.actor_account])
-  const personNum=await getData("select count(*) as total from v_message where lower(actor_account)=? and send_type=0",[query?.id?.toLowerCase()],true);
-  const companyNum=await getData("select count(*) as total from a_messagesc where actor_id=?",[actor?.id],true);
-  const receiveNum=await getData("select count(*) as total from v_message where lower(receive_account)=?",[query?.id?.toLowerCase()],true);
-  
+  // const personNum=await getData("select count(*) as total from v_message where lower(actor_account)=? and send_type=0",[query?.id?.toLowerCase()],true);
+  // const companyNum=await getData("select count(*) as total from a_messagesc where actor_id=?",[actor?.id],true);
+  // const receiveNum=await getData("select count(*) as total from v_message where lower(receive_account)=?",[query?.id?.toLowerCase()],true);
+  const accountAr=await getJsonArray('accountAr',[env?.domain])
+
     return {
       props: {
         messages: {
           ...require(`../../../messages/shared/${locale}.json`),
           ...require(`../../../messages/federation/${locale}.json`),
         },
-        daoActor,actor,follow0,follow1,locale,
-        personNum:personNum?.total,
-        companyNum:companyNum?.total,
-        receiveNum:receiveNum?.total
-        ,env:getEnv()
+        daoActor,actor,follow0,follow1,locale,env,accountAr
       }
     }
   }

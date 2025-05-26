@@ -11,6 +11,7 @@ export const config = {
 
 
 export default withSession(async (req, res) => {
+
     if (req.method.toUpperCase() !== 'POST') return res.status(405).json({ errMsg: 'Method Not Allowed' })
     const sessionUser = req.session.get('user');
     if (!sessionUser) return res.status(406).json({ errMsg: 'No wallet signature login' })
@@ -22,21 +23,23 @@ export default withSession(async (req, res) => {
   const form = formidable({
     uploadDir,
     keepExtensions: true,
-    maxFileSize: 100 * 1024 * 1024, // 限制为 100MB
+    maxFileSize: 120 * 1024 * 1024, // 限制为 120MB
+    multiples: false,
   });
 
+ 
   form.parse(req, (err, fields, files) => {
-    if (err) {
-      return res.status(500).json({ message: "Upload failed" });
-    }
-
+    if (err) return res.status(err.httpCode || 500).json({ err });
+    
     const file = files.video;
     const mimetype = file[0]?.mimetype || file.mimetype;
-    if (!mimetype.startsWith("video/")) {
-      return res.status(400).json({ message: "Only supports uploading video files" });
-    }
-    const videName=file[0]?.newFilename || file.newFilename;
-
-    return res.status(200).json({ message: "Upload successful", path: `https://${process.env.LOCAL_DOMAIN}/uploads/${_path}/${videName}` });
+    if (!mimetype.startsWith("video/")) return res.status(400).json({ message: "Only supports uploading video files" });
+    
+    const videName = file[0]?.newFilename || file.newFilename;
+    return res.status(200).json({
+      message: "Upload successful",
+      path: `https://${process.env.LOCAL_DOMAIN}/uploads/${_path}/${videName}`,
+    });
   });
+
 })

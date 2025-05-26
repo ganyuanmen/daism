@@ -8,7 +8,6 @@ import path from 'node:path';
 
 export const config = {
     api: {
-        sizeLimit: '1mb',
         bodyParser: false,
     },
 };
@@ -39,6 +38,7 @@ export default withSession(async (req, res) => {
 
     const form = formidable({
         multiples: false,
+        maxFileSize: 1 * 1024 * 1024, // 限制为 120MB
     });
     try {
        await new Promise((resolve, reject)=>{
@@ -83,7 +83,7 @@ export default withSession(async (req, res) => {
        })
     } catch (error){
       console.error('file upload err', error)
-         res.status(500).json({ message: error.message || 'File upload failed' })
+         res.status(error.httpCode||500).json({ message: error.message || 'File upload failed' })
     }
 
 });

@@ -159,8 +159,8 @@ const handleClick = useCallback((event) => {
            </div>
            
             {messageObj?.content_link && <div dangerouslySetInnerHTML={{__html: messageObj.content_link}}></div>}
-            {messageObj?.top_img && <img  onClick={()=>afterEditCall.call(this,messageObj)} className="daism-a mt-2 mb-2" 
-                alt="" src={messageObj.top_img} style={{maxWidth:'100%'}} />
+            {messageObj?.top_img && <div className="image-container" ><img  onClick={()=>afterEditCall.call(this,messageObj)} className="daism-a mt-2 mb-2" 
+                alt="" src={messageObj.top_img} /></div>
             }
             {messageObj?.vedio_url && <ShowVedio vedioUrl={messageObj.vedio_url} /> }
         

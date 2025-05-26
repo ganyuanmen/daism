@@ -55,11 +55,11 @@ export default function sc({env,locale,accountAr,openObj }) {
 
     function removeUrlParams() {
         setCurrentObj(null);
-        if(window.location.href.includes('?d=')) {
-            const url = new URL(window.location.href);
-            url.search = ''; // 清空所有参数
-            window.history.replaceState({}, '', url.href);
-        }
+        // if(window.location.href.includes('?d=')) {
+            // const url = new URL(window.location.href);
+            // url.search = ''; // 清空所有参数
+            window.history.replaceState({}, '', `${locale==='en'?'':'/zh'}/communities/SC`);
+        // }
       }
 
     useEffect(() => {
@@ -138,7 +138,8 @@ export default function sc({env,locale,accountAr,openObj }) {
         setFetchWhere({ ...fetchWhere, currentPageNum:0,order:'createtime',eventnum:0,where:'',v:0,daoid:obj.dao_id,account:obj.actor_account});
         setActiveTab(0);
         setNavObj(obj);
-        history.pushState({}, '', `?d=${obj.actor_account}`);
+        window.history.replaceState({}, '', `${locale==='en'?'':'/zh'}/communities/SC?d=${obj.actor_account}`);
+        
     }
 
     const callBack=()=>{  //回退处理，包括删除
@@ -151,7 +152,9 @@ export default function sc({env,locale,accountAr,openObj }) {
     const afterEditCall=(messageObj)=>{
         setCurrentObj(messageObj);
         setActiveTab(2);
-        sessionStorage.setItem("daism-list-id",messageObj.id)
+        sessionStorage.setItem("daism-list-id",messageObj.id);
+        if(messageObj.actor_account.split('@')[1]===env.domain)
+            window.history.replaceState({}, '', `${locale==='en'?'':'/zh'}/communities/enki/${messageObj.message_id}`);
     }
 
 
@@ -226,7 +229,7 @@ export default function sc({env,locale,accountAr,openObj }) {
                         :activeTab === 1 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack}
                          currentObj={currentObj} afterEditCall={afterEditCall} accountAr={accountAr}/>
                      
-                        :activeTab === 2 && <MessagePage  path="SC" locale={locale} env={env} currentObj={currentObj} 
+                        :activeTab === 2 && <MessagePage  path="SC" locale={locale} env={env} currentObj={currentObj}  tabIndex={1}
                         delCallBack={callBack} setActiveTab={setActiveTab} daoData={daoActor} filterTag={filterTag} />
 }
                         </>}

@@ -237,7 +237,8 @@ export async function getLastDonate({did})
 //获取一条嗯文
 export async function getOne({id,sctype})
 {
-    let re= await getData(`select * from v_message${sctype} where message_id=?`,[id]);
+	let re= await getData(`select * from v_message${sctype} where ${id.length<10?'id':'message_id'}=?`,[id]);
+
 	if(re.length) return  re[0]
 	else return {}
 }

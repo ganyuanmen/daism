@@ -65,8 +65,8 @@ export default withSession(async (req, res) => {
 
                     if(tagar.length) execute(`call in_tag(?,?)`,[message_id, JSON.stringify(tagar)]);
 
-                    if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id,textContent[0]
-                        ,path?path:avatar[0],account[0],sessionUser.did,avatar[0]);
+                    // if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id,textContent[0]
+                    //     ,path?path:avatar[0],account[0],sessionUser.did,avatar[0]);
                     sendfollow(
                         account[0],
                         content[0],
@@ -81,7 +81,12 @@ export default withSession(async (req, res) => {
                 res.status(200).json({ msg: 'handle ok'});
             } else res.status(500).json({ errMsg: 'fail' });
         } else { //修改
-            let rear = await getData(`select actor_name,actor_account,avatar,manager,top_img from v_message${sctype} where message_id=?`, [messageId[0]],true)
+            let rear 
+            if(sctype==='sc')
+            rear= await getData(`select account_at,actor_name,actor_account,avatar,manager,top_img from v_messagesc where message_id=?`, [messageId[0]],true)
+            else 
+            rear= await getData(`select account_at,actor_name,actor_account,avatar,manager,top_img from a_message where message_id=?`, [messageId[0]],true)
+
             if (!path && fileType[0]) { //不修改img
                 path = rear['top_img']
             }
@@ -103,8 +108,20 @@ export default withSession(async (req, res) => {
             let lok = await execute(sql,paras);
             if(lok) {  
                 setTimeout(async () => {  //生成链接卡片
-                    if(title && title[0]) saveHTML(rear.actor_name,content[0],title[0], messageId[0],textContent[0],path?path:rear?.avatar,
-                        rear?.actor_account,rear?.manager,rear?.avatar);
+                    // if(title && title[0]) saveHTML(rear.actor_name,content[0],title[0], messageId[0],textContent[0],path?path:rear?.avatar,
+                    //     rear?.actor_account,rear?.manager,rear?.avatar);
+                    if(rear.account_at!==accountAt[0]){
+                        if(rear.account_at){
+                            execute("delete from a_sendmessage where message_id=? and send_type=2",[messageId[0]])
+                        }
+                        if(accountAt[0]){
+                            sql=`INSERT INTO a_sendmessage(message_id, send_type, receive_account)
+	                            SELECT '${messageId[0]}',2,CONCAT(jt.item,'@',SUBSTRING_INDEX('${rear.actor_account}', '@', -1)) FROM JSON_TABLE('${accountAt[0]}','$[*]' COLUMNS (item VARCHAR(100) PATH '$')) AS jt
+	                            ON DUPLICATE KEY UPDATE
+	                            send_type = VALUES(send_type)`;
+                                execute(sql,[])
+                        }
+                    }
 
                     addLink(content[0],messageId[0],sctype,'update');
                     if(tagar.length)

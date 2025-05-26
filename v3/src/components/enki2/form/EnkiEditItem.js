@@ -45,7 +45,7 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
                 try {
                     const res = await client.get(`/api/getData?id=${messageObj.message_id}&account=${actor?.actor_account}`,'getAnnoce');
                     if(res.status===200)
-                        if(Array.isArray(res.data) && res.data.length===0) setIsAn(true); 
+                        if(Array.isArray(res.data) && res.data.length===0) setIsAn(true); else setIsAn(false);
                     
                 } catch (error) {
                     console.error(error);
@@ -63,15 +63,15 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
         showTip(t('submittingText')) 
         let res=await client.post('/api/postwithsession',method,body)
         closeTip()
-        if(res.status===200) if(typeof delCallBack === 'function') delCallBack.call() 
+        if(res.status===200) if(typeof delCallBack === 'function') delCallBack.call(this,'del') 
         else showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
       
     }
     const handlePin=async (flag,id)=>{
         showTip(t('submittingText')) 
         let res=await client.post('/api/postwithsession',"setTopMessage",{sctype,flag,id})
-        closeTip()
-        if(res.status===200) if(typeof delCallBack === 'function') delCallBack.call() 
+       
+        if(res.status===200) if(typeof delCallBack === 'function') delCallBack.call(this,'top', closeTip()) 
         else showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
       
     }
@@ -91,8 +91,8 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
             }
            
         );
-        closeTip()
-        if(res.status===200) delCallBack?.call() 
+       
+        if(res.status===200) if(typeof delCallBack === 'function') delCallBack?.call(this,'annoce', closeTip()) 
         else showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
       
     }
@@ -110,11 +110,13 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
             break;
             case "2":
               setShow(true)
-            break;
+              break;
             case "3":
                 handlePin(messageObj.is_top?0:1,messageObj.message_id);
+                break;
             case "4":
                 handleAnnounce();
+                break;
             default:
             break;
         } 

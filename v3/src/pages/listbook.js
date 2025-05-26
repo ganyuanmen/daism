@@ -8,7 +8,7 @@ export default function ListBook({data1,data2,env}) {
     const renderedArrays1 = data1.map((obj, idx) => {
        let url;
         if(obj.message_id.startsWith('http')) url=`https://${env.domain}/communities/enkier/${obj.id}`
-        else url=`https://${env.domain}/communities/enkier/${obj.message_id}`
+        else url=obj.link_url
         return (
             <a href={url}>{obj.title?obj.title:obj.message_id}</a>
         );
@@ -17,7 +17,7 @@ export default function ListBook({data1,data2,env}) {
       const renderedArrays2 = data2.map((obj, idx) => {
        
          return (
-         <a href={`https://${env.domain}/communities/enki/${obj.message_id}`}>{obj.title?obj.title:obj.message_id}</a>
+         <a href={obj.link_url}>{obj.title?obj.title:obj.message_id}</a>
          );
        });
   
@@ -35,8 +35,8 @@ export default function ListBook({data1,data2,env}) {
     
 
   export const getServerSideProps =async ({locale }) => {  
-    const data1=await getData("SELECT a.message_id,a.title,b.id FROM a_message a JOIN (SELECT message_id,MIN(id) id FROM a_sendmessage GROUP BY message_id) b ON a.`message_id`=b.message_id",[]);
-    const data2=await getData("SELECT message_id,title FROM v_messagesc",[]);
+    const data1=await getData("SELECT message_id,title,link_url FROM a_message",[])
+    const data2=await getData("SELECT message_id,title,link_url FROM a_messagesc",[]);
   
   
     return {

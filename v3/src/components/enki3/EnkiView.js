@@ -10,7 +10,7 @@ import { client } from "../../lib/api/client"
 import { Home,BookSvg,BackSvg,MyPost,ReceiveSvg } from '../../lib/jssvg/SvgCollection';
 
 
-export default function EnkiView({actor,locale,env,daoActor}) {
+export default function EnkiView({actor,locale,env,daoActor,accountAr}) {
     const [fetchWhere, setFetchWhere] = useState({
       currentPageNum: 0,  //当前页 初始不摘取数据
       daoid: 0,  //此处不用
@@ -179,17 +179,18 @@ export default function EnkiView({actor,locale,env,daoActor}) {
              
                       {activeTab === 0 ? <Mainself env={env} locale={locale} setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
                       fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} delCallBack={delcallBack} afterEditCall={afterEditCall} 
-                      tabIndex={fetchWhere.menutype===3?1:3} path={fetchWhere.menutype===3?'enkier':'enki'} daoData={daoActor} fromPerson={true} />
+                      tabIndex={fetchWhere.menutype===3?1:3} path={fetchWhere.menutype===3?'enkier':'enki'}
+                      accountAr={accountAr} daoData={daoActor} fromPerson={true} />
   
                       :activeTab === 1 ? <CreateMess addCallBack={homeHandle}  currentObj={currentObj} 
-                      afterEditCall={afterEditCall}  
-                      callBack={callBack} />
+                      afterEditCall={afterEditCall}  accountAr={accountAr}  callBack={callBack} />
   
                       :activeTab === 2 ? <MessagePage  path={fetchWhere.menutype===3?'enkier':'enki'} locale={locale} daoData={daoActor} env={env} currentObj={currentObj} 
-                      delCallBack={delcallBack} setActiveTab={setActiveTab} fromPerson={true} />
+                      delCallBack={delcallBack}  tabIndex={fetchWhere.menutype===3?1:3} setActiveTab={setActiveTab}
+                      accountAr={accountAr} fromPerson={true} />
   
                       :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack} 
-                      currentObj={currentObj} afterEditCall={afterEditCall} />
+                      currentObj={currentObj} afterEditCall={afterEditCall} accountAr={accountAr} />
                         :<ActorMember locale={locale} env={env}  />
                     }
   

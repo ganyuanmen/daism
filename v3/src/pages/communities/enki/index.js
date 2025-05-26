@@ -6,22 +6,22 @@ import EnkiMember from '../../../components/enki2/form/EnkiMember';
 import EnkiAccount from '../../../components/enki2/form/EnkiAccount';
 import Loginsign from '../../../components/Loginsign';
 import ShowErrorBar from '../../../components/ShowErrorBar';
-import { getEnv,decrypt } from '../../../lib/utils/getEnv';
+import { getEnv } from '../../../lib/utils/getEnv';
 import { encrypt } from '../../../lib/utils/windowjs';
-import { getOne } from '../../../lib/mysql/message';
+// import { getOne } from '../../../lib/mysql/message';
 import { getJsonArray } from '../../../lib/mysql/common';
 import Head from 'next/head';
-import { httpGet } from '../../../lib/net';
+// import { httpGet } from '../../../lib/net';
 import Mainself from '../../../components/enki3/Mainself';
 import MessagePage from '../../../components/enki2/page/MessagePage';
 import { NavDropdown } from 'react-bootstrap';
 import EnkiCreateMessage from '../../../components/enki2/page/EnkiCreateMessage';
-import { BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg,SomeOne  } from '../../../lib/jssvg/SvgCollection';
+import { BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg  } from '../../../lib/jssvg/SvgCollection';
 
 /**
  * 我的社区
  */ 
-export default function enki({openObj,env,locale,accountAr }) {
+export default function enki({env,locale,accountAr }) {
     const [fetchWhere, setFetchWhere] = useState({
         currentPageNum: -1,  //当前页
         daoid: '',  //所有'1,2,..', 单个'1' 方便sql in(${daoid})
@@ -35,8 +35,8 @@ export default function enki({openObj,env,locale,accountAr }) {
  
     const [leftHidden,setLeftHidden]=useState(false)
     const [rightHidden,setRightHidden]=useState(false)
-    const [currentObj, setCurrentObj] = useState(openObj?.message_id?openObj:null);  //用户选择的发文对象
-    const [activeTab, setActiveTab] = useState(openObj?.message_id ? 2 : 0);
+    const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
+    const [activeTab, setActiveTab] = useState(0);
     
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
     // const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
@@ -52,11 +52,11 @@ export default function enki({openObj,env,locale,accountAr }) {
 
     function removeUrlParams() {
         setCurrentObj(null);
-        if(window.location.href.includes('?d=')) {
-            const url = new URL(window.location.href);
-            url.search = ''; // 清空所有参数
-            window.history.replaceState({}, '', url.href);
-        }
+        // if(window.location.href.includes('?d=')) {
+        //     const url = new URL(window.location.href);
+        //     url.search = ''; // 清空所有参数
+        window.history.replaceState({}, '', `${locale==='en'?'':'/zh'}/communities/enki`);
+        // }
       }
      const svgs=[
         {svg:<TimeSvg size={24} />,text:'latestText'},
@@ -179,8 +179,10 @@ export default function enki({openObj,env,locale,accountAr }) {
     const afterEditCall=(messageObj)=>{
         setCurrentObj(messageObj);
         setActiveTab(2);
-        sessionStorage.setItem("daism-list-id",messageObj.message_id)
-        history.pushState({ id: messageObj?.message_id }, `id:${messageObj?.message_id}`, `?d=${encrypt(`${messageObj.message_id},${getDomain(messageObj)}`,env)}`);
+        sessionStorage.setItem("daism-list-id",messageObj.message_id);
+        if(messageObj.actor_account.split('@')[1]===env.domain)
+            window.history.replaceState({}, '', `${locale==='en'?'':'/zh'}/communities/enki/${messageObj.message_id}`);
+        // history.pushState({ id: messageObj?.message_id }, `id:${messageObj?.message_id}`, `?d=${encrypt(`${messageObj.message_id},${getDomain(messageObj)}`,env)}`);
       }
 
     const callBack=()=>{  //回退处理，包括删除
@@ -278,7 +280,7 @@ export default function enki({openObj,env,locale,accountAr }) {
                          accountAr={accountAr} />
                          
                         :activeTab === 2 && <MessagePage  path="enki" locale={locale} env={env} currentObj={currentObj} 
-                        delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} daoData={daoData}
+                        delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} daoData={daoData}  tabIndex={1}
                         filterTag={filterTag} />
 }
                         </>}
@@ -303,32 +305,17 @@ export default function enki({openObj,env,locale,accountAr }) {
 }
 
 
-export const getServerSideProps = async ({ locale,query }) => {
-    let openObj={}; 
+export const getServerSideProps = async ({ locale }) => {
     const env=getEnv();
     const accountAr=await getJsonArray('accountAr',[env?.domain])
-    if(query.d){
-        const [id,domain]=decrypt(query.d).split(',');
-        if(domain==env.domain){
-            openObj=await getOne({id,sctype:''})
-        }
-        else 
-        {
-            let response=await httpGet(`https://${domain}/api/getData?id=${id}&sctype=`,{'Content-Type': 'application/json',method:'getOne'})
-            if(response?.message) openObj=response.message
-        }
-    }
-    if(openObj?.createtime) openObj.createtime=new Date(openObj.createtime).toJSON();
-    if(openObj?.currentTime) openObj.currentTime=new Date(openObj.currentTime).toJSON();
-    if(openObj?.reply_time) openObj.reply_time=new Date(openObj.reply_time).toJSON();
-
+  
     return {
         props: {
             messages: {
                 ...require(`../../../messages/shared/${locale}.json`),
                 ...require(`../../../messages/federation/${locale}.json`),
             }, locale
-            ,env,openObj,accountAr
+            ,env,accountAr
         }
     }
 }

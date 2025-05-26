@@ -11,7 +11,7 @@ import { useTranslations } from 'next-intl'
  * 显示未注册帐号
  * @locale zh/cn
  */
-export default function EnkiAccount({locale})
+export default function EnkiAccount({locale,isShow=true})
 {
     const t=useTranslations('ff')
     const actor = useSelector((state) => state.valueData.actor)
@@ -30,7 +30,7 @@ export default function EnkiAccount({locale})
             { actor?.manager?  // {/*已登录 */}
             <>
                 {actor?.actor_account?  //已注册
-                    <EnkiMember messageObj={actor} locale={locale} hw={64} isLocal={true} />
+                   <>{isShow && <EnkiMember messageObj={actor} locale={locale} hw={64} isLocal={true} />}</>
                     :<div onClick={e=>{setShow(false)}} >  {/*  //未注册*/}
                         <div ref={target}> <User1Svg size={64}  /></div>
                         <Overlay show={show} target={target.current} placement="right" containerPadding={4}>

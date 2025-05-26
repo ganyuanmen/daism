@@ -35,7 +35,7 @@ export default withSession(async (req, res) => {
     let message_id = uuidv4().replaceAll('-','')?.toLowerCase();
       let rows=await getData("select manager,domain,actor_name,avatar,actor_account,actor_url,privkey from a_account where id=?",[actorid[0]])
       if(rows.length===0){
-         return res.status(err.httpCode || 500).json({errMsg: "invalid ID"}); 
+         return res.status(500).json({errMsg: "invalid ID"}); 
       }
       else {
           const sql=`INSERT INTO a_message${sctype[0]}_commont(manager,pid,message_id,actor_name,avatar,actor_account,actor_url,content,type_index,vedio_url,top_img,bid) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`
@@ -85,7 +85,7 @@ export default withSession(async (req, res) => {
 
   } catch (err) {
       console.error(err);
-      res.status(err.httpCode || 500).json({ errMsg: err.toString() });
+      res.status(err?.httpCode || 500).json({ errMsg: err?.toString() });
       return;
   }
 });

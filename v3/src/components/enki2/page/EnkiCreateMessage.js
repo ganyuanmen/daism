@@ -133,7 +133,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
             formData.append('time_event', timeRef.current.getData());
         }
         formData.append('textContent', typeIndex===0?contentHTML:richEditorRef.current.getTextContent());  //文本非enki 推送
-        formData.append('typeIndex', typeIndex>1?1:0);  //长或短
+        formData.append('typeIndex', typeIndex);  //长或短
         formData.append('vedioURL',(typeIndex===0?editorRef:richEditorRef).current.getVedioUrl());  //视频网址
         formData.append('propertyIndex',(typeIndex===0?editorRef:richEditorRef).current.getProperty());  //
         formData.append('accountAt',(typeIndex===0?editorRef:richEditorRef).current.getAccount());  //@用户
@@ -207,12 +207,11 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
                   {if(e.target.checked) setTypeIndex(0)}}  id='inline-2' />
               <Form.Check inline label={t('longText')} name="group1" type='radio' defaultChecked={typeIndex===1} onClick={e=>
                   {if(e.target.checked) setTypeIndex(1)}}  id='inline-1' />
-              <Form.Check inline label={t('isFixButton')} name="group1" type='radio' defaultChecked={typeIndex===2} onClick={e=>
-                    {if(e.target.checked) setTypeIndex(2)}}  id='inline-3' />
+             
           </Form>
           <DaismInputGroup horizontal={true} title={t('htmlTitleText')} ref={titleRef} defaultValue={currentObj ? currentObj.title : ''} />
       {typeIndex===0?<Editor  ref={editorRef} currentObj={currentObj} nums={nums} isSC={true} accountAr={accountAr} showProperty={true}/>
-      :<RichEditor  ref={richEditorRef} currentObj={currentObj} isSC={true} accountAr={accountAr} isFix={typeIndex===2} />}
+      :<RichEditor  ref={richEditorRef} currentObj={currentObj} isSC={true} accountAr={accountAr}  />}
         
         <Form.Check className='mt-3' type="switch" checked={showEvent} onChange={e => { setShowEvent(!showEvent) }} id="ssdsd_swith1" label={t('eventArtice')} />
          {showEvent &&

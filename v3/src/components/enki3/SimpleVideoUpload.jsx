@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from 'react-bootstrap';
 
 
-const MAX_SIZE = 100 * 1024 * 1024; // 200MB
+const MAX_SIZE = 100 * 1024 * 1024; // 100MB
 
 export default function SimpleVideoUpload({setVedioUrl,setShow}) {
   const [video, setVideo] = useState(null);
@@ -26,15 +26,13 @@ export default function SimpleVideoUpload({setVedioUrl,setShow}) {
     formData.append("video", video);
 
     showTip(t('uploaddingText'));
-    const res = await fetch("/api/admin/uploaVedio", {
-      method: "POST",
-      body: formData,
-    });
+    const res = await fetch("/api/admin/uploaVedio", {method: "POST", body: formData});
 
-    const data = await res.json();
-    if(data.message!=='Upload successful') showClipError(t('res.message'));
-    else  setVedioUrl(data.path);
-    // setVedioUrl('https://files.mastodon.social/cache/media_attachments/files/114/522/144/091/713/006/original/af561cae914b6318.mp4'); // 
+    if(res.status!==200) showClipError(`${res.statusText}\n ${t('maxImageSize',{num:100})}`)
+    else {
+      const data = await res.json(); 
+      setVedioUrl(data.path);
+    }
     closeTip();
     setShow(false);
   };

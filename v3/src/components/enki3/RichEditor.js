@@ -13,7 +13,7 @@ const Richwet = dynamic(() => import('../RichTextEditor'), { ssr: false });
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人, 回复不需要指定人，所以不传accountAr
   */
 
-const RichEditor = forwardRef(({currentObj,isSC,accountAr,isFix}, ref) => {
+const RichEditor = forwardRef(({currentObj,isSC,accountAr}, ref) => {
  
     const mediaRef = useRef(null);
     const editorRef = useRef(null);
@@ -50,7 +50,7 @@ const RichEditor = forwardRef(({currentObj,isSC,accountAr,isFix}, ref) => {
    
     return (
         <>
-           <Richwet defaultValue={currentObj?.content?currentObj.content:''} editorRef={editorRef} isFix={isFix} />
+           <Richwet defaultValue={currentObj?.content?currentObj.content:''} editorRef={editorRef} />
            <Media ref={mediaRef} currentObj={currentObj} >
               {accountAr &&  <SCProperty ref={propertyRef} currentObj={currentObj} accountAr={accountAr} isSC={isSC} >
                 </SCProperty>}
