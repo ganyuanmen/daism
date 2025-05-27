@@ -4,14 +4,11 @@ import {setTipText,setMessageText} from '../data/valueData'
 import { useDispatch} from 'react-redux';
 import { useTranslations } from 'next-intl';
 import Video from './enki3/Video';
-import { Jodit } from "jodit";
 
-import React, { useRef, useState, useMemo, useEffect } from "react";
-// import JoditEditor from "jodit-react";
+import React, { useRef, useState, useMemo } from "react";
 
-//isFix固定标题
 
-const RichTextEditor = ({title,defaultValue,editorRef}) => {
+const RichTextEditor = ({title,content,setContent}) => {
   const t = useTranslations('ff')
   const dispatch = useDispatch();
   const [show,setShow]=useState(false)
@@ -19,8 +16,8 @@ const RichTextEditor = ({title,defaultValue,editorRef}) => {
   function showError(str){dispatch(setMessageText(str))}
   function showTip(str){dispatch(setTipText(str))}
   function closeTip(){dispatch(setTipText(''))}
-
-  const[isFix,setIsFix]=useState(false)
+  const editorRef = useRef(null); 
+  const[isFix,setIsFix]=useState(false); //isFix固定标题
    
    // 插入视频/iframe 逻辑
    const insertVideo = (url) => {
@@ -91,12 +88,12 @@ const RichTextEditor = ({title,defaultValue,editorRef}) => {
             name: 'insertCustomVideo',
             icon: 'video', // 使用 Jodit 内置图标
             tooltip: t('vedioLinkText'),
-            exec: (editor) => { setShow(true);}
+            exec: (editor) => {editorRef.current=editor; setShow(true);}
           },
           toggleHeight:{
             name: t('isFixButton'),
             tooltip: t('isFixButton'),
-            exec: (editor) => {setIsFix(!isFix)}
+            exec: (editor) => {editorRef.current=editor; setIsFix(prev => !prev);}
           }
         }
     }), [isFix]);
@@ -107,9 +104,10 @@ const RichTextEditor = ({title,defaultValue,editorRef}) => {
     
     {title &&<label className="mb-0" style={{marginLeft:'6px'}}><b>{title}</b></label>}
       <JoditEditor 
-      value={defaultValue}
+      value={content}
       config={config}
       ref={editorRef}
+      onChange={(newContent) => setContent(newContent)} // ✅ 同步状态
     />
 
     <Video show={show} setShow={setShow} vedioUrl={vedioUrl} setVedioUrl={setVedioUrl} insertVideo={insertVideo} />

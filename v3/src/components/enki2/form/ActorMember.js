@@ -28,12 +28,11 @@ export default function ActorMember({locale,env}){
     let t = useTranslations('ff')
   
 
-
+    const [content, setContent] = useState(actor?.actor_desc?actor.actor_desc:'');
     const [show,setShow]=useState(false)
     const [register,setRegister]=useState(false)  // 显示个人注册窗口
     const daoActor = useSelector((state) => state.valueData.daoActor) 
     const imgRef=useRef(null) //头像
-    const editorRef=useRef(); //描述
 
     const follow0=useFollow(actor,'getFollow0')
     const follow1=useFollow(actor,'getFollow1')
@@ -51,7 +50,7 @@ export default function ActorMember({locale,env}){
   
       const formData = new FormData();
       formData.append('account', actor?.actor_account);
-      formData.append('actorDesc', editorRef.current.value);
+      formData.append('actorDesc', content);
       formData.append('image', imgRef.current.getFile());
       formData.append('fileType',imgRef.current.getFileType());
       formData.append('did',actor?.manager);
@@ -140,7 +139,7 @@ export default function ActorMember({locale,env}){
     
     <DaismImg ref={imgRef} title={t('uploadImgText')} defaultValue={actor?.avatar} maxSize={1024*500} fileTypes='svg,jpg,jpeg,png,gif,webp'  />
   
-    <RichTextEditor  defaultValue={actor?.actor_desc} title={t('persionInfomation')} editorRef={editorRef} /> 
+    <RichTextEditor title={t('persionInfomation')} content={content} setContent={setContent}  /> 
     
     <div style={{textAlign:'center'}} >
     <Button variant='primary' onClick={handleSubmit}>{t('saveText')}</Button>

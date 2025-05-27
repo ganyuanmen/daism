@@ -18,12 +18,11 @@ const Richwet = dynamic(() => import('../RichTextEditor'), { ssr: false,
 const RichEditor = forwardRef(({currentObj,isSC,accountAr}, ref) => {
  
     const mediaRef = useRef(null);
-    const editorRef = useRef(null);
-    
+    const [content, setContent] = useState(currentObj?.content?currentObj.content:'');
     const propertyRef=useRef('')
 
     useImperativeHandle(ref, () => ({
-        getData: ()=>{return editorRef.current.value},
+        getData: ()=>{return content},
         getImg:()=>{return mediaRef.current.getImg()},
         getFileType:()=>{return mediaRef.current.getFileType()},
         getVedioUrl:()=>{return mediaRef.current.getVedioUrl()},
@@ -52,7 +51,7 @@ const RichEditor = forwardRef(({currentObj,isSC,accountAr}, ref) => {
    
     return (
         <>
-           <Richwet defaultValue={currentObj?.content?currentObj.content:''} editorRef={editorRef} />
+           <Richwet content={content} setContent={setContent}  />
            <Media ref={mediaRef} currentObj={currentObj} >
               {accountAr &&  <SCProperty ref={propertyRef} currentObj={currentObj} accountAr={accountAr} isSC={isSC} >
                 </SCProperty>}
