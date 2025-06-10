@@ -60,8 +60,8 @@ async function hand() {
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_nft_transfer'  //20 发布时mint nft
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_updatedaocreator'  //21 
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_nft_swap'  //22 打赏 mint nft
-        + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_donate';  //23 捐赠
-      //   + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_donateerc20';  //24 打赏 mint nft
+        + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_donate'  //23 捐赠
+        + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_nft_tip';  //24 enki打赏 
         
    const rows=await promisePool.query(sql,[]);
    rows[0].forEach(element => {maxData.push(element.s>start_block?element.s:start_block)});
@@ -101,6 +101,7 @@ function daoListen() {
   nfttransfer() // 发布mint nft  UnitNFT  t_nft_transfer  0 
   nftsing()  //打赏 mint nft  Daismnftsing  t_nft_swap 2 
   mintEvent();  //其它脚本mint  DaismNft   t_nft  1  
+  mintTipEvent(); //个人打赏 Daismnftsing  t_nft_tip 5
   mintBurnEvent()  //Daismnftsing  t_nft_swaphonor 4
   mintSmartCommon(); //mint smart common  Daismnftsing  t_nft_mint  3
   
@@ -232,13 +233,42 @@ function mintEvent()
 
 
       }else _tips=tokenSvg[1].join(',');
-      console.log(tokenSvg[1])
+
       let sql ="INSERT IGNORE INTO t_nft(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,tips) VALUES(?,?,?,?,?,?,?,?)";
       let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[0][1],data['timestamp'], server1.daoapi.DaismNft.address,_tips];
       maxData[16] = obj.blockNumber+1n;  //Cache last block number
       await executeSql(sql, params); //dao 信息
    });
 }
+
+
+function mintTipEvent()
+{
+  
+    server1.daoapi.Daismnftsing.mintTipEvent(maxData[24], async (obj) => {
+         if(process.env.IS_DEBUGGER==='1') console.info(obj)
+         const {data}=obj;
+         let svg='';
+         if(data['tokenId']>0){
+            const tokenSvg=await server1.daoapi.DaoLogo.getLogoByDaoId(data['daoId']);
+             svg=tokenSvg?.fileContent ?? '';
+         }
+       
+         const [daoid,id]=data['id'].split(',');
+
+         let sql ="INSERT IGNORE INTO t_nft_tip(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,utoken,tip_to,message_id) VALUES(?,?,?,?,?,?,?,?,?,?)";
+         let params = [obj.blockNumber,daoid,data['tokenId'],data['to'],svg,data['timestamp'], server1.daoapi.Daismnftsing.address
+         ,data['utokenAmount'],data['tipto'],id];
+
+         maxData[24] = obj.blockNumber+1n;  //Cache last block number
+         await executeSql(sql, params); //dao 信息
+     });  
+   
+   
+}
+
+
+
 
 function mintBurnEvent()
 {
@@ -259,7 +289,8 @@ function nftsing()
  server1.daoapi.Daismnftsing.mintEvent(maxData[22], async (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
-      let tokenSvg=await server1.daoapi.DaoLogo.getLogoByDaoId(data['daoId'])
+      // let tokenSvg=['','']
+     let tokenSvg=await server1.daoapi.DaoLogo.getLogoByDaoId(data['daoId'])
       let sql ="INSERT IGNORE INTO t_nft_swap(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,utoken) VALUES(?,?,?,?,?,?,?,?)";
       let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[1],data['timestamp'], server1.daoapi.Daismnftsing.address,data['utokenAmount']];
       maxData[22] = obj.blockNumber+1n;  //Cache last block number

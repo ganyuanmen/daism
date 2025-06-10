@@ -1,6 +1,6 @@
 const utils = require("../utils");
 const abi=require('../abi/DAismSingleNFT_abi.json');
-
+const {  toUtf8String  } = require("ethers");
 class Daismnftsing
 {
     mintEvent(maxBlockNumber,callbackFun) {
@@ -21,6 +21,27 @@ class Daismnftsing
             }
         )
     }
+
+    mintTipEvent(maxBlockNumber,callbackFun) {
+        const _this = this;
+        if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address);
+        this.installobj4=this.contract.events.MintForAddressTip({filter: {},fromBlock: maxBlockNumber});
+        this.installobj4
+        .on('data', async function (data,_error) {
+                if(!data || !data.returnValues) {utils.log("mintEvent error:"+_error);throw _error;}
+                _this.daotoken.har.push({fn:callbackFun,data:utils.valueFactory(data,{
+                    "daoId": data.returnValues.scId,
+                    "to": data.returnValues.nftTo,
+                    "tipto": data.returnValues.tipTo,
+                    "utokenAmount":parseFloat(data.returnValues.utokenAmount)/100000000,
+                    "tokenId": data.returnValues.tokenId,
+                    "id":toUtf8String(data.returnValues.data)
+                    })
+                 })
+            }
+        )
+    }
+    //scId,address tipTo,address nftTo,uint256 tokenId,string mark,uint256 utokenAmount
 
     mintBatchEvent(maxBlockNumber,callbackFun) {
         const _this = this;
@@ -76,6 +97,9 @@ class Daismnftsing
            this.installobj2=null;
            if(this.installobj3 && this.installobj3.unsubscribe) {this.installobj3.unsubscribe();}
            this.installobj3=null;
+           if(this.installobj4 && this.installobj4.unsubscribe) {this.installobj4.unsubscribe();}
+           this.installobj4=null;
+        
         
 
        } catch(e){console.error(e);}
