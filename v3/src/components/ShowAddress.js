@@ -22,7 +22,7 @@ export default function ShowAddress({address,isb=false}) {  //isb 字体是否�
     }
 
     return (
-       <div style={{whiteSpace: 'nowrap'}}>
+       <span style={{whiteSpace: 'nowrap'}}>
 
             <span >{isb?<b>{getAccount()}</b>:getAccount()} </span> {' '}
             
@@ -46,7 +46,7 @@ export default function ShowAddress({address,isb=false}) {  //isb 字体是否�
                     </Tooltip>
                     )}
             </Overlay>
-        </div>
+        </span>
     );
 }
 

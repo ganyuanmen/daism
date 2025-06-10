@@ -18,7 +18,7 @@ export default function ConfirmWin({show,setShow,callBack,question}) {
             <div className="mb-3">{question}</div>
             <div style={{textAlign:'center'}} >
             <Button variant="link"  onClick={e=>setShow(false)} ><NoSvg size={20} /> {t('cancelText')}</Button>{'   '}
-            <Button variant="primary"  onClick={callBack} ><YesSvg size={20}/ > {t('confirmText')}</Button>
+            <Button variant="primary"  onClick={callBack} ><YesSvg size={20} /> {t('confirmText')}</Button>
             </div>
             </Modal.Body>
             </Modal>

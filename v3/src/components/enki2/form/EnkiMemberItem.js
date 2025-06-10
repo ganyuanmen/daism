@@ -8,6 +8,7 @@ import { Button,Overlay,Tooltip } from "react-bootstrap";
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux';
 import { MoreBtn,PinTop } from "../../../lib/jssvg/SvgCollection";
+import TipWindow from "../../federation/TipWindow";
 
 /**
  * 显示嗯文头部信息，包括用户头像，荣誉证, 时间
@@ -22,7 +23,8 @@ export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
     const myFollow = useSelector((state) => state.valueData.myFollow)
     const actor = useSelector((state) => state.valueData.actor)
     const t = useTranslations('ff')
-
+    
+    const user = useSelector((state) => state.valueData.user) //钱包登录用户信息
     useEffect(() => {
         let item = myFollow.find(obj => obj.actor_account?.toLowerCase() === messageObj?.actor_account?.toLowerCase());
         //本人不能关注本人，设为已关注 用户不在注册地登录的，设为已注册，不需要显示关注的按钮
@@ -54,20 +56,26 @@ export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
         <div className="desktop-only ">
         <div style={{width:'100%'}} className="d-inline-flex justify-content-between align-items-center"   >
             <div style={{width:'56%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
+            {user.connected===1 && messageObj.manager && user.account.toLowerCase()!==messageObj.manager.toLowerCase() 
+            && !messageObj.message_id.startsWith('http') && <TipWindow owner={user.account} messageObj={messageObj} locale={locale} />}
             {honor.length>0 && <div><Honor honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
             {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
             {(isTop || (messageObj.is_top===1 && fromPerson)) &&  <div ><PinTop size={24} /></div>}
             <div style={{paddingLeft:'4px'}} ><TimesItem currentObj={messageObj} /></div>
         </div>
         </div>
+
         <div className="mobile-only">
         <div style={{width:'100%'}} className="d-inline-flex justify-content-between align-items-center"   >
           <div style={{width:'60%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
+          {user.connected===1 && messageObj.manager && user.account.toLowerCase()!==messageObj.manager.toLowerCase() 
+          && !messageObj.message_id.startsWith('http') && <TipWindow owner={user.account} messageObj={messageObj} locale={locale} />}
           {honor.length>0 && <div style={{paddingLeft:'8px'}}><Honor_m honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
           {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
           <div style={{paddingLeft:'4px'}} ><TimesItem_m currentObj={messageObj} /></div>
       </div>
       </div>
+      
       </>
     );
 }

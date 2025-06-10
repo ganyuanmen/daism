@@ -52,16 +52,7 @@ export default class  DaoApi {
             return this.mynft_obj; 
         }
 
-    get SingNft() { 
-        if (!this.SingNft_obj) 
-            this.SingNft_obj = new SingNft(
-                this.ethers,this.signer, this.account,
-                this.daismAddress['DAismSingleNFT']
-            ); 
-            return this.SingNft_obj; 
-        }
-
-    get Commulate() { 
+       get Commulate() { 
         if (!this.dao_commulate_obj) 
             this.dao_commulate_obj = new Commulate(
                 this.ethers,this.signer,this.account,
@@ -120,6 +111,17 @@ export default class  DaoApi {
             ); 
         return this.iaddex_obj; 
     }
+
+    get SingNft() { 
+        if (!this.SingNft_obj) 
+            this.SingNft_obj = new SingNft(
+                this.ethers,this.signer, this.account,
+                this.daismAddress['DAismSingleNFT'],
+                this.UnitToken
+            ); 
+            return this.SingNft_obj; 
+    }
+
 
     constructor(_signer, _account,_daismAddress) {
         this.ethers=ethers;

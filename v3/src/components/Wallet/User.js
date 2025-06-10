@@ -49,9 +49,9 @@ export default function User({user,loginsiwe,t,env,...props}) {
         case '8':
           setShow(true)
           break;
-          // case "9":
-          //   router.push(`/transfer`, { scroll: false })
-          //   break;
+        case "9":
+            router.push(`/donation`, { scroll: false })
+            break;
         // case 'a':
         //   showTip('正在创建荣誉通证，请稍候...')
         //   try {
@@ -114,20 +114,21 @@ export default function User({user,loginsiwe,t,env,...props}) {
         <span className='daism-color' >{actor?.avatar?<img src={actor?.avatar}  alt={actor?.actor_account} width={32} height={32} /> :<AccountSvg /> }  </span>
       } >
         {/* <NavDropdown.Item eventKey="a"><span className='daism-color' ><SwapTokenSvg size={24}/></span> 中本聪 荣誉通证 </NavDropdown.Item>  */}
-        <NavDropdown.Item eventKey="1"><span className='daism-color' ><WalletSvg  size={24}/></span> {t('myWalletText')}...</NavDropdown.Item>
-        <NavDropdown.Item eventKey="2"><span className='daism-color' ><UserSvg size={24}/></span> {t('myAccount')}...</NavDropdown.Item>
-        <NavDropdown.Item eventKey="3"><span className='daism-color' ><AppSvg  size={24}/></span> {t('daoGroupApprove')} </NavDropdown.Item>
-        <NavDropdown.Item eventKey="4"><span className='daism-color' ><TokenSvg  size={24}/></span> {t('daoDividend')} </NavDropdown.Item>
+        <NavDropdown.Item eventKey="1"><span className='daism-color' > 💼 </span> {t('myWalletText')}...</NavDropdown.Item>
+        <NavDropdown.Item eventKey="2"><span className='daism-color' > 🧑 </span> {t('myAccount')}...</NavDropdown.Item>
+        <NavDropdown.Item eventKey="3"><span className='daism-color' > 🏠 </span> {t('daoGroupApprove')} </NavDropdown.Item>
+        <NavDropdown.Item eventKey="4"><span className='daism-color' > 🏆  </span> {t('daoDividend')} </NavDropdown.Item>
         {/* <NavDropdown.Item eventKey="9"><span className='daism-color' ><SwapTokenSvg size={24}/></span> {t('getTestEth')} </NavDropdown.Item> */}
        {actor?.actor_account && <NavDropdown.Item eventKey="b"><span className='daism-color' ><SwapTokenSvg size={24}/></span> {t('importText')} mastodon </NavDropdown.Item>}
        {/* {admin && <NavDropdown.Item eventKey="4"><span className='daism-color' ><MemberVerify size={24}/></span> {t('daoMemberVerify')}</NavDropdown.Item> } */}
         <NavDropdown.Divider />
-      {loginsiwe?<NavDropdown.Item eventKey="5"><span className='daism-color' ><ExitSvg size={24}/></span> {t('exitText')}</NavDropdown.Item>
-      :<><NavDropdown.Item eventKey="6"><span className='daism-color' ><LoginSvg size={24}/></span>  <LoginButton  ref={loginRef}  /></NavDropdown.Item>
-      <NavDropdown.Item eventKey="7"><span className='daism-color' > <ExitWalletSvg size={24}/></span> {t('exitWalletText')}</NavDropdown.Item>
+      {loginsiwe?<NavDropdown.Item eventKey="5"><span className='daism-color' > ⛔️  </span> {t('exitText')}</NavDropdown.Item>
+      :<><NavDropdown.Item eventKey="6"><span className='daism-color' > 🔐 </span>  <LoginButton  ref={loginRef}  /></NavDropdown.Item>
+      <NavDropdown.Item eventKey="7"><span className='daism-color' > 👉 </span> {t('exitWalletText')}</NavDropdown.Item>
       </>
       }
-      <NavDropdown.Item eventKey="8"><span className='daism-color' ><DateSvg size={24}/></span> {t('about')} </NavDropdown.Item>
+      <NavDropdown.Item eventKey="9"><span className='daism-color' ></span> 🤝 {t('donationText')} </NavDropdown.Item>
+      <NavDropdown.Item eventKey="8"><span className='daism-color' > ℹ️ </span> {t('about')} </NavDropdown.Item>
       </NavDropdown>
     </Nav>
     <Modal className='daism-title' show={show} onHide={(e) => {setShow(false)}}>

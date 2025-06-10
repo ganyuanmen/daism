@@ -21,7 +21,7 @@ export default function Nftlist({mynftData})
 
     const geneTips=(obj)=>{
         
-        if(obj._type===2){
+        if(obj._type===2  && obj.tips ){
             const regex = /\(UTO([0-9]+)\)/;
             const match = obj.tips.match(regex);
             if (match) {
@@ -29,7 +29,18 @@ export default function Nftlist({mynftData})
              
             return <span>Tipping(<img src='/vita.svg' width={12} height={14} alt='UTO' />{number})</span>  
             }
-        } else if(obj.tips && obj.tips.startsWith('[')) {
+        }
+        else if(obj._type===5  && obj.tips){
+            let _ar=obj.tips.split(' ');
+            const regex = /\(UTO([0-9]+)\)/;
+            const match = _ar[1].match(regex);
+            if (match) {
+              const number = match[1];
+             
+            return <span>{_ar[0]}(<img src='/vita.svg' width={12} height={14} alt='UTO' />{number}) to {_ar[3]} </span>  
+            } 
+        }
+        else if(obj.tips && obj.tips.startsWith('[')) {
             let _json= JSON.parse(tips)
             return _json[0]+'...'
         }
@@ -62,7 +73,7 @@ export default function Nftlist({mynftData})
                     <div className='daism-nowrap'>blockNumber:<b>{obj.block_num}</b></div> 
                     <div className='daism-nowrap'>contract:<ShowAddress address={obj.contract_address} isb={true} /></div> 
                     <div className='daism-nowrap'>time:<b>{obj._time}(UTC+8)</b></div> 
-                    <div className='daism-nowrap'>issue: <b>{obj._type!==0?obj.dao_name:'daism.io'}</b></div>
+                    <div className='daism-nowrap'>issue: <b>{obj._type===0?'daism.io':obj._type===5?'Enki':obj.dao_name}</b></div>
                     <div className='daism-nowrap'  >events: <b>{geneTips(obj)}</b></div>
                     </Card.Body>
                     </Card>
@@ -86,7 +97,7 @@ export default function Nftlist({mynftData})
                         <tr><td style={{ textAlign: 'right' }}>blockNumber</td><td><b>{nftObj?.block_num}</b></td></tr>
                         <tr><td style={{ textAlign: 'right' }}>contract address</td><td><b>{nftObj?.contract_address}</b></td></tr>
                         <tr><td style={{ textAlign: 'right' }} >nft time</td><td><b>{nftObj?._time}(UTC+8)</b></td></tr>
-                        <tr><td style={{ textAlign: 'right' }} >issue</td><td><b>{nftObj._type!==0?nftObj.dao_name:'daism.io'}</b></td></tr>
+                        <tr><td style={{ textAlign: 'right' }} >issue</td><td> <b>{nftObj._type===0?'daism.io':nftObj._type===5?'Enki':nftObj.dao_name}</b></td></tr>
                         <tr><td style={{ textAlign: 'right' }} >events</td><td>
                         <b>{geneTips(nftObj)}</b>
                         {/* {nftObj._type!==0?<b>{nftObj?.tips}</b>:

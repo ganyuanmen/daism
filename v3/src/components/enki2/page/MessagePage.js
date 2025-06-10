@@ -216,6 +216,7 @@ const renderedArrays = data.map((obj, idx) => {
                 <EnkiMemberItem messageObj={currentObj} domain={env.domain} locale={locale} fromPerson={fromPerson} />
                {/* 活动 */}
                {currentObj?._type===1 && <EventItem currentObj={currentObj} /> }
+             
             </Card.Header>
         <Card.Body>
         {/* {selectTag.map(tag => (
@@ -232,7 +233,7 @@ const renderedArrays = data.map((obj, idx) => {
         <Card.Footer style={{padding:0}} >
 
             {/* 发起者 */}
-            {path==='enki' &&<div className="d-flex align-items-center mt-1">
+            {currentObj?.self_account &&<div className="d-flex align-items-center mt-1">
               <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center" >
                  <span style={{display:'inline-block',paddingRight:'4px'}}>{t('proposedText')}:</span>{' '}
                  <img src={currentObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 

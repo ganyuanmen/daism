@@ -179,8 +179,19 @@
     "maxImageSize":"The file size cannot exceed {num} MB",
     "videoURLValid":"Please enter a valid video URL (mp4 format or YouTube/Bilibili/Vimeo link)",
     "noSupotVideo":"Your browser does not support HTML5 videos",
-    "noSuportType":"Unsupported video format"
-
+    "noSuportType":"Unsupported video format",
+    "tipText":"Tip the author",
+    "blanceText":"balance",
+    "tipAmount":"Tip amount",
+    "tipButton":"Tips",
+    "tipAuthor":"Tip author",
+    "minthonorText":"Tip Honor Tokens",
+    "tipsTitle":"Paid {tips} times, amount: {utoken} UTO",
+    "alreadyTips":"Successfully Tips",
+    "InsufficientBalance":"Insufficient balance!",
+    "tipsing":"Submitting tipping operation",
+    "lessThenOne":"The tips amount cannot be less than 1"
+  
   }
 }
 

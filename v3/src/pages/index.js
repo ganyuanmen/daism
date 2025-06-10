@@ -71,8 +71,8 @@ export default function Home({locale,env}) {
     )
     }
    
-    export const getStaticProps  = async ({locale }) => {
-    // export const getServerSideProps  = async ({locale }) => {
+    // export const getStaticProps  = async ({locale }) => {
+    export const getServerSideProps  = async ({locale }) => {
     
         return {
             props: {

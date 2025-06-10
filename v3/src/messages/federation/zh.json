@@ -177,8 +177,18 @@
     "maxImageSize":"文件大小不能超过 {num} MB",
     "videoURLValid":"请输入有效的视频URL（mp4格式或YouTube/Bilibili/Vimeo链接",
     "noSupotVideo":"您的浏览器不支持 HTML5 视频",
-    "noSuportType":"不支持的视频格式"
-  
+    "noSuportType":"不支持的视频格式",
+    "tipText":"打赏作者",
+    "blanceText":"余额",
+    "tipAmount":"打赏金额",
+    "tipButton":"打赏",
+    "tipAuthor":"打赏作者",
+    "minthonorText":"打赏荣誉通证",
+    "tipsTitle":"已打赏{tips}次, 金额：{utoken} UTO",
+    "alreadyTips":"已成功打赏",
+    "InsufficientBalance":"余额不足！",
+    "tipsing":"正在提交打赏操作",
+    "lessThenOne":"打赏金额不能小于1"
 
   }
 }

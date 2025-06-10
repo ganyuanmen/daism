@@ -166,7 +166,7 @@ const handleClick = useCallback((event) => {
         
             
             {/* 发起者 */}
-            {path==='enki'  &&<div className="d-flex align-items-center mt-1">
+            {messageObj?.self_account  &&<div className="d-flex align-items-center mt-1">
               <div className="d-inline-flex align-items-center" >
                  <span style={{display:'inline-block',paddingRight:'4px'}} >{t('proposedText')}:</span>
                  <img src={messageObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 

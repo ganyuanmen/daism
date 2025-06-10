@@ -23,10 +23,12 @@ export default function EnkiShare({content, env, currentObj})
 
 
     let delayTime=null;
+    let url;
+    if(currentObj.message_id.startsWith('http')) url=`https://${env.domain}/communities/enkier/${currentObj.id}`
+    else url=currentObj.link_url
 
 
-
-    const uc=`<a href="${currentObj.link_url}" target="_blank" style="width:100%; align-items:center;border:1px solid #ccc;font-size:1rem; color: currentColor;border-radius:8px;display:flex;text-decoration:none" >
+    const uc=`<a href="${url}" target="_blank" style="width:100%; align-items:center;border:1px solid #ccc;font-size:1rem; color: currentColor;border-radius:8px;display:flex;text-decoration:none" >
         <div style="aspect-ratio:1;flex:0 0 auto;position:relative;width:120px;border-radius:8px 0 0 8px;" >
             <img src='${currentObj.top_img || currentObj.avatar}' alt="" style="background-position:50%;background-size:cover;display:block;height:100%;margin:0;object-fit:cover;width:100%;border-radius:8px 0 0 8px;">
         </div>
@@ -59,9 +61,9 @@ export default function EnkiShare({content, env, currentObj})
         <Modal.Body  >
             <div> {t('linkText')}：</div>
             <div className="d-flex align-items-center flex-wrap  mb-3" >
-                <div style={{wordWrap: 'break-word', wordBreak: 'break-all'}} >{currentObj.link_url} </div>
+                <div style={{wordWrap: 'break-word', wordBreak: 'break-all'}} >{url} </div>
                 <div><Button variant="light" size="sm"   onClick={(e) => { 
-                    if(navigator.clipboard) navigator.clipboard.writeText(currentObj.link_url);
+                    if(navigator.clipboard) navigator.clipboard.writeText(url);
                     else return;
                     setShowOver1(true); //显示提示
                     if(delayTime) return; //提示未到时间，不做处理

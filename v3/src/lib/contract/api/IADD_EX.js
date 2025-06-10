@@ -9,7 +9,7 @@ class IADD_EX {
 	// _nftRecipient : 荣誉通证接收地址
     //_eth ,_id(sc_id),_uto(打赏),_minRatio（滑点）
     async ethToDaoToken(_eth,_id,_uto,_minRatio,recipient,_isMintNFT,_isBurnNFT,_nftRecipient) {
-
+ 
         this.genegateContract()
         let _amount=this.ethers.parseEther(_eth+'')
         let _utotip=this.ethers.parseUnits(_uto+'',8)
