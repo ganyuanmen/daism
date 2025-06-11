@@ -33,8 +33,8 @@ export default function NFT({env,locale}) {
 
 
 
-// export const getStaticProps = ({locale }) => {  
-  export const getServerSideProps = ({locale }) => {  
+export const getStaticProps = ({locale }) => {  
+  // export const getServerSideProps = ({locale }) => {  
     
   
     return {

@@ -111,8 +111,8 @@ export default function IADD({locale,env}) {
     }
 
     
-// export const getStaticProps  = async ({locale }) => {
-    export const getServerSideProps  = async ({locale }) => {
+export const getStaticProps  = async ({locale }) => {
+    // export const getServerSideProps  = async ({locale }) => {
     // const messages = await import(`../messages/shared/${locale}.json`);
 
     return {
