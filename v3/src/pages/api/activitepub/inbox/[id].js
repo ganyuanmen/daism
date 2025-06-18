@@ -171,7 +171,7 @@ async function handle_update(postbody) {
 	const vedioUrl=(postbody?.object?.vedioURL?new String(postbody.object.vedioURL).toString():'')
 
 	execute("update a_message set content=?,top_img=?,vedio_url=? where message_id=?"
-		,[content,imgpath,postbody?.object?.id,vedioUrl])
+		,[content,imgpath,vedioUrl,postbody.object.id])
 		.then(()=>{addLink(content,postbody?.object?.id ,'update')});
 	return;
 }	

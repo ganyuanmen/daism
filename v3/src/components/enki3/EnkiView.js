@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import ActorMember from "../enki2/form/ActorMember";
 import EnkiMember from "../enki2/form/EnkiMember";
 import { client } from "../../lib/api/client"
+import {NavDropdown} from "react-bootstrap";
 import { Home,BookSvg,BackSvg,MyPost,ReceiveSvg } from '../../lib/jssvg/SvgCollection';
 
 

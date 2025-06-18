@@ -19,6 +19,7 @@ export default function TipWindow({owner,messageObj,locale})
     const [utokenBalance,setUtokenBalance]=useState('0');
     const [donationAmount, setDonationAmount] = useState('');
     const [hash, setHash] = useState('');
+    const [noBlance, setNoBlance] = useState(false);
     const [uping, setUping] = useState(false);
     const [isMint, setIsMint] = useState(true);
     const t = useTranslations('ff');
@@ -44,7 +45,8 @@ export default function TipWindow({owner,messageObj,locale})
         return;
     }
     if(_tip>_uto) {
-        showClipError(t('InsufficientBalance'));
+        // showClipError(t('InsufficientBalance'));
+        setNoBlance(true)
         return;
     }
 
@@ -94,6 +96,17 @@ export default function TipWindow({owner,messageObj,locale})
                 </div>
                 </>
                 }
+            </Modal.Body>
+        </Modal>
+        <Modal className="modal-dialog-scrollable daism-title " centered show={noBlance} onHide={(e) => {setNoBlance(false)}}>
+            <Modal.Header closeButton>
+                <Modal.Title>{t('blanceTipText')}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="daism-tip-body">
+                <img alt="" src='/mess.svg' width={32} height={32} />
+                <div className="daism-tip-text">{t('InsufficientBalance')}
+                    <p><a href={`/${locale}/deval`} alt='' >{t('swapUTOText')}</a></p>
+                </div>
             </Modal.Body>
         </Modal>
         </>

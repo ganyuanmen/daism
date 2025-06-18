@@ -41,6 +41,25 @@ import {client} from '../lib/api/client'
     return data;
   }
 
+  export  function useTip(actor,method) {
+    const [data, setData] = useState({data:[],status:'pending'}); 
+    useEffect(() => {
+        let ignore = false;
+        if(actor?.manager) 
+            client.get(`/api/getData?manager=${actor?.manager}`,method).then(res =>{  
+                if (!ignore) 
+                if (res.status===200) setData({data:res.data,status:'succeeded'})
+                else setData({data:[],status:'failed',error:res.statusText})
+            });
+        
+        return () => {ignore = true}
+        
+    }, [actor]);
+
+    return data;
+  }
+
+
   export  function useEipTypes() {
     const [data, setData] = useState({data:[],status:'pending'}); 
     useEffect(() => {

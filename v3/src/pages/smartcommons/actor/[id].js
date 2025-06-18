@@ -17,10 +17,11 @@ import MyInfomation from '../../../components/enki3/MyInfomation';
 import EnkiCreateMessage from '../../../components/enki2/page/EnkiCreateMessage';
 import { NavDropdown } from 'react-bootstrap';
 import { client } from '../../../lib/api/client';
+import {getTipToMe,getTipFrom} from '../../../lib/mysql/folllow'
 /**
  * 指定个人帐号 daoActor,actor,follow0,follow1,locale,env,accountAr
  */
-export default function MyActor({daoActor,actor,follow0,follow1,locale,env,accountAr}) {
+export default function MyActor({daoActor,actor,follow0,follow1,locale,env,accountAr,tipToMe,tipFrom}) {
   const [fetchWhere, setFetchWhere] = useState({
     currentPageNum: 0,  //当前页 初始不摘取数据
     daoid: 0,  //此处不用
@@ -209,7 +210,7 @@ useEffect(() => {
                       :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack} 
                       currentObj={currentObj} afterEditCall={afterEditCall} accountAr={accountAr} />
                       
-                      :<MyInfomation daoActor={daoActor} actor={actor} follow0={follow0} follow1={follow1} locale={locale} />
+                      :<MyInfomation daoActor={daoActor} env={env} actor={actor} follow0={follow0} follow1={follow1} locale={locale} tipToMe={tipToMe} tipFrom={tipFrom} />
                   }
 
                 </div>
@@ -228,6 +229,12 @@ export const getServerSideProps = withSession(async ({locale,query }) => {
   const daoActor=await getJsonArray('daoactorbyid',[actor?.id])
   const follow0=await getJsonArray('follow0',[actor?.actor_account])
   const follow1=await getJsonArray('follow1',[actor?.actor_account])
+  console.log("-----------------------")
+  console.log(actor)
+  console.log("-----------------------")
+  const tipToMe=await getTipToMe({manager:actor?.manager})
+  const tipFrom=await getTipFrom({manager:actor?.manager})
+
   // const personNum=await getData("select count(*) as total from v_message where lower(actor_account)=? and send_type=0",[query?.id?.toLowerCase()],true);
   // const companyNum=await getData("select count(*) as total from a_messagesc where actor_id=?",[actor?.id],true);
   // const receiveNum=await getData("select count(*) as total from v_message where lower(receive_account)=?",[query?.id?.toLowerCase()],true);
@@ -239,7 +246,7 @@ export const getServerSideProps = withSession(async ({locale,query }) => {
           ...require(`../../../messages/shared/${locale}.json`),
           ...require(`../../../messages/federation/${locale}.json`),
         },
-        daoActor,actor,follow0,follow1,locale,env,accountAr
+        daoActor,actor,follow0,follow1,locale,env,accountAr,tipToMe,tipFrom
       }
     }
   }

@@ -6,9 +6,10 @@ import DaoItem from '../federation/DaoItem';
 import EnkiMember from '../enki2/form/EnkiMember'
 import FollowItem0 from '../enki2/form/FollowItem0';
 import FollowItem1 from '../enki2/form/FollowItem1';
+import TipToMe from './TipToMe';
 
 
-const MyInfomation = ({daoActor,actor,follow0,follow1,locale}) => {
+const MyInfomation = ({daoActor,actor,env,follow0,follow1,locale,tipToMe,tipFrom}) => {
   let t = useTranslations('ff')
 
   return (
@@ -46,6 +47,16 @@ const MyInfomation = ({daoActor,actor,follow0,follow1,locale}) => {
             <Tab eventKey="follow1" title={t('followedText',{num:follow1.length})}>
               <div>
                 {follow1.map((obj)=> <FollowItem1 locale={locale} key={obj.id}  messageObj={obj} isEdit={false} />)}
+              </div>
+            </Tab>
+            <Tab eventKey="tipToMe" title={t('tipToMe',{num:tipToMe.length})}>
+              <div>
+                {tipToMe.map((obj)=> <TipToMe key={obj.id} locale={locale} env={env} messageObj={obj}/>)}
+              </div>
+            </Tab>
+            <Tab eventKey="tipFrom" title={t('tipFrom',{num:tipFrom.length})}>
+              <div>
+                {tipFrom.map((obj)=> <TipToMe key={obj.id} locale={locale} env={env} messageObj={obj}/>)}
               </div>
             </Tab>
           </Tabs>

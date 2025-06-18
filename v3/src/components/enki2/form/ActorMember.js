@@ -9,11 +9,12 @@ import EnkiMember from '../../../components/enki2/form/EnkiMember';
 import dynamic from 'next/dynamic';
 import DaoItem from '../../../components/federation/DaoItem';
 const RichTextEditor = dynamic(() => import('../../../components/RichTextEditor'), { ssr: false });
-import { useFollow } from '../../../hooks/useMessageData';
+import { useFollow,useTip } from '../../../hooks/useMessageData';
 import FollowItem0 from './FollowItem0';
 import FollowItem1 from './FollowItem1';
 import EnKiRigester from './EnKiRigester';
 import { useTranslations } from 'next-intl'
+import TipToMe from '../../enki3/TipToMe';
 
 /**
  * 个人帐号信息
@@ -36,7 +37,9 @@ export default function ActorMember({locale,env}){
 
     const follow0=useFollow(actor,'getFollow0')
     const follow1=useFollow(actor,'getFollow1')
-  
+    const tipToMe=useTip(actor,'getTipToMe')
+    const tipFrom=useTip(actor,'getTipFrom')
+
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
@@ -124,11 +127,23 @@ export default function ActorMember({locale,env}){
                 {follow1.data.map((obj)=> <FollowItem1 key={obj.id} locale={locale} isEdit={true} messageObj={obj}/>)}
               </div>
             </Tab>
+            <Tab eventKey="tipToMe" title={t('tipToMe',{num:tipToMe.data.length})}>
+              <div>
+                {tipToMe.data.map((obj)=> <TipToMe key={obj.id} locale={locale} env={env} messageObj={obj}/>)}
+              </div>
+            </Tab>
+            <Tab eventKey="tipFrom" title={t('tipFrom',{num:tipFrom.data.length})}>
+              <div>
+                {tipFrom.data.map((obj)=> <TipToMe key={obj.id} locale={locale} env={env} messageObj={obj}/>)}
+              </div>
+            </Tab>
         </Tabs>
         }
     </Card.Body>
     </Card>
   
+
+
     {/* {actor?.actor_account && <EnkiView env={env} locale={locale} accountAr={accountAr} /> } */}
 
   

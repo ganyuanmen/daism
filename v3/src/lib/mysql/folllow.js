@@ -34,6 +34,22 @@ export async function getFollow ({actorAccount,userAccount}) {
     return await getJsonArray('follow1',[account])
   }
   
+    
+  
+   //我打赏谁
+   export async function getTipFrom ({manager}) {  
+    let re=await getData('SELECT * FROM v_tip WHERE token_to=?',[manager]);
+    return re || []
+  }
+
+  
+   //谁打赏我
+   export async function getTipToMe ({manager}) {  
+    let re=await getData('SELECT * FROM v_tip_tome WHERE tip_to=?',[manager]);
+    return re || []
+  }
+  
+
   //集合actor 偶像集  我关注谁
 export async function getFollowees ({account}) {
     let sql='SELECT * FROM v_follow WHERE user_account=?'

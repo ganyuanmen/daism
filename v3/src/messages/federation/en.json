@@ -87,6 +87,8 @@
     "DomainDescText":"Smart common requires binding a domain name in order to provide social functions based on the activityPub protocol. This domain name must support the HTTPS protocol.",
     "followingText":"Following {num} people",
     "followedText":"Followed by {num} people",
+    "tipToMe":"Tip {num} times",
+    "tipFrom":"Received Tips {num} times",
     "registerTips":"Registration Tips",
     "registerShow":"Register from the 'My Account' dropdown menu",
     "createPost":"Create a post",
@@ -190,7 +192,9 @@
     "alreadyTips":"Successfully Tips",
     "InsufficientBalance":"Insufficient balance!",
     "tipsing":"Submitting tipping operation",
-    "lessThenOne":"The tips amount cannot be less than 1"
+    "lessThenOne":"The tips amount cannot be less than 1",
+    "blanceTipText":"Tip",
+    "swapUTOText":"swap UTO now"
   
   }
 }

@@ -1,6 +1,6 @@
 import {getUser,getIsDaoMember, getEipTypes, getDappVersion, getDividend,getDappOwner,getProsData,getMynft, getSelfAccount,getDaoVote,getLastPro, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail } from "../../lib/mysql/daism";
 import {getLastDonate,getEnkiTotal, messagePageData,replyPageData,getAllSmartCommon,getHeartAndBook,fromAccount,getReplyTotal,daoPageData,getUserFromUrl,getOne,getAnnoce } from "../../lib/mysql/message";
-import { getFollowers,getFollowees,getFollow,getFollow0,getFollow1 } from "../../lib/mysql/folllow";
+import { getFollowers,getFollowees,getFollow,getFollow0,getFollow1,getTipFrom,getTipToMe } from "../../lib/mysql/folllow";
 import { httpGet } from "../../lib/net";
 
 
@@ -41,9 +41,11 @@ const methods={
     getAnnoce, //获取是否已转发
     getEnkiTotal, //获取嗯文总数
     getLastDonate, //获取捐赠最后一条
+    getTipFrom, //我打赏谁
+    getTipToMe, //谁打赏我
 
 }
-
+   
 export default async function handler(req, res) {
     if (req.method.toUpperCase()!== 'GET')  return res.status(405).json({errMsg:'Method Not Allowed'})
     try{

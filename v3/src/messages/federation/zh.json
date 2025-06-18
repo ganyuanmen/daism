@@ -86,6 +86,8 @@
     "noSmartCommon":"无",
     "followingText":"正在关注{num}人",
     "followedText":"被{num}人关注",
+    "tipToMe":"打赏{num}次",
+    "tipFrom":"被打赏{num}次",
     "registerTips":"注册提示",
     "registerShow":"从下拉菜单的 '我的帐号' 注册",
     "createPost":"创建嗯文",
@@ -188,7 +190,9 @@
     "alreadyTips":"已成功打赏",
     "InsufficientBalance":"余额不足！",
     "tipsing":"正在提交打赏操作",
-    "lessThenOne":"打赏金额不能小于1"
+    "lessThenOne":"打赏金额不能小于1",
+    "blanceTipText":"提示",
+    "swapUTOText":"立即交换UTO"
 
   }
 }
