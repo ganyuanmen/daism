@@ -6,7 +6,7 @@ export default function withSession(handler) {
     password: 'YgyZ3GDw3LHZQKDhPmPDLRsjREVRXPr9',
     cookieName: 'DAISM_COOKIE',
     cookieOptions: {
-      secure:false,
+      secure: process.env.NODE_ENV === "production",
     },
   });
 }
