@@ -31,7 +31,7 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
    const isAnnoce=()=>{
     if(!actor?.actor_account || !actor?.actor_account?.includes('@')) return false;
     if(messageObj.actor_account===actor?.actor_account ) return false;
-    if(messageObj.send_type===8 && messageObj.receive_account===actor?.actor_account) return false;
+    if(messageObj.send_type===9 && messageObj.receive_account===actor?.actor_account) return false;
     if(env?.domain!==actor?.actor_account.split('@')[1]) return false;
 
     return true;

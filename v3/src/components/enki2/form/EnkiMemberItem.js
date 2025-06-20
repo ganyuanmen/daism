@@ -32,6 +32,18 @@ export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
             setIsFollow(true); else setIsFollow(false);
     }, [myFollow]);  
 
+    const isTip=()=>{
+        if(user.connected!==1) return false;
+        if(!messageObj.manager) return false;
+        if(user.account.toLowerCase()===messageObj.manager.toLowerCase()) return false;
+        if(messageObj.message_id.startsWith('http')) return false;
+
+
+        if(messageObj?.receive_account) return messageObj.send_type>0 && messageObj.send_type<3;
+        else return true;
+
+    }
+
 
     useEffect(()=>{
         const fetchData = async () => {
@@ -56,8 +68,7 @@ export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
         <div className="desktop-only ">
         <div style={{width:'100%'}} className="d-inline-flex justify-content-between align-items-center"   >
             <div style={{width:'56%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
-            {user.connected===1 && messageObj.manager && user.account.toLowerCase()!==messageObj.manager.toLowerCase() 
-            && !messageObj.message_id.startsWith('http') && <TipWindow owner={user.account} messageObj={messageObj} locale={locale} />}
+            {isTip() && <TipWindow owner={user.account} messageObj={messageObj} locale={locale} />}
             {honor.length>0 && <div><Honor honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
             {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
             {(isTop || (messageObj.is_top===1 && fromPerson)) &&  <div ><PinTop size={24} /></div>}
@@ -68,8 +79,7 @@ export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
         <div className="mobile-only">
         <div style={{width:'100%'}} className="d-inline-flex justify-content-between align-items-center"   >
           <div style={{width:'60%'}} ><EnkiMember locale={locale} messageObj={messageObj} isLocal={messageObj?.actor_id>0} /></div>
-          {user.connected===1 && messageObj.manager && user.account.toLowerCase()!==messageObj.manager.toLowerCase() 
-          && !messageObj.message_id.startsWith('http') && <TipWindow owner={user.account} messageObj={messageObj} locale={locale} />}
+          {isTip() && <TipWindow owner={user.account} messageObj={messageObj} locale={locale} />}
           {honor.length>0 && <div style={{paddingLeft:'8px'}}><Honor_m honor={honor} t={t} messageObj={messageObj} locale={locale}/> </div>}
           {!isFollow && <div><EnKiFollow searObj={messageObj} /> </div>}
           <div style={{paddingLeft:'4px'}} ><TimesItem_m currentObj={messageObj} /></div>

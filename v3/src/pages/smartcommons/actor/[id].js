@@ -229,9 +229,7 @@ export const getServerSideProps = withSession(async ({locale,query }) => {
   const daoActor=await getJsonArray('daoactorbyid',[actor?.id])
   const follow0=await getJsonArray('follow0',[actor?.actor_account])
   const follow1=await getJsonArray('follow1',[actor?.actor_account])
-  console.log("-----------------------")
-  console.log(actor)
-  console.log("-----------------------")
+
   const tipToMe=await getTipToMe({manager:actor?.manager})
   const tipFrom=await getTipFrom({manager:actor?.manager})
 
