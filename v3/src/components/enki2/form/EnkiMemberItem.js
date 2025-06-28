@@ -18,7 +18,7 @@ import TipWindow from "../../federation/TipWindow";
  */
 export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
     const [honor,setHonor]=useState([])
-    const [isTop,setIsTop]=useState(false)
+    const [isTop,setIsTop]=useState(!!messageObj.is_top)
     const [isFollow,setIsFollow]=useState(true) //默认已关注
     const myFollow = useSelector((state) => state.valueData.myFollow)
     const actor = useSelector((state) => state.valueData.actor)
@@ -58,7 +58,7 @@ export default function EnkiMemberItem({locale,messageObj,domain,fromPerson}) {
         };
 
         if (messageObj.dao_id === 0 && messageObj.manager) fetchData();
-        else if (messageObj.dao_id > 0 && messageObj.is_top ) setIsTop(true); else  setIsTop(false);
+        // if ( ) setIsTop(true); else  setIsTop(false);
 
     },[messageObj]) 
  

@@ -37,13 +37,13 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			sctype='sc';
 			break;
 		default: //个人
-			if(parseInt(eventnum)===1) sql=`select a.* from v_message a where (send_type=0 and actor_account='${account}') or receive_account='${account}'`; //首页
-			else if(parseInt(eventnum)===2) sql=`select a.* from vv_message a where actor_account='${account}'`; //我发布的嗯文
+			if(parseInt(eventnum)===1) sql=`select a.* from v_message a where ((a.send_type=0 and a.actor_account='${account}') or a.receive_account='${account}')`; //首页
+			else if(parseInt(eventnum)===2) sql=`select a.* from vv_message a where a.actor_account='${account}'`; //我发布的嗯文
 			else if(parseInt(eventnum)===3) sql=`select a.* from vv_message a join a_bookmark b on a.message_id=b.pid where b.account='${account}'`; //我的收藏
 			else if(parseInt(eventnum)===4) sql=`select a.* from v_message a where receive_account='${account}'`; //我的接收嗯文
-			else if(parseInt(eventnum)===5)	sql='select a.* from v_message a where send_type=0 and property_index=1'; //公开
+			else if(parseInt(eventnum)===5)	sql='select a.* from v_message a where (a.send_type=0 and a.property_index=1)'; //公开
 			else if(parseInt(eventnum)===6) sql=`select a.* from vv_message a join a_heart b on a.message_id=b.pid where b.account='${account}'`; //喜欢
-			else if(parseInt(eventnum)===7) sql=`select a.* from v_message a where receive_account='${account}' and send_type=2`; //@
+			else if(parseInt(eventnum)===7) sql=`select a.* from v_message a where (a.receive_account='${account}' and a.send_type=2)`; //@
 			else if(parseInt(eventnum)===8) sql=`select a.* from vv_message a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`; //过滤
 			break;
 	}
@@ -52,14 +52,20 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 	// let sql=`select * from v_message${sctype} ${where} order by ${order} desc limit ${pi*12},12`;
 	let re=await getData(`${sql} order by ${order} desc limit ${pi*12},12`,[]);
 
-	if(parseInt(menutype)===1 || parseInt(menutype)===2 || parseInt(v)===9999){
+	// if(parseInt(menutype)===1 || parseInt(menutype)===2 || parseInt(v)===9999){
 
 		re=re.filter(obj => obj.is_top===0);
+		console.log("-------------------------------")
+console.log("pi:",pi)
+console.log(re.length)
+console.log("-------------------------------")
+		
 		if(parseInt(pi)===0){ //首页
 			let re1=await getData(`${sql} and a.is_top=1 order by ${order} desc`,[]);
+			console.log(re1)
 			re= [...re1, ...re]
 		}
-	} 
+	// } 
 
 	
 	// if(parseInt(menutype)===3 && parseInt(eventnum)===3){ //从sc取出收藏

@@ -144,7 +144,7 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
                     <NavDropdown.Item disabled={!isEdit} eventKey="1"> <span style={{color:isEdit?'black':'gray'}}><EditSvg size={24} /> {t('editText')}...</span></NavDropdown.Item> 
                     <NavDropdown.Item disabled={!isDelete} eventKey="2"> <span style={{color:isDelete?'black':'gray'}}><DeleteSvg size={24} /> {t('deleteText')}...</span></NavDropdown.Item> 
                    { isAn && messageObj?.actor_account!==actor?.actor_account && !fromPerson && <NavDropdown.Item eventKey="4"> <span><AnnounceSvg size={24} /> {t('amouseText')}...</span></NavDropdown.Item>  }       
-                   {(messageObj.dao_id>0 || fromPerson) && <NavDropdown.Item disabled={!isEdit} eventKey="3"> <span style={{color:isEdit?'black':'gray'}}><Pin size={24} /> {messageObj.is_top?t('dropTopText'):t('setTopText')}...</span></NavDropdown.Item>}     
+                   { <NavDropdown.Item disabled={!isEdit} eventKey="3"> <span style={{color:isEdit?'black':'gray'}}><Pin size={24} /> {messageObj.is_top?t('dropTopText'):t('setTopText')}...</span></NavDropdown.Item>}     
                 
                 </NavDropdown>
             </Nav>

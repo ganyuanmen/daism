@@ -69,9 +69,11 @@ export default function TipWindow({owner,messageObj,locale})
     );
 
  }
-    
+    //🎁
     return (<>
-    <button className="daism-ff"  onClick={()=>setShow(true)} title={t('tipsTitle',{tips:messageObj.tips,utoken:messageObj.utoken})}> 🎁 </button>
+    <button className="daism-ff" style={{color:'red'}}  onClick={()=>setShow(true)} title={t('tipsTitle',{tips:messageObj.tips,utoken:messageObj.utoken})}>
+    <img src='/vita.svg' width={20} height={24} alt={t('tipsTitle',{tips:messageObj.tips,utoken:messageObj.utoken})} />
+          </button>
         <Modal className="daism-title " show={show} onHide={() => {setShow(false);setHash('');setUping(false);}}>
             <Modal.Header closeButton>
                 <Modal.Title>{t('tipText')}</Modal.Title>
