@@ -38,14 +38,14 @@ export async function getFollow ({actorAccount,userAccount}) {
   
    //我打赏谁
    export async function getTipFrom ({manager}) {  
-    let re=await getData('SELECT * FROM v_tip WHERE token_to=?',[manager]);
+    let re=await getData('SELECT * FROM v_tip WHERE token_to=? order by id desc',[manager]);
     return re || []
   }
 
   
    //谁打赏我
    export async function getTipToMe ({manager}) {  
-    let re=await getData('SELECT * FROM v_tip_tome WHERE tip_to=?',[manager]);
+    let re=await getData('SELECT * FROM v_tip_tome WHERE tip_to=? order by id desc',[manager]);
     return re || []
   }
   
