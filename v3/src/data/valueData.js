@@ -13,6 +13,7 @@ const initialState = {
     messageText:'', // 提示窗口信息
     loginsiwe:false,  //登录siwe
     myFollow:[], //我关注列表
+    showNotice:false, //打赏弹窗
 }
   
 export const valueDataSlice = createSlice({
@@ -34,6 +35,11 @@ export const valueDataSlice = createSlice({
     setMessageText: (state, action) => {
         state.messageText = action.payload;
       },
+
+    setShowNotice: (state, action) => {
+      state.showNotice = action.payload;
+    },
+
     setTokenList: (state, action) => {
       state.tokenList = action.payload;
     },
@@ -60,5 +66,5 @@ export const valueDataSlice = createSlice({
 })
 
 export const { setEthBalance,setTipText,setMessageText,setUser,setActor,setTokenList,setTokenFilter,setDaoList,
-  setDaoFilter,setDaoActor,setLoginsiwe,setMyFollow} = valueDataSlice.actions
+  setDaoFilter,setDaoActor,setLoginsiwe,setMyFollow,setShowNotice} = valueDataSlice.actions
 export default valueDataSlice.reducer

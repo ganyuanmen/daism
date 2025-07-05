@@ -21,7 +21,7 @@ import TipToMe from '../../enki3/TipToMe';
  * @locale zh/cn 
  * @env 环境变量 
  */
-export default function ActorMember({locale,env}){
+export default function ActorMember({locale,env,notice}){
   const user = useSelector((state) => state.valueData.user)
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
     
@@ -116,7 +116,7 @@ export default function ActorMember({locale,env}){
     </Accordion>
       
       {actor?.actor_account &&
-        <Tabs defaultActiveKey="follow0" className="mb-3 mt-3" >
+        <Tabs defaultActiveKey={notice>0?"tipToMe": "follow0"} className="mb-3 mt-3" >
             <Tab eventKey="follow0" title={t('followingText',{num:follow0.data.length})}>
               <div>
                 {follow0.data.map((obj)=> <FollowItem0 key={obj.id} locale={locale} isEdit={true} messageObj={obj}/>)}

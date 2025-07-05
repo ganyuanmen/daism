@@ -55,14 +55,9 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 	// if(parseInt(menutype)===1 || parseInt(menutype)===2 || parseInt(v)===9999){
 
 		re=re.filter(obj => obj.is_top===0);
-		console.log("-------------------------------")
-console.log("pi:",pi)
-console.log(re.length)
-console.log("-------------------------------")
 		
 		if(parseInt(pi)===0){ //首页
 			let re1=await getData(`${sql} and a.is_top=1 order by ${order} desc`,[]);
-			console.log(re1)
 			re= [...re1, ...re]
 		}
 	// } 
@@ -145,6 +140,21 @@ export async function getReplyTotal({sctype,pid})
 
 }
 
+
+//获取通知
+export async function getNotice({manager})
+{
+
+	let re=await getData('SELECT id FROM t_nft_tip WHERE LOWER(tip_to)=? AND is_read=0',[manager.toLowerCase()]);
+	return re; 
+}
+
+
+//更新通知
+export async function updateNotice({manager})
+{
+	return await execute('UPDATE t_nft_tip SET is_read=1 WHERE LOWER(tip_to)=? AND is_read=0;',[manager.toLowerCase()]);
+}
 
 //所有回复
 export async function replyPageData({pi,sctype,pid})

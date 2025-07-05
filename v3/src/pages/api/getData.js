@@ -1,5 +1,5 @@
 import {getUser,getIsDaoMember, getEipTypes, getDappVersion, getDividend,getDappOwner,getProsData,getMynft, getSelfAccount,getDaoVote,getLastPro, getDaosData,getPrice,getToekn,getMyPros,getLogsData,getMyDaos,getMyTokens,getMyDaoDetail } from "../../lib/mysql/daism";
-import {getLastDonate,getEnkiTotal, messagePageData,replyPageData,getAllSmartCommon,getHeartAndBook,fromAccount,getReplyTotal,daoPageData,getUserFromUrl,getOne,getAnnoce } from "../../lib/mysql/message";
+import {getLastDonate,getEnkiTotal, messagePageData,replyPageData,getAllSmartCommon,getHeartAndBook,fromAccount,getReplyTotal,daoPageData,getUserFromUrl,getOne,getAnnoce,getNotice } from "../../lib/mysql/message";
 import { getFollowers,getFollowees,getFollow,getFollow0,getFollow1,getTipFrom,getTipToMe } from "../../lib/mysql/folllow";
 import { httpGet } from "../../lib/net";
 
@@ -43,6 +43,7 @@ const methods={
     getLastDonate, //获取捐赠最后一条
     getTipFrom, //我打赏谁
     getTipToMe, //谁打赏我
+    getNotice, //获取未读打赏
 
 }
    

@@ -86,7 +86,10 @@
     "foot12":", was launched on October 21, 2024!",
     "foot2":"Price Unit",
     "foot31":"Price Prototye",
-    "foot32":"abbreviation"
+    "foot32":"abbreviation",
+    "byTipText":"Tip Received Notification",
+    "alreatyTip":"Your Enki Article has been tipped",
+    "viewText":"view"
     
   }
 }

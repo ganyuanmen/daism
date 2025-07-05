@@ -17,7 +17,7 @@
 
   "Common":{
     "about":"关于",
-    "donationText":"损赠",
+    "donationText":"捐赠",
     "title":"去估值-道易程",
     "smartTitle":"智能公器-道易程",
     "tokensTitle":"荣誉通证-道易程",
@@ -87,7 +87,10 @@
     "foot12":"的 Satoshi UTO Fund 于2024年11月21日问世！",
     "foot2":"价格单位",
     "foot31":"价格原器",
-    "foot32":"缩写"
+    "foot32":"缩写",
+    "byTipText":"被打赏提示",
+    "alreatyTip":"你的嗯文被打赏了",
+    "viewText":"查看"
 
   }
 }

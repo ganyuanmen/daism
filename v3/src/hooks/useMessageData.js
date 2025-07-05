@@ -59,6 +59,24 @@ import {client} from '../lib/api/client'
     return data;
   }
 
+  export  function useNotice(user) {
+    const [data, setData] = useState({data:[],status:'pending'}); 
+    useEffect(() => {
+        let ignore = false;
+        if(user?.account) 
+            client.get(`/api/getData?manager=${user?.account}`,'getNotice').then(res =>{  
+                if (!ignore) 
+                if (res.status===200) setData({data:res.data,status:'succeeded'})
+                else setData({data:[],status:'failed',error:res.statusText})
+            });
+        
+        return () => {ignore = true}
+        
+    }, [user]);
+
+    return data;
+  }
+
 
   export  function useEipTypes() {
     const [data, setData] = useState({data:[],status:'pending'}); 

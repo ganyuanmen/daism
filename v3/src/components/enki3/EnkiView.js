@@ -11,7 +11,7 @@ import {NavDropdown} from "react-bootstrap";
 import { Home,BookSvg,BackSvg,MyPost,ReceiveSvg } from '../../lib/jssvg/SvgCollection';
 
 
-export default function EnkiView({actor,locale,env,daoActor,accountAr}) {
+export default function EnkiView({actor,locale,env,daoActor,accountAr,notice}) {
     const [fetchWhere, setFetchWhere] = useState({
       currentPageNum: 0,  //当前页 初始不摘取数据
       daoid: 0,  //此处不用
@@ -30,7 +30,7 @@ export default function EnkiView({actor,locale,env,daoActor,accountAr}) {
   
   const [leftHidden,setLeftHidden]=useState(false)
   const [currentObj, setCurrentObj] = useState(null);  //用户选择的发文对象
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(notice>0?9:0);
   const leftDivRef = useRef(null);
   const parentDivRef = useRef(null);
   
@@ -52,14 +52,13 @@ export default function EnkiView({actor,locale,env,daoActor,accountAr}) {
     myCompanyPost:<BookSvg size={24} />
   }
   
-  const [navIndex,setNavIndex]=useState(paras.mypost) ;
+  const [navIndex,setNavIndex]=useState(notice>0?paras.home: paras.mypost) ;
 
   useEffect(()=>{
     const fetchData = async () => {
         try {
             const res = await client.get(`/api/getData?account=${actor?.actor_account}&actorid=${actor?.id}`,'getEnkiTotal' );
-            if(res?.status===200 && Array.isArray(res?.data)) {
-            
+            if(res?.status===200 && Array.isArray(res?.data) && res?.data.length) {            
                      setPersonNum(res.data[0].total);
                      setCompanyNum(res.data[1].total);
                      setReceiveNum(res.data[2].total);
@@ -192,7 +191,7 @@ export default function EnkiView({actor,locale,env,daoActor,accountAr}) {
   
                       :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack} 
                       currentObj={currentObj} afterEditCall={afterEditCall} accountAr={accountAr} />
-                        :<ActorMember locale={locale} env={env}  />
+                        :<ActorMember locale={locale} env={env} notice={notice}  />
                     }
   
                   </div>

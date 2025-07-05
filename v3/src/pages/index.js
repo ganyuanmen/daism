@@ -17,11 +17,8 @@ export default function Home({locale,env}) {
             <meta name="robots" content="index, follow, noodp" />
             <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
             <title>{t('indexTitleText')}</title>
-            <meta content={`https://${env.domain}/logo.svg`} property="og:image" />
-            <meta content={`https://${env.domain}/logo.svg`} property="twitter:image" />
-            <meta content={`https://${env.domain}/logo.svg`} property="wechat:image" />
             {locale==='en'?<meta name="keywords" lang="en" content="Proof-of-Love Civilization, Proof of Love, PoL Civ, Satoshi UTO Fund, SUF, Universal Value, SufAIthon, DAism"/>
-            :<meta name="keywords" lang="zh-cmn-Hans" content="爱的证明, Proof of Love, 富爱文明, 中本聪UTO基金, Satoshi UTO Fund, SUF, 普世价值, 速发赛, 道易程"/>} Leading to PoL Civ
+            :<meta name="keywords" lang="zh-cmn-Hans" content="爱的证明, Proof of Love, 爱的检验, 爱的验证, 富爱文明, 中本聪UTO基金, Satoshi UTO Fund, SUF, 普世价值, 速发赛, 道易程"/>} Leading to PoL Civ
             {locale==='en'?<meta name="description" lang="en" content="Leading to Proof-of-Love Civilization by Joining Blockchain & AI Together - DAism"/>
             :<meta name="description" lang="zh-cmn-Hans" content="道易程的爱的证明（Proof of Love）治理共识，将区块链与人工智能融合在一起，引领人类奔赴以爱为核心伦理的新文明。"/>}
         </Head>
@@ -38,6 +35,7 @@ export default function Home({locale,env}) {
 				<p>{t('xuanyan-04')}</p>
 				<p>{t('xuanyan-05')}</p>
 				<p>{t('xuanyan-06')}</p>				
+				<p>{t('xuanyan-07')}</p>				
                 <h2>💓 Breakthroughs of PoL 1.0</h2>
                     <p>{t('pol-01')} <a href={`https://daism.io/${locale==='zh'?'zh/':''}deval`}  target="_blank">IADD {t('networkName')}</a>{t('pol-02')}</p>
                     <ul>
@@ -72,7 +70,7 @@ export default function Home({locale,env}) {
     }
    
     export const getStaticProps  = async ({locale }) => {
-    // export const getServerSideProps  = async ({locale }) => {
+        // export const getServerSideProps  = async ({locale }) => {
     
         return {
             props: {

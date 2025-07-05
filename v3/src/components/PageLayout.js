@@ -1,11 +1,12 @@
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/router'
 
-import { Navbar,Container,Nav,NavDropdown, Alert } from 'react-bootstrap'
+import { Navbar,Container,Nav,NavDropdown } from 'react-bootstrap'
 import Wallet from './Wallet'
 import Loddingwin from './Loddingwin'
 import ShowTip from './ShowTip'
-import React, { useState } from 'react';
+import ShowNotice from './enki3/ShowNotice'
+// import React, { useState } from 'react';
 
 export default function PageLayout({children,env}) {
 
@@ -95,6 +96,7 @@ export default function PageLayout({children,env}) {
       } */}
         <Loddingwin />
         <ShowTip />
+        <ShowNotice />
     </>
   )
 }
