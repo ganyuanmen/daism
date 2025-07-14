@@ -2,7 +2,7 @@ import withSession from "../../../lib/session";
 import formidable from 'formidable';
 import { getData, execute } from "../../../lib/mysql/common";
 import { sendfollow } from "../../../lib/utils/sendfollow";
-import { saveImage, findFirstURI, getTootContent,saveHTML } from "../../../lib/utils";
+import { saveImage, findFirstURI, getTootContent,getClientIp } from "../../../lib/utils";
 
 const { v4: uuidv4 } = require("uuid");
 
@@ -17,7 +17,10 @@ export const config = {
 export default withSession(async (req, res) => {
     if (req.method.toUpperCase() !== 'POST') return res.status(405).json({ errMsg: 'Method Not Allowed' })
     const sessionUser = req.session.get('user');
-    if (!sessionUser) return res.status(406).json({ errMsg: 'No wallet signature login' })
+    const currentIp = getClientIp(req);
+    if (!sessionUser || sessionUser.ip !== currentIp || sessionUser.userAgent !== req.headers['user-agent']) {
+        return res.status(406).json({ errMsg: 'No wallet signature login' })
+    }
     try {
 
         const form = formidable({})
@@ -63,7 +66,7 @@ export default withSession(async (req, res) => {
                 setTimeout(async () => {
                     await addLink(content[0], message_id,sctype,'insert'); //生成链接卡片
 
-                    if(tagar.length) execute(`call in_tag(?,?)`,[message_id, JSON.stringify(tagar)]);
+                    if(tagar.length) execute(`INSERT IGNORE INTO a_tag(pid, tag_name) SELECT ?,jt.item FROM JSON_TABLE(?,'$[*]' COLUMNS (item VARCHAR(100) PATH '$')) AS jt;`,[message_id, JSON.stringify(tagar)]);
 
                     // if(title && title[0]) saveHTML(actorName[0],content[0],title[0],message_id,textContent[0]
                     //     ,path?path:avatar[0],account[0],sessionUser.did,avatar[0]);
@@ -126,7 +129,7 @@ export default withSession(async (req, res) => {
                     addLink(content[0],messageId[0],sctype,'update');
                     if(tagar.length)
                         execute("delete from a_tag where pid=?",[messageId[0]]).then(()=>{
-                            execute(`call in_tag(?,?)`,[messageId[0], JSON.stringify(tagar)]);
+                            execute(`INSERT IGNORE INTO a_tag(pid, tag_name) SELECT ?,jt.item FROM JSON_TABLE(?,'$[*]' COLUMNS (item VARCHAR(100) PATH '$')) AS jt;`,[messageId[0], JSON.stringify(tagar)]);
                         })
                      
                     sendfollow(

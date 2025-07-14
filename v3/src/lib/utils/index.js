@@ -223,4 +223,9 @@ export  function findFirstURI(code) {
   }
     
 
-    
+  export function getClientIp(req) {
+    return (
+      req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
+      req.connection?.remoteAddress 
+    );
+  }

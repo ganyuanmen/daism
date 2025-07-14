@@ -2,6 +2,7 @@ import withSession from "../../../lib/session";
 import formidable from 'formidable';
 import {updateActor,getActor} from '../../../lib/mysql/user'
 import { saveImage } from "../../../lib/utils";
+import {getClientIp} from '../../../lib/utils'
 
 export const config = {
   api: {
@@ -12,7 +13,10 @@ export const config = {
 export default withSession(async (req, res) => {
   if (req.method.toUpperCase()!== 'POST')  return res.status(405).json({errMsg:'Method Not Allowed'})
   const sessionUser = req.session.get('user');
-  if (!sessionUser) return res.status(406).json({errMsg:'No wallet signature login'})
+  const currentIp = getClientIp(req);
+  if (!sessionUser || sessionUser.ip !== currentIp || sessionUser.userAgent !== req.headers['user-agent'])
+      return res.status(406).json({errMsg:'No wallet signature login'})
+  // if (!sessionUser) return res.status(406).json({errMsg:'No wallet signature login'})
   const form = formidable({})
   try {
       const [fields, files] = await form.parse(req);
