@@ -10,6 +10,8 @@ import RichEditor from "../../enki3/RichEditor";
 import Editor from "../form/Editor";
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux';
+import ShowLogin from '../../enki3/ShowLogin'
+//"./ShowLogin";
 
 // import TagShow from '../../enki3/TagShow';
 
@@ -25,7 +27,7 @@ import { useSelector } from 'react-redux';
  */
 //currentObj 有值表示修改
 export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCall, addCallBack,accountAr,callBack}) {
-
+    const [show,setShow]=useState(false)
     const [typeIndex,setTypeIndex]=useState(currentObj?.type_index?currentObj.type_index:0)
     const [showEvent, setShowEvent] = useState(false) //是否活动发文
     const [selectedDaoid, setSelectedDaoid] = useState(""); //智能公器选择值
@@ -90,6 +92,12 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
             }
         }
     const submit = async () => {
+        const res = await fetch('/api/siwe/getLoginUser?t='+new Date().getTime())
+        let res_data=await res.json();
+        if(res_data.state!==1){
+            setShow(true);
+            return;
+        }
         if(!currentObj?.message_id) {
             if (errorSelect) return showClipError(t('loginDomainText', { domain: loginDomain }));
             if (!selectedDaoid) return showClipError(t('notSelect'))
@@ -184,7 +192,7 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
 
     };
 
-    return (
+    return (<>
         <div style={{padding:'20px'}} >
           <InputGroup className="mb-3">
                     <InputGroup.Text>{t('publishCompany')}:</InputGroup.Text>
@@ -247,7 +255,8 @@ export default function EnkiCreateMessage({ env,daoData, currentObj,afterEditCal
           </div>
     
     </div>
-
+    <ShowLogin show={show} setShow={setShow} />
+</>
       
     );
 }

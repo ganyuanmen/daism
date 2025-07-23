@@ -90,7 +90,9 @@
     "foot32":"缩写",
     "byTipText":"被打赏提示",
     "alreatyTip":"你的嗯文被打赏了",
-    "viewText":"查看"
+    "viewText":"查看",
+    "loginFailure":"登录失效",
+    "reLoginText":"登录已失效，请重新登录"
 
   }
 }

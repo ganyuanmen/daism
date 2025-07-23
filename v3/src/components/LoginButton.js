@@ -56,6 +56,7 @@ const LoginButton = forwardRef((props, ref) => {
                     showTip(`${t('loginError')} \n ${data.errMsg} `)
                 }
                 else { 
+                    if(!props?.second_login){
                     dispatch(setLoginsiwe(true))
                     dispatch(setDaoActor(data.daoActor))
                     dispatch(setActor(data.actor))
@@ -65,6 +66,7 @@ const LoginButton = forwardRef((props, ref) => {
                     window.sessionStorage.setItem("daoActor", JSON.stringify(data.daoActor))
                     window.sessionStorage.setItem("actor", JSON.stringify(data.actor))
                     window.sessionStorage.setItem("myFollow", JSON.stringify(data.myFollow))
+                    }
                 }
                 setSingering(false)
                 showLoadding('')

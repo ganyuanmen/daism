@@ -8,6 +8,7 @@ import Editor from "../enki2/form/Editor";
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux';
 import DaismInputGroup from "../form/DaismInputGroup";
+import ShowLogin from "./ShowLogin";
 // import TagShow from "./TagShow";
 /**
  * 个人嗯文编辑
@@ -19,6 +20,7 @@ import DaismInputGroup from "../form/DaismInputGroup";
  */
 export default function CreateMess({currentObj,afterEditCall,addCallBack,accountAr,callBack}) {
 
+    const [show,setShow]=useState(false)
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
@@ -61,6 +63,12 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
     }
 
     const submit=async ()=>{ 
+        const res = await fetch('/api/siwe/getLoginUser?t='+new Date().getTime())
+        let res_data=await res.json();
+        if(res_data.state!==1){
+            setShow(true);
+            return;
+        }
         const contentHTML = getHTML();
         if(!contentHTML) return;
 
@@ -104,7 +112,7 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         });   
     }
 
-    return (
+    return (<>
       <div style={{padding:'20px'}} >
           <Form>
                 <Form.Check inline label={t('shortText')} name="group1" type='radio' defaultChecked={typeIndex===0} onClick={e=>
@@ -132,6 +140,8 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
         </div>
       
       </div>
+      <ShowLogin show={show} setShow={setShow} />
+      </>
     );
 }
 

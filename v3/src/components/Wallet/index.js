@@ -28,7 +28,7 @@ function Wallet({env,query,route,otherLocale,tc}) {
     const dispatch = useDispatch();
     function setEth(value){dispatch(setEthBalance(value))}
     const t = useTranslations('Common')
-    const loginRef=useRef() //siwe 登录
+    // const loginRef=useRef() //siwe 登录
     function showError(str){dispatch(setMessageText(str))}
   
     const NET={'_0xaa36a7':'sepolia','_0x4268':'holesky','_0x1':'mainnet','_11155111':'sepolia','_17000':'holesky',"_1":"mainnet"}
@@ -239,7 +239,7 @@ function Wallet({env,query,route,otherLocale,tc}) {
             </div>
           </Modal.Body>
           </Modal>
-          <LoginButton  ref={loginRef} command={true} />
+          {/* <LoginButton  ref={loginRef} command={true} /> */}
         </>
     );
 }

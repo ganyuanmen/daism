@@ -15,6 +15,7 @@ import FollowItem1 from './FollowItem1';
 import EnKiRigester from './EnKiRigester';
 import { useTranslations } from 'next-intl'
 import TipToMe from '../../enki3/TipToMe';
+import ShowLogin from '../../enki3/ShowLogin'
 
 /**
  * 个人帐号信息
@@ -22,6 +23,7 @@ import TipToMe from '../../enki3/TipToMe';
  * @env 环境变量 
  */
 export default function ActorMember({locale,env,notice}){
+  const [showLogin,setShowLogin]=useState(false)
   const user = useSelector((state) => state.valueData.user)
     const actor = useSelector((state) => state.valueData.actor)  //siwe登录信息
     
@@ -48,7 +50,12 @@ export default function ActorMember({locale,env,notice}){
   
     //提交事件
     const handleSubmit = async () => {
-    
+      const res = await fetch('/api/siwe/getLoginUser?t='+new Date().getTime())
+      let res_data=await res.json();
+      if(res_data.state!==1){
+        setShowLogin(true);
+          return;
+      }
       showTip(t('submittingText')) 
   
       const formData = new FormData();
@@ -168,7 +175,7 @@ export default function ActorMember({locale,env,notice}){
     <EnKiRigester setRegister={setRegister} env={env} />
     </Modal.Body>
     </Modal>
-    
+    <ShowLogin show={showLogin} setShow={setShowLogin} />
     </> );
   }
   

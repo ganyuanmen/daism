@@ -9,7 +9,9 @@ export default function withSession(handler) {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24, // 1天有效
+      // maxAge: 15, // 2 小时
+      maxAge: 60 * 60 * 2, // 2 小时
+     // maxAge: 60 * 60 * 24, // 1天有效
     },
   });
 }

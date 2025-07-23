@@ -17,7 +17,7 @@ export default function Loginsign({}) {
     return (<>{user.connected===1?
                 <Button variant="primary"  onClick={()=>loginRef.current.siweLogin()} >
                   <img alt='' src='/loginbutton.svg' width={18} height={18} style={{color:'white'}} />  {'  '}
-                  <LoginButton  ref={loginRef} ></LoginButton>
+                  <LoginButton  ref={loginRef} />
                 </Button>
                 :<ShowErrorBar errStr={tc('noConnectText')} />
                 }

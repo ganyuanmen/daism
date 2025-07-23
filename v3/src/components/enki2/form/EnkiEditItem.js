@@ -6,6 +6,8 @@ import { client } from "../../../lib/api/client";
 import { useDispatch} from 'react-redux';
 import {setTipText,setMessageText} from '../../../data/valueData';
 import { useTranslations } from 'next-intl'
+import ShowLogin from '../../enki3/ShowLogin'
+//"./ShowLogin";
 
 /**
  * 修改菜单（嗯文或回复）
@@ -20,7 +22,7 @@ import { useTranslations } from 'next-intl'
 //path enki 公共嗯文操作， enkier 个人嗯 文操作
 export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,preEditCall,sctype,isEdit,fromPerson=false,type=0})
 {
-    
+    const [showLogin,setShowLogin]=useState(false)
     const t = useTranslations('ff')
     const tc=useTranslations('Common')
     const dispatch = useDispatch();
@@ -60,8 +62,14 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
     
 
     const handle=async (method,body)=>{
+        let res = await fetch('/api/siwe/getLoginUser?t='+new Date().getTime())
+        let res_data=await res.json();
+        if(res_data.state!==1){
+            setShowLogin(true);
+            return;
+        }
         showTip(t('submittingText')) 
-        let res=await client.post('/api/postwithsession',method,body)
+         res=await client.post('/api/postwithsession',method,body)
         closeTip()
         if(res.status===200) if(typeof delCallBack === 'function') delCallBack.call(this,'del') 
         else showClipError(`${tc('dataHandleErrorText')}!${res.statusText}\n ${res.data.errMsg?res.data.errMsg:''}`)
@@ -77,8 +85,14 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
     }
  
     const handleAnnounce=async ()=>{
+        let res = await fetch('/api/siwe/getLoginUser?t='+new Date().getTime())
+        let res_data=await res.json();
+        if(res_data.state!==1){
+            setShowLogin(true);
+            return;
+        }
         showTip(t('submittingText')) 
-        let res=await client.post('/api/postwithsession',"setAnnounce",
+        res=await client.post('/api/postwithsession',"setAnnounce",
             {
                 account:actor?.actor_account,
                 toUrl:messageObj.actor_url,
@@ -151,6 +165,7 @@ export default function EnkiEditItem({path,messageObj,env, actor, delCallBack,pr
             : <>{isEdit && <button  style={{border:0}} onClick={()=>{setShow(true)}}  > <DeleteSvg   size={20} /></button> }</>
             }
             <ConfirmWin show={show} setShow={setShow} callBack={deldiscussions} question={t('deleteSureText')}/>
+            <ShowLogin show={showLogin} setShow={setShowLogin} />
         </>
     );
 }
