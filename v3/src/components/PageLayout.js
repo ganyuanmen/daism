@@ -21,8 +21,8 @@ export default function PageLayout({children,env}) {
   return (
     <>
   
-    <Container style={{paddingTop:'60px'}}  >
-      <div style={{backgroundColor:'white',height:'60px',width:'100%',position:'fixed',top:'0px',zIndex:999}} >
+    <Container style={{paddingTop:'50px'}}  >
+      <div style={{backgroundColor:'white',height:'50px',width:'100%',position:'fixed',top:'0px',zIndex:999}} >
         
       </div>
        <Navbar collapseOnSelect expand="lg"  className='pnavbar'>
@@ -34,8 +34,8 @@ export default function PageLayout({children,env}) {
             <Navbar.Collapse className="justify-content-end"  id="basic-navbar-nav">
             
                 <Nav  style={{width:'100%'}}>
-                  <div className="d-flex flex-row flex-sm-wrap p-0 m-0 ">
-                  <Nav.Link className={route === '/'  ? 'pnavactive'  : ''}  href={`/${locale!='zh'?'':'zh'}`}>{t('home')}</Nav.Link>
+                  <div className="d-flex flex-row p-0 m-0 ">
+                  <Nav.Link className={route === '/'  ? 'pnavactive'  : ''}  href={`/${locale!='zh'?'':'zh'}`}><div className='no-wrap' > {t('home')}</div></Nav.Link>
                   <NavDropdown className={route.startsWith('/communities') ? 'pnavactive'  : ''} title={t('social')} id="basic-nav-dropdown1">   
                     <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enki' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enki?v=${env.version}`} > {t('myCommunity')}</NavDropdown.Item>
                     <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/SC' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/SC?v=${env.version}`} > {t('publicCommunities')}</NavDropdown.Item>
@@ -43,21 +43,21 @@ export default function PageLayout({children,env}) {
                     {/* <NavDropdown.Item style={{paddingLeft:'20px'}} className={route === '/communities/enkier1' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/communities/enkier1`} > 个人社交(测试)</NavDropdown.Item> */}
                   </NavDropdown>
                 
-                  <Nav.Link className={route === '/smartcommons' ? 'pnavactive' : ''} href={`${locale!='zh'?'':'/zh'}/smartcommons`}>{t('smarcommon')}</Nav.Link> 
-                  <Nav.Link className={route === '/honortokens' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/honortokens`} >{t('nft')}</Nav.Link> 
+                  <Nav.Link className={route === '/smartcommons' ? 'pnavactive' : ''} href={`${locale!='zh'?'':'/zh'}/smartcommons`}><div className='no-wrap' >{t('smarcommon')}</div></Nav.Link> 
+                  <Nav.Link className={route === '/honortokens' ? 'pnavactive'  : ''} href={`${locale!='zh'?'':'/zh'}/honortokens`} ><div className='no-wrap' >{t('nft')}</div></Nav.Link> 
                   
                   <Nav.Link style={{display:'none'}} href='/listbook' >listBook</Nav.Link> 
 
                   </div>
-                  <div  className="d-flex flex-row flex-sm-wrap p-0 m-0 ">
+                  <div  className="d-flex flex-row p-0 m-0 ">
                  
-                  <Nav.Link className={route === '/deval'  ? 'pnavactive'  : ''}  href={`${locale!='zh'?'':'/zh'}/deval`}>{t('iadd')}</Nav.Link>
+                  <Nav.Link className={route === '/deval'  ? 'pnavactive'  : ''}  href={`${locale!='zh'?'':'/zh'}/deval`}><div className='no-wrap' >{t('iadd')}</div></Nav.Link>
 
                   <NavDropdown title={t('college')} id="basic-nav-dropdown2">
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} target='_blank' href={locale!='zh'?"https://learn.daism.io":"https://learn.daism.io/zh"}>{t('daism')}</NavDropdown.Item>
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} target='_blank' href={locale!='zh'?"https://learn.daism.io/docs.html":"https://learn.daism.io/zh/docs.html"}>{t('doc')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} target='_blank' href={locale!='zh'?"https://learn.daism.io":"https://learn.daism.io/zh"}><div className='no-wrap' >{t('daism')}</div></NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} target='_blank' href={locale!='zh'?"https://learn.daism.io/docs.html":"https://learn.daism.io/zh/docs.html"}><div className='no-wrap' >{t('doc')}</div></NavDropdown.Item>
                   </NavDropdown>
-                  <Nav.Link className={route === '/workroom' ? 'pnavactive'  : ''}  href={`${locale!='zh'?'':'/zh'}/workroom`} >{t('my')}</Nav.Link>
+                  <Nav.Link className={route === '/workroom' ? 'pnavactive'  : ''}  href={`${locale!='zh'?'':'/zh'}/workroom`} ><div className='no-wrap' >{t('my')}</div></Nav.Link>
                   </div>
                 </Nav>
                 <Navbar.Text>

@@ -27,7 +27,7 @@ export default function Dividend({env,locale}) {
           <title>{tc('myDivdendTitle')}</title>
       </Head>
         <PageLayout env={env}>
-          <div style={{marginTop:"10px"}} >
+          <div style={{marginTop:"20px"}} >
             {user.connected<1?<ShowErrorBar errStr={tc('noConnectText')} />
             :<>
             {dividendData.rows.length?<>

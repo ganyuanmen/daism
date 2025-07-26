@@ -82,7 +82,7 @@ export default function IADD({locale,env}) {
 
     return (
         <PageLayout env={env} >
-            <div style={{maxWidth:'800px',margin:'10px auto'}}  > 
+            <div style={{maxWidth:'800px',margin:'20px auto'}}  > 
                 <Card  className='daism-title' >
                     <Card.Header className='d-flex justify-content-between' >
                         <div>{t('transactionText')} </div>

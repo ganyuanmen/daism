@@ -21,7 +21,7 @@ export default function NFT({env,locale}) {
       </Head>
   
         <PageLayout env={env}>
-          <div style={{marginTop:'10px'}} >
+          <div style={{marginTop:'20px'}} >
             {user.connected<1?<ShowErrorBar errStr={tc('noConnectText')}></ShowErrorBar>
             :<Mynft  />
             }  

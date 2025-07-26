@@ -163,7 +163,7 @@ useEffect(() => {
           <title>{tc('myAccountTitle',{name:actor?.actor_name})}</title>
       </Head>
       <PageLayout env={env}>
-      <div ref={parentDivRef}  className='d-flex justify-content-center' style={{position:'sticky',top:'70px'}} >
+      <div ref={parentDivRef}  className='d-flex justify-content-center'>
                 <div  ref={leftDivRef} className='scsidebar scleft' >
                     <div className='mb-3' style={{overflow:'hidden'}} >
                         <EnkiMember messageObj={actor} isLocal={true} locale={locale} hw={64} /> 
@@ -179,7 +179,7 @@ useEffect(() => {
                 </div>
              
                 <div className='sccontent' >
-                <div className='d-flex justify-content-between align-items-center' style={{margin:'0px', position:'sticky',top:'60px',padding:'10px',zIndex:256,backgroundColor:'#f4f4f4',borderTopLeftRadius:'6px',borderTopRightRadius:'6px'}} > 
+                <div className='d-flex justify-content-between align-items-center secconddiv'> 
                 
                   <div className='selectText' style={{paddingLeft:'12px'}} >
                     {activeTab===2 ? <span className='daism-a selectText' onClick={callBack} ><BackSvg size={24} />{t('esctext')} </span>

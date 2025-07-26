@@ -29,7 +29,7 @@ export default function Home({env,locale}) {
     </Head>
 
     <PageLayout env={env}>
-      <div style={{marginTop:'10px'}} >
+      <div style={{marginTop:'20px'}} >
       <CreateDao env={env}  setRefresh={setRefresh} />
       { daosData.rows.length?<DaosPage daosData={daosData} currentPageNum={currentPageNum} setCurrentPageNum={setCurrentPageNum}
           orderIndex={orderIndex} setOrderIndex={setOrderIndex}  orderType={orderType} setOrderType={setOrderType} setOrderField={setOrderField} 

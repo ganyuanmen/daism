@@ -526,3 +526,27 @@ blockquote p {
   object-fit: cover;           /* 保持比例，裁剪超出部分 */
   display: block;
 }
+
+.no-wrap {
+  white-space: nowrap;
+}
+.secconddiv{
+  margin: 0;
+  position: sticky;
+  top: 60px;
+  padding: 10px;
+  z-index: 256;
+  background-color: #f4f4f4;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+
+}
+
+
+
+@media (max-width: 992px) {
+
+  .secconddiv{
+    top: 50px;
+  }
+}

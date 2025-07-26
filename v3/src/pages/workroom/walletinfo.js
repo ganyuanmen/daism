@@ -32,7 +32,7 @@ export default function ShowWalletInfo({env,locale}) {
           <title>{tc('myWalletTitle')}</title>
       </Head>
         <PageLayout env={env}>
-          <div style={{marginTop:"10px"}} >
+          <div style={{marginTop:"20px"}} >
         {user.connected!==1?<ShowErrorBar errStr={tc('noConnectText')} />:
             <Table striped bordered hover style={{width:'100%',marginTop:'4px'}} >
                     <tbody>
