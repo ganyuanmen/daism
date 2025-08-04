@@ -48,7 +48,11 @@ export default function DaoInfo({daoData,daoMember,follower,accountTotal,env,loc
 
 export const getServerSideProps = async ({ locale,query }) => {
     
-    const daoid=query.id
+    const daoid=query.id;
+    const daoData=await getJsonArray("daodatabyid",[daoid],true);
+    if(!daoData?.dao_id)   return {notFound: true};
+    const daoMember=await getJsonArray('daomember',[daoid]);
+    const follower=await getJsonArray('fllower',[daoid]);
 
       return {
         props: {
@@ -57,9 +61,9 @@ export const getServerSideProps = async ({ locale,query }) => {
             ...require(`../../../messages/federation/${locale}.json`),
           }
           ,env:getEnv(),
-          daoData:await getJsonArray("daodatabyid",[daoid],true),
-          daoMember:await getJsonArray('daomember',[daoid]),
-          follower:await getJsonArray('fllower',[daoid]),
+          daoData,
+          daoMember,
+          follower,
           accountTotal:process.env.SMART_COMMONS_COUNT,locale
         }
       }

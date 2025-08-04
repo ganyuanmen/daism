@@ -7,14 +7,28 @@ import EnkiMember from '../enki2/form/EnkiMember'
 import FollowItem0 from '../enki2/form/FollowItem0';
 import FollowItem1 from '../enki2/form/FollowItem1';
 import TipToMe from './TipToMe';
+import { useFollow,useTip } from '../../hooks/useMessageData';
+import { useEffect, useState } from 'react';
 
 
-const MyInfomation = ({daoActor,actor,env,follow0,follow1,locale,tipToMe,tipFrom}) => {
-  let t = useTranslations('ff')
+const MyInfomation = ({daoActor,actor,env,locale}) => {
+  let t = useTranslations('ff');
+  const follow0=useFollow(actor,'getFollow0')
+  const follow1=useFollow(actor,'getFollow1')
+  const tipToMe=useTip(actor,'getTipToMe')
+  const tipFrom=useTip(actor,'getTipFrom')
+  const [url,setUrl]=useState('')
+
+  useEffect(()=>{
+    if(actor && actor.actor_account){
+      const [enkiName,domain]=actor.actor_account.split('@');
+      setUrl(`https://${domain}/users/${enkiName}`)
+    }
+  },[actor])
 
   return (
     <Card className='daism-title mt-3'>
-        <Card.Header>{t('myAccount')}</Card.Header>
+        <Card.Header>{t('myAccount')}{'  '}(<a className='daism-a' href={url} alt='' >{url}</a>)</Card.Header>
         <Card.Body>
             <div className='d-flex justify-content-between align-items-center' >
               <EnkiMember messageObj={actor} isLocal={true} locale={locale} />
@@ -22,7 +36,7 @@ const MyInfomation = ({daoActor,actor,env,follow0,follow1,locale,tipToMe,tipFrom
             </div>
             <hr/>
             <div>
-                <div className='mb-2' ><b>{t('persionInfomation')}:</b></div>
+                <div className='mb-2' ><b>{t('persionInfomation')}</b></div>
                 <div dangerouslySetInnerHTML={{__html: actor?.actor_desc}}></div>
             </div>
             <hr/>
@@ -41,22 +55,22 @@ const MyInfomation = ({daoActor,actor,env,follow0,follow1,locale,tipToMe,tipFrom
             <Tabs defaultActiveKey="follow0" className="mb-3 mt-3" >
             <Tab eventKey="follow0" title={t('followingText',{num:follow0.length})}>
               <div>
-                {follow0.map((obj)=> <FollowItem0 key={obj.id} locale={locale}  messageObj={obj} isEdit={false} />)}
+                {follow0.data.map((obj)=> <FollowItem0 key={obj.id} locale={locale}  messageObj={obj} isEdit={false} />)}
               </div>
             </Tab>
             <Tab eventKey="follow1" title={t('followedText',{num:follow1.length})}>
               <div>
-                {follow1.map((obj)=> <FollowItem1 locale={locale} key={obj.id}  messageObj={obj} isEdit={false} />)}
+                {follow1.data.map((obj)=> <FollowItem1 locale={locale} key={obj.id}  messageObj={obj} isEdit={false} />)}
               </div>
             </Tab>
             <Tab eventKey="tipToMe" title={t('tipToMe',{num:tipToMe.length})}>
               <div>
-                {tipToMe.map((obj)=> <TipToMe key={obj.id} locale={locale} env={env} messageObj={obj}/>)}
+                {tipToMe.data.map((obj)=> <TipToMe key={obj.id} locale={locale} env={env} messageObj={obj}/>)}
               </div>
             </Tab>
             <Tab eventKey="tipFrom" title={t('tipFrom',{num:tipFrom.length})}>
               <div>
-                {tipFrom.map((obj)=> <TipToMe key={obj.id} locale={locale} env={env} messageObj={obj}/>)}
+                {tipFrom.data.map((obj)=> <TipToMe key={obj.id} locale={locale} env={env} messageObj={obj}/>)}
               </div>
             </Tab>
           </Tabs>

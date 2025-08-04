@@ -12,12 +12,16 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
 {
     const t = useTranslations('ff')
     const geneHref=()=>{
-        
-        if(messageObj?.dao_id>0){ //SC 帐号
-            return `/${locale}/smartcommons/daoinfo/${messageObj?.dao_id}`
-        }else{ //个人帐号
-            return `/${locale}/smartcommons/actor/${messageObj?.actor_account}`
-        }
+        if(messageObj && messageObj.actor_account){
+        const [enkiName,domain]=messageObj.actor_account.split('@');
+              return `https://${domain}/users/${enkiName}`
+        } else return '';
+  
+        // if(messageObj?.dao_id>0){ //SC 帐号
+        //     return `/${locale}/smartcommons/daoinfo/${messageObj?.dao_id}`
+        // }else{ //个人帐号
+        //     return `/${locale}/smartcommons/actor/${messageObj?.actor_account}`
+        // }
     }
 
     return( 

@@ -21,10 +21,11 @@ export default async function handler(req, res) {
     }
     else
     { 
-        if(localUser.dao_id>0)
-            res.redirect(`/smartcommons/daoinfo/${localUser['dao_id']}`);
-        else 
-            res.redirect(`/smartcommons/actor/${encodeURIComponent(localUser['actor_account'])}`);
+        res.redirect(`/users/${name}`); 
+        // if(localUser.dao_id>0)
+        //     res.redirect(`/smartcommons/daoinfo/${localUser['dao_id']}`);
+        // else 
+        //     res.redirect(`/smartcommons/actor/${encodeURIComponent(localUser['actor_account'])}`);
 
     }
 

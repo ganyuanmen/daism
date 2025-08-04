@@ -41,7 +41,7 @@ export default function MyActor({env,locale,accountAr,notice}) {
 function ActorInfo({t,env,locale,actor,daoActor,accountAr,notice })
 {
   return  <> 
-      {(actor?.actor_account)? <EnkiView daoActor={daoActor}  actor={actor} locale={locale} env={env} accountAr={accountAr} notice={notice} />
+      {(actor?.actor_account)? <EnkiView daoActor={daoActor}  actor={actor} locale={locale} env={env} accountAr={accountAr} notice={notice} isEdit={true} />
         :<div>    {/* 未注册帐号  */}
           <Alert>{t('noregisterText')} </Alert>
           <EnKiRigester  env={env} />

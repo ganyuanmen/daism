@@ -9,9 +9,11 @@ import EnkiMember from "../enki2/form/EnkiMember";
 import { client } from "../../lib/api/client"
 import {NavDropdown} from "react-bootstrap";
 import { Home,BookSvg,BackSvg,MyPost,ReceiveSvg } from '../../lib/jssvg/SvgCollection';
+import MyInfomation from '../../components/enki3/MyInfomation';
 
-
-export default function EnkiView({actor,locale,env,daoActor,accountAr,notice}) {
+//isEdit  是否允许修改 关注和取消关注
+//notice 直接显示 打赏信息
+export default function EnkiView({actor,locale,env,daoActor,accountAr,notice,isEdit}) {
     const [fetchWhere, setFetchWhere] = useState({
       currentPageNum: 0,  //当前页 初始不摘取数据
       daoid: 0,  //此处不用
@@ -191,7 +193,11 @@ export default function EnkiView({actor,locale,env,daoActor,accountAr,notice}) {
   
                       :activeTab===3 ? <EnkiCreateMessage env={env} daoData={daoActor} callBack={callBack} 
                       currentObj={currentObj} afterEditCall={afterEditCall} accountAr={accountAr} />
-                        :<ActorMember locale={locale} env={env} notice={notice}  />
+                        : <>
+                        {isEdit?<ActorMember locale={locale} env={env} notice={notice} isEdit={isEdit}  />:
+                        <MyInfomation daoActor={daoActor} env={env} actor={actor} locale={locale}  />
+                        }
+                        </>
                     }
   
                   </div>
