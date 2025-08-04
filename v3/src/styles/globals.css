@@ -533,7 +533,7 @@ blockquote p {
 .secconddiv{
   margin: 0;
   position: sticky;
-  top: 60px;
+  top: 58px;
   padding: 10px;
   z-index: 256;
   background-color: #f4f4f4;

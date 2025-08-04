@@ -40,7 +40,19 @@ export default function MyActor({daoActor,actor,locale,env,accountAr,accountTota
     );
 }
 
-export const getServerSideProps = withSession(async ({locale,query }) => {
+export const getServerSideProps = withSession(async ({locale,query,req }) => {
+  if((req.headers['accept'] 
+    && req.headers['accept'].toLowerCase().startsWith('application/activity'))
+    ||(req.headers['content-type'] && req.headers['content-type'].toLowerCase().startsWith('application/activity')))
+  {
+    return {
+      redirect: {
+        destination: `/api/users/${query.id}`, // 跳转的目标页面
+        permanent: false, // 是否为永久重定向，true 表示 301 重定向，false 为 302 临时重定向
+      },
+    };
+  
+  }
   const env=getEnv();
   const actor=await getUser('actor_account',`${query.id}@${env.domain}`,'id,dao_id,actor_name,domain,manager,actor_account,actor_url,avatar,actor_desc')
   if(!actor?.id)    return {notFound: true};
