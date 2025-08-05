@@ -16,9 +16,11 @@ export default function Member({messageObj,locale})
     const manager=messageObj.manager;
     const account=messageObj?.self_account || messageObj.actor_account;
     const avatar=messageObj?.self_avatar || messageObj.avatar;
-
+    
     const [enkiName,domain]=account.split('@');
  
+    return( 
+        //.
   
         <div style={{width:'90%'}} className="d-inline-flex align-items-center"  >
 
