@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     }
     else
     { 
-        res.redirect(`/users/${name}`); 
+        res.redirect(`/${name}`); 
         // if(localUser.dao_id>0)
         //     res.redirect(`/smartcommons/daoinfo/${localUser['dao_id']}`);
         // else 

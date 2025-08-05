@@ -51,7 +51,7 @@ export default function ActorMember({locale,env,notice,isEdit}){
     useEffect(()=>{
       if(actor && actor.actor_account){
         const [enkiName,domain]=actor.actor_account.split('@');
-        setUrl(`https://${domain}/users/${enkiName}`)
+        setUrl(`https://${domain}/${enkiName}`)
       }
     },[actor])
 

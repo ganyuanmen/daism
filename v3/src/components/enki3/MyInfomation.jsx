@@ -22,7 +22,7 @@ const MyInfomation = ({daoActor,actor,env,locale}) => {
   useEffect(()=>{
     if(actor && actor.actor_account){
       const [enkiName,domain]=actor.actor_account.split('@');
-      setUrl(`https://${domain}/users/${enkiName}`)
+      setUrl(`https://${domain}/${enkiName}`)
     }
   },[actor])
 

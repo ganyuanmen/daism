@@ -16,14 +16,13 @@ export default function Member({messageObj,locale})
     const manager=messageObj.manager;
     const account=messageObj?.self_account || messageObj.actor_account;
     const avatar=messageObj?.self_avatar || messageObj.avatar;
-    const [name,]=account.split('@');
+
+    const [enkiName,domain]=account.split('@');
  
-    return( 
-        //.
   
         <div style={{width:'90%'}} className="d-inline-flex align-items-center"  >
 
-            <a href={`/${locale}/users/${name}`} className="daism-a"  >
+            <a href={`https://${domain}/${enkiName}`} className="daism-a"  >
                 {avatar?
                 <img src={avatar} alt='' width={48} height={48} style={{borderRadius:'10px'}} />
                 :<User1Svg size={48} />

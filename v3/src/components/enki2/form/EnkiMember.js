@@ -14,7 +14,7 @@ export default function EnkiMember({messageObj,isLocal,locale,hw=48})
     const geneHref=()=>{
         if(messageObj && messageObj.actor_account){
         const [enkiName,domain]=messageObj.actor_account.split('@');
-              return `https://${domain}/users/${enkiName}`
+              return `https://${domain}/${enkiName}`
         } else return '';
   
         // if(messageObj?.dao_id>0){ //SC 帐号

@@ -1,17 +1,17 @@
 
 
-import withSession from '../../lib/session';
-import PageLayout from '../../components/PageLayout';
-import { getJsonArray } from '../../lib/mysql/common';
-import { getEnv } from '../../lib/utils/getEnv';
-import { getUser } from '../../lib/mysql/user';
+import withSession from '../lib/session';
+import PageLayout from '../components/PageLayout';
+import { getJsonArray } from '../lib/mysql/common';
+import { getEnv } from '../lib/utils/getEnv';
+import { getUser } from '../lib/mysql/user';
 import Head from 'next/head';
-import EnkiView from '../../components/enki3/EnkiView';
+import EnkiView from '../components/enki3/EnkiView';
 import { useSelector} from 'react-redux';
-import DaoInfo_div from '../../components/federation/DaoInfo_div';
-import Daomember_div from '../../components/federation/Daomember_div';
-import Follower_div from '../../components/federation/Follower_div';
-import Domain_div from '../../components/federation/Domain_div';
+import DaoInfo_div from '../components/federation/DaoInfo_div';
+import Daomember_div from '../components/federation/Daomember_div';
+import Follower_div from '../components/federation/Follower_div';
+import Domain_div from '../components/federation/Domain_div';
 import { useTranslations } from 'next-intl'
 
 export default function MyActor({daoActor,actor,locale,env,accountAr,accountTotal,daoData,daoMember,follower}) {
@@ -70,8 +70,8 @@ export const getServerSideProps = withSession(async ({locale,query,req }) => {
     return {
       props: {
         messages: {
-          ...require(`../../messages/shared/${locale}.json`),
-          ...require(`../../messages/federation/${locale}.json`),
+          ...require(`../messages/shared/${locale}.json`),
+          ...require(`../messages/federation/${locale}.json`),
         },
         daoActor,actor,locale,env,accountAr,daoData, accountTotal:process.env.SMART_COMMONS_COUNT,daoMember,follower
       }
