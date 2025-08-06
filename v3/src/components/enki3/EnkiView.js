@@ -23,7 +23,7 @@ export default function EnkiView({actor,locale,env,daoActor,accountAr,notice,isE
       menutype: 3,
       v:9999,  //有置顶功能
        order: 'createTime', //排序
-      eventnum: 2  //默认 我发布嗯文
+      eventnum: (isEdit?2:9)  //默认 我发布嗯文
   });
   
   const [personNum,setPersonNum]=useState(0);
@@ -59,7 +59,7 @@ export default function EnkiView({actor,locale,env,daoActor,accountAr,notice,isE
   useEffect(()=>{
     const fetchData = async () => {
         try {
-            const res = await client.get(`/api/getData?account=${actor?.actor_account}&actorid=${actor?.id}`,'getEnkiTotal' );
+            const res = await client.get(`/api/getData?account=${actor?.actor_account}&actorid=${actor?.id}&t=${isEdit?'':'1'}`,'getEnkiTotal' );
             if(res?.status===200 && Array.isArray(res?.data) && res?.data.length) {            
                      setPersonNum(res.data[0].total);
                      setCompanyNum(res.data[1].total);
@@ -101,7 +101,12 @@ export default function EnkiView({actor,locale,env,daoActor,accountAr,notice,isE
      }
   
     const myPostHandle=()=>{ //发布的嗯文
-      setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 2, menutype: 3 });
+      if(isEdit){
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 2, menutype: 3 });
+      }
+      else {
+        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 9, menutype: 3 });
+      }
       setActiveTab(0);
       setTopText(t('myEnkiText',{num:personNum}));
       setNavIndex(paras.mypost);

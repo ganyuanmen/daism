@@ -38,13 +38,14 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 			break;
 		default: //个人
 			if(parseInt(eventnum)===1) sql=`select a.* from v_message a where ((a.send_type=0 and a.actor_account='${account}') or a.receive_account='${account}')`; //首页
-			else if(parseInt(eventnum)===2) sql=`select a.* from vv_message a where a.actor_account='${account}'`; //我发布的嗯文
+			else if(parseInt(eventnum)===2) sql=`select a.* from v_message a where (a.send_type=0 and a.actor_account='${account}')`; //我发布的嗯文
 			else if(parseInt(eventnum)===3) sql=`select a.* from vv_message a join a_bookmark b on a.message_id=b.pid where b.account='${account}'`; //我的收藏
 			else if(parseInt(eventnum)===4) sql=`select a.* from v_message a where receive_account='${account}'`; //我的接收嗯文
 			else if(parseInt(eventnum)===5)	sql='select a.* from v_message a where (a.send_type=0 and a.property_index=1)'; //公开
 			else if(parseInt(eventnum)===6) sql=`select a.* from vv_message a join a_heart b on a.message_id=b.pid where b.account='${account}'`; //喜欢
 			else if(parseInt(eventnum)===7) sql=`select a.* from v_message a where (a.receive_account='${account}' and a.send_type=2)`; //@
 			else if(parseInt(eventnum)===8) sql=`select a.* from vv_message a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`; //过滤
+			else if(parseInt(eventnum)===9)	sql=`select a.* from v_message a where (a.send_type=0 and a.property_index=1 and a.actor_account='${account}')`; //个人信息公开
 			break;
 	}
 	// if(w) where=where?`${where} and title like '%${w}%'`:`where title like '%${w}%'`;
@@ -52,6 +53,7 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 	// let sql=`select * from v_message${sctype} ${where} order by ${order} desc limit ${pi*12},12`;
 	let re=await getData(`${sql} order by ${order} desc limit ${pi*12},12`,[]);
 
+	
 	// if(parseInt(menutype)===1 || parseInt(menutype)===2 || parseInt(v)===9999){
 
 		re=re.filter(obj => obj.is_top===0);
@@ -84,8 +86,19 @@ export async function messagePageData({pi,menutype,daoid,w,actorid,account,order
 	return re; 
 }
 
-export async function getEnkiTotal({account,actorid}) {
-	let sql='SELECT COUNT(*) AS total FROM a_message WHERE LOWER(actor_account)=? UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
+//t 表示只查本人公开嗯文
+export async function getEnkiTotal({account,actorid,t}) {
+
+	let sql
+	if(t)
+	{
+		sql='SELECT COUNT(*) AS total FROM v_message WHERE LOWER(actor_account)=? AND property_index=1 and send_type=0 UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
+	}	
+	else
+	{ 
+		sql='SELECT COUNT(*) AS total FROM v_message WHERE LOWER(actor_account)=? and send_type=0 UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
+	}
+
 	let re=await getData(sql,[account,actorid,account]);
 	return re; 
 }

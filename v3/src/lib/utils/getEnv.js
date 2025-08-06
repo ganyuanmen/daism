@@ -40,7 +40,7 @@ export function getEnv()
     domain:LOCAL_DOMAIN,
     KEY:'1d34a678S012A4567I90123m56789p1X',
     IV:'7e465a0de91b295946ddbc0e5e72f056',
-    version:'v1.4.0',
+    version:'v1.4.1',
     accountTotal:1024,
 
     //mainnet
