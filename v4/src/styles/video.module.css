@@ -1,0 +1,12 @@
+.container1 {
+    display: grid;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .iframebox {
+    width: 100%;
+    aspect-ratio: 3 / 2; /* 宽高比为2:1 */
+    background-color: lightblue;
+  }
