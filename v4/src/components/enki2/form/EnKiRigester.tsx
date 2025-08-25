@@ -1,7 +1,7 @@
 import { InputGroup, Button, Form } from 'react-bootstrap';
 import { UploadSvg } from '@/lib/jssvg/SvgCollection';
 import { useRef } from 'react';
-import { client } from '@/lib/api/client';
+import { fetchJson } from '@/lib/utils/fetcher';
 import { useSelector, useDispatch } from 'react-redux';
 import {type RootState,type AppDispatch,setUser,setMessageText,setTipText, setLoginsiwe} from '@/store/store';
 import { useTranslations } from 'next-intl';
@@ -9,6 +9,12 @@ import { getDaismContract } from '@/lib/globalStore';
 
 interface EnKiRigesterProps {
   setRegister?: (show: boolean) => void;
+}
+
+interface UserRegister{
+  allTotal:number; //所有注册数
+  nameTotal:number; //本人是否已注册 >0=>true
+  [key: string]: any; // 允许任意额外属性
 }
 
 /**
@@ -47,18 +53,16 @@ export default function EnKiRigester({ setRegister }: EnKiRigesterProps) {
 
     showTip(t('submittingText'));
 
-    let re = await client.get(
-      `/api/getData?account=0x${actorName}@${domain}`,
-      'getSelfAccount'
-    );
-
-    if (re.data.allTotal > parseInt(process.env.NEXT_PUBLIC_TOTAL as string)) {
+    const re = await fetchJson<UserRegister>(`/api/getData?account=0x${actorName}@${domain}`,{headers:{'x-method':'getSelfAccount'}});
+    if(!re) return;
+  
+    if (re!.allTotal > parseInt(process.env.NEXT_PUBLIC_TOTAL as string)) {
       closeTip();
       showClipError(t('exceedAmount'));
       return;
     }
 
-    if (re.status !== 200 || re.data.nameTotal > 0) {
+    if (re.nameTotal > 0) {
       showClipError(`${actorName}@${domain} ${t('registeredText')}`);
       closeTip();
       return;

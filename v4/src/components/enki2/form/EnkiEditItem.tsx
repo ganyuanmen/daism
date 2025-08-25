@@ -6,7 +6,7 @@ import { client } from "../../../lib/api/client";
 import { useSelector, useDispatch } from "react-redux";
 import {type RootState,setTipText,setMessageText} from "@/store/store";
 import { useTranslations } from "next-intl";
-import ShowLogin from "../../enki3/ShowLogin";
+
 
 // ==== props 类型 ====
 interface EnkiEditItemProps {
@@ -49,26 +49,29 @@ export default function EnkiEditItem({
 
   // 找是否已转发
   useEffect(() => {
+    const controller = new AbortController();
     let _isAn = isAnnoce();
     if (_isAn) {
+     
       const fetchData = async () => {
         try {
-          const res = await client.get(
-            `/api/getData?id=${messageObj.message_id}&account=${actor?.actor_account}`,
-            "getAnnoce"
-          );
-          if (res.status === 200) {
-            if (Array.isArray(res.data) && res.data.length === 0) setIsAn(true);
+          const res = await fetch(`/api/getData?id=${messageObj.message_id}&account=${actor?.actor_account}`,
+             { signal: controller.signal,headers:{'x-method':'getAnnoce'} });
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length === 0) setIsAn(true);
             else setIsAn(false);
           }
-        } catch (error) {
-          console.error(error);
+        } catch (err: any) {
+          if (err.name === 'AbortError') return; // 请求被取消
+        
         }
       };
-
       fetchData();
     } else setIsAn(false);
-  }, [messageObj, sctype]);
+
+    return () => { controller.abort();};
+  }, [messageObj,actor]);
 
   const handle = async (method: string, body: any) => {
     const res = await fetch("/api/siwe/getLoginUser?t=" + new Date().getTime());
@@ -199,7 +202,7 @@ export default function EnkiEditItem({
         </Nav>
      
       <ConfirmWin show={show} setShow={setShow} callBack={deldiscussions} question={t("deleteSureText")} />
-      <ShowLogin show={showLogin} setShow={setShowLogin} />
+
     </>
   );
 }

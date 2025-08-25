@@ -1,5 +1,5 @@
 import {type Contract, type ContractTransactionResponse,type ContractRunner, ethers } from "ethers";
-
+import abi from '../data/SC_abi.json'
 
 export default class Dao {
   private signer: ContractRunner;
@@ -7,14 +7,15 @@ export default class Dao {
 
   constructor( _signer: ContractRunner) {
     this.signer = _signer;
-    const SC_ABI = [
-        "function addProposal((string desc, address account, uint16 dividendRights, uint8 proposalType, uint32 createTime, uint16 rights, uint16 antirights) _proposal, (string fileType, string fileContent) _logo) returns (bool)",
-        "function vote(bool isAnti) returns (bool)",
-        "function getDividend(address owner) returns (uint amount)",
-        "function dividend(address owner) view returns (uint amount)",
-        "function isVotable() view returns (bool)"
-      ] as const;
-    this.abi =SC_ABI;
+    // const SC_ABI =
+    //  [
+    //     "function addProposal((string desc, address account, uint16 dividendRights, uint8 proposalType, uint32 createTime, uint16 rights, uint16 antirights) _proposal, (string fileType, string fileContent) _logo) returns (bool)",
+    //     "function vote(bool isAnti) returns (bool)",
+    //     "function getDividend(address owner) returns (uint amount)",
+    //     "function dividend(address owner) view returns (uint amount)",
+    //     "function isVotable() view returns (bool)"
+    //   ] as const;
+    this.abi =abi;
   }
 
   private genegateContract(address: string): Contract {

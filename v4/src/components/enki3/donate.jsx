@@ -8,6 +8,7 @@ import ConfirmWin from '../federation/ConfirmWin';
 import { client } from '../../lib/api/client';
 import ShowErrorBar from '../ShowErrorBar';
 import ShowAddress from '../ShowAddress';
+import { getDaismContract } from '@/lib/globalStore';
 
 const DonationPage = ({env,locale}) => {
 
@@ -17,6 +18,7 @@ const DonationPage = ({env,locale}) => {
 
   const user = useSelector((state) => state.valueData.user);
 
+  let daismObj=getDaismContract();
 
   let tc = useTranslations('Common')
   let t = useTranslations('wallet')
@@ -26,14 +28,16 @@ const DonationPage = ({env,locale}) => {
   function closeTip(){dispatch(setTipText(''))}
 
   const donateHandle=()=>{
+    if(!daismObj) daismObj=getDaismContract();
     const v=parseFloat(donationAmount|| 0);
     showTip( t('submitDonate'))
-    window.daismDaoapi.Donate.donate(v).then(() => {
+    daismObj?.Donate.donate(v).then(() => {
       setShow(false)
         setTimeout(async () => {
-          const res = await client.get(`/api/getData?did=${user.account}`,'getLastDonate');
-          if(res.status===200){
-            setDonationStatus(res.data);
+          const res = await fetch(`/api/getData?did=${user.account}`,{headers:{'x-method':'getLastDonate'}});
+          if(res.ok){
+            const data=await res.json()
+            setDonationStatus(data);
           }
           closeTip();
         }, 2000);

@@ -61,21 +61,23 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
   };
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
       try {
-        const res = await client.get(
-          `/api/getData?did=${messageObj.manager}`,
-          "getMynft"
-        );
-        if (res.status === 200) {
-          if (Array.isArray(res.data)) setHonor(res.data);
+        const res = await fetch(`/api/getData?did=${messageObj.manager}`,
+           { signal: controller.signal,headers:{'x-method':'getMynft'} });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) setHonor(data.map((item: any) => ({ tokensvg: item.tokensvg })));
         }
-      } catch (error) {
-        console.error(error);
+      } catch (err: any) {
+        if (err.name === 'AbortError') return; // 请求被取消
+      
       }
     };
-
+  
     if (messageObj.dao_id === 0 && messageObj.manager) fetchData();
+    return () => { controller.abort();};
   }, [messageObj]);
 
   const isforward=()=>{

@@ -13,11 +13,11 @@ import  DaoToken  from '@/lib/contract/api/DaoToken';
 import type { Signer } from 'ethers';
 
 
-export interface signeredObjType {
-  address: string;
-  signMessage: (message: string) => Promise<string>;
-  provider:ethers.BrowserProvider;
-}
+// export interface signeredObjType {
+//   address: string;
+//   signMessage: (message: string) => Promise<string>;
+//   provider:ethers.BrowserProvider;
+// }
 
 export interface DaismContract {
   UnitToken: UnitToken;
@@ -31,7 +31,7 @@ export interface DaismContract {
   Domain:Domain;
   IADD_EX:IADD_EX;
   SingNft:SingNft;
-  signer:signeredObjType;
+  signer:Signer;
   
 
 }

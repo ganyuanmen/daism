@@ -3,18 +3,10 @@ import Link from 'next/link';
 import { Card, Row, Col } from 'react-bootstrap';
 import { useTranslations } from 'next-intl';
 
-// 定义 Dao 记录类型
-export interface DaoRecord {
-  dao_id: string | number;
-  dao_name: string;
-  dao_logo?: string;
-  dao_manager: string;
-  actor_account: string;
-  creator: string;
-}
+
 
 interface DaoItemProps {
-  record: DaoRecord;
+  record: DaismDao;
 }
 
 export default function DaoItem({ record }: DaoItemProps) {

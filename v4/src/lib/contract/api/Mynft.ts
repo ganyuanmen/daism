@@ -23,14 +23,14 @@ export default class Mynft {
     }
   }
 
-  async mint(dao_id: bigint | number,_address: string,tipAr: string[]): Promise<ContractTransactionResponse> {
+  async mint(dao_id: bigint | number|string,_address: string,tipAr: string[]): Promise<ContractTransactionResponse> {
     this.genegateContract();
     const result = await this.contract!.mint(dao_id, _address, tipAr);
     await result.wait();
     return result;
   }
 
-  async mintBatch( dao_id: bigint | number, _addressAr: string[], tipsAr: string[], num: bigint | number ): Promise<ContractTransactionResponse> {
+  async mintBatch( dao_id: bigint | number|string, _addressAr: string[], tipsAr: string[], num: bigint | number|string ): Promise<ContractTransactionResponse> {
     this.genegateContract();
     const result = await this.contract!.mintBatch(dao_id, _addressAr, tipsAr, num);
     await result.wait();

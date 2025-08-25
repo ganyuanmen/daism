@@ -13,19 +13,8 @@ import { useTranslations } from 'next-intl'
  * @isEdit 允许修改 
  */
 
-interface HeartType {
-  pid: number;
-  total: number;
-}
-
-interface CurrentObj {
-  message_id: number;
-  dao_id?: number;
-  [key: string]: any; // 允许扩展属性
-}
-
 interface EnKiHeartProps {
-  currentObj: CurrentObj;
+  currentObj: EnkiMessType;
   isEdit: boolean;
   path: string;
 }
@@ -59,13 +48,7 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
 
   const [refresh, setRefresh] = useState(false);
 
-  const data = useGetHeartAndBook({
-    account: actor?.actor_account,
-    pid: currentObj?.message_id,
-    refresh,
-    table: 'heart',
-    sctype: getSctype()
-  }) as HeartType;
+  const resData = useGetHeartAndBook(actor?.actor_account,currentObj?.message_id,refresh,'heart',getSctype());
 
   const submit = async (flag: 0 | 1) => { // 0 取消点赞  1 点赞
     showTip(t('submittingText'));
@@ -97,21 +80,21 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
       type="button"
       disabled={!isEdit}
       onClick={() => {
-        submit(data.pid ? 0 : 1);
+        submit( resData.data.pid ? 0 : 1);
       }}
       className="btn btn-light"
       data-bs-toggle="tooltip"
       data-bs-html="true"
       title={t('likeText')}
     >
-      {data.pid ? (
+      {resData.data.pid ? (
         <span style={{ color: 'red' }}>
           <Heart size={18} />
         </span>
       ) : (
         <Heart size={18} />
       )}
-      {data.total}
+      {resData.data.total}
     </button>
   );
 }

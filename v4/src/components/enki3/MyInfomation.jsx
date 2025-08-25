@@ -13,10 +13,10 @@ import { useEffect, useState } from 'react';
 
 const MyInfomation = ({daoActor,actor,env,locale}) => {
   let t = useTranslations('ff');
-  const follow0=useFollow(actor,'getFollow0')
-  const follow1=useFollow(actor,'getFollow1')
-  const tipToMe=useTip(actor,'getTipToMe')
-  const tipFrom=useTip(actor,'getTipFrom')
+  const follow0=useFollow(actor?.actor_account,'getFollow0')
+  const follow1=useFollow(actor?.actor_account,'getFollow1')
+  const tipToMe=useTip(actor?.manager,'getTipToMe')
+  const tipFrom=useTip(actor?.manager,'getTipFrom')
   const [url,setUrl]=useState('')
 
   useEffect(()=>{

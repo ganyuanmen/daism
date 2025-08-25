@@ -9,19 +9,16 @@ const Richwet = dynamic(() => import('../RichTextEditor'), {
   loading: () => <Loadding />,
 });
 
-interface CurrentObj {
-  content?: string;
-}
 
 interface RichEditorProps {
-  currentObj?: CurrentObj;
+  currentObj?: EnkiMessType;
   isSC?: boolean;
-  accountAr?: string[];
+  accountAr?: AccountType[];
 }
 
 export interface RichEditorRef {
   getData: () => string;
-  getImg: () => string;
+  getImg: () => File | null|undefined;
   getFileType: () => string;
   getVedioUrl: () => string;
   getProperty: () => any;
@@ -36,7 +33,7 @@ const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(({ currentObj, isS
 
   useImperativeHandle(ref, () => ({
     getData: () => content,
-    getImg: () => mediaRef.current?.getImg() ?? '',
+    getImg: () => mediaRef.current?.getImg(),
     getFileType: () => mediaRef.current?.getFileType() ?? '',
     getVedioUrl: () => mediaRef.current?.getVedioUrl() ?? '',
     getProperty: () => propertyRef.current?.getData(),

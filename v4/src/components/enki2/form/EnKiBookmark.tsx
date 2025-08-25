@@ -10,22 +10,16 @@ import {
   setMessageText,
 } from "@/store/store";
 import { useTranslations } from "next-intl";
+import {type HeartAndBookType } from '@/hooks/useMessageData'
 import { Button } from "react-bootstrap";
 
 interface EnKiBookmarkProps {
   isEdit: boolean;
-  currentObj: {
-    dao_id?: number;
-    message_id?: number;
-    [key: string]: any; // 允许多余属性
-  };
+  currentObj: EnkiMessType;
   path: string;
 }
 
-interface BookType{
-  pid:number;
-  total:number;
-}
+
 /**
  * 收藏嗯文
  */
@@ -60,13 +54,7 @@ export default function EnKiBookmark({
       : "";
   };
 
-  const data = useGetHeartAndBook({
-    account: actor?.actor_account,
-    pid: currentObj?.message_id,
-    refresh,
-    table: "bookmark",
-    sctype: getSctype(),
-  })  as BookType;
+  const resData = useGetHeartAndBook(actor?.actor_account,currentObj?.message_id,refresh,"bookmark",getSctype())  ;
 
   const submit = async (flag: 0 | 1) => {
     //0 取消收藏  1 收藏
@@ -98,18 +86,18 @@ export default function EnKiBookmark({
       variant="light"
       disabled={!isEdit}
       onClick={() => {
-        submit(data.pid ? 0 : 1);
+        submit(resData.data.pid ? 0 : 1);
       }}
       title={t("bookmastText")}
     >
-      {data.pid ? (
+      {resData.data.pid ? (
         <span style={{ color: "red" }}>
           <BookTap size={18} />
         </span>
       ) : (
         <BookTap size={18} />
       )}
-      {data.total}
+      {resData.data.total}
     </Button>
   );
 }

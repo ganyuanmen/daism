@@ -17,7 +17,7 @@ export interface DaismInputGroupHandle {
 // Props 类型
 interface DaismInputGroupProps {
   title: string;
-  defaultValue?: string;
+  defaultValue?: string|number;
   horizontal?: boolean;
   readonly?: boolean;
 }

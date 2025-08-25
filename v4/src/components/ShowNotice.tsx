@@ -4,10 +4,22 @@ import { useSelector, useDispatch } from 'react-redux'
 import {type RootState,  setShowNotice} from '../store/store';
 
 import { useTranslations } from 'next-intl'
-import {useNotice} from '../hooks/useMessageData';
 import { client } from '../lib/api/client';
 import { Button,Modal } from 'react-bootstrap';
 import Image from 'next/image';
+
+import { useFetch } from "@/hooks/useFetch";
+export interface NoticeData {
+    id: number;
+  }
+
+  function useNotice(account?: string) {
+    return useFetch<NoticeData[]>(`/api/getData?manager=${account}` ,'getNotice');
+  }
+
+
+
+
 
 export default function ShowNotice() {
     const showNotice = useSelector((state:RootState) => state.valueData.showNotice)
@@ -15,7 +27,7 @@ export default function ShowNotice() {
     const dispatch = useDispatch();
     const user = useSelector((state:RootState) => state.valueData.user)
     const loginsiwe = useSelector((state:RootState) => state.valueData.loginsiwe)
-    const noticeData=useNotice(user)
+    const noticeData=useNotice(user.account)
 
     const clickNotice=()=>{
         client.post('/api/postwithsession',"updateNotice",{manager:user.account})

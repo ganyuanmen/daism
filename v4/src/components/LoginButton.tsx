@@ -14,7 +14,6 @@ interface LoginButtonProps {
 
 export interface LoginButtonRef {
   siweLogin: () => Promise<void>;
-  say:()=>void
 }
 
 const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = (props, ref) => {
@@ -34,7 +33,7 @@ const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = 
     const nonce = await res.text();
     return new SiweMessage({
       domain: window.location.host,
-      address: daismObj?.signer.address,
+      address: await daismObj?.signer.getAddress(),
       statement: 'Sign in with Ethereum to the daism dApp.',
       uri: window.location.origin,
       version: '1',
@@ -110,9 +109,8 @@ const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = 
     }
   };
 
-  const say=()=>{alert(99)}
 
-  useImperativeHandle(ref, () => ({ siweLogin,say }));
+  useImperativeHandle(ref, () => ({ siweLogin }));
 
   return (
     <>

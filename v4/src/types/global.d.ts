@@ -8,7 +8,8 @@ import type { ContractTransactionResponse, Contract } from "ethers";
 export {};
 
 declare global {
-  interface EnkiMessType {
+
+  interface EnkiMessType { //嗯文
     id:number;
     send_type:number; //message 类型，0 发送，1 关注接收，2 私下推送，9 转发
     receive_account:string  //接收人
@@ -50,36 +51,36 @@ declare global {
     self_account?:string; //实际发贴人帐号
     self_avatar?:string; //实际发贴人头像
 
+    httpNetWork?:boolean; //是否跨域下载
+
   }
-
-  // name:'',domain:myURL.hostname,inbox:'',account:'',url:'',pubkey:'',avatar:'',manager:''
-
-  // interface EnkiMemberType {
-  //   name:string;
-  //   inbox:string;
-  //   domain:string;
-  //   account:string;
-  //   avatar:string;
-  //   url:string;
-  //   pubkey:string;
-  //   manager?:string;
-  //   id?:number; //关注ID, 大于0 表示已关注
-
-  // }
-
+ 
+  interface FetchWhere {
+    currentPageNum: number;
+    menutype: number; //1 我的社区，2 公区社区 3 个人社区
+    daoid: number;
+    actorid: number;
+    where: string;
+    order: string;
+    eventnum: number; //社区: 0 非活动，1活动, 个人：1:首页 2:我的嗯文 3:我的收藏 4:我的接收嗯文 ,8 过滤（where 为过滤值）
+    account: string;
+    v: number; //附加 v: 1 我关注的社区
+  }
   
-  interface EnkiFollowType {
-    inbox:string;
-    createtime:string;
-    follow_id:string;
-    account:string;
-    avatar:string;
+  interface ActorInfo{
+    account: string;
     url:string;
-    id?:number; //关注ID, 
-    actor_id:number; //0 非本地帐户，大于0是本地帐户
-
+    inbox: string;
+    avatar: string;
+    id?:number; //帐号ID
+    name?: string;
+    domain?: string;
+    pubkey?: string;
+    manager?: string;
+    follow_id?:string; //关注ID
+    actor_id?:number; //0 非本地帐户，大于0是本地帐户
+    createtime?:string;
   }
-  
 
 
   //提案
@@ -139,6 +140,7 @@ declare global {
     actor_desc:string;
   }
 
+  
   interface DaismDao {
     strategy:number;
     cool_time:number;
@@ -159,6 +161,7 @@ declare global {
     dao_exec:string;
     token_id:number;
     _time:string;
+    actor_account:string; //表示已注册
   }
 
   
@@ -210,7 +213,25 @@ interface WalletProviderType {
     bid:number; //排序用的ID
     currentTime:string;
     actor_id:string;
+  }
 
+  //NFT
+  interface NftObjType {
+    _type: number;
+    tips?: string;
+    tokensvg: string;
+    to_address: string;
+    token_id: string | number;
+    block_num: string | number;
+    contract_address: string;
+    _time: string;
+    dao_name?: string;
+    [key:string]:any;
+  }
+ 
+  interface AccountType{
+    actor_name:string;
+    avatar:string;
   }
 
 }

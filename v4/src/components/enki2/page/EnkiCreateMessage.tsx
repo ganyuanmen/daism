@@ -1,4 +1,4 @@
-import { useState, forwardRef, useEffect, useImperativeHandle, Ref } from 'react';
+import { useState, forwardRef, useEffect, useImperativeHandle, Ref, useRef } from 'react';
 import { Button, Card, Row, Col, Form, InputGroup } from "react-bootstrap";
 import DaismInputGroup from '../../form/DaismInputGroup';
 import { SendSvg, BackSvg } from '@/lib/jssvg/SvgCollection';
@@ -8,7 +8,7 @@ import { type RootState, type AppDispatch, setTipText, setMessageText } from '@/
 import RichEditor, { type RichEditorRef } from "../../enki3/RichEditor";
 import Editor, { type EditorRef } from "../form/Editor";
 import { useTranslations } from 'next-intl';
-import ShowLogin from '../../enki3/ShowLogin';
+import ShowLogin,{type ShowLoginRef} from '../../enki3/ShowLogin';
 
 interface DaoDataItem {
     dao_id: number;
@@ -43,7 +43,7 @@ interface EnkiCreateMessageProps {
     currentObj?: CurrentObj;
     afterEditCall?: (obj: any) => void;
     addCallBack?: () => void;
-    accountAr?: string[];
+    accountAr?: AccountType[];
     callBack?: () => void;
 }
 
@@ -55,7 +55,7 @@ export default function EnkiCreateMessage({
     accountAr,
     callBack
 }: EnkiCreateMessageProps) {
-    const [show, setShow] = useState(false);
+    
     const [typeIndex, setTypeIndex] = useState(currentObj?.type_index ?? 0);
     const [showEvent, setShowEvent] = useState(false);
     const [selectedDaoid, setSelectedDaoid] = useState<string>("");
@@ -67,7 +67,7 @@ export default function EnkiCreateMessage({
     const dispatch = useDispatch<AppDispatch>();
 
     const nums = 500;
-
+    const loginRef=useRef<ShowLoginRef>(null);
     const richEditorRef = useRef<RichEditorRef>(null);
     const editorRef = useRef<EditorRef>(null);
     const discussionRef = useRef<HTMLInputElement>(null);
@@ -118,12 +118,13 @@ export default function EnkiCreateMessage({
     };
 
     const submit = async () => {
-        const res = await fetch('/api/siwe/getLoginUser?t=' + new Date().getTime());
-        const res_data = await res.json();
-        if (res_data.state !== 1) {
-            setShow(true);
-            return;
-        }
+        if(!loginRef.current?.checkLogin()) return;
+        // const res = await fetch('/api/siwe/getLoginUser?t=' + new Date().getTime());
+        // const res_data = await res.json();
+        // if (res_data.state !== 1) {
+        //     setShow(true);
+        //     return;
+        // }
         if (!currentObj?.message_id) {
             if (errorSelect) return showClipError(t('loginDomainText', { domain: loginDomain }));
             if (!selectedDaoid) return showClipError(t('notSelect'));
@@ -270,7 +271,7 @@ export default function EnkiCreateMessage({
                     <Button onClick={submit} variant="primary"><SendSvg size={24} /> {t('submitText')}</Button>
                 </div>
             </div>
-            <ShowLogin show={show} setShow={setShow} />
+            <ShowLogin ref={loginRef} />
         </>
     );
 }

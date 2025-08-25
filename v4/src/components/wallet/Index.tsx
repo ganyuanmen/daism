@@ -8,14 +8,14 @@ import WalletInfo from './WalletInfo';
 import User from './User';
 import {useDispatch, useSelector} from 'react-redux';
 import {type RootState, type AppDispatch, setUser,setLoginsiwe,setActor,setDaoActor,setUtoBalance,
-  setEthBalance,setTokenList,setTokenFilter,setErrText,setMyFollow} from '@/store/store';
+  setEthBalance,setErrText,setMyFollow} from '@/store/store';
 
 import { ethers } from 'ethers';
 import { setDaismContract } from "@/lib/globalStore";
 import DaoApi from '@/lib/contract';
 import {useLocale, useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import { client } from '@/lib/api/client';
+import { useFetchToken } from '@/hooks/useFetchToken';
 
 /**
  * 钱包登录管理组件
@@ -32,6 +32,8 @@ function Wallet() {
   
     const showError=(str:string)=>{ dispatch(setErrText(str));}
     const tc = useTranslations('Common');
+    // 获取代币数据
+    const getTokens=useFetchToken();
 
     // 初始化组件
      useEffect(() => {
@@ -64,26 +66,10 @@ function Wallet() {
     window.sessionStorage.setItem("isLogin", "0");
     window.sessionStorage.setItem("loginsiwe", "0");
     window.sessionStorage.setItem("providerinfouuid", '');
-    // setEthersProver(undefined);
-    // setSigneredObj(undefined);
     setDaismContract(undefined);  
     
     if(pathname==='/') getTokens('');
   };
-
-    // 获取代币数据
-  const getTokens=(did: string)=> {
-      client.get(`/api/getData?did=${did}`, 'getToken').then(res => {
-        if (res.status === 200) {
-          dispatch(setTokenList(res.data));
-          dispatch(setTokenFilter(res.data));
-        } else {
-          console.error("Token fetch error:", res.statusText);
-        }
-      }).catch(err => {
-        console.error("Token fetch failed:", err);
-      });
-    };
 
   
 const checkNetwork= (chainId: number): boolean=>  {

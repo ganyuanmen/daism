@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import axios from 'axios';
 import cheerio from 'cheerio';
-import { getInboxFromAccount } from '../../lib/mysql/message'
+import { getInboxFromAccount } from '../mysql/message'
 
 export async function saveHTML(actorName,content,title,mid,textContent,avatar,account,manager,avatar1)
 {

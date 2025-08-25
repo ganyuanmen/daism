@@ -12,15 +12,26 @@ type Props = {
   params: Promise<{locale: string}>;
 };
 
+// ⚡ 静态生成所有 locale 路由
 export async function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({ params }: { params: { locale: string } }) {
-  const { locale } = await params;
+// ⚡ viewport 单独导出
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',  // 支持 iPhone X / 全面屏
+};
 
+// ⚡ 生成多语言 SEO
+export async function generateMetadata({ params }: { params: Promise<{ locale: string}>;}) {
+
+  const { locale } = await params; 
+  
   return {
-     title: locale==='en'?'Leading to PoL Civ - DAism':'奔赴以爱的证明为共识的新文明 - 道易程',
+
+    title: locale==='en'?'Leading to PoL Civ - DAism':'奔赴以爱的证明为共识的新文明 - 道易程',
     description:
       locale === 'en'
         ? 'Leading to Proof-of-Love Civilization by Joining Blockchain & AI Together - DAism'
@@ -29,20 +40,21 @@ export async function generateMetadata({ params }: { params: { locale: string } 
       locale === 'en'
         ? 'Proof-of-Love Civilization, Proof of Love, PoL Civ, Satoshi UTO Fund, SUF, Universal Love Engine, SufAIthon, DAism'
         : '爱的证明, Proof of Love, 爱的检验, 爱的验证, 富爱文明, 中本聪UTO基金, Satoshi UTO Fund, SUF, 全民爱的引擎, 速发赛, 道易程',
-    robots: 'index, follow, noodp',
+    robots: 'index, follow',
+    openGraph: {
+      siteName: 'daism',
+      type: 'article',
+    },
+    alternates: {
+      canonical: `https://daism.io/${locale}`, 
+    },
   };
 }
 
-// ⚡ Next.js 15 专用，单独导出 viewport
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-};
-
-
+// ⚡ Layout 组件
 export default async function LocaleLayout({children, params}: Props) {
-  // Ensure that the incoming `locale` is valid
+  
+  // 如果 locale 不在支持的列表，返回 404
   const {locale} = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();

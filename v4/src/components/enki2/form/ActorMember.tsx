@@ -44,10 +44,10 @@ export default function ActorMember({ notice }: ActorMemberProps) {
   const loginRef=useRef<ShowLoginRef>(null);
 
 
-  const follow0 = useFollow(actor, 'getFollow0');
-  const follow1 = useFollow(actor, 'getFollow1');
-  const tipToMe = useTip(actor, 'getTipToMe');
-  const tipFrom = useTip(actor, 'getTipFrom');
+  const follow0 = useFollow(actor?.actor_account, 'getFollow0');
+  const follow1 = useFollow(actor?.actor_account, 'getFollow1');
+  const tipToMe = useTip(actor?.manager, 'getTipToMe');
+  const tipFrom = useTip(actor?.manager, 'getTipFrom');
 
   const dispatch = useDispatch<AppDispatch>();
   const showTip = (str: string) => dispatch(setTipText(str));
@@ -152,10 +152,10 @@ export default function ActorMember({ notice }: ActorMemberProps) {
           {actor?.actor_account && (
             <Tabs defaultActiveKey={notice > 0 ? 'tipToMe' : 'follow0'} className="mb-3 mt-3">
               <Tab eventKey="follow0" title={t('followingText', { num: follow0.data.length })}>
-                <div>{follow0.data.map((obj: EnkiFollowType) => <MyFollow key={obj.id} isEdit={true} followObj={obj} />)}</div>
+                <div>{follow0.data.map((obj: ActorInfo) => <MyFollow key={obj.id} isEdit={true} followObj={obj} />)}</div>
               </Tab>
               <Tab eventKey="follow1" title={t('followedText', { num: follow1.data.length })}>
-                <div>{follow1.data.map((obj: EnkiFollowType) => <FollowMe key={obj.id}  followObj={obj} />)}</div>
+                <div>{follow1.data.map((obj: ActorInfo) => <FollowMe key={obj.id}  followObj={obj} />)}</div>
               </Tab>
               <Tab eventKey="tipToMe" title={t('tipToMe', { num: tipToMe.data.length })}>
                 <div>{tipToMe.data.map((obj: DaismTipType) => <TipToMe key={obj.id}  tipObj={obj} />)}</div>

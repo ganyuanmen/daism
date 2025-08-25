@@ -1,19 +1,19 @@
 'use client'
 import {Button, Card } from 'react-bootstrap'
-import UpBox from '@/components/iadd/UpBox'
-import DownBox from '@/components/iadd/DownBox';
+import UpBox from './UpBox'
+import DownBox from './DownBox';
 import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { Contract, ethers, type FeeData } from 'ethers';
-import SubmitButton from '@/components/iadd/SubmitButton';
-import StatusBar from '@/components/iadd/StatusBar';
+import SubmitButton from './SubmitButton';
+import StatusBar from '@/app/[locale]/deval/StatusBar';
 import usePrice from "@/hooks/usePrice";
 import ShowErrorBar from "@/components/ShowErrorBar";
 import { useTranslations } from 'next-intl'
 import {type RootState} from '@/store/store';
 import Image from 'next/image';
-import {type tipType } from '@/components/iadd/TipWin';
-import {type StatusBarState }  from '@/components/iadd/StatusBar';
+import {type tipType } from '@/app/[locale]/deval/TipWin';
+import {type StatusBarState }  from '@/app/[locale]/deval/StatusBar';
 import { getDaismContract } from '@/lib/globalStore';
 
 export default function IADD() {
@@ -85,9 +85,6 @@ export default function IADD() {
       return () => clearInterval(interval);
     }, []);
 
-
-
-
     useEffect(()=>{ if(inObjRef.current.token_id===-2) setUpBalance(ethBalance);},[ethBalance])
     useEffect(()=>{ 
       if(inObjRef.current.token_id===-1) setUpBalance(utoBalance);
@@ -116,22 +113,23 @@ export default function IADD() {
    
  
 
-    const setShowValue=(upVita:number,downVita:number,value:number)=>{ 
-      if(value>0){  
+    const setShowValue=(upVita:number,downVita:number,toValue:number,inputValue:number)=>{ 
+      if(toValue>0){  
           let ratio=Math.round((downVita-upVita)/upVita*10000)/100
           setDownVita(`${downVita.toFixed(6)} (${ratio}%)`);
-          setToValue(Math.round(value*1000000)/1000000)
+          setShowButton(!(inputValue>parseFloat(upBalanceRef.current) || toValue<=0));
+          setToValue(Math.round(toValue*1000000)/1000000)
       } else {
           setDownVita('');
-          setToValue(value); //-1//-1 是loading
+          setToValue(toValue); //-1//-1 是loading
       }
      
     }
 
     let requestInputChangeId=0;
     //兑换值或打赏值变动触发计算
-    const calcStatus=async (value:number, tip_valu:number,in_id:number,out_id:number)=>{
-      if(value<=0){
+    const calcStatus=async (inputValue:number, tip_valu:number,in_id:number,out_id:number)=>{
+      if(inputValue<=0){
         setUpVita('');setDownVita('');setToValue(0); setInputError(t('enter an amount')); 
         setStatus(pre=>({...pre,minValue:'',exValue:''}));
         return;
@@ -154,10 +152,10 @@ export default function IADD() {
       "_" +(out_id === -1 ? "uto" : out_id > 0 ? "token" : out_id);
 
       const handler = inputValueListenHandlers[key];
-      if (handler) {await handler( value,tip_valu,id);}
+      if (handler) {await handler( inputValue,tip_valu,id);}
 
     
-      if(value>parseFloat(upBalanceRef.current)) setInputError(t('Insufficient balance'));
+      if(inputValue>parseFloat(upBalanceRef.current)) setInputError(t('Insufficient balance'));
        
 
     }
@@ -177,25 +175,25 @@ export default function IADD() {
     function fromUtoken(v:string|number|bigint){return  ethers.formatUnits(v+'',8)}
 
       // 1. 定义路径处理函数（映射表的值）
-    const inputValueListenHandlers:Record<string,(value:number,tip_value:number,id:number) => Promise<void>>  = {
-      'eth_uto': async (value,tip_value,id) => { //没有打赏功能，但有锻造NFT选择
+    const inputValueListenHandlers:Record<string,(inputValue:number,tip_value:number,id:number) => Promise<void>>  = {
+      'eth_uto': async (inputValue,tip_value,id) => { //没有打赏功能，但有锻造NFT选择
         console.info(tip_value)
         const contractObj=daismObj?daismObj.UnitToken:unitToken;
-        const e = await contractObj?.getOutputAmount(getEther(value));
+        const e = await contractObj?.getOutputAmount(getEther(inputValue));
         if(!e || !e[0]) return;
         const _upvita = parseFloat(fromUtoken(e[0]));
         setUpVita(_upvita.toFixed(6));
-        setShowButton(value>parseFloat(upBalanceRef.current));
+       
         if(id===requestInputChangeId) {
-          setShowValue(_upvita, _upvita, _upvita);
+          setShowValue(_upvita, _upvita, _upvita,inputValue);
           setStatus(prevStatus => ({ ...prevStatus, gas: ((gasPrice + priorty) * price.e2u / 1000000000).toFixed(8),
             exValue: _upvita.toFixed(6),price: '', minValue: ''
            }))
         }
       },
 
-      'eth_token': async (value,tip_value,id) => { //有打赏，锻造nft，打赏nft
-        const ethToutokenPrice = await daismObj?.UnitToken.getOutputAmount(getEther(value));
+      'eth_token': async (inputValue,tip_value,id) => { //有打赏，锻造nft，打赏nft
+        const ethToutokenPrice = await daismObj?.UnitToken.getOutputAmount(getEther(inputValue));
         if(!ethToutokenPrice || !ethToutokenPrice[0]) return;
         const _upvita = parseFloat(fromUtoken(ethToutokenPrice[0]));
         setUpVita(_upvita.toFixed(6));
@@ -207,13 +205,13 @@ export default function IADD() {
           const re = await daismObj?.Commulate.unitTokenToDaoToken(getUtoEther(tip_value), outObjRef.current.token_id);
           if (re) toValue = toValue - parseFloat(fromEther(re));
         }
-        setShowButton(value>parseFloat(upBalanceRef.current) || toValue<=0);
+        
         const e1 = await daismObj?.IADD.getPool(outObjRef.current.token_id);
         if(!e1) return;
         const _price = e1.utoken / e1.token;        
         if(id===requestInputChangeId) {
           if(toValue<=0)  setInputError(t('notTipText')); 
-          setShowValue(_upvita, toValue * _price, toValue);
+          setShowValue(_upvita, toValue * _price, toValue,inputValue);
           setStatus(prevStatus => ({ ...prevStatus, gas: ((gasPrice + priorty) * price.e2t / 1000000000).toFixed(8),
             price: ((_price - (e1.utoken + _upvita) / (e1.token - toValue)) / _price * 100).toFixed(2) + '%',
             minValue:toValue>0? (toValue * (1 - status.slippage / 100)).toFixed(6):'0',
@@ -223,8 +221,8 @@ export default function IADD() {
         
       },
 
-      'uto_token': async (value,tip_value,id) => { //有打赏，打赏nft
-        const _upvita = value;
+      'uto_token': async (inputValue,tip_value,id) => { //有打赏，打赏nft
+        const _upvita = inputValue;
         let _tipToValue=0;
         setUpVita(_upvita.toFixed(6));
         //处理打赏
@@ -233,16 +231,16 @@ export default function IADD() {
           if(ew)  _tipToValue = parseFloat(fromEther(ew));
         }
       
-        const e = await daismObj?.Commulate.unitTokenToDaoToken(getUtoEther(value), outObjRef.current.token_id);
+        const e = await daismObj?.Commulate.unitTokenToDaoToken(getUtoEther(inputValue), outObjRef.current.token_id);
         if(!e) return;
         const toValue = parseFloat(fromEther(e))-_tipToValue;
         const e1 = await daismObj?.IADD.getPool(outObjRef.current.token_id);
         if(!e1) return;
         const _price = e1.utoken / e1.token;        
         if(id===requestInputChangeId) {
-          setShowValue(_upvita, toValue * _price, toValue);
+          setShowValue(_upvita, toValue * _price, toValue,inputValue);
           if(toValue<=0) setInputError(t('notTipText')); 
-          setShowButton(value>parseFloat(upBalanceRef.current) || toValue<=0);
+          // setShowButton(value>parseFloat(upBalanceRef.current) || toValue<=0);
           setStatus(prevStatus => ({ ...prevStatus, gas: ((gasPrice + priorty) * price.u2t / 1000000000).toFixed(8),
             price: ((_price - (e1.utoken + _upvita) / (e1.token - toValue)) / _price * 100).toFixed(2) + '%',
             minValue:toValue>0? (toValue * (1 - status.slippage / 100)).toFixed(6):'0',
@@ -253,14 +251,14 @@ export default function IADD() {
         }       
       },
 
-      'token_uto': async (value,tip_value,id) => {
+      'token_uto': async (inputValue,tip_value,id) => {
         const e0 = await daismObj?.IADD.getPool(inObjRef.current.token_id);
         if(!e0) return;
         const _price = e0.utoken / e0.token;
-        const _upvita = value * _price;
+        const _upvita = inputValue * _price;
         setUpVita(_upvita.toFixed(6));
         
-        const e = await daismObj?.Commulate.daoTokenToUnitToken(getEther(value), inObjRef.current.token_id);
+        const e = await daismObj?.Commulate.daoTokenToUnitToken(getEther(inputValue), inObjRef.current.token_id);
         if(!e)  return;
         let _downVita = parseFloat(fromUtoken(e));
         let toValue = _downVita;
@@ -268,26 +266,26 @@ export default function IADD() {
         // 处理打赏
         if (tip_value > 0) {toValue = toValue - tip_value;}
         
-        setShowButton(value>parseFloat(upBalanceRef.current) || toValue<=0);
+        // setShowButton(value>parseFloat(upBalanceRef.current) || toValue<=0);
 
         if(id===requestInputChangeId){
-          setShowValue(_upvita, _downVita, toValue);
+          setShowValue(_upvita, _downVita, toValue,inputValue);
           if(toValue<=0)  setInputError(t('notTipText')); 
           setStatus(prevStatus => ({ ...prevStatus, gas: ((gasPrice + priorty) * price.t2u / 1000000000).toFixed(8),
-            price: ((_price - (e0.utoken - _upvita) / (e0.token + value)) / _price * 100).toFixed(2) + '%',
+            price: ((_price - (e0.utoken - _upvita) / (e0.token + inputValue)) / _price * 100).toFixed(2) + '%',
             minValue:toValue>0?(_downVita * (1 - status.slippage / 100)).toFixed(6):'0',
             exValue:toValue>0? _downVita.toFixed(6):'0',
             }));
         } 
       },
 
-      'token_token': async (value,tip_value,id) => {
+      'token_token': async (inputValue,tip_value,id) => {
         const e0 = await daismObj?.IADD.getPool(inObjRef.current.token_id);
         if(!e0) return;
         const _price = e0.utoken / e0.token;
-        const _upvita = value * _price;
+        const _upvita = inputValue * _price;
         setUpVita(_upvita.toFixed(6));
-        const e = await daismObj?.Commulate.daoTokenToUnitToken(getEther(value), inObjRef.current.token_id);
+        const e = await daismObj?.Commulate.daoTokenToUnitToken(getEther(inputValue), inObjRef.current.token_id);
         if(!e) return;
         let _uto = 0;
         if (tip_value > 0) _uto = tip_value;
@@ -298,11 +296,11 @@ export default function IADD() {
           const e4 = await daismObj?.Commulate.unitTokenToDaoToken(getUtoEther(_amout.toFixed(6)), outObjRef.current.token_id);
           if(!e4) return;
           const toValue = parseFloat(fromEther(e4));
-          setShowButton(value>parseFloat(upBalanceRef.current) || _amout <=30);
+          // setShowButton(value>parseFloat(upBalanceRef.current) || _amout <=30);
           if(id===requestInputChangeId){
-            setShowValue(_upvita, toValue * _price, toValue);
+            setShowValue(_upvita, toValue * _price, toValue,inputValue);
             setStatus(prevStatus => ({ ...prevStatus, gas: ((gasPrice + priorty) * price.t2t / 1000000000).toFixed(8),
-              price: ((_price - (e0.utoken - _upvita) / (e0.token + value)) / _price * 100).toFixed(2) + '%',
+              price: ((_price - (e0.utoken - _upvita) / (e0.token + inputValue)) / _price * 100).toFixed(2) + '%',
               minValue: (toValue * (1 - status.slippage / 100)).toFixed(6),
               exValue: toValue.toFixed(6),
              }))
@@ -315,7 +313,7 @@ export default function IADD() {
             setToValue(0);
             setDownVita('');
             setStatus(prevStatus => ({ ...prevStatus, gas: ((gasPrice + priorty) * price.t2t / 1000000000).toFixed(8),
-              price: ((_price - (e0.utoken - _upvita) / (e0.token + value)) / _price * 100).toFixed(2) + '%',
+              price: ((_price - (e0.utoken - _upvita) / (e0.token + inputValue)) / _price * 100).toFixed(2) + '%',
               minValue: '0',
               exValue: '0',
              }))
@@ -451,6 +449,7 @@ export default function IADD() {
         setOutObj(obj);
        } 
 
+       setTipValue(pre=>({...pre,isShowTip:true}));
       //计算比率： 1UTO=333.22 token
       const key =(inObjRef.current.token_id === -2 ? "eth" : inObjRef.current.token_id === -1 ? "uto" : "token") +
       "_" +(outObjRef.current.token_id === -1 ? "uto" : outObjRef.current.token_id > 0 ? "token" : outObjRef.current.token_id);

@@ -23,7 +23,7 @@ interface CurrentObj {
 interface EditorProps {
   currentObj?: CurrentObj;
   nums: number;
-  accountAr: Array<{ actor_name: string; avatar?: string }>;
+  accountAr?: AccountType[];
   isSC?: boolean;
   showProperty?: boolean;
 }

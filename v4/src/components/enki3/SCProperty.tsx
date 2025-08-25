@@ -11,18 +11,11 @@ import { InputGroup, Form, Row, Col } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 
-interface Account {
-  actor_name: string;
-  avatar?: string;
-}
 
 interface SCPropertyProps {
   children?: ReactNode;
-  currentObj?: {
-    property_index?: number;
-    account_at?: string;
-  };
-  accountAr: Account[];
+  currentObj?:EnkiMessType;
+  accountAr: AccountType[];
   isSC?: boolean;
 }
 
@@ -47,7 +40,7 @@ const SCProperty = forwardRef<SCPropertyRef, SCPropertyProps>(
     const [propertyIndex, setPropertyIndex] = useState<number>(
       currentObj?.property_index ?? 1
     );
-    const [filterData, setFilterData] = useState<Account[]>(accountAr);
+    const [filterData, setFilterData] = useState<AccountType[]>(accountAr);
     const [selectUser, setSelectUser] = useState<string[]>(
       currentObj?.account_at ? JSON.parse(currentObj.account_at) : []
     );

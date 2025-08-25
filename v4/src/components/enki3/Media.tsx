@@ -10,15 +10,11 @@ import React, {
   import { Row, Col } from "react-bootstrap";
   import ShowVedio from "../enki2/form/ShowVedio";
   import { useTranslations } from "next-intl";
-  
-  interface CurrentObj {
-    top_img?: string;
-    vedio_url?: string;
-  }
+ 
   
   interface MediaProps {
     children?: ReactNode;
-    currentObj?: CurrentObj;
+    currentObj?: EnkiMessType;
   }
   
   export interface MediaRef {

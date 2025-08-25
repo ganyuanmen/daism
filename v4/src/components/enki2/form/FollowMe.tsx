@@ -2,8 +2,6 @@ import EnkiMember from "./EnkiMember";
 import { Row, Col } from "react-bootstrap";
 import EnKiFollow from "./EnKiFollow";
 import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-import { client } from "../../../lib/api/client";
 import { type RootState } from "@/store/store";
 
 /**
@@ -13,36 +11,42 @@ import { type RootState } from "@/store/store";
  */
 
 interface Props {
-  followObj: EnkiFollowType;
+  followObj: ActorInfo;
   isEdit?: boolean;
 }
 
 export default function FollowMe({ followObj, isEdit = false }: Props) {
-  const [data, setData] = useState<EnkiFollowType>(followObj);
+
 
   const actor = useSelector((state: RootState) => state.valueData.actor) as DaismActor;
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe) as boolean;
   const myFollow = useSelector((state: RootState) => state.valueData.myFollow) as DaismFollow[];
 
-  const checkFollow = (obj: EnkiFollowType): boolean => {
+  const checkFollow = (obj: ActorInfo): boolean => {
     const item = myFollow.find((f: DaismFollow) => f.actor_account.toLowerCase() === followObj.account?.toLowerCase());
     return !!item;
   };
 
-  // 实时获取关注者当前的头像
-  useEffect(() => {
-    let ignore = false;
-    client.get(`/api/getData?url=${followObj.url}`, "getUserFromUrl").then((res: any) => {
-      if (!ignore && res.status === 200 && res?.data?.avatar) {
-        if (res.data.avatar !== followObj.avatar) {
-          setData({ ...followObj, avatar: res.data.avatar });
-        }
-      }
-    });
-    return () => {
-      ignore = true;
-    };
-  }, [followObj]);
+  // // 实时获取关注者当前的头像
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await fetch(`/api/getData?url=${followObj.url}`,
+  //          { signal: controller.signal,headers:{'x-method':'getUserFromUrl'} });
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         if (data && data?.avatar)  setData({ ...followObj, avatar: data.avatar });
+  //       }
+  //     } catch (err: any) {
+  //       if (err.name === 'AbortError') return; // 请求被取消
+  //     }
+  //   };
+  
+  //    fetchData();
+  //   return () => { controller.abort();};
+
+  // }, [followObj,setData]);
 
 
   return (
@@ -51,7 +55,7 @@ export default function FollowMe({ followObj, isEdit = false }: Props) {
       style={{ borderBottom: "1px solid #D2D2D2", padding: "5px 2px" }}
     >
       <Col>
-      <EnkiMember url={followObj.url} hw={32} isLocal={followObj.actor_id>0} account={followObj.account} avatar={followObj.avatar}  />
+      <EnkiMember url={followObj.url} hw={32} isLocal={Boolean(followObj?.actor_id && followObj.actor_id > 0)} account={followObj.account} avatar={followObj.avatar}  />
 
       </Col>
       <Col>

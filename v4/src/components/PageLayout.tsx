@@ -51,27 +51,27 @@ const PageLayout = memo(({children,env}: Props) => {
                   <div className="d-flex flex-row p-0 m-0 ">
                   <Nav.Link className={pathname === '/'  ? 'pnavactive'  : ''}  href={`/${locale}`}><div className='no-wrap' > {t('home')}</div></Nav.Link>
                   <NavDropdown className={pathname.startsWith('/communities') ? 'pnavactive'  : ''} title={t('social')} id="basic-nav-dropdown1">   
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/enki' ? 'pnavactive'  : ''} href={`${locale}/communities/enki?v=${env?.version}`} > {t('myCommunity')}</NavDropdown.Item>
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/SC' ? 'pnavactive'  : ''} href={`${locale}/communities/SC?v=${env?.version}`} > {t('publicCommunities')}</NavDropdown.Item>
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/enkier' ? 'pnavactive'  : ''} href={`${locale}/communities/enkier?v=${env?.version}`} > {t('personalSocial')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/enki' ? 'pnavactive'  : ''} href={`/${locale}/communities/enki?v=${env?.version}`} > {t('myCommunity')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/SC' ? 'pnavactive'  : ''} href={`/${locale}/communities/SC?v=${env?.version}`} > {t('publicCommunities')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/enkier' ? 'pnavactive'  : ''} href={`/${locale}/communities/enkier?v=${env?.version}`} > {t('personalSocial')}</NavDropdown.Item>
                     
                   </NavDropdown>
                 
-                  <Nav.Link className={pathname === '/smartcommons' ? 'pnavactive' : ''} href={`${locale}/smartcommons`}><div className='no-wrap' >{t('smarcommon')}</div></Nav.Link> 
-                  <Nav.Link className={pathname === '/honortokens' ? 'pnavactive'  : ''} href={`${locale}/honortokens`} ><div className='no-wrap' >{t('nft')}</div></Nav.Link> 
+                  <Nav.Link className={pathname === '/smartcommons' ? 'pnavactive' : ''} href={`/${locale}/smartcommons`}><div className='no-wrap' >{t('smarcommon')}</div></Nav.Link> 
+                  <Nav.Link className={pathname === '/honortokens' ? 'pnavactive'  : ''} href={`/${locale}/honortokens`} ><div className='no-wrap' >{t('nft')}</div></Nav.Link> 
                   
                   <Nav.Link style={{display:'none'}} href='/listbook' >listBook</Nav.Link> 
 
                   </div>
                   <div  className="d-flex flex-row p-0 m-0 ">
                  
-                  <Nav.Link className={pathname === '/deval'  ? 'pnavactive'  : ''}  href={`${locale}/deval`}><div className='no-wrap' >{t('iadd')}</div></Nav.Link>
+                  <Nav.Link className={pathname === '/deval'  ? 'pnavactive'  : ''}  href={`/${locale}/deval`}><div className='no-wrap' >{t('iadd')}</div></Nav.Link>
 
                   <NavDropdown title={t('college')} id="basic-nav-dropdown2">
                     <NavDropdown.Item style={{paddingLeft:'20px'}} target='_blank' href={locale==='en'?"https://learn.daism.io":"https://learn.daism.io/zh"}><div className='no-wrap' >{t('daism')}</div></NavDropdown.Item>
                     <NavDropdown.Item style={{paddingLeft:'20px'}} target='_blank' href={locale==='en'?"https://learn.daism.io/docs.html":"https://learn.daism.io/zh/docs.html"}><div className='no-wrap' >{t('doc')}</div></NavDropdown.Item>
                   </NavDropdown>
-                  <Nav.Link className={pathname === '/workroom' ? 'pnavactive'  : ''}  href={`${locale}/workroom`} ><div className='no-wrap' >{t('my')}</div></Nav.Link>
+                  <Nav.Link className={pathname === '/workroom' ? 'pnavactive'  : ''}  href={`/${locale}/workroom`} ><div className='no-wrap' >{t('my')}</div></Nav.Link>
                   </div>
                 </Nav>
                 <Navbar.Text>
