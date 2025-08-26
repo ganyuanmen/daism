@@ -14,7 +14,7 @@ import React, {
   
   interface MediaProps {
     children?: ReactNode;
-    currentObj?: EnkiMessType;
+    currentObj?: EnkiMessType|null;
   }
   
   export interface MediaRef {

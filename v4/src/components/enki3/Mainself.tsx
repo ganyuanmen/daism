@@ -32,10 +32,9 @@ import Contentdiv from './Contentdiv';
     tabIndex: number;
     setFetchWhere: (fw: FetchWhere) => void;
     afterEditCall: (obj: EnkiMessType) => void;
-    delCallBack: (obj: EnkiMessType) => void;
-    accountAr?: AccountType[];
+    refreshPage: () => void;
     path: string;
-    daoData?: DaismActor[];
+    daoData?: DaismDao[]|null;
   }
   
   export default function Mainself({
@@ -46,8 +45,7 @@ import Contentdiv from './Contentdiv';
     tabIndex,
     setFetchWhere,
     afterEditCall,
-    delCallBack,
-    accountAr,
+    refreshPage,
     path,
     daoData,
   }: MainselfProps) {
@@ -160,7 +158,7 @@ import Contentdiv from './Contentdiv';
       }
     };
   
-    const replyAddCallBack = (obj: EnkiMessType, index: number) => {
+    const replyAddCallBack = (index: number) => {
       data[index].total = data[index].total + 1;
       setData([...data]);
     };
@@ -186,8 +184,7 @@ import Contentdiv from './Contentdiv';
                 setCurrentObj={setCurrentObj}
                 setActiveTab={setActiveTab}
                 replyAddCallBack={replyAddCallBack}
-                delCallBack={delCallBack}
-                accountAr={accountAr}
+                refreshPage={refreshPage}
                 daoData={daoData}
               />
             ))}

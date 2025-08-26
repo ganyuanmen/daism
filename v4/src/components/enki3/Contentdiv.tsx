@@ -25,12 +25,11 @@ interface ContentdivProps {
   setCurrentObj: (obj: EnkiMessType) => void;
   filterTag?: (param: string) => void;
   setActiveTab: (index: number) => void;
-  replyAddCallBack: (obj: any, index: number) => void;
-  delCallBack: (obj: EnkiMessType) => void;
+  replyAddCallBack: (index: number) => void;
+  refreshPage: () => void;
   afterEditCall: (obj: EnkiMessType) => void;
-  data_index: number;
-  accountAr?: AccountType[];
-  daoData?: DaismActor[];
+  data_index: number;  //嗯文列表中的序号
+  daoData?: DaismDao[]|null;
   tabIndex: number;
 }
 
@@ -58,10 +57,9 @@ export default function Contentdiv({
   filterTag,
   setActiveTab,
   replyAddCallBack,
-  delCallBack,
+  refreshPage,
   afterEditCall,
   data_index,
-  accountAr,
   daoData,
   tabIndex,
 }: ContentdivProps) {
@@ -83,6 +81,12 @@ export default function Contentdiv({
     },
     [messageObj]
   );
+
+         
+    //新增加回复
+    const addReplyCallBack=()=>{
+      replyAddCallBack(data_index)
+  }
 
   useEffect(() => {
     const checkIsEdit = (): boolean => {
@@ -272,14 +276,8 @@ export default function Contentdiv({
         className="d-flex justify-content-between align-items-center"
         style={{ padding: "4px 8px" }}
       >
-        <MessageReply
-          currentObj={messageObj}
-          isEdit={ableReply()}
-          isTopShow={true}
-          addReplyCallBack={replyAddCallBack}
-          data_index={data_index}
-          accountAr={accountAr}
-        />
+    
+        <MessageReply currentObj={messageObj} isEdit={ableReply()} isTopShow={true} addReplyCallBack={addReplyCallBack} />
 
         <EnKiHeart
           isEdit={ableReply() && actor?.domain === process.env.NEXT_PUBLIC_DOMAIN}
@@ -294,17 +292,17 @@ export default function Contentdiv({
 
         {divContent && <EnkiShare content={divContent} currentObj={messageObj} />}
 
+ 
         {path !== "SC" && actor?.domain === process.env.NEXT_PUBLIC_DOMAIN && (
           <EnkiEditItem
             path={path}
             isEdit={isEdit}
             messageObj={messageObj}
-            delCallBack={delCallBack}
+            refreshPage={refreshPage}
             preEditCall={() => {
               setCurrentObj(messageObj);
               setActiveTab(tabIndex);
             }}
-            sctype={messageObj?.dao_id && messageObj.dao_id > 0 ? "sc" : ""}
           />
         )}
       </div>

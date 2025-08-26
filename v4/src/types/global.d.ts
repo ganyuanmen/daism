@@ -162,6 +162,8 @@ declare global {
     token_id:number;
     _time:string;
     actor_account:string; //表示已注册
+    actor_url:string;
+    domain:stringl
   }
 
   
@@ -213,6 +215,7 @@ interface WalletProviderType {
     bid:number; //排序用的ID
     currentTime:string;
     actor_id:string;
+    httpNetWork?:boolean; //是否跨域下载
   }
 
   //NFT

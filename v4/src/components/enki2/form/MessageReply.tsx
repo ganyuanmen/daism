@@ -16,27 +16,21 @@ import { useTranslations } from 'next-intl'
  * @setReplyObj 新增回复时清空界面的值
  * @isEdit 是否允许回复
  * @data_index 嗯文列表的序号，用于直接从嗯文列表中添加回复时，更新回复总数
- * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  * @isTopShow 从Contentdiv 回复，对嗯文回复 
  */
 // 子组件暴露给父组件的方法
 export interface MessageReplyRef {
-    show: () => void;
+    show: (v:string) => void;
   }
   
   // Props 类型
   interface MessageReplyProps {
-    currentObj: any; // 回复的嗯文对象，建议建 interface
-    addReplyCallBack: (obj: any, index: number) => void;
-    afterEditcall: (obj: any, index: number) => void;
-    setReplyObj?: (value: any) => void;
-    replyObj?: any;
+    currentObj: EnkiMessType; // 回复的嗯文对象
+    addReplyCallBack: (obj?: DaismReplyType,isNew?:boolean) => void;
     isEdit: boolean;
-    data_index: number;
-    accountAr?: AccountType[];
-    bid: string;
-    setBid?: (bid: string) => void;
-    isTopShow?: boolean;
+    // bid?:string; //回复评论的排序号
+    // setBid?:(v:string)=>void;
+    isTopShow?: boolean;  //true首页回复按钮，false进到嗯文明细后回复按钮
   }
   
   const MessageReply = forwardRef<MessageReplyRef, MessageReplyProps>(
@@ -44,17 +38,14 @@ export interface MessageReplyRef {
       {
         currentObj,
         addReplyCallBack,
-        afterEditcall,
-        setReplyObj,
-        replyObj,
         isEdit,
-        data_index,
-        bid,
-        setBid,
+        // bid,
+        // setBid,
         isTopShow = false,
       },
       ref
     ) => {
+      const [bid,setBid]=useState(''); // '' 新增加， 非空，对评论的回复排序号
       const [showWin, setShowWin] = useState(false); // 回复窗口显示
       const dispatch = useDispatch();
       function showTip(str: string) {
@@ -74,15 +65,12 @@ export interface MessageReplyRef {
       const richEditorRef = useRef<any>(null);
       const nums = 500;
   
-      useEffect(() => {
-        if (replyObj?.type_index) setTypeIndex(replyObj.type_index);
-        else setTypeIndex(0);
-      }, [replyObj]);
-  
+    
       // 用于从下拉菜单修改时显示调用
       useImperativeHandle(ref, () => ({
-        show: () => {
+        show: (v:string) => {
           setShowWin(true);
+          setBid(v);
         },
       }));
   
@@ -150,8 +138,8 @@ export interface MessageReplyRef {
               showClipError(obj.errMsg);
               return;
             }
-            if (replyObj) afterEditcall.call(this, obj, data_index); // 其实是新增，没有修改
-            else addReplyCallBack.call(this, obj, data_index);
+           
+             addReplyCallBack(obj,!!bid);
           })
           .catch((error) => {
             closeTip();
@@ -164,10 +152,9 @@ export interface MessageReplyRef {
           <Button
             variant="light"
             disabled={!(isEdit && currentObj?.is_discussion == 1)}
-            onClick={() => {
-              if (setBid) setBid("");
+            onClick={() => {  //直接点击， 非show方式
+              setBid('') //新增加，非对评论的回复
               setShowWin(true);
-              if (setReplyObj) setReplyObj(null); // 表示新增
             }}
             title={t("replyText")}
           >

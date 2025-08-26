@@ -2,29 +2,30 @@ import { Card } from "react-bootstrap";
 import { useState, useEffect, useRef, useCallback } from "react";
 import EnkiMemberItem from "../form/EnkiMemberItem";
 import EventItem from "../form/EventItem";
-import MessageReply from "../form/MessageReply";
+import MessageReply,{type MessageReplyRef} from "../form/MessageReply";
 import ReplyItem from "../form/ReplyItem";
 import ShowErrorBar from "../../ShowErrorBar";
 import EnKiHeart from "../form/EnKiHeart";
 import EnKiBookmark from "../form/EnKiBookmark";
 import EnkiShare from "../form/EnkiShare";
-import { client } from "../../../lib/api/client";
+
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ShowVedio from "../form/ShowVedio";
 import EnkiEditItem from "../form/EnkiEditItem";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import Loadding from "../../Loadding";
 import ShowAddress from "../../ShowAddress";
+import { type RootState } from "@/store/store";
+import { fetchJson } from "@/lib/utils/fetcher";
 
 interface MessagePageProps {
-  tabIndex: number;
+  tabIndex: number; //修改 所在页面的tab
   path: string;
-  currentObj: EnkiMessType;
-  delCallBack?: () => void;
+  enkiMessObj: EnkiMessType;
+  refreshPage: (flag?:string) => void; 
   setActiveTab?: (index: number) => void;
-  accountAr?: AccountType[];
-  daoData?: DaismActor[];
+  daoData?: DaismDao[]|null;
   filterTag?: (tag: string) => void;
 }
 
@@ -50,42 +51,40 @@ interface WhereType{
 export default function MessagePage({
     tabIndex,
     path,
-    currentObj,
-    delCallBack,
+    enkiMessObj,
+    refreshPage,
     setActiveTab,
-    accountAr,
     daoData,
     filterTag,
   }: MessagePageProps) {
     const [fetchWhere, setFetchWhere] = useState<WhereType>({
       currentPageNum: 0,
-      sctype: currentObj?.dao_id > 0 ? "sc" : "",
-      pid: currentObj.message_id,
+      sctype: enkiMessObj?.dao_id > 0 ? "sc" : "",
+      pid: enkiMessObj.message_id,
     });
     const [data, setData] = useState<DaismReplyType[]>([]);
-    const [bid, setBid] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [err, setErr] = useState("");
     const [isEdit, setIsEdit] = useState(false);
     const [replyIndex, setReplyIndex] = useState(-1);
-    const [replyObj, setReplyObj] = useState<DaismReplyType|null>(null);
+    
     const [pageNum, setPageNum] = useState(0);
-    const repluBtn = useRef<any>(null);
+    const repluBtn = useRef<MessageReplyRef>(null);
   
-    const locale = useLocale();
     const [divContent, setDivContent] = useState<string | null>(null);
   
+    //加载完成后，把div 内容赋值给
     const handleDivRef = useCallback(
       (node: HTMLDivElement | null) => {
         if (node !== null)
           setDivContent(node?.textContent?.slice(0, 120).replaceAll("\n", "") ?? "");
       },
-      [currentObj]
+      [enkiMessObj]
     );
   
-    const actor = useSelector((state: any) => state.valueData.actor);
-    const loginsiwe = useSelector((state: any) => state.valueData.loginsiwe);
+    const actor = useSelector((state: RootState) => state.valueData.actor);
+    const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe);
     const t = useTranslations("ff");
 
     useEffect(()=>{
@@ -96,84 +95,88 @@ export default function MessagePage({
     useEffect(()=>{
         const checkIsEdit=()=>{  //是否允许修改 
             if(!loginsiwe || !actor?.actor_account) return false;
-            if(currentObj?.httpNetWork) return false;  //远程读取不可修改
+            if(enkiMessObj?.httpNetWork) return false;  //远程读取不可修改
             if(actor?.domain!==process.env.NEXT_PUBLIC_DOMAIN) return false; //非注册地登录 
-            if(process.env.NEXT_PUBLIC_DOMAIN!==currentObj?.actor_account?.split('@')[1]) return false; //非发贴服务器
+            if(process.env.NEXT_PUBLIC_DOMAIN!==enkiMessObj?.actor_account?.split('@')[1]) return false; //非发贴服务器
             //超级管理员
             if(actor?.manager?.toLowerCase()===(process.env.NEXT_PUBLIC_ADMI_ACTOR as string) .toLowerCase()) return true;
             if(path==='enki'){
                 if(daoData){
-                let _member=daoData.find((obj)=>{return obj.dao_id===currentObj.dao_id})
+                let _member=daoData.find((obj)=>{return obj.dao_id===enkiMessObj.dao_id})
                 return !!_member;
                 }
             }else if(path==='enkier'){
-                if(!currentObj.receive_account && actor?.actor_account===currentObj.actor_account && currentObj.dao_id===0) return true;
+                if(!enkiMessObj.receive_account && actor?.actor_account===enkiMessObj.actor_account && enkiMessObj.dao_id===0) return true;
             }
             return false;
         }
         setIsEdit(checkIsEdit())
 
-    },[actor,currentObj,loginsiwe,daoData])
+    },[actor,enkiMessObj,loginsiwe,daoData])
 
     const ableReply = () => { //是否允许回复，点赞，书签
         if(!loginsiwe || !actor?.actor_account) return false;
-        if(currentObj?.httpNetWork) return false; // 远程服务器不可回复
+        if(enkiMessObj?.httpNetWork) return false; // 远程服务器不可回复
         return true;
     }
   
+    //删除回复 
     const replyDelCallBack=(index:number)=>{
-        currentObj.total=currentObj.total-1;
+        enkiMessObj.total=enkiMessObj.total-1;
         data.splice(index, 1); //删除
         setData([...data])
          
     } 
 
-    //回复评论前 ，弹出窗口
-    const preEditCallBack=(obj:DaismReplyType,reply_index:number,_bid:string)=>{
-        setReplyObj(obj);
+    // 对replyItem 回复
+    const replyCallBack=(reply_index:number,_bid:string)=>{
         setReplyIndex(reply_index);
-        setBid(_bid);
-        repluBtn.current.show();} 
-    
-    const afterEditcall=(obj)=>{
-        currentObj.total=currentObj.total+1;
-        data.splice(replyIndex+1, 0, obj);  // 从索引1开始，不删除元素，插入 'a'
-        // data[replyIndex].content=obj.content;
-        // data[replyIndex].top_img=obj.top_img;
-        // data[replyIndex].type_index=obj.type_index;
-        // data[replyIndex].vedio_url=obj.vedio_url;
+        repluBtn.current?.show(_bid);
+    } 
+
+        
+    //新增加回复
+    const addReplyCallBack=(obj?:DaismReplyType,isNew?:boolean)=>{
+        enkiMessObj.total=enkiMessObj.total+1;
+        if(obj){
+          if(isNew){ //回复评论
+            data.splice(replyIndex+1, 0, obj);  // 从索引1开始，不删除元素，插入 'a'
+          }else{ //回复嗯文
+            data.unshift(obj);
+          }
+        }
         setData([...data])
-    }  //修改讨论回调
+    }
+ 
     
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
+//
             try {
-                const res = await client.get(`/api/getData?pi=${fetchWhere.currentPageNum}&sctype=${fetchWhere.sctype}&pid=${fetchWhere.pid}`,'replyPageData');
-                if(res.status===200){
-                    if(Array.isArray(res.data)){
-                        setHasMore(res.data.length >= 20);
-                        setPageNum((pageNum) => pageNum + 1)
-                        if (fetchWhere.currentPageNum === 0) setData(res.data);
-                        else setData([...data, ...res.data]);
-                        setErr('');
-                    } else { 
-                        setHasMore(false); //读取错误，不再读
-                        setErr(res?.data?.errMsg || "Failed to read data from the server");
-                    }
-                } else 
-                {
-                    setHasMore(false); //读取错误，不再读
-                    setErr(res?.statusText || res?.data?.errMsg );
+                const resData = await fetchJson<DaismReplyType[]>(`/api/getData?pi=${fetchWhere.currentPageNum}&sctype=${fetchWhere.sctype}&pid=${fetchWhere.pid}`,
+                  { headers: { 'x-method': 'replyPageData' } }
+                );
+        
+                if (resData) {
+                  setHasMore(resData.length > 0);
+                  setPageNum((pageNum) => pageNum + 1);
+                  if (fetchWhere.currentPageNum === 0) setData(resData);
+                  else setData((prev) => [...prev, ...resData]);
+                  setErr('');
+                } else {
+                  setHasMore(false);
+                  setErr(
+                    (resData as any)?.errMsg || 'Failed to read data from the server'
+                  );
                 }
-
-            } catch (error) {
+              } catch (error: any) {
                 console.error(error);
-                setHasMore(false); //读取错误，不再读
-                setErr(error?.message);
-            } finally {
+                setHasMore(false);
+                setErr(error?.message??'handle data error');
+              } finally {
                 setIsLoading(false);
-            }
+              }
         };
         fetchData();
           
@@ -193,115 +196,104 @@ export default function MessagePage({
         }
     }
 
-    const addReplyCallBack=(obj)=>{
-        // setFetchWhere({ ...fetchWhere });
-        currentObj.total=currentObj.total+1;
-        data.unshift(obj);
-        setData([...data])
+
+        
+    const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
+
+    const filter = (para:string) => {
+    if(typeof filterTag === 'function') filterTag.call(null,para)
+    };
+
+  const replacedText = enkiMessObj?.content.replace(regex, (match, p1) => {
+    const escapedParam = p1.replace(/"/g, '&quot;');
+    return `<span class="tagclass daism-a" data-param="${escapedParam}">#${p1}</span>`;
+  });
+
+// 点击tag事件处理
+const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.classList.contains("tagclass")) {
+      const param = target.dataset.param;
+      if (param) {
+        filter(param);
+      }
     }
+  }, []);
 
-    
-const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
 
-const filter = (para) => {
- if(typeof filterTag === 'function') filterTag.call(null,para)
-};
- const replacedText = currentObj?.content.replace(regex, (match, p1) => {
-  const escapedParam = p1.replace(/"/g, '&quot;');
-  return `<span class="tagclass daism-a" data-param="${escapedParam}">#${p1}</span>`;
-});
-
-// 点击事件处理
-const handleClick = useCallback((event) => {
-  const target = event.target;
-  if (target.classList.contains('tagclass')) {
-    const param = target.dataset.param;
-    if (param) {
-      filter(param);
-    } 
-  } 
-}, []); // fi
-
-let lastArray = null;
-
-const renderedArrays = data.map((obj, idx) => {
-  const isSameAsLast = obj.bid === lastArray?.bid;
-  lastArray = obj;
-
-  return (
-    <ReplyItem pleft={isSameAsLast?40:10}  key={idx} locale={locale}  actor={actor} loginsiwe={loginsiwe} 
-    replyObj={obj} delCallBack={replyDelCallBack}  domain={process.env.NEXT_PUBLIC_DOMAIN}
-    preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
-  );
-});
-
+  //显示回复记录
+  let lastArray: DaismReplyType | null = null;
+  const renderedArrays = data.map((obj: DaismReplyType, idx: number) => {
+    const isSameAsLast = obj.bid === lastArray?.bid;
+    lastArray = obj;
+    return (
+      <ReplyItem replyObj={obj} delCallBack={replyDelCallBack} replyCallBack={replyCallBack}
+        pleft={isSameAsLast ? 40 : 10} key={idx} reply_index={idx}
+      />
+    );
+  });
 
     return (
-       
-
         <Card className=" mt-2 mb-3" >
             <Card.Header>
-                <EnkiMemberItem messageObj={currentObj} domain={process.env.NEXT_PUBLIC_DOMAIN} locale={locale} fromPerson={fromPerson} />
+                <EnkiMemberItem messageObj={enkiMessObj} />
                {/* 活动 */}
-               {currentObj?._type===1 && <EventItem currentObj={currentObj} /> }
+               {enkiMessObj?._type===1 && <EventItem currentObj={enkiMessObj} /> }
              
             </Card.Header>
         <Card.Body>
-        {/* {selectTag.map(tag => (
-        <Button variant="light" style={{marginRight:'10px',color:'blue',fontWeight:'bold'}} key={tag.id}  onClick={()=>{filterTag.call(null,tag.name)}} >
-          {tag.name}
-        </Button>
-      ))} */}
+            {/* 嗯文内容 */}
             <div className="daismCard"  onClick={handleClick} ref={handleDivRef} dangerouslySetInnerHTML={{__html: replacedText}}></div>
-            {currentObj?.content_link && <div dangerouslySetInnerHTML={{__html: currentObj.content_link}}></div>}
-            {currentObj?.top_img && <img  className="mt-2 mb-2" alt="" src={currentObj.top_img} style={{width:'100%'}} /> }
-            {currentObj?.vedio_url && <ShowVedio vedioUrl={currentObj.vedio_url} /> }
+            {/* 链接条 */}
+            {enkiMessObj?.content_link && <div dangerouslySetInnerHTML={{__html: enkiMessObj.content_link}}></div>}
+            {/* 首页图片 */}
+            {enkiMessObj?.top_img && <img  className="mt-2 mb-2" alt="" src={enkiMessObj.top_img} style={{width:'100%'}} /> }
+            {/* 首页视频 */}
+            {enkiMessObj?.vedio_url && <ShowVedio vedioUrl={enkiMessObj.vedio_url} /> }
  
         </Card.Body>
         <Card.Footer style={{padding:0}} >
 
             {/* 发起者 */}
-            {currentObj?.self_account &&<div className="d-flex align-items-center mt-1">
+            {enkiMessObj?.self_account &&<div className="d-flex align-items-center mt-1">
               <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center" >
                  <span style={{display:'inline-block',paddingRight:'4px'}}>{t('proposedText')}:</span>{' '}
-                 <img src={currentObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 
+                 <img src={enkiMessObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 
               </div>
               <div style={{flex:1}}  className="d-flex flex-column flex-md-row justify-content-between ">
-                  <span> {currentObj?.self_account} </span>
+                  <span> {enkiMessObj?.self_account} </span>
                   <div>
-                  <ShowAddress address={currentObj?.manager} />
+                  <ShowAddress address={enkiMessObj?.manager} />
                   </div>
               </div>
           </div>}
 
             <div className="d-flex justify-content-between align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:'4px 8px'}}  >
-         
-                <MessageReply  ref={repluBtn} currentObj={currentObj} isEdit={ableReply()} accountAr={accountAr}
-                 addReplyCallBack={addReplyCallBack} replyObj={replyObj} setReplyObj={setReplyObj} 
-                 afterEditcall={afterEditcall}  isTopShow={false} bid={bid} setBid={setBid} />
-
-                <EnKiHeart isEdit={ableReply() && actor?.domain===process.env.NEXT_PUBLIC_DOMAIN} currentObj={currentObj} path={path} />
-                <EnKiBookmark isEdit={ableReply() && actor?.domain===process.env.NEXT_PUBLIC_DOMAIN} currentObj={currentObj} path={path}/>
-              {divContent && <EnkiShare content={divContent} env={env} currentObj={currentObj} />}
-             {path!=='SC' && actor?.domain===process.env.NEXT_PUBLIC_DOMAIN && <EnkiEditItem path={path} env={env} isEdit={isEdit} actor={actor} messageObj={currentObj} delCallBack={delCallBack} 
-              preEditCall={e=>{if(setActiveTab) setActiveTab(tabIndex)}} sctype={currentObj?.dao_id>0?'sc':''} fromPerson={fromPerson} /> }
+                {/* 回复按钮 */}
+                <MessageReply  ref={repluBtn} currentObj={enkiMessObj} isEdit={ableReply()} addReplyCallBack={addReplyCallBack}  />
+                {/* 点赞按钮 */}
+                <EnKiHeart isEdit={ableReply() && actor?.domain===process.env.NEXT_PUBLIC_DOMAIN} currentObj={enkiMessObj} path={path} />
+               {/* 书签按钮 */}
+                <EnKiBookmark isEdit={ableReply() && actor?.domain===process.env.NEXT_PUBLIC_DOMAIN} currentObj={enkiMessObj} path={path}/>
+                {/* 分享按钮，需要嗯文渲染后 */}
+                {divContent && <EnkiShare content={divContent}  currentObj={enkiMessObj} />}
+                {/* 修改/删除/转发/置顶上拉框 */}
+                {path!=='SC' && actor?.domain===process.env.NEXT_PUBLIC_DOMAIN 
+                    && <EnkiEditItem path={path} isEdit={isEdit} messageObj={enkiMessObj} refreshPage={refreshPage} 
+                preEditCall={()=>{if(setActiveTab) setActiveTab(tabIndex)}} /> }
             </div>
-            {!currentObj.httpNetWork && !currentObj.actor_account.endsWith(process.env.NEXT_PUBLIC_DOMAIN) && <div className="mt-2 mb-2" style={{textAlign:'center'}}>
-                    <a target="_blank" href={currentObj?.link_url} >{t('origlText')}......</a>
+            {/* 其它服务器推送的回复显示原文链接 */}
+            {!enkiMessObj.httpNetWork && !enkiMessObj.actor_account.endsWith(process.env.NEXT_PUBLIC_DOMAIN as string) && <div className="mt-2 mb-2" style={{textAlign:'center'}}>
+                    <a target="_blank" href={enkiMessObj?.link_url} >{t('origlText')}......</a>
                     </div> 
             }
+            {/* 回复列表 */}
             <InfiniteScroll
                     dataLength={data.length}
                     next={fetchMoreData}
                     hasMore={hasMore}
-                    // loader={<Loadding />}
-                    // endMessage={<div style={{textAlign:'center'}} >---{t('emprtyData')}---</div>}
+                    loader={<Loadding />}
                 >
-                    {/* {data.map((obj, idx) => (
-                        <ReplyItem pleft={10}  key={idx} locale={locale} isEdit={ableReply() && actor?.actor_account===obj.actor_account } 
-                         replyObj={obj} delCallBack={replyDelCallBack}  domain={process.env.NEXT_PUBLIC_DOMAIN}
-                         preEditCall={preEditCallBack} sctype={currentObj.dao_id>0?'sc':''} reply_index={idx} />
-                    ))} */}
                     {renderedArrays}
             </InfiniteScroll>
 

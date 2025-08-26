@@ -23,13 +23,7 @@ export default async function Honor({ params }: HonorPageProps) {
     const { id } = await params;
     const NFTData= await getMynft({did:id}) ;
    
-    return ( <>
-     
-
-      <Nftlist mynftData={NFTData} />
-
-      </>         
-    )
+    return (<Nftlist mynftData={NFTData} />);
 }
 
 

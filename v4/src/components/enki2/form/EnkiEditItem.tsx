@@ -12,21 +12,20 @@ import { useTranslations } from "next-intl";
 interface EnkiEditItemProps {
   path: string;
   messageObj:EnkiMessType;
-  delCallBack?: (type: string) => void;
-  preEditCall: () => void;
-  sctype: string;
+  refreshPage: (v?:string) => void;
+  preEditCall: () => void; 
+
   isEdit: boolean;
 }
 
 export default function EnkiEditItem({
   path,
   messageObj,
-  delCallBack,
+  refreshPage,
   preEditCall,
-  sctype,
   isEdit
 }: EnkiEditItemProps) {
-  const [showLogin, setShowLogin] = useState(false);
+  // const [showLogin, setShowLogin] = useState(false);
   const t = useTranslations("ff");
   const tc = useTranslations("Common");
   const dispatch = useDispatch();
@@ -37,6 +36,8 @@ export default function EnkiEditItem({
   const closeTip = () => dispatch(setTipText(""));
   const showClipError = (str: string) => dispatch(setMessageText(str));
   const actor = useSelector((state: RootState) => state.valueData.actor) as DaismActor;
+
+  const sctype=messageObj.dao_id>0?'sc':'';
 
   const isAnnoce = () => {
     if (!actor?.actor_account || !actor.actor_account.includes("@")) return false;
@@ -74,21 +75,21 @@ export default function EnkiEditItem({
   }, [messageObj,actor]);
 
   const handle = async (method: string, body: any) => {
-    const res = await fetch("/api/siwe/getLoginUser?t=" + new Date().getTime());
-    const res_data = await res.json();
-    if (res_data.state !== 1) {
-      setShowLogin(true);
-      return;
-    }
+    // const res = await fetch("/api/siwe/getLoginUser?t=" + new Date().getTime());
+    // const res_data = await res.json();
+    // if (res_data.state !== 1) {
+    //   setShowLogin(true);
+    //   return;
+    // }
     showTip(t("submittingText"));
-    const res1 = await client.post("/api/postwithsession", method, body);
+    const res = await client.post("/api/postwithsession", method, body);
     closeTip();
     if (res.status === 200) {
-      if (typeof delCallBack === "function") delCallBack("del");
+      if (typeof refreshPage === "function") refreshPage('del');
     } else {
       showClipError(
-        `${tc("dataHandleErrorText")}!${res1?.statusText}\n ${
-          res1?.data.errMsg ? res1?.data?.errMsg : ""
+        `${tc("dataHandleErrorText")}!${res?.statusText}\n ${
+          res?.data.errMsg ? res?.data?.errMsg : ""
         }`
       );
     }
@@ -100,7 +101,7 @@ export default function EnkiEditItem({
     const res = await client.post("/api/postwithsession", "setTopMessage", { sctype, flag, id });
 
     if (res.status === 200) {
-      if (typeof delCallBack === "function") delCallBack("top");
+      if (typeof refreshPage === "function") refreshPage('top');
       closeTip();
     } else {
       showClipError(
@@ -111,14 +112,14 @@ export default function EnkiEditItem({
 
   //转发
   const handleAnnounce = async () => {
-    const res = await fetch("/api/siwe/getLoginUser?t=" + new Date().getTime());
-    const res_data = await res.json();
-    if (res_data.state !== 1) {
-      setShowLogin(true);
-      return;
-    }
+    // const res = await fetch("/api/siwe/getLoginUser?t=" + new Date().getTime());
+    // const res_data = await res.json();
+    // if (res_data.state !== 1) {
+    //   setShowLogin(true);
+    //   return;
+    // }
     showTip(t("submittingText"));
-    const re = await client.post("/api/postwithsession", "setAnnounce", {
+    const res = await client.post("/api/postwithsession", "setAnnounce", {
       account: actor?.actor_account,
       toUrl: messageObj.actor_url,
       id: messageObj.message_id,
@@ -126,15 +127,15 @@ export default function EnkiEditItem({
       content: messageObj.content,
       topImg: messageObj.top_img,
       vedioUrl: messageObj.vedio_url,
-      sctype: messageObj.dao_id && messageObj.dao_id > 0 ? "sc" : "",
+      sctype,
     });
 
     if (res.status === 200) {
-      if (typeof delCallBack === "function") delCallBack("annoce");
+      if (typeof refreshPage === "function") refreshPage('anoce');
       closeTip();
     } else {
       showClipError(
-        `${tc("dataHandleErrorText")}!${re?.statusText}\n ${re?.data?.errMsg ? re?.data?.errMsg : ""}`
+        `${tc("dataHandleErrorText")}!${res?.statusText}\n ${res?.data?.errMsg ? res?.data?.errMsg : ""}`
       );
     }
   };
@@ -144,16 +145,16 @@ export default function EnkiEditItem({
 
   const handleSelect = (eventKey: string | null) => {
     switch (eventKey) {
-      case "1":
+      case "1":  //修改
         preEditCall();
         break;
-      case "2":
+      case "2": //删除
         setShow(true);
         break;
-      case "3":
+      case "3": //转发
         handlePin(messageObj.is_top ? 0 : 1, messageObj.message_id);
         break;
-      case "4":
+      case "4": //置顶
         handleAnnounce();
         break;
       default:

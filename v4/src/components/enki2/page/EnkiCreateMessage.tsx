@@ -1,8 +1,8 @@
 import { useState, forwardRef, useEffect, useImperativeHandle, Ref, useRef } from 'react';
 import { Button, Card, Row, Col, Form, InputGroup } from "react-bootstrap";
-import DaismInputGroup from '../../form/DaismInputGroup';
+import DaismInputGroup,{type DaismInputGroupHandle} from '../../form/DaismInputGroup';
 import { SendSvg, BackSvg } from '@/lib/jssvg/SvgCollection';
-import DateTimeItem from '../../form/DateTimeItem';
+import DateTimeItem,{type DateTimeItemRef} from '../../form/DateTimeItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { type RootState, type AppDispatch, setTipText, setMessageText } from '@/store/store';
 import RichEditor, { type RichEditorRef } from "../../enki3/RichEditor";
@@ -10,37 +10,14 @@ import Editor, { type EditorRef } from "../form/Editor";
 import { useTranslations } from 'next-intl';
 import ShowLogin,{type ShowLoginRef} from '../../enki3/ShowLogin';
 
-interface DaoDataItem {
-    dao_id: number;
-    domain: string;
-    actor_account: string;
-    dao_logo?: string;
-    dao_name?: string;
-}
-
 interface Actor {
     actor_account: string;
     id: string | number;
 }
 
-interface CurrentObj {
-    message_id?: string;
-    type_index?: number;
-    start_time?: string;
-    actor_account?: string;
-    actor_name?: string;
-    avatar?: string;
-    title?: string;
-    is_discussion?: number;
-    is_send?: number;
-    event_url?: string;
-    event_address?: string;
-    time_event?: number;
-}
-
 interface EnkiCreateMessageProps {
-    daoData: DaoDataItem[];
-    currentObj?: CurrentObj;
+    daoData: DaismDao[]|null;
+    currentObj: EnkiMessType|null;
     afterEditCall?: (obj: any) => void;
     addCallBack?: () => void;
     accountAr?: AccountType[];
@@ -72,13 +49,13 @@ export default function EnkiCreateMessage({
     const editorRef = useRef<EditorRef>(null);
     const discussionRef = useRef<HTMLInputElement>(null);
     const sendRef = useRef<HTMLInputElement>(null);
-    const startDateRef = useRef<{ getData: () => string }>(null);
-    const endDateRef = useRef<{ getData: () => string }>(null);
-    const urlRef = useRef<{ getData: () => string; notValid: (msg: string) => void }>(null);
-    const addressRef = useRef<{ getData: () => string }>(null);
+    const startDateRef = useRef<DateTimeItemRef>(null);
+    const endDateRef = useRef<DateTimeItemRef>(null);
+    const urlRef = useRef<DaismInputGroupHandle>(null);
+    const addressRef = useRef<DaismInputGroupHandle>(null);
     const timeRef = useRef<{ getData: () => number }>(null);
     const selectRef = useRef<HTMLSelectElement>(null);
-    const titleRef = useRef<{ getData: () => string }>(null);
+    const titleRef = useRef<DaismInputGroupHandle>(null);
 
     const showTip = (str: string) => dispatch(setTipText(str));
     const closeTip = () => dispatch(setTipText(''));
@@ -151,15 +128,15 @@ export default function EnkiCreateMessage({
             formData.append('actorName', currentObj.actor_name!);
             formData.append('avatar', currentObj.avatar!);
         } else {
-            const selectDao = daoData.find(obj => obj.dao_id === parseInt(selectedDaoid));
+            const selectDao = daoData?.find(obj => obj.dao_id === parseInt(selectedDaoid));
             formData.append('account', actor.actor_account);
             formData.append('avatar', selectDao?.dao_logo ?? '');
             formData.append('actorName', selectDao?.dao_name ?? '');
         }
 
         if (showEvent) {
-            formData.append('startTime', startDateRef.current!.getData());
-            formData.append('endTime', endDateRef.current!.getData());
+            formData.append('startTime', startDateRef.current?.getData()??'');
+            formData.append('endTime', endDateRef.current?.getData()??'');
             formData.append('eventUrl', eventUrl);
             formData.append('eventAddress', addressRef.current!.getData());
             formData.append('time_event', timeRef.current!.getData().toString());
@@ -171,13 +148,13 @@ export default function EnkiCreateMessage({
         formData.append('typeIndex', typeIndex.toString());
         formData.append('vedioURL', editor!.getVedioUrl());
         formData.append('propertyIndex', editor!.getProperty());
-        formData.append('accountAt', editor!.getAccount());
+        formData.append('accountAt', editor?.getAccount()??'');
         formData.append('actorid', actor.id.toString());
         formData.append('daoid', selectedDaoid);
         formData.append('_type', showEvent ? '1' : '0');
         formData.append('title', titleRef.current!.getData());
         formData.append('content', contentHTML);
-        formData.append('image', editor!.getImg());
+        formData.append('image', editor?.getImg()??'');
         formData.append('fileType', editor!.getFileType());
         formData.append('isSend', sendRef.current!.checked ? '1' : '0');
         formData.append('isDiscussion', discussionRef.current!.checked ? '1' : '0');
@@ -221,7 +198,7 @@ export default function EnkiCreateMessage({
                         <Form.Control readOnly disabled defaultValue={currentObj.actor_account} /> :
                         <Form.Select ref={selectRef} value={selectedDaoid} onChange={handleSelectChange} isInvalid={errorSelect} onFocus={() => setErrorSelect(false)}>
                             <option value=''>{t('selectText')}</option>
-                            {daoData.map(option => (
+                            {daoData?.map(option => (
                                 <option key={option.dao_id} value={option.dao_id.toString()}>{option.actor_account}</option>
                             ))}
                         </Form.Select>
@@ -233,11 +210,11 @@ export default function EnkiCreateMessage({
                     <Form.Check inline label={t('shortText')} name="group1" type='radio' defaultChecked={typeIndex === 0} onClick={e => { if ((e.target as HTMLInputElement).checked) setTypeIndex(0) }} id='inline-2' />
                     <Form.Check inline label={t('longText')} name="group1" type='radio' defaultChecked={typeIndex === 1} onClick={e => { if ((e.target as HTMLInputElement).checked) setTypeIndex(1) }} id='inline-1' />
                 </Form>
-
+              
                 <DaismInputGroup horizontal title={t('htmlTitleText')} ref={titleRef} defaultValue={currentObj?.title ?? ''} />
                 {typeIndex === 0 ?
-                    <Editor ref={editorRef} currentObj={currentObj} nums={nums} isSC accountAr={accountAr} showProperty /> :
-                    <RichEditor ref={richEditorRef} currentObj={currentObj} isSC accountAr={accountAr} />
+                    <Editor ref={editorRef} currentObj={currentObj} nums={nums} isSC={true} accountAr={accountAr} showProperty={true} /> :
+                    <RichEditor ref={richEditorRef} currentObj={currentObj} isSC={true} accountAr={accountAr} />
                 }
 
                 <Form.Check className='mt-3' type="switch" checked={showEvent} onChange={() => setShowEvent(!showEvent)} id="ssdsd_swith1" label={t('eventArtice')} />
@@ -279,7 +256,7 @@ export default function EnkiCreateMessage({
 // 定时活动
 interface TimedeventProps {
     t: (key: string) => string;
-    currentObj?: CurrentObj;
+    currentObj?: EnkiMessType|null;
 }
 
 export const Timedevent = forwardRef<{ getData: () => number }, TimedeventProps>((props, ref) => {

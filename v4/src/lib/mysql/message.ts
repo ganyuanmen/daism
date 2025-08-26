@@ -77,8 +77,8 @@ export async function getEnkiTotal(params: any): Promise<any> {
 export async function daoPageData(params: any): Promise<any[]> {
   const { pi, w } = params;
   let sql = w
-    ? `SELECT dao_id,actor_account,avatar FROM a_account WHERE dao_id>0 and actor_name like '%${w}%' order by id limit ${pi*10},10`
-    : `SELECT dao_id,actor_account,avatar FROM a_account WHERE dao_id>0 order by id limit ${pi*10},10`;
+    ? `SELECT dao_id,actor_account,avatar FROM a_account WHERE dao_id>0 and actor_name like '%${w}%' order by id limit ${Number(pi)*10},10`
+    : `SELECT dao_id,actor_account,avatar FROM a_account WHERE dao_id>0 order by id limit ${Number(pi)*10},10`;
   let re: any[] = await getData(sql, []);
   return re;
 }

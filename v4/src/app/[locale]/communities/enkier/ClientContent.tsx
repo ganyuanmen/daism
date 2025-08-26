@@ -41,7 +41,7 @@ enum Paras {
  * @locale zh/cn
  * @accountAr 本域名的所有帐号，用于发布嗯文时选择指定某人
  */ 
-export default function enkier({accountAr}:ClientContentProps) {
+export default function ClientContent({accountAr}:ClientContentProps) {
     const [fetchWhere, setFetchWhere] = useState<FetchWhere>({
         currentPageNum: -1,
         daoid: 0,
@@ -170,8 +170,8 @@ export default function enkier({accountAr}:ClientContentProps) {
     const createHandle=()=>{ //创建发文
         removeUrlParams()
         if(!actorRef.current) return;
-        const [name,localdomain]=actorRef.current.actor_account.split('@');
-        if(env.domain!==localdomain) return showClipError(t('loginDomainText',{domain:localdomain}));
+        const [,localdomain]=actorRef.current.actor_account.split('@');
+        if(process.env.NEXT_PUBLIC_DOMAIN!==localdomain) return showClipError(t('loginDomainText',{domain:localdomain}));
         setCurrentObj(null);
         setActiveTab(1);
         setTopText(t('createPostText'));
@@ -256,7 +256,7 @@ export default function enkier({accountAr}:ClientContentProps) {
       }
 
 
-      const callBack = () => {
+      const refreshPage = () => {
         if (navIndex === Paras.home) homeHandle();
         else if (navIndex === Paras.mypost) myPostHandle();
         else if (navIndex === Paras.myreceive) myReceiveHandle();
@@ -317,7 +317,7 @@ export default function enkier({accountAr}:ClientContentProps) {
                 <div className='d-flex justify-content-between align-items-center secconddiv'  > 
                 
                   <div className='selectText' style={{paddingLeft:'12px'}} >
-                    {activeTab===2 ? <span className='daism-a selectText' onClick={callBack} ><BackSvg size={24} />{t('esctext')} </span>
+                    {activeTab===2 ? <span className='daism-a selectText' onClick={refreshPage} ><BackSvg size={24} />{t('esctext')} </span>
                     :<>{svgs[navIndex]} {topText}</>}
                    
                     </div>  
@@ -339,13 +339,13 @@ export default function enkier({accountAr}:ClientContentProps) {
            
                     {activeTab === 0 ? <Mainself  setCurrentObj={setCurrentObj} setActiveTab={setActiveTab} 
                     fetchWhere={fetchWhere} setFetchWhere={setFetchWhere} filterTag={filterTag}  tabIndex={1}
-                    delCallBack={callBack} afterEditCall={afterEditCall}  accountAr={accountAr} path='enkier' />
+                    refreshPage={refreshPage} afterEditCall={afterEditCall}   path='enkier' />
 
                     :activeTab === 1 ? <CreateMess addCallBack={homeHandle} accountAr={accountAr} currentObj={currentObj} 
-                    afterEditCall={afterEditCall} callBack={callBack} />
+                    afterEditCall={afterEditCall} refreshPage={refreshPage} />
 
-                    :activeTab === 2 ? <MessagePage  path="enkier" locale={locale}  currentObj={currentObj} tabIndex={1}
-                    delCallBack={callBack} setActiveTab={setActiveTab} accountAr={accountAr} filterTag={filterTag} />
+                    :(activeTab === 2 && currentObj) ? <MessagePage  path="enkier"  enkiMessObj={currentObj} tabIndex={1}
+                    refreshPage={refreshPage} setActiveTab={setActiveTab}  filterTag={filterTag} />
 
                     :activeTab===3 && <FollowCollection locale={locale}  method={followMethod}/>}
 

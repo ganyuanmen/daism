@@ -10,7 +10,7 @@ import { Button } from "react-bootstrap";
 interface Props {
   url:string; //被关注者url
   account:string; //被关注者帐号
-  showText?: boolean;
+  showText?: boolean; //显示文字，不显示按钮
 }
 
 export default function EnKiFollow({ url,account, showText = false }: Props) {

@@ -14,9 +14,9 @@ import { useTranslations } from "next-intl";
 
 interface SCPropertyProps {
   children?: ReactNode;
-  currentObj?:EnkiMessType;
-  accountAr: AccountType[];
-  isSC?: boolean;
+  currentObj?:EnkiMessType|null;
+  accountAr?: AccountType[]|null;
+  isSC?: boolean;  //是否公器发文，是则不显示 嗯文性质，默认公共
 }
 
 export interface SCPropertyRef {
@@ -40,7 +40,7 @@ const SCProperty = forwardRef<SCPropertyRef, SCPropertyProps>(
     const [propertyIndex, setPropertyIndex] = useState<number>(
       currentObj?.property_index ?? 1
     );
-    const [filterData, setFilterData] = useState<AccountType[]>(accountAr);
+    const [filterData, setFilterData] = useState<AccountType[]|undefined|null>(accountAr);
     const [selectUser, setSelectUser] = useState<string[]>(
       currentObj?.account_at ? JSON.parse(currentObj.account_at) : []
     );
@@ -73,14 +73,14 @@ const SCProperty = forwardRef<SCPropertyRef, SCPropertyProps>(
       const v = selectRef.current?.value.toLowerCase().trim() ?? "";
       if (v) {
         const user = new Set(selectUser);
-        const curData = accountAr.filter(
+        const curData = accountAr?.filter(
           (o) =>
             o.actor_name.toLowerCase().includes(v) &&
             !user.has(o.actor_name) &&
             o.actor_name.toLowerCase() !== actor?.actor_name?.toLowerCase()
         );
         setFilterData(curData);
-        setSearInput(curData.length > 0);
+        setSearInput((curData?.length ?? 0) > 0);
       } else setSearInput(false);
     };
 
@@ -198,7 +198,7 @@ const SCProperty = forwardRef<SCPropertyRef, SCPropertyProps>(
                   className="messpopup"
                   style={{ position: "absolute", zIndex: 1300 }}
                 >
-                  {filterData.map((obj, idx) => (
+                  {filterData?.map((obj, idx) => (
                     <div
                       key={idx}
                       className="messoption d-flex align-items-center"

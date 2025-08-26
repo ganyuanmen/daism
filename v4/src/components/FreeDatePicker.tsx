@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useState } from "react";
 import "react-day-picker/dist/style.css";
 import dayjs, { Dayjs } from "dayjs";
 
-type DateProps={defaultValue?:Date};
+type DateProps={defaultValue?:string|Date};
 export interface DateRef {getDate: () => string;}
 
 const FreeDatePicker = forwardRef<DateRef, DateProps>(({defaultValue}, ref) => {

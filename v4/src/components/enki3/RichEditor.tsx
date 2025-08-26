@@ -11,7 +11,7 @@ const Richwet = dynamic(() => import('../RichTextEditor'), {
 
 
 interface RichEditorProps {
-  currentObj?: EnkiMessType;
+  currentObj?: EnkiMessType|null;
   isSC?: boolean;
   accountAr?: AccountType[];
 }

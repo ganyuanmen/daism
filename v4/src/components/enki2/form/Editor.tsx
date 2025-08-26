@@ -12,20 +12,13 @@ import SCProperty, { SCPropertyRef } from "../../enki3/SCProperty";
 import Media, { MediaRef } from "../../enki3/Media";
 import { useTranslations } from "next-intl";
 
-interface CurrentObj {
-  content?: string;
-  top_img?: string;
-  vedio_url?: string;
-  property_index?: number;
-  account_at?: string;
-}
 
 interface EditorProps {
-  currentObj?: CurrentObj;
-  nums: number;
-  accountAr?: AccountType[];
+  currentObj: EnkiMessType|null;
+  nums: number;  //充许文字数量
+  accountAr?: AccountType[]|null; //私下的用户列表
   isSC?: boolean;
-  showProperty?: boolean;
+  showProperty: boolean; 
 }
 
 export interface EditorRef {
