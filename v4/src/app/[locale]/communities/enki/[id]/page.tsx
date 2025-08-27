@@ -1,7 +1,7 @@
 
 
 
-import ClientIDPage from './ClientIDPage';
+import ClientEnki from './ClientEnki';
 import { getTranslations } from 'next-intl/server';
 import parse from 'node-html-parser';
 import { cache } from 'react';
@@ -10,12 +10,15 @@ import { getData, getJsonArray } from '@/lib/mysql/common';
 interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
 
 const getOpenObj = cache(async (id: string) => {
+    const openObj=await getData('select * from v_messagesc where message_id=?',[id],true);
+    
+  if(openObj?.createtime) openObj.createtime=new Date(openObj.createtime).toJSON();
+  if(openObj?.currentTime) openObj.currentTime=new Date(openObj.currentTime).toJSON();
+  if(openObj?.reply_time) openObj.reply_time=new Date(openObj.reply_time).toJSON();
+  if(openObj?.start_time) openObj.start_time=new Date(openObj.start_time).toJSON();
+  if(openObj?.end_time) openObj.end_time=new Date(openObj.end_time).toJSON();
 
-  if(/^[0-9]+$/.test(id)){
-    return await getData('select * from v_message where id=?',[id],true);
-  }else {
-   return await getData('select * from vv_message where message_id=?',[id],true);
-  }
+  return openObj;
   
 });
 
@@ -23,11 +26,11 @@ const getAccount = cache(async () => {
   return await getJsonArray('accountAr',[process.env.NEXT_PUBLIC_DOMAIN]);
   });
 
-export default async function EnkierIDPage({ params }: HonorPageProps) {
+export default async function EnkiIDPage({ params }: HonorPageProps) {
     const { id } = await params;
     const openObj=await getOpenObj(id);
     const accountAr=await getAccount();
-    return ( <ClientIDPage openObj={openObj?.message_id?openObj:null} accountAr={accountAr} />);
+    return ( <ClientEnki openObj={openObj?.message_id?openObj:null} accountAr={accountAr} />);
 }
 
 
@@ -54,7 +57,7 @@ export async function generateMetadata({ params }: HonorPageProps) {
             `${openObj.actor_name} (${openObj.actor_account})`,
           description: content,
           images: [openObj?.top_img ?? openObj.avatar],
-          url: `https://${process.env.NEXT_PUBLIC_DOMAIN}/${locale}/communities/enkier/${id}`,
+          url: `https://${process.env.NEXT_PUBLIC_DOMAIN}/${locale}/communities/enki/${id}`,
         },
         twitter: {
           card: "summary",
@@ -65,7 +68,7 @@ export async function generateMetadata({ params }: HonorPageProps) {
           images: [openObj?.top_img ?? openObj.avatar],
         },
         alternates: {
-            canonical: `https://${process.env.NEXT_PUBLIC_DOMAIN}/${locale}/communities/enkier/${id}`,
+            canonical: `https://${process.env.NEXT_PUBLIC_DOMAIN}/${locale}/communities/enki/${id}`,
         },
         other: {
           "wechat:title":

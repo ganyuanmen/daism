@@ -20,7 +20,7 @@ interface EnkiCreateMessageProps {
     currentObj: EnkiMessType|null;
     afterEditCall?: (obj: any) => void;
     addCallBack?: () => void;
-    accountAr?: AccountType[];
+    accountAr: AccountType[];
     callBack?: () => void;
 }
 
@@ -212,8 +212,10 @@ export default function EnkiCreateMessage({
                 </Form>
               
                 <DaismInputGroup horizontal title={t('htmlTitleText')} ref={titleRef} defaultValue={currentObj?.title ?? ''} />
-                {typeIndex === 0 ?
-                    <Editor ref={editorRef} currentObj={currentObj} nums={nums} isSC={true} accountAr={accountAr} showProperty={true} /> :
+                {typeIndex === 0 
+                    ?
+                    <Editor ref={editorRef} currentObj={currentObj} nums={nums} isSC={true} accountAr={accountAr} showProperty={true} /> 
+                    :
                     <RichEditor ref={richEditorRef} currentObj={currentObj} isSC={true} accountAr={accountAr} />
                 }
 

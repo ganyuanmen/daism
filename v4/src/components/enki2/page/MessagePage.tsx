@@ -59,7 +59,7 @@ export default function MessagePage({
   }: MessagePageProps) {
     const [fetchWhere, setFetchWhere] = useState<WhereType>({
       currentPageNum: 0,
-      sctype: enkiMessObj?.dao_id > 0 ? "sc" : "",
+      sctype: enkiMessObj.dao_id > 0 ? "sc" : "",
       pid: enkiMessObj.message_id,
     });
     const [data, setData] = useState<DaismReplyType[]>([]);

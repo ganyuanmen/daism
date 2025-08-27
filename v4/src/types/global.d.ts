@@ -58,7 +58,7 @@ declare global {
   interface FetchWhere {
     currentPageNum: number;
     menutype: number; //1 我的社区，2 公区社区 3 个人社区
-    daoid: number;
+    daoid: number|string;
     actorid: number;
     where: string;
     order: string;
