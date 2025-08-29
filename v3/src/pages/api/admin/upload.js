@@ -6,12 +6,12 @@ import { createWriteStream,createReadStream } from 'node:fs';
 import { mkdir, access } from 'node:fs/promises';
 import path from 'node:path';
 
-
 export const config = {
     api: {
-        bodyParser: false,
+      bodyParser: false,
+      sizeLimit: '10mb',   // 👈 必须加这个
     },
-};
+  };
 
 
 
