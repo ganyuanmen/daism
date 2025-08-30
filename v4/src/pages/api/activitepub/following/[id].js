@@ -7,8 +7,8 @@ export default async function handler(req, res) {
 
     if (!name) {return res.status(400).json({errMsg:'Bad request.'});}
     else {
-      let followers =await getFollowees({account:`${name}@${process.env.LOCAL_DOMAIN}`})
-      let followersCollection = createFollowees(name,process.env.LOCAL_DOMAIN,followers)
+      let followers =await getFollowees({account:`${name}@${process.env.NEXT_PUBLIC_DOMAIN}`})
+      let followersCollection = createFollowees(name,process.env.NEXT_PUBLIC_DOMAIN,followers)
       res.json(followersCollection);
 
     }

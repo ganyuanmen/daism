@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { InputGroup,Button,Form } from 'react-bootstrap';
 import { useDispatch} from 'react-redux';
-import {setTipText,setMessageText} from '../../data/valueData'
+import {setTipText,setErrText} from '../../data/valueData'
 import ConfirmWin from '../federation/ConfirmWin';
 import { client } from '../../lib/api/client';
 import ShowErrorBar from '../ShowErrorBar';
@@ -23,7 +23,7 @@ const DonationPage = ({env,locale}) => {
   let tc = useTranslations('Common')
   let t = useTranslations('wallet')
   const dispatch = useDispatch();
-  function showError(str){dispatch(setMessageText(str))}
+  function showError(str){dispatch(setErrText(str))}
   function showTip(str){dispatch(setTipText(str))}
   function closeTip(){dispatch(setTipText(''))}
 

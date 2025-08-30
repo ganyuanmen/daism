@@ -1,3 +1,4 @@
+'use client';
 import { useLocale, useTranslations } from 'next-intl'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
@@ -13,6 +14,7 @@ import EnkiCreateMessage from '@/components/enki2/page/EnkiCreateMessage'
 
 import { type RootState } from '@/store/store'
 import {BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg} from '@/lib/jssvg/SvgCollection'
+
 
 interface DaoActor {
   dao_id: number
@@ -56,6 +58,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
   const [activeTab, setActiveTab] = useState<number>(0)
 
   const actor = useSelector((state: RootState) => state.valueData.actor)
+
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe)
   const daoActor = useSelector((state: RootState) => state.valueData.daoActor) as DaismDao[];
 
@@ -92,8 +95,10 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
   useEffect(() => {if (actor?.id) actorRef.current = actor}, [actor])
 
     //过滤已注册
-  useEffect(() => {if (Array.isArray(daoActor) && daoActor.length)
-      setDaoData(daoActor.filter((obj) => obj.actor_account))
+  useEffect(() => {
+    console.log("daoActor:",daoActor)
+    if (Array.isArray(daoActor) && daoActor.length)
+        setDaoData(daoActor.filter((obj) => obj.actor_account))
   }, [daoActor])
 
   useEffect(() => {latestHandle()}, [daoData])

@@ -17,9 +17,14 @@ const ShowLogin = forwardRef<ShowLoginRef, ShowLoginProps>((_, ref) => {
   const t = useTranslations('Common');
 
   const checkLogin=async ()=>{
+    alert(0)
     const res = await fetch('/api/siwe/getLoginUser?t=' + new Date().getTime());
     const res_data = await res.json();
-    if (res_data.state !== 1) {
+    // console.log("-------------------")
+    // console.log(res_data);
+    // console.log("-------------------")
+    // return false;
+    if (!res_data.isLogin) {
       setShowLogin(true);
       return false
     }

@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { type RootState, type AppDispatch, setTipText, setMessageText, setMyFollow } from "@/store/store";
+import { type RootState, type AppDispatch, setTipText, setErrText, setMyFollow } from "@/store/store";
 import { useTranslations } from "next-intl";
 
 
@@ -26,7 +26,7 @@ export default function EnKiUnFollow({ searObj }: Props) {
     dispatch(setTipText(""));
   }
   function showClipError(str: string) {
-    dispatch(setMessageText(str));
+    dispatch(setErrText(str));
   }
 
   const actor = useSelector((state: RootState) => state.valueData.actor) as DaismActor;

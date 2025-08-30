@@ -1,7 +1,8 @@
+"use client";
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card, Modal, Tabs, Tab, Accordion } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { type RootState, type AppDispatch, setTipText, setMessageText, setActor } from '@/store/store';
+import { type RootState, type AppDispatch, setTipText, setErrText, setActor } from '@/store/store';
 import DaismImg ,{type DaismImgHandle} from '@/components/form/DaismImg';
 import { EditSvg, UploadSvg } from '@/lib/jssvg/SvgCollection';
 import EnkiMember from './EnkiMember';
@@ -52,7 +53,7 @@ export default function ActorMember({ notice }: ActorMemberProps) {
   const dispatch = useDispatch<AppDispatch>();
   const showTip = (str: string) => dispatch(setTipText(str));
   const closeTip = () => dispatch(setTipText(''));
-  const showClipError = (str: string) => dispatch(setMessageText(str));
+  const showClipError = (str: string) => dispatch(setErrText(str));
 
   useEffect(() => {
     if (actor?.actor_account) {
@@ -87,7 +88,7 @@ export default function ActorMember({ notice }: ActorMemberProps) {
       }
       dispatch(setActor(re));
       window.sessionStorage.setItem('actor', JSON.stringify(re));
-      dispatch(setMessageText(t('saveprimarysText')));
+      dispatch(setErrText('saveprimarysText'));
       setShow(false);
     } catch (error: any) {
       closeTip();
@@ -151,18 +152,22 @@ export default function ActorMember({ notice }: ActorMemberProps) {
 
           {actor?.actor_account && (
             <Tabs defaultActiveKey={notice > 0 ? 'tipToMe' : 'follow0'} className="mb-3 mt-3">
-              <Tab eventKey="follow0" title={t('followingText', { num: follow0.data.length })}>
-                <div>{follow0.data.map((obj: ActorInfo) => <MyFollow key={obj.id} isEdit={true} followObj={obj} />)}</div>
+              {follow0.status==='succeeded' && <Tab eventKey="follow0" title={t('followingText', { num: follow0.data.length })}>
+                <div>{ follow0.data.map((obj: ActorInfo) => <MyFollow key={obj.id} isEdit={true} followObj={obj} />)}</div>
               </Tab>
-              <Tab eventKey="follow1" title={t('followedText', { num: follow1.data.length })}>
+              }
+              {follow1.status==='succeeded' && <Tab eventKey="follow1" title={t('followedText', { num: follow1.data.length })}>
                 <div>{follow1.data.map((obj: ActorInfo) => <FollowMe key={obj.id}  followObj={obj} />)}</div>
               </Tab>
-              <Tab eventKey="tipToMe" title={t('tipToMe', { num: tipToMe.data.length })}>
+              }
+              {tipToMe.status==='succeeded' && <Tab eventKey="tipToMe" title={t('tipToMe', { num: tipToMe.data.length })}>
                 <div>{tipToMe.data.map((obj: DaismTipType) => <TipToMe key={obj.id}  tipObj={obj} />)}</div>
               </Tab>
-              <Tab eventKey="tipFrom" title={t('tipFrom', { num: tipFrom.data.length })}>
+              }
+              {tipFrom.status==='succeeded' && <Tab eventKey="tipFrom" title={t('tipFrom', { num: tipFrom.data.length })}>
                 <div>{tipFrom.data.map((obj: DaismTipType) => <TipToMe key={obj.id} tipObj={obj} />)}</div>
               </Tab>
+             }
             </Tabs>
           )}
         </Card.Body>

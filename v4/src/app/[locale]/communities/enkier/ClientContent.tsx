@@ -1,3 +1,4 @@
+"use client";
 import { useLocale, useTranslations } from 'next-intl';
 import { useState, useEffect, useRef, JSX } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -75,7 +76,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
       const dispatch = useDispatch<AppDispatch>();
     
       function showClipError(str: string) {
-        dispatch(setMessageText(str));
+        dispatch(setErrText(str));
       }
     
       const tc = useTranslations('Common');

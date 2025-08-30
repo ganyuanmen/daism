@@ -27,7 +27,7 @@ export default withSession(async (req, res) => {
       actorDesc=actorDesc[0]
       fileType=fileType[0]
       let selectImg=saveImage(files,fileType,_path)
-      let path =selectImg?`https://${process.env.LOCAL_DOMAIN}/${process.env.IMGDIRECTORY}/${_path}/${selectImg}`:'';
+      let path =selectImg?`https://${process.env.NEXT_PUBLIC_DOMAIN}/${process.env.IMGDIRECTORY}/${_path}/${selectImg}`:'';
       let lok= await updateActor({account,actorDesc,path})
       if(lok) {
         res.status(200).json(await getActor(did[0])); 

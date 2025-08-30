@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useSelector, useDispatch } from 'react-redux';
 // import { type signeredObjType, getSigneredObj } from "@/lib/globalStore";
 import { getDaismContract } from "@/lib/globalStore";
-import {type RootState, type AppDispatch, setMessageText, setTipText, setLoginsiwe,
+import {type RootState, type AppDispatch, setErrText, setTipText, setLoginsiwe,
   setDaoActor,setActor,setMyFollow,setShowNotice} from '@/store/store';
 
 interface LoginButtonProps {
@@ -24,13 +24,16 @@ const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = 
   // const singerObj: signeredObjType|undefined = getSigneredObj();
   
   const showLoadding = (str: string) => dispatch(setTipText(str));
-  const showTip = (str: string) => dispatch(setMessageText(str));
-  const showError = (str: string) => dispatch(setMessageText(str));
+  const showTip = (str: string) => dispatch(setErrText(str));
+  const showError = (str: string) => dispatch(setErrText(str));
   let daismObj=getDaismContract();
 
   async function createSiweMessage(): Promise<SiweMessage> {
     const res = await fetch(`/api/siwe/nonce`);
-    const nonce = await res.text();
+ 
+    const data = await res.json();
+    console.log("res once:",data)
+
     return new SiweMessage({
       domain: window.location.host,
       address: await daismObj?.signer.getAddress(),
@@ -38,7 +41,7 @@ const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = 
       uri: window.location.origin,
       version: '1',
       chainId: user.chainId,
-      nonce
+      nonce:data.nonce
     });
   }
 

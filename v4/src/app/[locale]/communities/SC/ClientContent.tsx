@@ -1,3 +1,4 @@
+'use client';
 import { useLocale, useTranslations } from 'next-intl'
 import { useState, useEffect, useRef } from "react"
 import { useSelector } from 'react-redux';
@@ -12,6 +13,7 @@ import MessagePage from '@/components/enki2/page/MessagePage';
 import { NavDropdown, Button } from 'react-bootstrap';
 import { BackSvg, TimeSvg, EventSvg } from '@/lib/jssvg/SvgCollection';
 import { type RootState } from '@/store/store';
+import { fetchJson } from '@/lib/utils/fetcher';
 
 
 interface DaoWhere {
@@ -81,16 +83,23 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       setIsLoading(true);
-      try {
-        const res = await client.get(`/api/getData?pi=${daoWhere.currentPageNum}&w=${daoWhere.where}`, 'daoPageData');
-        setHasMore(res.data.length >= 10);
-        if (daoWhere.currentPageNum === 0) setDaoData(res.data);
-        else setDaoData([...daoData, ...res.data]);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+        try {
+          const resData = await fetchJson<EnkiMessType[]>(`/api/getData?pi=${daoWhere.currentPageNum}&w=${daoWhere.where}`,
+            { headers: { 'x-method': 'daoPageData' }});
+  
+          if (resData) {
+            setHasMore(resData.length >= 10);
+            if (daoWhere.currentPageNum === 0) setDaoData(resData);
+            else setDaoData([...daoData, ...resData]);
+          
+          } 
+        } catch (error: any) {
+          console.error(error);
+          setHasMore(false);
+        } finally {
+          setIsLoading(false);
+        }
+     
     };
     
     fetchData(); 

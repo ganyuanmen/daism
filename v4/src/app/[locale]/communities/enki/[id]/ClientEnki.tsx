@@ -1,3 +1,4 @@
+'use client';
 import { useTranslations } from 'next-intl'
 import MessagePage from '@/components/enki2/page/MessagePage'
 import { useSelector } from 'react-redux'

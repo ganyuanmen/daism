@@ -42,7 +42,7 @@ export default withSession(async (req, res) => {
     const videName = file[0]?.newFilename || file.newFilename;
     return res.status(200).json({
       message: "Upload successful",
-      path: `https://${process.env.LOCAL_DOMAIN}/uploads/${_path}/${videName}`,
+      path: `https://${process.env.NEXT_PUBLIC_DOMAIN}/uploads/${_path}/${videName}`,
     });
   });
 

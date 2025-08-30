@@ -1,7 +1,7 @@
 import { Button, Form } from "react-bootstrap";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTipText, setMessageText } from "@/store/store";
+import { setTipText, setErrText } from "@/store/store";
 import { SendSvg, BackSvg } from "../../lib/jssvg/SvgCollection";
 import RichEditor from "./RichEditor";
 import Editor from "../enki2/form/Editor";
@@ -47,7 +47,7 @@ export default function CreateMess({
     dispatch(setTipText(""));
   }
   function showClipError(str: string) {
-    dispatch(setMessageText(str));
+    dispatch(setErrText(str));
   }
 
   const [typeIndex, setTypeIndex] = useState<number>(

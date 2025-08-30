@@ -19,7 +19,7 @@ export async function getFollowers({ account }: any): Promise<any[]> {
 // 查询 actor 的粉丝集（排除本域名）
 export async function getFollowers_send({ account }: any): Promise<any[]> {
   const sql = 'SELECT * FROM a_follow WHERE actor_account=? AND user_domain!=?';
-  const re = await getData(sql, [account, process.env.LOCAL_DOMAIN]);
+  const re = await getData(sql, [account, process.env.NEXT_PUBLIC_DOMAIN]);
   return re || [];
 }
 

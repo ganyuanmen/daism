@@ -47,7 +47,10 @@ export async function getData(
 export async function execute(
   sql: string,
   sqlParams: any[] = []
-): Promise<any | number> {
+): Promise<number> {
+  
+  if (process.env.IS_DEBUGGER === '1') 
+    console.info(`${new Date().toLocaleString()}: execute: ${sql} --> ${sqlParams.join()}`);
   const pool = await createConnection();
   let attempt = 0;
   const maxRetries = 3;
@@ -55,7 +58,7 @@ export async function execute(
   while (attempt < maxRetries) {
     try {
       const [result] = await pool.execute<any>(sql, sqlParams);
-      return result;
+      if (sql.trim().toUpperCase().startsWith('CALL')) return 1; else return result.affectedRows as number;   
     } catch (err: any) {
       if (err.code === 'ER_LOCK_DEADLOCK') {
         attempt++;

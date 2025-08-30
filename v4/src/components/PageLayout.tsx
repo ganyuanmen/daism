@@ -4,10 +4,6 @@ import {useLocale, useTranslations } from 'next-intl';
 import {usePathname} from 'next/navigation';
 import Image from 'next/image';
 import { Navbar,Container,Nav,NavDropdown } from 'react-bootstrap'
-import ShowErrWin from './ShowErrWin';
-import Loddingwin from './Loddingwin'
-import ShowTip from './ShowTip'
-import ShowNotice from './ShowNotice'
 import React, { memo } from 'react';
 
 
@@ -20,6 +16,7 @@ type Props = {
 };
 
 const PageLayout = memo(({children,env}: Props) => {
+
  
   const t = useTranslations('Navigation')
   const locale = useLocale();
@@ -96,10 +93,7 @@ const PageLayout = memo(({children,env}: Props) => {
           </div>
       </footer>
     }   
-        <Loddingwin />
-        <ShowTip />
-        <ShowNotice />
-        <ShowErrWin />
+      
     </>
   )
 });

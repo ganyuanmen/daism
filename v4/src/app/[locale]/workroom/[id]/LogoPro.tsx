@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import DaismImg,{type DaismImgHandle} from '@/components/form/DaismImg';
 import Alert from 'react-bootstrap/Alert';
 import { useDispatch } from 'react-redux';
-import { setTipText, setMessageText } from '@/store/store';
+import { setTipText, setErrText } from '@/store/store';
 import { EditSvg } from '@/lib/jssvg/SvgCollection';
 import { useTranslations } from 'next-intl';
 import { getDaismContract } from '@/lib/globalStore';
@@ -22,7 +22,7 @@ export default function LogoPro({ daoName, setChangeLogo, delegator, setMess }: 
   let daismObj=getDaismContract();
 
   const dispatch = useDispatch();
-  const showError = (str: string) => dispatch(setMessageText(str));
+  const showError = (str: string) => dispatch(setErrText(str));
   const showTip = (str: string) => dispatch(setTipText(str));
   const closeTip = () => dispatch(setTipText(''));
 

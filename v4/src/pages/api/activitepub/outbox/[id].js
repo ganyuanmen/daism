@@ -7,13 +7,13 @@ export default async function handler(req, res) {
       let outboxCollection = {
         "type":"OrderedCollection",
         "totalItems":0,
-        "id":`https://${process.env.LOCAL_DOMAIN}/api/activitepub/outbox/${name}`,
+        "id":`https://${process.env.NEXT_PUBLIC_DOMAIN}/api/activitepub/outbox/${name}`,
         "first": {
           "type":"OrderedCollectionPage",
           "totalItems":0,
-          "partOf":`https://${process.env.LOCAL_DOMAIN}/api/activitepub/outbox/${name}`,
+          "partOf":`https://${process.env.NEXT_PUBLIC_DOMAIN}/api/activitepub/outbox/${name}`,
           "orderedItems": [],
-          "id":`https://${process.env.LOCAL_DOMAIN}/api/activitepub/outbox/${name}?page=1`
+          "id":`https://${process.env.NEXT_PUBLIC_DOMAIN}/api/activitepub/outbox/${name}?page=1`
         },
         "@context":["https://www.w3.org/ns/activitystreams"]
       };

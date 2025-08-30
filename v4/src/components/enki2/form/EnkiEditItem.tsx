@@ -4,7 +4,7 @@ import { Nav, NavDropdown } from "react-bootstrap";
 import ConfirmWin from "../../federation/ConfirmWin";
 import { client } from "../../../lib/api/client";
 import { useSelector, useDispatch } from "react-redux";
-import {type RootState,setTipText,setMessageText} from "@/store/store";
+import {type RootState,setTipText,setErrText} from "@/store/store";
 import { useTranslations } from "next-intl";
 
 
@@ -34,7 +34,7 @@ export default function EnkiEditItem({
 
   const showTip = (str: string) => dispatch(setTipText(str));
   const closeTip = () => dispatch(setTipText(""));
-  const showClipError = (str: string) => dispatch(setMessageText(str));
+  const showClipError = (str: string) => dispatch(setErrText(str));
   const actor = useSelector((state: RootState) => state.valueData.actor) as DaismActor;
 
   const sctype=messageObj.dao_id>0?'sc':'';
@@ -74,26 +74,6 @@ export default function EnkiEditItem({
     return () => { controller.abort();};
   }, [messageObj,actor]);
 
-  const handle = async (method: string, body: any) => {
-    // const res = await fetch("/api/siwe/getLoginUser?t=" + new Date().getTime());
-    // const res_data = await res.json();
-    // if (res_data.state !== 1) {
-    //   setShowLogin(true);
-    //   return;
-    // }
-    showTip(t("submittingText"));
-    const res = await client.post("/api/postwithsession", method, body);
-    closeTip();
-    if (res.status === 200) {
-      if (typeof refreshPage === "function") refreshPage('del');
-    } else {
-      showClipError(
-        `${tc("dataHandleErrorText")}!${res?.statusText}\n ${
-          res?.data.errMsg ? res?.data?.errMsg : ""
-        }`
-      );
-    }
-  };
 
   //置顶
   const handlePin = async (flag: number, id: string) => {
@@ -162,14 +142,31 @@ export default function EnkiEditItem({
     }
   };
 
-  const deldiscussions = () => {
-    handle("messageDel", {
-      mid: messageObj?.message_id,
-      account: messageObj?.actor_account,
+  const deldiscussions = async () => {
+    const upData= {
+      mid:messageObj?.message_id??'',
+      account:messageObj?.actor_account??'',
+      type:0,  //0 对象是嗯文， 1 对象是回复
       sctype,
       path,
-      rAccount: messageObj?.receive_account ?? "",
+      pid:'',
+      rAccount:messageObj?.receive_account??''
+      }
+
+    showTip(t("submittingText"));
+    const re= await fetch("/api/postwithsession", {
+      method: 'POST',
+      headers: { 'x-method': 'messageDel1' },
+      body: JSON.stringify(upData)
     });
+
+    if(re.ok){
+      if (typeof refreshPage === "function") refreshPage('del');
+    }else{
+      const reData=await re.json();
+      showClipError(`${tc("dataHandleErrorText")}!\n ${reData.errMsg}`);
+    }
+    closeTip();
     setShow(false);
   };
 

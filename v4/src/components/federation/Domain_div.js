@@ -2,7 +2,7 @@ import { Card,Button } from "react-bootstrap";
 import { useState,useRef } from "react";
 import { EditSvg } from "../../lib/jssvg/SvgCollection";
 import ConfirmWin from "./ConfirmWin";
-import {setTipText,setMessageText,setDaoActor} from '../../data/valueData'
+import {setTipText,setErrText,setDaoActor} from '../../data/valueData'
 import { useDispatch } from 'react-redux';
 import { client } from "../../lib/api/client";
 import ShowErrorBar from "../ShowErrorBar";
@@ -18,7 +18,7 @@ export default function Domain_div({record,t,tc,daoActor,domain,accountTotal,log
     const dispatch = useDispatch();
     function showTip(str){dispatch(setTipText(str))}
     function closeTip(){dispatch(setTipText(''))}
-    function showClipError(str){dispatch(setMessageText(str))}
+    function showClipError(str){dispatch(setErrText(str))}
 
     async function handleSubmit()
     {

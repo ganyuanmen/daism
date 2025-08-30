@@ -7,11 +7,12 @@ import {
   type RootState,
   type AppDispatch,
   setTipText,
-  setMessageText,
+  setErrText,
 } from "@/store/store";
 import { useTranslations } from "next-intl";
-import {type HeartAndBookType } from '@/hooks/useMessageData'
 import { Button } from "react-bootstrap";
+import Loadding from "@/components/Loadding";
+import ShowErrorBar from "@/components/ShowErrorBar";
 
 interface EnKiBookmarkProps {
   isEdit: boolean;
@@ -36,7 +37,7 @@ export default function EnKiBookmark({
     dispatch(setTipText(""));
   }
   function showClipError(str: string) {
-    dispatch(setMessageText(str));
+    dispatch(setErrText(str));
   }
 
   const actor = useSelector((state: RootState) => state.valueData.actor);
@@ -79,9 +80,9 @@ export default function EnKiBookmark({
       );
     closeTip();
   };
-
+const geneButton=()=>{
   return (
-    <Button
+   <Button
       size="sm"
       variant="light"
       disabled={!isEdit}
@@ -99,5 +100,15 @@ export default function EnKiBookmark({
       )}
       {resData.data.total}
     </Button>
+  );
+}
+  return (
+     <>
+      {
+        resData.status==='loading'?<Loadding />
+        :resData.status==='failed'? <ShowErrorBar errStr={resData.error??'get data err'} />
+        :geneButton()
+      }
+    </>
   );
 }

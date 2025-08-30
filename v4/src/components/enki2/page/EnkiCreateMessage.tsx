@@ -4,7 +4,7 @@ import DaismInputGroup,{type DaismInputGroupHandle} from '../../form/DaismInputG
 import { SendSvg, BackSvg } from '@/lib/jssvg/SvgCollection';
 import DateTimeItem,{type DateTimeItemRef} from '../../form/DateTimeItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { type RootState, type AppDispatch, setTipText, setMessageText } from '@/store/store';
+import { type RootState, type AppDispatch, setTipText, setErrText } from '@/store/store';
 import RichEditor, { type RichEditorRef } from "../../enki3/RichEditor";
 import Editor, { type EditorRef } from "../form/Editor";
 import { useTranslations } from 'next-intl';
@@ -59,7 +59,7 @@ export default function EnkiCreateMessage({
 
     const showTip = (str: string) => dispatch(setTipText(str));
     const closeTip = () => dispatch(setTipText(''));
-    const showClipError = (str: string) => dispatch(setMessageText(str));
+    const showClipError = (str: string) => dispatch(setErrText(str));
 
     useEffect(() => {
         if (Array.isArray(daoData)) {
@@ -96,12 +96,6 @@ export default function EnkiCreateMessage({
 
     const submit = async () => {
         if(!loginRef.current?.checkLogin()) return;
-        // const res = await fetch('/api/siwe/getLoginUser?t=' + new Date().getTime());
-        // const res_data = await res.json();
-        // if (res_data.state !== 1) {
-        //     setShow(true);
-        //     return;
-        // }
         if (!currentObj?.message_id) {
             if (errorSelect) return showClipError(t('loginDomainText', { domain: loginDomain }));
             if (!selectedDaoid) return showClipError(t('notSelect'));
@@ -154,7 +148,7 @@ export default function EnkiCreateMessage({
         formData.append('_type', showEvent ? '1' : '0');
         formData.append('title', titleRef.current!.getData());
         formData.append('content', contentHTML);
-        formData.append('image', editor?.getImg()??'');
+        formData.append('file', editor?.getImg()??'');
         formData.append('fileType', editor!.getFileType());
         formData.append('isSend', sendRef.current!.checked ? '1' : '0');
         formData.append('isDiscussion', discussionRef.current!.checked ? '1' : '0');
@@ -162,11 +156,12 @@ export default function EnkiCreateMessage({
         try {
             const response = await fetch('/api/admin/addMessage', {
                 method: 'POST',
-                headers: { encType: 'multipart/form-data' },
+                // headers: { encType: 'multipart/form-data' },
                 body: formData
             });
             closeTip();
             const re = await response.json();
+            console.log("---55---",re)
             if (re.errMsg) { showClipError(re.errMsg); return; }
             if (currentObj) afterEditCall?.({ ...currentObj, ...re });
             else addCallBack?.();

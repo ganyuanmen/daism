@@ -104,7 +104,7 @@ export default async function handler(req, res) {
 		  // 在这里处理你的ActivityPub消息
 			switch (postbody.type.toLowerCase()) {
 				case 'accept': 
-					accept(postbody,process.env.LOCAL_DOMAIN,actor).then(()=>{});
+					accept(postbody,process.env.NEXT_PUBLIC_DOMAIN,actor).then(()=>{});
 					break;
 				case 'reject':break;
 				case 'undo':   //对方取消关注
@@ -128,7 +128,7 @@ export default async function handler(req, res) {
 				case 'add':break;
 				case 'remove': break;
 				case 'follow':  //关注
-					follow(postbody,name,process.env.LOCAL_DOMAIN,actor).then(()=>{});
+					follow(postbody,name,process.env.NEXT_PUBLIC_DOMAIN,actor).then(()=>{});
 				break;
 			}
 		  	res.status(202).send('Accepted'); // 或者 200 OK，取决于你的用例
@@ -154,12 +154,12 @@ async function handle_announce(postbody,name,actor){
 			if(!user.name) return;
 			paras=[user?.manager??'',postbody.object,user.name,user?.avatar,user.account,user.url,
 				postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,
-			,user.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,postbody.object,postbody?.topImg??'',postbody?.vedioUrl??'',9]
+			,user.inbox,`${name}@${process.env.NEXT_PUBLIC_DOMAIN}`,postbody.object,postbody?.topImg??'',postbody?.vedioUrl??'',9]
 		} else  //非enki 嗯文
 		{
 			paras=['',postbody.object,actor?.name,actor?.avatar,actor.account,actor.url,
 				postbody?.content?postbody.content:`<a href='${postbody.object}' >${postbody.object}</a>`,
-			,actor.inbox,`${name}@${process.env.LOCAL_DOMAIN}`,postbody.object,postbody?.topImg??'',postbody?.vedioUrl??'',9]
+			,actor.inbox,`${name}@${process.env.NEXT_PUBLIC_DOMAIN}`,postbody.object,postbody?.topImg??'',postbody?.vedioUrl??'',9]
 		}
 		executeID("call inbox_in(?,?,?,?,?,?,?,?,?,?,?,?,?)",paras)
 		.then(()=>{addLink(postbody?.content,postbody.object ,'annoce')});
@@ -222,7 +222,7 @@ async function createMess(postbody,name,actor){ //对方的推送
 	
 	if(!actor?.account) return;
 	const strs=actor?.account.split('@') ;
-	let localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
+	let localUser=await getUser('actor_account',`${name}@${process.env.NEXT_PUBLIC_DOMAIN}`,'manager');
 	if(!localUser.manager) return;
 	const replyType=postbody.object.inReplyTo || postbody.object.inReplyToAtomUri || null;  //inReplyTo:
 	if(!replyType ) //不是回复
@@ -230,7 +230,7 @@ async function createMess(postbody,name,actor){ //对方的推送
 		let linkUrl=postbody.object.url || postbody.object.atomUri
 		execute("call inbox_in(?,?,?,?,?,?,?,?,?,?,?,?,?)",[
 			actor?.manager??'',postbody.object.id,strs[0],actor?.avatar,actor?.account,postbody.actor,content,actor?.inbox,
-			`${name}@${process.env.LOCAL_DOMAIN}`,linkUrl,imgpath,vedioURL,1]).then(()=>{
+			`${name}@${process.env.NEXT_PUBLIC_DOMAIN}`,linkUrl,imgpath,vedioURL,1]).then(()=>{
 			addLink(content, postbody.object.id,'create')
 		})
 	}
@@ -275,7 +275,7 @@ async function createMess(postbody,name,actor){ //对方的推送
 async function undo(postbody){  //别人取消关注 
 	if(!postbody.object || !postbody.object.id) return 'activity error!';
 	await removeFollow(postbody.object.id)
-	broadcast({type:'removeFollow',domain:process.env.LOCAL_DOMAIN,actor:{},user:{},followId:postbody.object.id})  //广播信息
+	broadcast({type:'removeFollow',domain:process.env.NEXT_PUBLIC_DOMAIN,actor:{},user:{},followId:postbody.object.id})  //广播信息
 	return 'undo handle ok'
 }
 
@@ -447,7 +447,7 @@ async function verifySignature(req,actor) {
     const furl = findFirstURI(content)
     const sql = `update a_message set content_link=? where message_id=?`
     if (furl) {
-        let tootContent = await getTootContent(furl, process.env.LOCAL_DOMAIN)
+        let tootContent = await getTootContent(furl, process.env.NEXT_PUBLIC_DOMAIN)
         if (tootContent) {
              execute(sql, [tootContent, id]);
         } 

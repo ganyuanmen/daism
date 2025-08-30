@@ -15,7 +15,7 @@ export function sendcommont(account,message_id,pathtype)
         getFollowers_send({account:localUser.account}).then(data=>{
             data.forEach((element) => {
                 try{
-                    if(!thebody)  thebody=createNoteDel(localUser.actor_name,localUser.domain,message_id,process.env.LOCAL_DOMAIN,pathtype);
+                    if(!thebody)  thebody=createNoteDel(localUser.actor_name,localUser.domain,message_id,process.env.NEXT_PUBLIC_DOMAIN,pathtype);
                     signAndSend(element.user_inbox,localUser.actor_name,localUser.domain,thebody,localUser.privkey);
                 }catch(e1){ console.error(e1)}
             });

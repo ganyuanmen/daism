@@ -3,7 +3,7 @@ import { UploadSvg } from '@/lib/jssvg/SvgCollection';
 import { useRef } from 'react';
 import { fetchJson } from '@/lib/utils/fetcher';
 import { useSelector, useDispatch } from 'react-redux';
-import {type RootState,type AppDispatch,setUser,setMessageText,setTipText, setLoginsiwe} from '@/store/store';
+import {type RootState,type AppDispatch,setUser,setErrText,setTipText, setLoginsiwe} from '@/store/store';
 import { useTranslations } from 'next-intl';
 import { getDaismContract } from '@/lib/globalStore';
 
@@ -38,7 +38,7 @@ export default function EnKiRigester({ setRegister }: EnKiRigesterProps) {
     dispatch(setTipText(''));
   }
   function showClipError(str: string) {
-    dispatch(setMessageText(str));
+    dispatch(setErrText(str));
   }
 
   const domain = process.env.NEXT_PUBLIC_DOMAIN as string;

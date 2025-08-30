@@ -1,7 +1,7 @@
 
 'use client';
 
-import {type RootState, type AppDispatch, setMessageText} from '../store/store';
+import {type RootState, type AppDispatch, setErrText} from '../store/store';
 import Image from 'next/image';
 import { useSelector, useDispatch } from 'react-redux'
 import Modal from 'react-bootstrap/Modal';
@@ -16,7 +16,7 @@ export default function ShowTip() {
 
     return (
         <Modal className="modal-dialog-scrollable daism-title " 
-        centered show={messageText!==''} onHide={() => {dispatch(setMessageText(''))}}>
+        centered show={messageText!==''} onHide={() => {dispatch(setErrText(''))}}>
             <Modal.Header closeButton>
                 <Modal.Title>{t('tipText')}</Modal.Title>
             </Modal.Header>

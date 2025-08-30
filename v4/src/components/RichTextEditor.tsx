@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo } from 'react';
 import JoditEditor from 'jodit-react';
 import Video from './enki3/Video';
 import { useDispatch } from 'react-redux';
-import { setTipText, setMessageText } from '@/store/store';
+import { setTipText, setErrText } from '@/store/store';
 import { useTranslations } from 'next-intl';
 
 interface RichTextEditorProps {
@@ -15,7 +15,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ title, content, setCont
   const t = useTranslations('ff');
   const dispatch = useDispatch();
 
-  const showError = (str: string) => dispatch(setMessageText(str));
+  const showError = (str: string) => dispatch(setErrText(str));
   const showTip = (str: string) => dispatch(setTipText(str));
   const closeTip = () => dispatch(setTipText(''));
 
@@ -79,7 +79,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ title, content, setCont
         if (resp.success) {
           editorRef.current?.s.insertHTML(`<img src="${resp.imageUrl}" />`);
         } else {
-          showError(`${resp.data.messages[0].message}\n ${t('maxImageSize',{num:1})}`);
+          showError(`${resp.error}`);
         }
         closeTip();
       }

@@ -15,7 +15,13 @@ export interface FetchResult<T> {
  * @param deps 依赖数组，url 或参数变化时重新请求
  * @param initialData 初始数据
  */
-export function useFetch<T>(url: string,xmethod:string, deps: any[] = [], initialData: T | null = null) {
+// export function useFetch<T>(url: string,xmethod:string, deps: any[] = [], initialData: T | null = null) {
+  export function useFetch<T>(
+    url: string,
+    xmethod: string,
+    deps: any[] = [],
+    initialData: T | null = null
+  ): FetchResult<T> {
   const [result, setResult] = useState<FetchResult<T>>({
     data: initialData as T,
     status: 'loading',

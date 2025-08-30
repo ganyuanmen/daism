@@ -258,7 +258,7 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
             {enkiMessObj?.self_account &&<div className="d-flex align-items-center mt-1">
               <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center" >
                  <span style={{display:'inline-block',paddingRight:'4px'}}>{t('proposedText')}:</span>{' '}
-                 <img src={enkiMessObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> 
+                 {enkiMessObj?.self_avatar && <img src={enkiMessObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> }
               </div>
               <div style={{flex:1}}  className="d-flex flex-column flex-md-row justify-content-between ">
                   <span> {enkiMessObj?.self_account} </span>

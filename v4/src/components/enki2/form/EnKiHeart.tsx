@@ -4,8 +4,10 @@ import { useGetHeartAndBook } from "@/hooks/useMessageData";
 import { client } from "@/lib/api/client";
 import { useSelector, useDispatch } from 'react-redux';
 
-import { type RootState, type AppDispatch, setTipText, setMessageText } from "@/store/store";
+import { type RootState, type AppDispatch, setTipText, setErrText } from "@/store/store";
 import { useTranslations } from 'next-intl'
+import Loadding from "@/components/Loadding";
+import ShowErrorBar from "@/components/ShowErrorBar";
 
 /**
  * 嗯文喜欢按钮
@@ -29,7 +31,7 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
     dispatch(setTipText(''));
   }
   function showClipError(str: string) {
-    dispatch(setMessageText(str));
+    dispatch(setErrText(str));
   }
 
   const actor = useSelector((state: RootState) => state.valueData.actor);
@@ -75,8 +77,8 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
     closeTip();
   };
 
-  return (
-    <button
+  const geneButton=()=>{
+    return <button
       type="button"
       disabled={!isEdit}
       onClick={() => {
@@ -96,5 +98,14 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
       )}
       {resData.data.total}
     </button>
+  }
+  return ( <>
+    {
+      resData.status==='loading'?<Loadding />
+      :resData.status==='failed'? <ShowErrorBar errStr={resData.error??'get data err'} />
+      :geneButton()
+    }
+  </>
+   
   );
 }

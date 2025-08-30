@@ -13,7 +13,7 @@ import { Button } from 'react-bootstrap';
 import { useRef } from 'react';
 import { getDaismContract } from '@/lib/globalStore';
 
-
+import { useSession } from '@/components/SessionProvider';
 export default function Index() {
   const t = useTranslations('Index');
   const locale = useLocale();
@@ -22,14 +22,16 @@ export default function Index() {
   const user = useSelector((state: RootState) => state.valueData.user);
   const dispatch = useDispatch<AppDispatch>();
 
+  const { did, isAuthenticated, isLoading } = useSession();
   
+
 
   const aa=()=>{
     // alert(0);
     // alert(dateRef.current?.getDate());
 
     const daismObj=getDaismContract();
-     console.log(daismObj?.Commulate.abi)
+
   }
 
   return (

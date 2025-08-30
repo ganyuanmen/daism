@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import '../../styles/globals.css'
 import ReduxProvider from '../../store/Providers';
 import PageLayout from '@/components/PageLayout';
+import InitComponent from '@/components/InitComponent';
 
 type Props = {
   children: ReactNode;
@@ -65,6 +66,7 @@ export default async function LocaleLayout({children, params}: Props) {
       <body>
         <NextIntlClientProvider>
           <ReduxProvider>
+            <InitComponent />
           <PageLayout env={{version:'333'}}>
             {children}
             </PageLayout>

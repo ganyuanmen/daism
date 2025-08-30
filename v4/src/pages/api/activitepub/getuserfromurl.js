@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       // const account='gym@daism.io'
       const [userName,domain] =account.split('@');
       
-      if  (domain!==process.env.LOCAL_DOMAIN ) {
+      if  (domain!==process.env.NEXT_PUBLIC_DOMAIN ) {
         return res.status(400).send('Requested user is not from this domain')
       }
 

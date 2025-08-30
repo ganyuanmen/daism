@@ -61,7 +61,10 @@ export async function messagePageData(params: any): Promise<any[]> {
 }
 
 // ====================== 消息统计 ======================
-export async function getEnkiTotal(params: any): Promise<any> {
+export interface EnkiTotal{
+ total:number;
+}
+export async function getEnkiTotal(params: any): Promise<EnkiTotal[]> {
   const { account, actorid, t } = params;
   let sql: string;
   if(t) {
@@ -88,7 +91,7 @@ export async function insertMessage(account: any, message_id: any, pathtype: any
   const sctype = pathtype === 'enkier' ? '' : 'sc';
   let re: any = await getData(`SELECT message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,title,content,top_img FROM v_message${sctype} WHERE message_id=?`, [message_id], true);
 
-  const linkUrl = `https://${process.env.LOCAL_DOMAIN}/communities/${pathtype}/${message_id}`;
+  const linkUrl = `https://${process.env.NEXT_PUBLIC_DOMAIN}/communities/${pathtype}/${message_id}`;
   let sql: string;
   let paras: any[];
 
@@ -134,7 +137,7 @@ export async function setTopMessage(params: any): Promise<any> {
 // ====================== 删除消息 ======================
 export async function messageDel(params: any): Promise<any> {
   const { mid, type, path, sctype, pid, rAccount, account } = params;
-  if(parseInt(type) === 0) {
+  if(Number(type) === 0) {
     let lok: any;
     if(path === 'enki') lok = await execute(`DELETE FROM a_messagesc WHERE message_id=?`, [mid]);
     else if(path === 'enkier') lok = rAccount ? await execute(`DELETE FROM a_sendmessage WHERE message_id=? AND receive_account=?`, [mid,rAccount])
@@ -175,7 +178,7 @@ export async function setAnnounce(params: any): Promise<any> {
       let sendbody: any;
       getFollowers_send({account}).then(async data=>{
         data.forEach((element: any) => {
-          if(!sendbody) sendbody = createAnnounce(re.actor_name, process.env.LOCAL_DOMAIN, linkurl, content, topImg, vedioUrl, toUrl);
+          if(!sendbody) sendbody = createAnnounce(re.actor_name, process.env.NEXT_PUBLIC_DOMAIN as string, linkurl, content, topImg, vedioUrl, toUrl);
           signAndSend(element.user_inbox, re.actor_name, re.domain, sendbody, re.privkey);
         });
       });
@@ -218,7 +221,7 @@ async function findFollow(actor_account: any, user_account: any): Promise<any> {
 // actor_account 查找的帐号 user_account 本地帐号
 export async function fromAccount({ actor_account, user_account }: any): Promise<any> {
     let obj: any = {};
-    if (actor_account.includes(process.env.LOCAL_DOMAIN as string)) {
+    if (actor_account.includes(process.env.NEXT_PUBLIC_DOMAIN as string)) {
         const sql = 'SELECT actor_name `name`, actor_inbox inbox, domain, actor_account account, actor_url url, avatar, pubkey, manager FROM v_account WHERE actor_account=? OR actor_url=?';
         const re: any = await getData(sql, [actor_account, actor_account]);
         if (re[0]) {

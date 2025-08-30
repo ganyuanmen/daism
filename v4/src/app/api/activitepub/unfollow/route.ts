@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     // 广播取消关注事件
      broadcast({
       type: "removeFollow",
-      domain: process.env.LOCAL_DOMAIN,
+      domain: process.env.NEXT_PUBLIC_DOMAIN,
       actor: {},
       user: {},
       followId,

@@ -252,13 +252,13 @@ export default function Contentdiv({
         <div className="d-flex align-items-center mt-1">
           <div className="d-inline-flex align-items-center">
             <span style={{ display: "inline-block", paddingRight: "4px" }}>{t("proposedText")}:</span>
-            <img
+            {messageObj?.self_avatar && <img
               src={messageObj?.self_avatar}
               alt=""
               style={{ borderRadius: "10px" }}
               width={32}
               height={32}
-            />
+            />}
           </div>
           <div
             style={{ flex: 1 }}

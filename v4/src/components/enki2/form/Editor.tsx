@@ -14,9 +14,9 @@ import { useTranslations } from "next-intl";
 
 
 interface EditorProps {
-  currentObj: EnkiMessType|null;
+  currentObj?: EnkiMessType|null;
   nums: number;  //充许文字数量
-  accountAr: AccountType[]; //私下的用户列表
+  accountAr?: AccountType[]; //私下的用户列表
   isSC?: boolean;
   showProperty: boolean; 
 }

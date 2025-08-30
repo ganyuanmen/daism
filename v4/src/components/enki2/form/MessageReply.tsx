@@ -5,7 +5,7 @@ import { ReplySvg } from '@/lib/jssvg/SvgCollection';
 import Editor from "./Editor";
 import RichEditor from "../../enki3/RichEditor";
 import { useSelector, useDispatch } from 'react-redux';
-import {setTipText,setMessageText} from '@/store/store';
+import {setTipText,setErrText} from '@/store/store';
 import { useTranslations } from 'next-intl'
 
 /**
@@ -55,7 +55,7 @@ export interface MessageReplyRef {
         dispatch(setTipText(""));
       }
       function showClipError(str: string) {
-        dispatch(setMessageText(str));
+        dispatch(setErrText(str));
       }
       const actor = useSelector((state: any) => state.valueData.actor);
       const t = useTranslations("ff");
@@ -196,6 +196,7 @@ export interface MessageReplyRef {
                   id="reinline-1"
                 />
               </Form>
+              
               {typeIndex === 0 ? (
                 <Editor ref={editorRef}  nums={nums} showProperty={false} />
               ) : (

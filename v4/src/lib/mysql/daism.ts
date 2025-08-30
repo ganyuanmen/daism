@@ -169,7 +169,6 @@ export async function getToken({ did }: any): Promise<any[]> {
 // 获取价格
 export async function getPrice(): Promise<any[]> {
   const re = await getData('CALL get_price()', []);
-  console.log(re)
   return re?.[0] || []; //存储过程 需要re[0] 获取数组结果 
 }
 

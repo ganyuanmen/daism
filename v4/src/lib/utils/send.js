@@ -11,8 +11,8 @@ export function send(account,content,textContent,imgpath,message_id,pathtype,con
   getUser('actor_account',account,'privkey,Lower(actor_account) account,actor_name,domain').then(localUser=>{
     try{
         if(!localUser.account) return;
-        // const thebody1=createMessage(localUser.actor_name,localUser.domain,content,fileName,message_id,title,imgpath,process.env.LOCAL_DOMAIN,pathtype);
-        // const thebody2=createMessage(localUser.actor_name,localUser.domain,'',fileName,message_id,`${title} ${textContent}`,imgpath,process.env.LOCAL_DOMAIN,pathtype);
+        // const thebody1=createMessage(localUser.actor_name,localUser.domain,content,fileName,message_id,title,imgpath,process.env.NEXT_PUBLIC_DOMAIN,pathtype);
+        // const thebody2=createMessage(localUser.actor_name,localUser.domain,'',fileName,message_id,`${title} ${textContent}`,imgpath,process.env.NEXT_PUBLIC_DOMAIN,pathtype);
        //userName,domain,text,imgPath,id,message_domain,pathtype,contentType
         const thebody1=createMessage(
           localUser.actor_name,
@@ -20,7 +20,7 @@ export function send(account,content,textContent,imgpath,message_id,pathtype,con
           content,
           imgpath,
           message_id,
-          process.env.LOCAL_DOMAIN,
+          process.env.NEXT_PUBLIC_DOMAIN,
           pathtype,
           contentType,false);
         
@@ -31,7 +31,7 @@ export function send(account,content,textContent,imgpath,message_id,pathtype,con
             textContent,
             imgpath,
             message_id,
-            process.env.LOCAL_DOMAIN,
+            process.env.NEXT_PUBLIC_DOMAIN,
             pathtype,
             contentType,
             true);
@@ -39,7 +39,7 @@ export function send(account,content,textContent,imgpath,message_id,pathtype,con
         getFollowers({account:localUser.account}).then(data=>{
             data.forEach((element,idx) => {
                 try{
-                  if(element.user_inbox.startsWith(`https://${process.env.LOCAL_DOMAIN}`)){
+                  if(element.user_inbox.startsWith(`https://${process.env.NEXT_PUBLIC_DOMAIN}`)){
                     insertMessage(element.user_account,message_id,pathtype,contentType,idx).then(()=>{})
                   }else {
                     if(element.user_inbox.includes('/api/activitepub/inbox')) //enki

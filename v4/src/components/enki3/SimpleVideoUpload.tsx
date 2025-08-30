@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import {
   type AppDispatch,
   setTipText,
-  setMessageText
+  setErrText
 } from '@/store/store';
 import { useTranslations } from 'next-intl';
 import { Button } from 'react-bootstrap';
@@ -26,7 +26,7 @@ export default function SimpleVideoUpload({
 
   const showTip = (str: string) => dispatch(setTipText(str));
   const closeTip = () => dispatch(setTipText(''));
-  const showClipError = (str: string) => dispatch(setMessageText(str));
+  const showClipError = (str: string) => dispatch(setErrText(str));
 
   const handleUpload = async () => {
     if (!video) return;

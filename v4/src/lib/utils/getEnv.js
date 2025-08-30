@@ -17,7 +17,7 @@ import crypto from 'crypto';
 //     _daismAddress['networkName']=process.env.BLOCKCHAIN_NETWORK
 //     _daismAddress['node_url']=process.env.HTTPS_URL
 //     _daismAddress['tx_url']=process.env.ETHERSCAN_URL
-//     _daismAddress['domain']=process.env.LOCAL_DOMAIN
+//     _daismAddress['domain']=process.env.NEXT_PUBLIC_DOMAIN
 //     _daismAddress['KEY']=process.env.KEY
 //     _daismAddress['IV']=process.env.IV
 //     _daismAddress['version']=process.env.VERSION
@@ -29,7 +29,7 @@ import crypto from 'crypto';
 export function getEnv()
 {
 
-  const  LOCAL_DOMAIN='daism.io';
+  const  NEXT_PUBLIC_DOMAIN='daism.io';
   const  BLOCKCHAIN_NETWORK='mainnet';
   return {
     administrator:'0xB39D48f4167519ADa7a769875966907189CA13E2',
@@ -37,7 +37,7 @@ export function getEnv()
     node_url:`https://eth-${BLOCKCHAIN_NETWORK}.g.alchemy.com/v2/Q5CwDjcSGYsGkbO7J4cQ1TQL7vrsjMad`,
     // node_url:`https://${BLOCKCHAIN_NETWORK}.infura.io/v3/982d49c829f4428db93d5a077085d995`,
     tx_url:`https://${BLOCKCHAIN_NETWORK}.etherscan.io/tx/`,
-    domain:LOCAL_DOMAIN,
+    domain:NEXT_PUBLIC_DOMAIN,
     KEY:'1d34a678S012A4567I90123m56789p1X',
     IV:'7e465a0de91b295946ddbc0e5e72f056',
     version:'v1.4.1',

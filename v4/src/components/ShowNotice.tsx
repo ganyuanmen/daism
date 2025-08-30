@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {type RootState,  setShowNotice} from '../store/store';
 
 import { useTranslations } from 'next-intl'
-import { client } from '../lib/api/client';
+// import { client } from '../lib/api/client';
 import { Button,Modal } from 'react-bootstrap';
 import Image from 'next/image';
 
@@ -20,17 +20,17 @@ export interface NoticeData {
 
 
 
-
 export default function ShowNotice() {
     const showNotice = useSelector((state:RootState) => state.valueData.showNotice)
     const t = useTranslations('Common')
     const dispatch = useDispatch();
     const user = useSelector((state:RootState) => state.valueData.user)
     const loginsiwe = useSelector((state:RootState) => state.valueData.loginsiwe)
-    const noticeData=useNotice(user.account)
+    const noticeData=useNotice(user.account);
+
 
     const clickNotice=()=>{
-        client.post('/api/postwithsession',"updateNotice",{manager:user.account})
+        // client.post('/api/postwithsession',"updateNotice",{manager:user.account})
         window.location.href='/smartcommons/actor?notice=9';  
       }
 
