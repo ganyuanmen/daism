@@ -42,7 +42,7 @@ export default withSession(async (req, res) => {
 
     const form = formidable({
         multiples: false,
-        maxFileSize: 1 * 1024 * 1024, // 限制为 120MB
+        maxFileSize: 1 * 1024 * 1024, // 限制为 1MB
     });
     try {
        await new Promise((resolve, reject)=>{
