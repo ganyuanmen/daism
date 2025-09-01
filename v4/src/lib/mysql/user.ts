@@ -9,12 +9,9 @@ export async function updateActor({ account, actorDesc, path }: { account: any; 
 }
 
 // 获取用户信息
-export async function getUser(findFiled: any, findValue: any, selectFields: any): Promise<any> {
-    const re: any = await getData(
-        `select ${selectFields} from a_account where LOWER(${findFiled})=?`,
-        [(findValue + '').toLowerCase()]
-    );
-    return re.length ? re[0] : {};
+export async function getUser(findFiled: any, findValue: any, selectFields: any): Promise<DaismActor> {
+    return await getData(`select ${selectFields} from a_account where LOWER(${findFiled})=?`,
+        [(findValue + '').toLowerCase()],true) as DaismActor ;
 }
 
 // 获取 actor 信息

@@ -1,6 +1,6 @@
 
 import { useFetch } from './useFetch';
-
+import { type HeartAndBookType } from '@/lib/mysql/message';
   
 
 export function useFollow(account: string,method:string) {
@@ -20,11 +20,6 @@ export function useFollow(account: string,method:string) {
   }
 
 
-  export interface HeartAndBookType{
-    total:number;
-    pid:string;
-  }
-  
   //点赞或收藏
   export function useGetHeartAndBook(account:string|undefined,pid:string|undefined,refresh:boolean,table:string,sctype:string) {
     return useFetch<HeartAndBookType>(`/api/getData?account=${account}&pid=${pid}&table=${table}&sctype=${sctype}` ,'getHeartAndBook',[refresh]);

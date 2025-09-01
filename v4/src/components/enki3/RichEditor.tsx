@@ -1,14 +1,10 @@
+"use client";
 import React, { useImperativeHandle, useRef, forwardRef, useState } from "react";
 import Media, { type MediaRef } from "./Media";
 import SCProperty, { type SCPropertyRef } from "./SCProperty";
-import dynamic from 'next/dynamic';
-import Loadding from '../Loadding';
-
-const Richwet = dynamic(() => import('../RichTextEditor'), {
-  ssr: false,
-  loading: () => <Loadding />,
-});
-
+import dynamic from "next/dynamic";
+// 使用动态导入并禁用 SSR
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
 interface RichEditorProps {
   currentObj?: EnkiMessType|null;
@@ -59,7 +55,7 @@ const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(({ currentObj, isS
 
   return (
     <>
-      <Richwet content={content} setContent={setContent} />
+      <RichTextEditor content={content} setContent={setContent} />
       <Media ref={mediaRef} currentObj={currentObj}>
         {accountAr && <SCProperty ref={propertyRef} currentObj={currentObj} accountAr={accountAr} isSC={isSC} />}
       </Media>

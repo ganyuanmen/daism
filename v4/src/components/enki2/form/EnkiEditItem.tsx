@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { EditSvg, DeleteSvg, Pin, AnnounceSvg } from "../../../lib/jssvg/SvgCollection";
 import { Nav, NavDropdown } from "react-bootstrap";
 import ConfirmWin from "../../federation/ConfirmWin";
-import { client } from "../../../lib/api/client";
+
 import { useSelector, useDispatch } from "react-redux";
-import {type RootState,setTipText,setErrText} from "@/store/store";
+import {type RootState,setTipText,setErrText,type AppDispatch} from "@/store/store";
 import { useTranslations } from "next-intl";
 
 
@@ -28,7 +28,7 @@ export default function EnkiEditItem({
   // const [showLogin, setShowLogin] = useState(false);
   const t = useTranslations("ff");
   const tc = useTranslations("Common");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [isAn, setIsAn] = useState(false); //转发
   const [show, setShow] = useState(false);
 
@@ -74,32 +74,46 @@ export default function EnkiEditItem({
     return () => { controller.abort();};
   }, [messageObj,actor]);
 
+  const handler=async (method:string,upData:any,flag:string)=>{
+    showTip(t("submittingText"));
+    const re= await fetch("/api/postwithsession", {
+      method: 'POST',
+      headers: { 'x-method': method },
+      body: JSON.stringify(upData)
+    });
+    if(re.ok){
+      if (typeof refreshPage === "function") refreshPage(flag);
+    }else{
+      const reData=await re.json();
+      showClipError(`${tc("dataHandleErrorText")}!\n ${reData?.errMsg}`);
+    }
+    closeTip();
+    setShow(false);
+  }
+
+  //删除
+  const deldiscussions = async () => {
+    const upData= {
+      mid:messageObj?.message_id??'',
+      account:messageObj?.actor_account??'',
+      type:0,  //0 对象是嗯文， 1 对象是回复
+      sctype,
+      path,
+      pid:'',
+      rAccount:messageObj?.receive_account??''
+      }
+    await handler('messageDel',upData,'del');  
+  };
+
 
   //置顶
   const handlePin = async (flag: number, id: string) => {
-    showTip(t("submittingText"));
-    const res = await client.post("/api/postwithsession", "setTopMessage", { sctype, flag, id });
-
-    if (res.status === 200) {
-      if (typeof refreshPage === "function") refreshPage('top');
-      closeTip();
-    } else {
-      showClipError(
-        `${tc("dataHandleErrorText")}!${res?.statusText}\n ${res?.data.errMsg ? res?.data?.errMsg : ""}`
-      );
-    }
+    await handler('setTopMessage',{sctype, flag, id},'top');
   };
 
   //转发
   const handleAnnounce = async () => {
-    // const res = await fetch("/api/siwe/getLoginUser?t=" + new Date().getTime());
-    // const res_data = await res.json();
-    // if (res_data.state !== 1) {
-    //   setShowLogin(true);
-    //   return;
-    // }
-    showTip(t("submittingText"));
-    const res = await client.post("/api/postwithsession", "setAnnounce", {
+    const upData={
       account: actor?.actor_account,
       toUrl: messageObj.actor_url,
       id: messageObj.message_id,
@@ -108,16 +122,9 @@ export default function EnkiEditItem({
       topImg: messageObj.top_img,
       vedioUrl: messageObj.vedio_url,
       sctype,
-    });
-
-    if (res.status === 200) {
-      if (typeof refreshPage === "function") refreshPage('anoce');
-      closeTip();
-    } else {
-      showClipError(
-        `${tc("dataHandleErrorText")}!${res?.statusText}\n ${res?.data?.errMsg ? res?.data?.errMsg : ""}`
-      );
-    }
+    };
+    await handler('setAnnounce',upData,'anoce');
+    
   };
 
   const isDelete =
@@ -142,33 +149,6 @@ export default function EnkiEditItem({
     }
   };
 
-  const deldiscussions = async () => {
-    const upData= {
-      mid:messageObj?.message_id??'',
-      account:messageObj?.actor_account??'',
-      type:0,  //0 对象是嗯文， 1 对象是回复
-      sctype,
-      path,
-      pid:'',
-      rAccount:messageObj?.receive_account??''
-      }
-
-    showTip(t("submittingText"));
-    const re= await fetch("/api/postwithsession", {
-      method: 'POST',
-      headers: { 'x-method': 'messageDel1' },
-      body: JSON.stringify(upData)
-    });
-
-    if(re.ok){
-      if (typeof refreshPage === "function") refreshPage('del');
-    }else{
-      const reData=await re.json();
-      showClipError(`${tc("dataHandleErrorText")}!\n ${reData.errMsg}`);
-    }
-    closeTip();
-    setShow(false);
-  };
 
   return (
     <>

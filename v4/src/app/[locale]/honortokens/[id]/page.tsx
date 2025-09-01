@@ -19,7 +19,7 @@ interface HonorPageProps {
     params: Promise<{ locale: string;id:string;}>
   }
 
-export default async function Honor({ params }: HonorPageProps) {
+export default async function HonorPage({ params }: HonorPageProps) {
     const { id } = await params;
     const NFTData= await getMynft({did:id}) ;
    

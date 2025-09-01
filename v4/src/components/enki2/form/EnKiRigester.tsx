@@ -6,15 +6,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import {type RootState,type AppDispatch,setUser,setErrText,setTipText, setLoginsiwe} from '@/store/store';
 import { useTranslations } from 'next-intl';
 import { getDaismContract } from '@/lib/globalStore';
-
+import { type UserRegister } from '@/lib/mysql/daism';
 interface EnKiRigesterProps {
   setRegister?: (show: boolean) => void;
-}
-
-interface UserRegister{
-  allTotal:number; //所有注册数
-  nameTotal:number; //本人是否已注册 >0=>true
-  [key: string]: any; // 允许任意额外属性
 }
 
 /**

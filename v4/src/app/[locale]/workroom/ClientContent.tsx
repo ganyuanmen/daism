@@ -12,6 +12,8 @@ import Daos from './Daos'
 import Proposal from './Pro';
 import { useEffect } from 'react';
 import {type RootState} from '@/store/store'
+import { useLayout } from '@/contexts/LayoutContext';
+import Loading from '@/components/Loadding';
 
 
 /**
@@ -25,7 +27,7 @@ export default function ClientContentWorkHome() {
     const user = useSelector((state:RootState) => state.valueData.user) //钱包用户信息
     const ethBalance = useSelector((state:RootState) => state.valueData.ethBalance)
     const utoBalance = useSelector((state:RootState) => state.valueData.utoBalance)
-    
+    const {isShowBtn} =useLayout();
     const [activeTab, setActiveTab] = useState(0);
     
     useEffect(() => {
@@ -34,40 +36,43 @@ export default function ClientContentWorkHome() {
       }, []);
     
       const cStyle: React.CSSProperties = { fontWeight: 'bold', textAlign: 'center' };
-    return ( <>
-       
-
-        {user.connected<1?<ShowErrorBar errStr={tc('noConnectText')}></ShowErrorBar>
-        :<>
-            <Container>
-                <Row className='justify-content-between mt-3 mb-3' style={{marginTop:'0.5rem'}} >
-                    <Col style={cStyle} >{ethBalance}&nbsp;ETH</Col>
-                    <Col style={cStyle}>{utoBalance}&nbsp;UTO</Col>
-                </Row>
-                <Card className='mb-3' > 
-                    <Row className="justify-content-between">
-                    {myMenu.map((placement, idx) => (
-                        <Col key={idx} style={cStyle} >  
-                            <a className={`daism-a ${activeTab===idx?'daism-mydao-menu-active':''}`} href={`#${idx}`} onClick={()=>{setActiveTab(idx)}} >
-                               <div className='p-2' > 
-                               <div className='daism-color' >{imgAr[idx]}</div>
-                               {placement}</div>
-                            </a>
-                        </Col>
-                    ))}
+    return ( 
+    <>
+    { isShowBtn?
+        <>
+            {user.connected<1?<ShowErrorBar errStr={tc('noConnectText')}></ShowErrorBar>
+            :<>
+                <Container>
+                    <Row className='justify-content-between mt-3 mb-3' style={{marginTop:'0.5rem'}} >
+                        <Col style={cStyle} >{ethBalance}&nbsp;ETH</Col>
+                        <Col style={cStyle}>{utoBalance}&nbsp;UTO</Col>
                     </Row>
-                </Card>
-            </Container>
-            <Container>
-                {activeTab === 0 && <Tokens  />}
-                {activeTab === 1 && <Logs user={user}  />}
-                {activeTab === 2 && <Daos />}
-                {activeTab === 3 && <Proposal user={user} tc={tc} />}
-            </Container>
-        </>
-        }  
+                    <Card className='mb-3' > 
+                        <Row className="justify-content-between">
+                        {myMenu.map((placement, idx) => (
+                            <Col key={idx} style={cStyle} >  
+                                <a className={`daism-a ${activeTab===idx?'daism-mydao-menu-active':''}`} href={`#${idx}`} onClick={()=>{setActiveTab(idx)}} >
+                                <div className='p-2' > 
+                                <div className='daism-color' >{imgAr[idx]}</div>
+                                {placement}</div>
+                                </a>
+                            </Col>
+                        ))}
+                        </Row>
+                    </Card>
+                </Container>
+                <Container>
+                    {activeTab === 0 && <Tokens  />}
+                    {activeTab === 1 && <Logs user={user}  />}
+                    {activeTab === 2 && <Daos />}
+                    {activeTab === 3 && <Proposal user={user} tc={tc} />}
+                </Container>
+            </>
+            }  
 
-        </>
+        </>:<Loading />
+    }
+    </>
     );
 }
 

@@ -60,25 +60,28 @@ export default function EnKiBookmark({
   const submit = async (flag: 0 | 1) => {
     //0 取消收藏  1 收藏
     showTip(t("submittingText"));
-    let res = await client.post(
-      "/api/postwithsession",
-      "handleHeartAndBook",
-      {
-        account: actor?.actor_account,
-        pid: currentObj?.message_id,
-        flag,
-        table: "bookmark",
-        sctype: getSctype(),
-      }
-    );
-    if (res.status === 200) setRefresh(!refresh);
-    else
-      showClipError(
-        `${tc("dataHandleErrorText")}!${res.statusText}\n ${
-          res.data.errMsg ? res.data.errMsg : ""
-        }`
-      );
+    const upData={
+      account: actor?.actor_account,
+      pid: currentObj?.message_id,
+      flag,
+      table: "bookmark",
+      sctype: getSctype(),
+    };
+
+    const re= await fetch("/api/postwithsession", {
+      method: 'POST',
+      headers: { 'x-method': 'handleHeartAndBook' },
+      body: JSON.stringify(upData)
+    });
+    if(re.ok){
+       setRefresh(!refresh);
+    }else{
+      const reData=await re.json();
+      showClipError(`${tc("dataHandleErrorText")}!\n ${reData?.errMsg}`);
+    }
     closeTip();
+
+   
   };
 const geneButton=()=>{
   return (
@@ -105,7 +108,7 @@ const geneButton=()=>{
   return (
      <>
       {
-        resData.status==='loading'?<Loadding />
+        resData.status==='loading'?<Loadding isImg={true} spinnerSize="sm" />
         :resData.status==='failed'? <ShowErrorBar errStr={resData.error??'get data err'} />
         :geneButton()
       }

@@ -1,3 +1,4 @@
+"use client";
 import { Button, Form } from "react-bootstrap";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +8,7 @@ import RichEditor from "./RichEditor";
 import Editor from "../enki2/form/Editor";
 import { useTranslations } from "next-intl";
 import DaismInputGroup from "../form/DaismInputGroup";
-import ShowLogin from "./ShowLogin";
+import ShowLogin, {type ShowLoginRef}  from "./ShowLogin";
 import { type RootState } from "@/store/store";
 
 
@@ -30,29 +31,15 @@ interface CreateMessProps {
  * @callBack 回退到主页处理 
  */
 
-export default function CreateMess({
-  currentObj,
-  afterEditCall,
-  addCallBack,
-  accountAr,
-  refreshPage,
-}: CreateMessProps) {
+export default function CreateMess({currentObj,afterEditCall,addCallBack,accountAr,refreshPage}: CreateMessProps) {
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
 
-  function showTip(str: string) {
-    dispatch(setTipText(str));
-  }
-  function closeTip() {
-    dispatch(setTipText(""));
-  }
-  function showClipError(str: string) {
-    dispatch(setErrText(str));
-  }
-
-  const [typeIndex, setTypeIndex] = useState<number>(
-    currentObj?.type_index ?? 0
-  );
+  function showTip(str: string) {dispatch(setTipText(str));}
+  function closeTip() {dispatch(setTipText(""));}
+  function showClipError(str: string) {dispatch(setErrText(str));}
+  const showLoginRef=useRef<ShowLoginRef>(null);
+  const [typeIndex, setTypeIndex] = useState<number>(currentObj?.type_index ?? 0);
 
   // Refs
   const editorRef = useRef<any>(null);
@@ -92,12 +79,7 @@ export default function CreateMess({
   };
 
   const submit = async () => {
-    // const res = await fetch("/api/siwe/getLoginUser?t=" + new Date().getTime());
-    // const res_data = await res.json();
-    // if (res_data.state !== 1) {
-    //   setShow(true);
-    //   return;
-    // }
+   if(!showLoginRef.current?.checkLogin()) return;
 
     const contentHTML = getHTML();
     if (!contentHTML) return;
@@ -258,7 +240,7 @@ export default function CreateMess({
           </Button>
         </div>
       </div>
-      {/* <ShowLogin show={show} setShow={setShow} /> */}
+      <ShowLogin ref={showLoginRef} />
     </>
   );
 }

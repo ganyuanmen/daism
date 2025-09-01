@@ -245,20 +245,21 @@ export default function Contentdiv({
           />
         </div>
       )}
-      {messageObj?.vedio_url && <ShowVedio vedioUrl={messageObj.vedio_url} />}
+      {messageObj?.vedio_url && <ShowVedio videoUrl={messageObj.vedio_url} />}
 
       {/* 发起者 */}
       {messageObj?.self_account && (
         <div className="d-flex align-items-center mt-1">
           <div className="d-inline-flex align-items-center">
             <span style={{ display: "inline-block", paddingRight: "4px" }}>{t("proposedText")}:</span>
-            {messageObj?.self_avatar && <img
-              src={messageObj?.self_avatar}
-              alt=""
-              style={{ borderRadius: "10px" }}
-              width={32}
-              height={32}
-            />}
+            <img alt="" width={32} height={32} src={messageObj?.self_avatar}  style={{borderRadius:'10px'}}
+              onError={(e) => {
+                // 图片加载失败时使用默认logo
+                const target = e.target as HTMLImageElement;
+                target.src = '/user.svg';
+              }}
+            />
+          
           </div>
           <div
             style={{ flex: 1 }}

@@ -5,19 +5,12 @@ import Table from 'react-bootstrap/Table';
 import { useSelector } from 'react-redux';
 import ShowErrorBar from '@/components/ShowErrorBar';
 import { useTranslations } from 'next-intl';
-import Head from 'next/head';
-import useMyTokens from '@/hooks/useMyTokens';
+import {useMyTokens} from '@/hooks/useMyTokens';
 import { type RootState } from '@/store/store';
 
 
-interface TokenData {
-  dao_logo?: string;
-  dao_symbol: string;
-  token_cost: string;
-}
-
 interface MyTokensResult {
-  data: TokenData[];
+  data: DaismToken[];
 }
 
 /**
@@ -35,16 +28,8 @@ export default function ShowWalletInfo() {
   const ethBalance = useSelector((state: RootState) => state.valueData.ethBalance);
   const utokenBalance = useSelector((state: RootState) => state.valueData.utoBalance);
 
-
-
-  
-
-
   return (
-    <>
-      <Head>
-        <title>{tc('myWalletTitle')}</title>
-      </Head>
+    <>  
       <div>
         <div style={{ marginTop: '20px' }}>
           {user.connected !== 1 ? (
@@ -72,7 +57,7 @@ export default function ShowWalletInfo() {
                   <td style={{ textAlign: 'right' }}>UTO {t('balanceText')}</td>
                   <td>{utokenBalance}</td>
                 </tr>
-                {tokensData.data.map((obj, idx) => (
+                {tokensData.data && tokensData.data.map((obj, idx) => (
                   <tr key={idx}>
                     <td style={{ textAlign: 'right' }}>
                       <img

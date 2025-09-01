@@ -9,7 +9,6 @@ import { ethers } from 'ethers';
 import { Accordion } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import LoginButton from '../LoginButton';
-import { client } from '@/lib/api/client';
 import editStyle from '@/styles/editor.module.css';
 import { getDaismContract } from '@/lib/globalStore';
 import { useEipTypes } from '@/hooks/useMessageData';
@@ -129,7 +128,15 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
       _type = getType(form);
       if (_type === undefined) return;
       if (!loginsiwe) { loginRef.current.siweLogin(); return; } 
-      else { client.post('/api/postwithsession', 'addEipType', { _type: _type.typeName, _desc: _type.typeDesc }); }
+      else { 
+        fetch('/api/postwithsession',{
+          method:'POST',
+          headers:{'x-method':'addEipType'},
+          body:JSON.stringify({ _type: _type.typeName, _desc: _type.typeDesc})
+        })
+        // client.post('/api/postwithsession', 'addEipType', { _type: _type.typeName, _desc: _type.typeDesc });
+      
+      }
     }
 
     const imgbase64 = imgRef.current.getData();

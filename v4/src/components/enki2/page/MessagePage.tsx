@@ -8,16 +8,17 @@ import ShowErrorBar from "../../ShowErrorBar";
 import EnKiHeart from "../form/EnKiHeart";
 import EnKiBookmark from "../form/EnKiBookmark";
 import EnkiShare from "../form/EnkiShare";
-
-import { useSelector } from "react-redux";
+import ImageWithFallback from "@/components/ImageWithFallback";
+import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ShowVedio from "../form/ShowVedio";
 import EnkiEditItem from "../form/EnkiEditItem";
 import { useTranslations } from "next-intl";
 import Loadding from "../../Loadding";
 import ShowAddress from "../../ShowAddress";
-import { type RootState } from "@/store/store";
+
 import { fetchJson } from "@/lib/utils/fetcher";
+import {type RootState,setTipText,setErrText,type AppDispatch} from "@/store/store";
 
 interface MessagePageProps {
   tabIndex: number; //修改 所在页面的tab
@@ -73,6 +74,11 @@ export default function MessagePage({
     const repluBtn = useRef<MessageReplyRef>(null);
   
     const [divContent, setDivContent] = useState<string | null>(null);
+
+    const dispatch = useDispatch<AppDispatch>();
+  const showTip = (str: string) => dispatch(setTipText(str));
+  const closeTip = () => dispatch(setTipText(""));
+  const showClipError = (str: string) => dispatch(setErrText(str));
   
     //加载完成后，把div 内容赋值给
     const handleDivRef = useCallback(
@@ -86,6 +92,7 @@ export default function MessagePage({
     const actor = useSelector((state: RootState) => state.valueData.actor);
     const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe);
     const t = useTranslations("ff");
+    const tc = useTranslations("Common");
 
     useEffect(()=>{
         if(fetchWhere.currentPageNum===0) setPageNum(0);
@@ -119,14 +126,45 @@ export default function MessagePage({
         if(enkiMessObj?.httpNetWork) return false; // 远程服务器不可回复
         return true;
     }
+// 删除回复 
+const replyDelCallBack = (index: number,mid:string) => {
+  const upData = {
+    mid,
+    account: enkiMessObj.actor_account,
+    type: 1,
+    sctype: enkiMessObj.dao_id > 0 ? "sc" : '',
+    path,
+    pid: enkiMessObj.message_id,
+    rAccount: enkiMessObj?.receive_account ?? ''
+  };
   
-    //删除回复 
-    const replyDelCallBack=(index:number)=>{
-        enkiMessObj.total=enkiMessObj.total-1;
-        data.splice(index, 1); //删除
-        setData([...data])
-         
-    } 
+  showTip(t("submittingText"));
+  
+  fetch("/api/postwithsession", {
+    method: 'POST',
+    headers: { 'x-method': 'messageDel' },
+    body: JSON.stringify(upData)
+  })
+  .then(re => {
+    closeTip();
+    if (re.ok) {
+      enkiMessObj.total = enkiMessObj.total - 1;
+      data.splice(index, 1);
+      setData([...data]);
+    } else {
+      return re.json().then(reData => {
+        showClipError(`${tc("dataHandleErrorText")}!\n ${reData?.errMsg}`);
+      });
+    }
+  })
+  .catch(error => {
+    closeTip();
+    showClipError(`${tc("dataHandleErrorText")}!\n ${error.message}`);
+  })
+
+};
+
+
 
     // 对replyItem 回复
     const replyCallBack=(reply_index:number,_bid:string)=>{
@@ -188,7 +226,7 @@ export default function MessagePage({
       };
 
       const footerdiv=()=>{
-        if(isLoading) return <Loadding />
+        if(isLoading) return <Loadding isImg={true} spinnerSize="sm" />
         else 
         {
             if(err) return <ShowErrorBar errStr={err} />
@@ -249,24 +287,31 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
             {/* 首页图片 */}
             {enkiMessObj?.top_img && <img  className="mt-2 mb-2" alt="" src={enkiMessObj.top_img} style={{width:'100%'}} /> }
             {/* 首页视频 */}
-            {enkiMessObj?.vedio_url && <ShowVedio vedioUrl={enkiMessObj.vedio_url} /> }
+            {enkiMessObj?.vedio_url && <ShowVedio videoUrl={enkiMessObj.vedio_url} /> }
  
         </Card.Body>
         <Card.Footer style={{padding:0}} >
 
             {/* 发起者 */}
-            {enkiMessObj?.self_account &&<div className="d-flex align-items-center mt-1">
-              <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center" >
-                 <span style={{display:'inline-block',paddingRight:'4px'}}>{t('proposedText')}:</span>{' '}
-                 {enkiMessObj?.self_avatar && <img src={enkiMessObj?.self_avatar} alt='' style={{borderRadius:'10px'}} width={32} height={32}/> }
+            {enkiMessObj?.self_account &&
+            <div className="d-flex align-items-center mt-1">
+                <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center" >
+                    <span style={{display:'inline-block',paddingRight:'4px'}}>{t('proposedText')}:</span>{' '}
+                    <ImageWithFallback alt="" width={32} height={32} src={enkiMessObj?.self_avatar} fallback="/user.svg"/>
+                    {/* <img alt="" width={32} height={32} src={enkiMessObj?.self_avatar}  style={{borderRadius:'10px'}}
+                      onError={(e) => {
+                        // 图片加载失败时使用默认logo
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/user.svg';
+                      }}
+                      /> */}
+                </div>
+                <div style={{flex:1}}  className="d-flex flex-column flex-md-row justify-content-between ">
+                    <span> {enkiMessObj?.self_account} </span>
+                    <ShowAddress address={enkiMessObj?.manager} />
+                </div>
               </div>
-              <div style={{flex:1}}  className="d-flex flex-column flex-md-row justify-content-between ">
-                  <span> {enkiMessObj?.self_account} </span>
-                  <div>
-                  <ShowAddress address={enkiMessObj?.manager} />
-                  </div>
-              </div>
-          </div>}
+              }
 
             <div className="d-flex justify-content-between align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:'4px 8px'}}  >
                 {/* 回复按钮 */}
@@ -276,7 +321,7 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
                {/* 书签按钮 */}
                 <EnKiBookmark isEdit={ableReply() && actor?.domain===process.env.NEXT_PUBLIC_DOMAIN} currentObj={enkiMessObj} path={path}/>
                 {/* 分享按钮，需要嗯文渲染后 */}
-                {divContent && <EnkiShare content={divContent}  currentObj={enkiMessObj} />}
+                {divContent ? <EnkiShare content={divContent}  currentObj={enkiMessObj} />:<Loadding isImg={true} spinnerSize="sm" />}
                 {/* 修改/删除/转发/置顶上拉框 */}
                 {path!=='SC' && actor?.domain===process.env.NEXT_PUBLIC_DOMAIN 
                     && <EnkiEditItem path={path} isEdit={isEdit} messageObj={enkiMessObj} refreshPage={refreshPage} 

@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card, Modal, Tabs, Tab, Accordion } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { type RootState, type AppDispatch, setTipText, setErrText, setActor } from '@/store/store';
+import { type RootState, type AppDispatch, setTipText, setErrText,setMessageText, setActor } from '@/store/store';
 import DaismImg ,{type DaismImgHandle} from '@/components/form/DaismImg';
 import { EditSvg, UploadSvg } from '@/lib/jssvg/SvgCollection';
 import EnkiMember from './EnkiMember';
@@ -45,10 +45,10 @@ export default function ActorMember({ notice }: ActorMemberProps) {
   const loginRef=useRef<ShowLoginRef>(null);
 
 
-  const follow0 = useFollow(actor?.actor_account, 'getFollow0');
-  const follow1 = useFollow(actor?.actor_account, 'getFollow1');
-  const tipToMe = useTip(actor?.manager, 'getTipToMe');
-  const tipFrom = useTip(actor?.manager, 'getTipFrom');
+  const follow0 = useFollow(actor.actor_account!, 'getFollow0');
+  const follow1 = useFollow(actor.actor_account!, 'getFollow1');
+  const tipToMe = useTip(actor.manager!, 'getTipToMe');
+  const tipFrom = useTip(actor.manager!, 'getTipFrom');
 
   const dispatch = useDispatch<AppDispatch>();
   const showTip = (str: string) => dispatch(setTipText(str));
@@ -70,8 +70,7 @@ export default function ActorMember({ notice }: ActorMemberProps) {
     const formData = new FormData();
     formData.append('account', actor?.actor_account ?? '');
     formData.append('actorDesc', content);
-    formData.append('image', imgRef.current?.getFile() ?? new File([], ''));
-    formData.append('fileType', imgRef.current?.getFileType() ?? '');
+    formData.append('file', imgRef.current?.getFile() ?? new File([], ''));
     formData.append('did', actor?.manager ?? '');
 
     try {
@@ -88,7 +87,7 @@ export default function ActorMember({ notice }: ActorMemberProps) {
       }
       dispatch(setActor(re));
       window.sessionStorage.setItem('actor', JSON.stringify(re));
-      dispatch(setErrText('saveprimarysText'));
+      dispatch(setMessageText(t('saveprimarysText')));
       setShow(false);
     } catch (error: any) {
       closeTip();
@@ -108,14 +107,14 @@ export default function ActorMember({ notice }: ActorMemberProps) {
         <Card.Body>
           <div className="row mb-3">
             <div className="col-auto me-auto">
-              <EnkiMember url={actor?.actor_url}  account={actor?.actor_account} avatar={actor?.avatar} manager={actor?.manager} />
+              <EnkiMember url={actor.actor_url!}  account={actor.actor_account!} avatar={actor.avatar!} manager={actor?.manager} />
             </div>
             <div className="col-auto">
               {actor &&
-                actor.manager.toLowerCase() === user.account.toLowerCase() && (
+                actor.manager!.toLowerCase() === user.account.toLowerCase() && (
                   <>
-                    {actor.actor_account.includes('@') &&
-                      process.env.NEXT_PUBLIC_DOMAIN !== actor.actor_account.split('@')[1] && (
+                    {actor.actor_account!.includes('@') &&
+                      process.env.NEXT_PUBLIC_DOMAIN !== actor.actor_account!.split('@')[1] && (
                         <Button onClick={() => setRegister(true)}>
                           <UploadSvg size={18} /> {t('reRegisterText')}
                         </Button>

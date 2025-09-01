@@ -15,8 +15,10 @@ import Mainself from '@/components/enki3/Mainself';
 import CreateMess from '@/components/enki3/CreateMess';
 import MessagePage from '@/components/enki2/page/MessagePage';
 import { NavDropdown } from 'react-bootstrap';
+import { useLayout } from '@/contexts/LayoutContext';
 
 import {Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,ReceiveSvg} from '@/lib/jssvg/SvgCollection';
+import Loading from '@/components/Loadding';
 
 interface ClientContentProps {
   accountAr: AccountType[];
@@ -72,6 +74,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
       const rightDivRef = useRef<HTMLDivElement | null>(null);
       const parentDivRef = useRef<HTMLDivElement | null>(null);
       const actorRef = useRef<DaismActor|null>(null);
+      const {isShowBtn}=useLayout();
     
       const dispatch = useDispatch<AppDispatch>();
     
@@ -170,7 +173,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
 
     const createHandle=()=>{ //创建发文
         removeUrlParams()
-        if(!actorRef.current) return;
+        if(!actorRef.current || !actorRef.current.actor_account) return;
         const [,localdomain]=actorRef.current.actor_account.split('@');
         if(process.env.NEXT_PUBLIC_DOMAIN!==localdomain) return showClipError(t('loginDomainText',{domain:localdomain}));
         setCurrentObj(null);
@@ -275,11 +278,11 @@ export default function ClientContent({accountAr}:ClientContentProps) {
    
 
     return (<>
-          
+            {isShowBtn?
             <div ref={parentDivRef}  className='d-flex justify-content-center'>
                 <div  ref={leftDivRef} className='scsidebar scleft' >
                     <div className='mb-3' style={{overflow:'hidden'}} >
-                        {actor?.actor_account ? <EnkiMember url={actor.actor_url} account={actor.actor_account} avatar={actor.avatar} hw={64} /> : 
+                        {actor?.actor_account ? <EnkiMember url={actor.actor_url??''} account={actor.actor_account} avatar={actor.avatar??''} hw={64} /> : 
                         <EnkiAccount/>}
                         {!loginsiwe && <Loginsign />}
                     </div>
@@ -348,7 +351,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
                     :(activeTab === 2 && currentObj) ? <MessagePage  path="enkier"  enkiMessObj={currentObj} tabIndex={1}
                     refreshPage={refreshPage} setActiveTab={setActiveTab}  filterTag={filterTag} />
 
-                    :activeTab===3 && <FollowCollection locale={locale}  method={followMethod}/>}
+                    :activeTab===3 && <FollowCollection   method={followMethod}/>}
 
                 </div>
                 <div ref={rightDivRef} className='scsidebar scright' >
@@ -360,8 +363,8 @@ export default function ClientContent({accountAr}:ClientContentProps) {
                         }
                     </ul>
                 </div>
-            </div>
-
+            </div>:<Loading />
+            }
         </>
     )
 }

@@ -67,6 +67,7 @@ declare global {
     v: number; //附加 v: 1 我关注的社区
   }
   
+
   interface ActorInfo{
     account: string;
     url:string;
@@ -80,8 +81,15 @@ declare global {
     follow_id?:string; //关注ID
     actor_id?:number; //0 非本地帐户，大于0是本地帐户
     createtime?:string;
+    desc?:string;
   }
 
+  interface DaoMember{
+    member_address:string;
+    actor_url:string;
+    actor_account:string;
+    avatar:string
+  }
 
   //提案
   interface Proposal {
@@ -128,16 +136,19 @@ declare global {
     token_cost:number;
   }
 
+
   interface DaismActor {
-    id:number;
-    dao_id:number;
-    actor_name:string;
-    domain:string;
-    manager:string;
-    actor_account:string;
-    actor_url:string;
-    avatar:string;
-    actor_desc:string;
+    id?:number;
+    dao_id?:number;
+    actor_name?:string;
+    domain?:string;
+    manager?:string;
+    actor_account?:string;
+    actor_url?:string;
+    avatar?:string;
+    actor_desc?:string;
+    pubkey?:string;
+    privkey?:string;
   }
 
   

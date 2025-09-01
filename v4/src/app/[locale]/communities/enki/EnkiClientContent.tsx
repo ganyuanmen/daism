@@ -11,9 +11,11 @@ import ShowErrorBar from '@/components/ShowErrorBar'
 import Mainself from '@/components/enki3/Mainself'
 import MessagePage from '@/components/enki2/page/MessagePage'
 import EnkiCreateMessage from '@/components/enki2/page/EnkiCreateMessage'
+import { useLayout } from '@/contexts/LayoutContext';
 
 import { type RootState } from '@/store/store'
 import {BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg} from '@/lib/jssvg/SvgCollection'
+import Loading from '@/components/Loadding';
 
 
 interface DaoActor {
@@ -68,6 +70,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
   const actorRef = useRef<DaismActor>(null)
 
   const [daoData, setDaoData] = useState<DaismDao[]>([])
+  const {isShowBtn}=useLayout();
 
   const t = useTranslations('ff')
   const locale = useLocale()
@@ -267,13 +270,13 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
   }
 
   return (
-    <>
+    <>{ isShowBtn?
       <div ref={parentDivRef} className="d-flex justify-content-center">
         {/* 左侧 */}
         <div ref={leftDivRef} className="scsidebar scleft">
           <div className="mb-3" style={{ overflow: 'hidden' }}>
             {actor?.actor_account ? (
-              <EnkiMember url={actor.actor_url} account={actor.actor_account} avatar={actor.avatar} isLocal={true} hw={64}/>
+              <EnkiMember url={actor.actor_url!} account={actor.actor_account} avatar={actor.avatar!} isLocal={true} hw={64}/>
             ) : (
               <EnkiAccount />
             )}
@@ -511,6 +514,8 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
           )}
         </div>
       </div>
+      :<Loading />
+      }
     </>
   )
 }

@@ -9,7 +9,7 @@ import Nftmint from './Nftmint';
 import Nftlist from './Nftlist';
 import { RootState } from '@/store/store';
 import { useFetch } from '@/hooks/useFetch';
-
+import { useLayout } from '@/contexts/LayoutContext';
 
 /** 
  * 荣誉通证页面组件
@@ -18,7 +18,7 @@ export default function Mynft() {
 
   const tc = useTranslations('Common')
   const user = useSelector((state:RootState) => state.valueData.user) as DaismUserInfo;
-
+  const { isShowBtn, setIsShowBtn } = useLayout();  //是否开始显示 连接钱包按钮，先检测是否已登录。后显示连接按钮
   const mynftData = useMynft(user.account);
 
   // 渲染逻辑
@@ -33,16 +33,22 @@ export default function Mynft() {
   }, [mynftData, tc]); // 依赖 daoData / tc，当它们变化时才重新计算
 
   return (
-    <>
-    {
-      user.connected<1?<ShowErrorBar errStr={tc('noConnectText')}></ShowErrorBar>
-      :
-      <> 
-        <Nftmint />
-        {renderContent}
+       <> 
+        {isShowBtn?
+          <>
+          {
+            user.connected<1?<ShowErrorBar errStr={tc('noConnectText')}></ShowErrorBar>
+            :
+            <> 
+              <Nftmint />
+              {renderContent}
+            </>
+          }
+          </>
+          :<Loadding />
+          }
       </>
-    }
-    </>
+
   );
 }
 

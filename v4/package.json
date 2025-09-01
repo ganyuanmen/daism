@@ -16,7 +16,6 @@
     "crypto": "^1.0.1",
     "dayjs": "^1.11.13",
     "ethers": "^6.15.0",
-    "formidable": "^3.5.4",
     "jodit": "^4.6.2",
     "jodit-react": "^5.2.19",
     "jose": "^6.1.0",

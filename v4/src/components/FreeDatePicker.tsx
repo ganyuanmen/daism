@@ -18,7 +18,7 @@ const FreeDatePicker = forwardRef<DateRef, DateProps>(({defaultValue}, ref) => {
 
 
   return (
-    <div style={{ display: "flex", gap: 40, padding: 20 }}>
+   
       <div>
         <input
           type="date"
@@ -37,7 +37,7 @@ const FreeDatePicker = forwardRef<DateRef, DateProps>(({defaultValue}, ref) => {
         />
         {/* <div>选中日期时间: {dateTime.format("YYYY-MM-DD HH:mm:ss")}</div> */}
       </div>
-    </div>
+
   );
 });
 

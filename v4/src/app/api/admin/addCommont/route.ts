@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
   
     const formData = await request.formData();
     
-
      const vedioURL= formData.get('vedioURL') as string;
      const typeIndex= formData.get('typeIndex') as string;
      const pid= formData.get('pid') as string;
@@ -34,10 +33,26 @@ export async function POST(request: NextRequest) {
      const account= formData.get('account') as string;
      const file = formData.get("file") as File; //首页图片
 
+
+     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+
+     console.log("vedioURL:",vedioURL)
+     console.log("typeIndex:",typeIndex)
+     console.log("pid:",pid)
+     console.log("actorid:",actorid)
+     console.log("content:",content)
+     console.log("sctype:",sctype)
+     console.log("inbox:",inbox)
+     console.log("bid:",bid)
+     console.log("account:",account)
+     console.log("file:",file)
+
+      
+
     // 验证必需字段
-    if (!(actorid>0) || !content || !sctype) {
+    if (!(actorid>0) || !content ) {
       return NextResponse.json(
-        { errMsg: 'Missing required fields: actorid, content, sctype' },
+        { errMsg: 'Missing required fields: actorid, content' },
         { status: 400 }
       );
     }
@@ -75,9 +90,9 @@ export async function POST(request: NextRequest) {
 
     const result = await execute(sql, params);
 
-    if (result) {
+    if (result>0) {
       let url = pid || '';
-      if (url && !url.startsWith('http')) {
+      if (url && !url.startsWith('http')) { //没有URI 的 配置上URI
         const domain = account?.split('@')[1] || '';
         url = `https://${domain}/communities/${sctype === 'sc' ? 'enki' : 'enkier'}/${pid}`;
       }

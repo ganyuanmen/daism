@@ -1,15 +1,13 @@
 import TimesItem_m from "../../federation/TimesItem_m";
 import EnkiMember from "./EnkiMember"
-import EnkiEditItem from "./EnkiEditItem"
 import ShowVedio from "./ShowVedio";
 import EnKiFollow from "./EnKiFollow";
 import { useState,useEffect } from "react";
 import { useSelector } from 'react-redux';
 import { DeleteSvg, ReplySvg } from "@/lib/jssvg/SvgCollection";
 import { type RootState } from "@/store/store";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import ConfirmWin from "@/components/federation/ConfirmWin";
-
 
 
 /**
@@ -24,7 +22,7 @@ import ConfirmWin from "@/components/federation/ConfirmWin";
   // props 类型
   interface ReplyItemProps {
     replyObj: DaismReplyType;
-    delCallBack: (replyIndex: number) => void;
+    delCallBack: (replyIndex: number,mid:string) => void;
     replyCallBack:(i:number, bid:string)=>void;
     reply_index: number; //回复的排序号 
     pleft: number; //左边距离
@@ -45,8 +43,11 @@ import ConfirmWin from "@/components/federation/ConfirmWin";
         replyCallBack(reply_index,bid);
     };
   
+    //删除
     const delHandle = () => {
-      delCallBack(reply_index);
+      delCallBack(reply_index,replyObj.message_id);
+      setShow(false);
+      
     };
   
     useEffect(() => {
@@ -124,7 +125,7 @@ import ConfirmWin from "@/components/federation/ConfirmWin";
               style={{ maxWidth: "100%" }}
             />
           )}
-          {replyObj?.vedio_url && <ShowVedio vedioUrl={replyObj.vedio_url} />}
+          {replyObj?.vedio_url && <ShowVedio videoUrl={replyObj.vedio_url} />}
         </div>
       </div>
       <ConfirmWin show={show} setShow={setShow} callBack={delHandle} question={t('deleteSureText')}/>

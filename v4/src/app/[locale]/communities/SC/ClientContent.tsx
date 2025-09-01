@@ -6,7 +6,7 @@ import EnkiMember from '@/components/enki2/form/EnkiMember';
 import EnkiAccount from '@/components/enki2/form/EnkiAccount';
 import Loginsign from '@/components/Loginsign';
 import Loadding from '@/components/Loadding';
-import { client } from '@/lib/api/client';
+import { useLayout } from '@/contexts/LayoutContext';
 import EnkiCreateMessage from '@/components/enki2/page/EnkiCreateMessage';
 import Mainself from '@/components/enki3/Mainself';
 import MessagePage from '@/components/enki2/page/MessagePage';
@@ -58,7 +58,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<number>(0);
-
+  const {isShowBtn} =useLayout();
   const leftDivRef = useRef<HTMLDivElement>(null);
   const rightDivRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
@@ -174,11 +174,11 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
   };
 
   return (
-    <>
+    <> {isShowBtn?
       <div ref={parentDivRef} className='d-flex justify-content-center'>
         <div ref={leftDivRef} className='scsidebar scleft'>
           <div className='mb-3' style={{ overflow: 'hidden' }}>
-            {actor?.actor_account ? <EnkiMember url={actor.actor_url} account={actor.actor_account} avatar={actor.avatar} isLocal={true} hw={64} /> : 
+            {actor?.actor_account ? <EnkiMember url={actor.actor_url??''} account={actor.actor_account} avatar={actor.avatar??''} isLocal={true} hw={64} /> : 
             <EnkiAccount  />}
             {!loginsiwe && <Loginsign />}
           </div>
@@ -295,7 +295,8 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
             </ul>
           )}
         </div>
-      </div>
+      </div>:<Loadding />
+      }
     </>
   );
 }

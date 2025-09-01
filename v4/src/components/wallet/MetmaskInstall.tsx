@@ -5,16 +5,16 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-
+import { useLayout } from '@/contexts/LayoutContext';
 
 
 export default function MetmaskInstall() {
     const [showMetaMask, setShowMetaMask] = useState(false); // 显示MetaMask安装提示
     const tc = useTranslations('Common');
-
+    const { isShowBtn } = useLayout(); 
   return (
     <>
-     <Button 
+     {isShowBtn && <Button 
               variant="primary" 
               size="sm"
               style={{ 
@@ -28,7 +28,7 @@ export default function MetmaskInstall() {
             >
               <img alt="wallet" src='/wallet.svg' width={18} height={18} /> 
               {tc('connectText')}
-    </Button>
+    </Button>}
 
 
     <Modal

@@ -7,6 +7,7 @@ import '../../styles/globals.css'
 import ReduxProvider from '../../store/Providers';
 import PageLayout from '@/components/PageLayout';
 import InitComponent from '@/components/InitComponent';
+import { LayoutProvider } from '@/contexts/LayoutContext';
 
 type Props = {
   children: ReactNode;
@@ -67,9 +68,11 @@ export default async function LocaleLayout({children, params}: Props) {
         <NextIntlClientProvider>
           <ReduxProvider>
             <InitComponent />
-          <PageLayout env={{version:'333'}}>
-            {children}
-            </PageLayout>
+              <LayoutProvider>
+                <PageLayout>
+                  {children}
+                </PageLayout>
+              </LayoutProvider>
             </ReduxProvider>
         </NextIntlClientProvider>
       </body>

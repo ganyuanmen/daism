@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useImperativeHandle, useState, useRef, forwardRef, useEffect } from "react";
 import { Modal, Button,Form } from 'react-bootstrap';
 import { ReplySvg } from '@/lib/jssvg/SvgCollection';
@@ -7,6 +7,7 @@ import RichEditor from "../../enki3/RichEditor";
 import { useSelector, useDispatch } from 'react-redux';
 import {setTipText,setErrText} from '@/store/store';
 import { useTranslations } from 'next-intl'
+import ShowLogin, { ShowLoginRef } from "@/components/enki3/ShowLogin";
 
 /**
  * @currentObj 回复的嗯文对象
@@ -60,12 +61,13 @@ export interface MessageReplyRef {
       const actor = useSelector((state: any) => state.valueData.actor);
       const t = useTranslations("ff");
       const tc = useTranslations("Common");
-      const [typeIndex, setTypeIndex] = useState<number>(0);
+      const [typeIndex, setTypeIndex] = useState<number>(0);  //0 短文 1 长文
       const editorRef = useRef<any>(null);
       const richEditorRef = useRef<any>(null);
       const nums = 500;
   
-    
+      const loginRef=useRef<ShowLoginRef>(null);
+      
       // 用于从下拉菜单修改时显示调用
       useImperativeHandle(ref, () => ({
         show: (v:string) => {
@@ -75,7 +77,7 @@ export interface MessageReplyRef {
       }));
   
       const getHTML = (): string => {
-        if (typeIndex === 0) {
+        if (typeIndex === 0) { //短文 加上html 标签，有字数限制
           const contentText: string = editorRef.current.getData();
           if (!contentText || contentText.length < 4) {
             showClipError(t("noEmptyle4"));
@@ -88,7 +90,8 @@ export interface MessageReplyRef {
   
           let temp = contentText.replaceAll("\n", "</p><p>");
           return `<p>${temp}</p>`;
-        } else {
+        } 
+        else { //长文 无字数限制
           const contentHTML: string = richEditorRef.current.getData();
           if (!contentHTML || contentHTML.length < 10) {
             showClipError(t("contenValidText"));
@@ -99,6 +102,7 @@ export interface MessageReplyRef {
       };
   
       const submit = async () => {
+        if(!loginRef.current?.checkLogin()) return;
         const contentHTML = getHTML();
         if (!contentHTML) return;
         setShowWin(false);
@@ -109,26 +113,16 @@ export interface MessageReplyRef {
         formData.append("pid", currentObj.message_id);
         formData.append("account", currentObj.actor_account);
         formData.append("content", contentHTML); // 内容
-        formData.append("actorid", actor?.id); // 回复者id
+        formData.append("actorid", actor?.id??0); // 回复者id
         formData.append("inbox", currentObj.actor_inbox); // 回复者id
         formData.append("sctype", currentObj.dao_id > 0 ? "sc" : "");
         formData.append("typeIndex", String(typeIndex)); // 长或短
-        formData.append(
-          "vedioURL",
-          (typeIndex === 0 ? editorRef : richEditorRef).current.getVedioUrl()
-        ); // 视频网址
-        formData.append(
-          "image",
-          (typeIndex === 0 ? editorRef : richEditorRef).current.getImg()
-        ); // 图片
-        formData.append(
-          "fileType",
-          (typeIndex === 0 ? editorRef : richEditorRef).current.getFileType()
-        ); // 后缀名
-  
+        formData.append("vedioURL",(typeIndex === 0 ? editorRef : richEditorRef).current.getVedioUrl()); // 视频网址
+        formData.append("file", (typeIndex === 0 ? editorRef : richEditorRef).current.getImg()); // 图片
+        
         fetch(`/api/admin/addCommont`, {
           method: "POST",
-          headers: { encType: "multipart/form-data" },
+          // headers: { encType: "multipart/form-data" },
           body: formData,
         })
           .then(async (response) => {
@@ -209,6 +203,7 @@ export interface MessageReplyRef {
               </div>
             </Modal.Body>
           </Modal>
+          <ShowLogin ref={loginRef} />
         </>
       );
     }

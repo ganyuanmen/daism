@@ -4,13 +4,18 @@ import PageLayout from '@/components/PageLayout';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../../styles/globals.css'
 //'../styles/globals.css'
+// import RichTextEditor from '@/components/RichTextEditor';
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
 
 export default function About() {
   const t = useTranslations('dao');
-
+  const [content, setContent] = useState<string>('');
   return (
     <PageLayout env={{version:'333'}}>
       <p>{t('noSelectImgText')}</p>
+      <RichTextEditor content={content} setContent={setContent} />
     </PageLayout>
   );
 }

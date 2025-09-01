@@ -180,7 +180,7 @@
     "selectText":"选择",
     "confirmBindText":"确认要注册该域名吗？",
     "confirmEditText":"确认要修改该域名吗？",
-    "alredyDomainText":"该域名已注册",
+    "alredyDomainText":"已注册",
     "localDomainText":"本节点域名",
     "DomainDescText":"smart common需要绑定一个域名，才能提提供基于activityPub协议的社交功能。该域名必须支持https协议。",
     "domainbindText":"该节点域名已注册",

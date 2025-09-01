@@ -60,7 +60,7 @@ const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = 
       const message = messageObj.prepareMessage();
       const signature = await daismObj.signer.signMessage(message);
    
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
       try {
         const res = await fetch(`/api/siwe/login`, {
           method: "POST",

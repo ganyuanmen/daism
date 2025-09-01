@@ -9,6 +9,7 @@ import { Button,Modal } from 'react-bootstrap';
 import Image from 'next/image';
 
 import { useFetch } from "@/hooks/useFetch";
+import { headers } from 'next/headers';
 export interface NoticeData {
     id: number;
   }
@@ -30,7 +31,10 @@ export default function ShowNotice() {
 
 
     const clickNotice=()=>{
-        // client.post('/api/postwithsession',"updateNotice",{manager:user.account})
+        fetch('/api/postwithsession',{
+          method:'POST',
+          headers:{'x-method':'updateNotice'},
+          body:JSON.stringify({manager:user.account})})
         window.location.href='/smartcommons/actor?notice=9';  
       }
 

@@ -185,7 +185,7 @@
     "selectText":"Select",
     "confirmBindText":"Are you sure you want to register this domain name?",
     "confirmEditText":"Are you sure you want to modify this domain name?",
-    "alredyDomainText":"This domain name is already registered",
+    "alredyDomainText":"already registered",
     "localDomainText":"Domain name of this node",
     "domainbindText":"The domain name of this node has already been registered",
     "weekText":"Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",

@@ -1,8 +1,8 @@
 // app/api/postwithsession/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-// import { addEipType } from "../../lib/mysql/daism";
+import { addEipType } from "@/lib/mysql/daism";
 import { messageDel, setTopMessage, handleHeartAndBook, setAnnounce, updateNotice } from '@/lib/mysql/message';
-// import { broadcast } from "../../lib/net";
+import { broadcast } from "@/lib/net";
 import { getSession } from '@/lib/session';
 import { getClientIp } from '@/lib/utils';
 
@@ -13,7 +13,7 @@ interface ApiMethods {
 
 const methods: ApiMethods = {
   messageDel, // 删除
-//   addEipType, // 增加eip 类型
+  addEipType, // 增加eip 类型
   handleHeartAndBook, // 点赞、取消点赞
   setTopMessage, // 取置顶
   setAnnounce, // 转发
@@ -52,28 +52,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("11111111111111111111111111111111111")
     // 解析请求体
     const body: RequestBody = await request.json();
-    console.log("2222222222222",body)
+
 
     // 执行对应的方法
     const result = await methods[method](body);
-    console.log("33333333333333",result)
-
-    // // 如果是 addEipType 方法且执行成功，进行广播
-    // if (result && method === 'addEipType') {
-    //   broadcast({
-    //     type: 'addType',
-    //     domain: process.env.NEXT_PUBLIC_DOMAIN || '',
-    //     actor: {
-    //       _type: body._type,
-    //       _desc: body._desc
-    //     },
-    //     user: {},
-    //     followId: 0
-    //   });
-    // }
+    
+    if(result && method==='addEipType')  //广播类型
+    {
+      broadcast({type:'addType',domain:process.env.LOCAL_DOMAIN as string,
+        actor:{name:body._type,desc:body._desc} as ActorInfo,user:{} as ActorInfo,followId:'0'})  //广播信息
+    } 
 
     return NextResponse.json({ state: result });
 

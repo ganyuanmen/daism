@@ -139,17 +139,17 @@ export default function EnkiCreateMessage({
         const editor = typeIndex === 0 ? editorRef.current : richEditorRef.current;
 
         formData.append('textContent', typeIndex === 0 ? contentHTML : richEditorRef.current!.getTextContent());
-        formData.append('typeIndex', typeIndex.toString());
+        formData.append('typeIndex', typeIndex.toString()); //1长文
         formData.append('vedioURL', editor!.getVedioUrl());
-        formData.append('propertyIndex', editor!.getProperty());
+        formData.append('propertyIndex', editor!.getProperty()); //1 公开 2关注 3@
         formData.append('accountAt', editor?.getAccount()??'');
         formData.append('actorid', actor.id.toString());
         formData.append('daoid', selectedDaoid);
-        formData.append('_type', showEvent ? '1' : '0');
+        formData.append('_type', showEvent ? '1' : '0');  //1 活动
         formData.append('title', titleRef.current!.getData());
         formData.append('content', contentHTML);
         formData.append('file', editor?.getImg()??'');
-        formData.append('fileType', editor!.getFileType());
+        // formData.append('fileType', editor!.getFileType());
         formData.append('isSend', sendRef.current!.checked ? '1' : '0');
         formData.append('isDiscussion', discussionRef.current!.checked ? '1' : '0');
 
@@ -161,7 +161,6 @@ export default function EnkiCreateMessage({
             });
             closeTip();
             const re = await response.json();
-            console.log("---55---",re)
             if (re.errMsg) { showClipError(re.errMsg); return; }
             if (currentObj) afterEditCall?.({ ...currentObj, ...re });
             else addCallBack?.();

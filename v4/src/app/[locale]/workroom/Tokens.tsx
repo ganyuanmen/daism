@@ -6,14 +6,7 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { type RootState } from '@/store/store';
-import { useFetch } from '@/hooks/useFetch';
-
-interface TokenItem {
-  dao_id: string | number;
-  dao_logo?: string;
-  dao_symbol: string;
-  token_cost: string | number;
-}
+import { useMyTokens } from '@/hooks/useMyTokens';
 
 /**
  * 我的 Token 页面
@@ -43,7 +36,7 @@ export default function Tokens() {
  * 子组件：展示 token 列表
  */
 interface TokensPageProps {
-  tokensData: TokenItem[];
+  tokensData: DaismToken[];
 }
 
 function TokensPage({ tokensData }: TokensPageProps) {
@@ -88,7 +81,3 @@ function TokensPage({ tokensData }: TokensPageProps) {
 
 
   
-
-  export function useMyTokens(account: string) {
-    return useFetch<TokenItem[]>(`/api/getData?did=${account}` ,'getMyTokens');
-  }

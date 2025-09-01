@@ -49,7 +49,7 @@ export async function execute(
   sqlParams: any[] = []
 ): Promise<number> {
   
-  if (process.env.IS_DEBUGGER === '1') 
+  if (process.env.IS_DEBUGGER === '0') 
     console.info(`${new Date().toLocaleString()}: execute: ${sql} --> ${sqlParams.join()}`);
   const pool = await createConnection();
   let attempt = 0;

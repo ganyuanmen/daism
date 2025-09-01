@@ -1,6 +1,6 @@
 
 import { ethers,type Contract,type ContractTransactionResponse, type Signer } from "ethers";
-
+import abi from '../data/Donation_abi.json';
 export default class Donate {
   private signer: Signer;
   private address: string;
@@ -10,7 +10,8 @@ export default class Donate {
   constructor(_signer: Signer, _address: string) {
     this.signer = _signer;
     this.address = _address;
-    this.abi = [ "function donate() payable"];
+    this.abi =abi;
+    // [ "function donate() payable"];
   }
 
   private genegateContract(): void {

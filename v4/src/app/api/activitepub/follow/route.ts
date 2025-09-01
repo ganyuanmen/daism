@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createFollow } from "@/lib/activity";
 import { v4 as uuidv4 } from "uuid";
-import { signAndSend, broadcast } from "@/lib/net";
-import { getUser } from "@/lib/mysql/user";
+import { broadcast, getSigneActor } from "@/lib/net";
 import { getLocalInboxFromUrl, getLocalInboxFromAccount, getInboxFromUrl } from "@/lib/mysql/message";
 import { saveFollow } from "@/lib/mysql/folllow";
+import { sendSignedActivity } from "@/lib/activity/sendSignedActivity";
 
 interface FollowRequestBody {
   account: string; // 本地用户，关注人
@@ -32,8 +32,14 @@ export async function POST(req: NextRequest) {
       // 远程关注
       const actor = await getInboxFromUrl(url);
       const bodyData = createFollow(userName, domain, url, guid);
-      const localUser = await getUser("actor_account", account, "privkey");
-      await signAndSend(actor.inbox, userName, domain, bodyData, localUser.privkey);
+      // const localUser = await getUser("actor_account", account, "privkey");
+      const localActor=await getSigneActor(account);
+      if(localActor){
+        sendSignedActivity(actor.inbox, bodyData,localActor )
+        .catch(error => console.error('sendSignedActivity error:', error));
+      }
+
+       
       //这里的广播在收件箱中进行
     }
 

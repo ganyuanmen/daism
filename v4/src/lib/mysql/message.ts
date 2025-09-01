@@ -1,10 +1,11 @@
 import { getData, execute, getJsonArray } from './common';
-import { httpGet, signAndSend } from "../net"; 
+import { getSigneActor, httpGet } from "../net"; 
 import { getUser } from './user';
 import { getFollowers_send } from './folllow';
 import { createAnnounce } from '../activity';
 import { sendfollow } from '../utils/sendfollow';
 import { sendcommont } from '../utils/sendcommont';
+import { sendSignedActivity, SigneActor } from '../activity/sendSignedActivity';
 
 ////pi,menutype,daoid,w,actorid:嗯文人ID,account,order,eventnum
 // menutype 1 我的社区，2 公区社区 3 个人社区
@@ -155,11 +156,15 @@ export async function getAllSmartCommon(): Promise<any[]> {
   return re || [];
 }
 
-export async function getHeartAndBook(params: any): Promise<any[]> {
+export interface HeartAndBookType{
+  total:number;
+  pid:string;
+}
+export async function getHeartAndBook(params: any): Promise<HeartAndBookType> {
   const { pid, account, table, sctype } = params;
   const sql = `SELECT a.total,IFNULL(b.pid,'') pid FROM (SELECT COUNT(*) total FROM a_${table}${sctype} WHERE pid=?) a LEFT JOIN (SELECT pid FROM a_${table}${sctype} WHERE pid=? AND account=?) b ON 1=1`;
-  const re: any[] = await getData(sql, [pid, pid, account]);
-  return re || [];
+  return await getData(sql, [pid, pid, account],true) as HeartAndBookType;
+
 }
 
 export async function handleHeartAndBook(params: any): Promise<any> {
@@ -174,12 +179,18 @@ export async function setAnnounce(params: any): Promise<any> {
   const lok: any = await execute('CALL send_annoce(?,?,?)', [sctype, id, account]);
   if(lok) {
     try {
-      const re: any = await getData("SELECT domain,actor_name,privkey FROM v_account WHERE actor_account=?", [account], true);
+      const localActor = await getSigneActor(account);
+      if(!localActor) {
+        console.error("setAnnounce: no such account:",account);
+        return;
+      }
+      const [actorName,]=account.split('@');
+      //getData("SELECT domain,actor_name,privkey FROM v_account WHERE actor_account=?", [account], true);
       let sendbody: any;
       getFollowers_send({account}).then(async data=>{
         data.forEach((element: any) => {
-          if(!sendbody) sendbody = createAnnounce(re.actor_name, process.env.NEXT_PUBLIC_DOMAIN as string, linkurl, content, topImg, vedioUrl, toUrl);
-          signAndSend(element.user_inbox, re.actor_name, re.domain, sendbody, re.privkey);
+          if(!sendbody) sendbody = createAnnounce(actorName, process.env.NEXT_PUBLIC_DOMAIN as string, linkurl, content, topImg, vedioUrl, toUrl);
+          sendSignedActivity(element.user_inbox,sendbody,localActor);
         });
       });
     } catch(e1) { console.error(e1); }
@@ -194,13 +205,13 @@ export async function getLastDonate({ did }: any): Promise<any> {
 }
 
 // 获取一条嗯文
-export async function getOne({ id, sctype }: any): Promise<any> {
+export async function getOne({ id, sctype }: any): Promise<EnkiMessType> {
     const re: any = await getData(`SELECT * FROM v_message${sctype} WHERE ${id.length < 10 ? 'id' : 'message_id'}=?`, [id]);
     return re.length ? re[0] : {};
 }
 
 // 获取一条嗯文
-export async function getOneByMessageId(id1: any, id2: any, sctype: any): Promise<any> {
+export async function getOneByMessageId(id1: any, id2: any, sctype: any): Promise<EnkiMessType> {
     const re: any = await getData(`SELECT * FROM v_message${sctype} WHERE message_id=? OR message_id=?`, [id1, id2]);
     return re.length ? re[0] : {};
 }
@@ -246,8 +257,8 @@ export async function getNotice({ manager }:any): Promise<any> {
 }
 
 // 从账户获取 Inbox
-export async function getInboxFromAccount(account: any): Promise<any> {
-    let reobj: any = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '' };
+export async function getInboxFromAccount(account: string): Promise<ActorInfo> {
+    let reobj: ActorInfo = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '' };
     try {
         const strs: any = account.split('@');
         const obj: any = { name: strs[0], domain: strs[1], inbox: '' };
@@ -256,7 +267,7 @@ export async function getInboxFromAccount(account: any): Promise<any> {
         re = re.message;
         if (!re) return obj;
 
-        let url: any, type: any;
+        let url='', type='';
         for (let i = 0; i < re.links.length; i++) {
             if (re.links[i].rel === 'self') {
                 url = re.links[i].href;
@@ -264,7 +275,7 @@ export async function getInboxFromAccount(account: any): Promise<any> {
                 break;
             }
         }
-        reobj = await getInboxFromUrl1(url, type);
+        reobj = await getInboxFromUrl(url, type);
     } catch (e) {
         console.error(e);
     } finally {
@@ -273,27 +284,30 @@ export async function getInboxFromAccount(account: any): Promise<any> {
 }
 
 // 本地账户 Inbox
-export async function getLocalInboxFromAccount(account: any): Promise<any> {
-    const obj: any = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '' };
-    const user: any = await getUser('actor_account', account, 'actor_url,avatar,pubkey');
+export async function getLocalInboxFromAccount(account: any): Promise<ActorInfo> {
+    const obj: ActorInfo = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '' };
+    const user: DaismActor = await getUser('actor_account', account, 'actor_url,avatar,pubkey');
     if (!user.actor_url) return obj;
     const [userName, domain] = account.split('@');
-    return { name: userName, domain, inbox: `https://${domain}/api/activitepub/inbox/${userName}`, account, url: user.actor_url, pubkey: user.pubkey, avatar: user.avatar };
+    return { name: userName, domain, inbox: `https://${domain}/api/activitepub/inbox/${userName}`,
+     account, url: user.actor_url, pubkey: user.pubkey, avatar: user.avatar??'' };
 }
 
 // 本地 URL Inbox
-export async function getLocalInboxFromUrl(url: any): Promise<any> {
-    const obj: any = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '', manager: '' };
-    const user: any = await getUser('actor_url', url, 'actor_account,avatar,pubkey,manager');
+export async function getLocalInboxFromUrl(url: any): Promise<ActorInfo> {
+    const obj: ActorInfo = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '', manager: '' };
+    const user: DaismActor = await getUser('actor_url', url, 'actor_account,avatar,pubkey,manager');
     if (!user.actor_account) return obj;
     const [userName, domain] = user.actor_account.split('@');
-    return { name: userName, domain, inbox: `https://${domain}/api/activitepub/inbox/${userName}`, account: user.actor_account, url, pubkey: user.pubkey, avatar: user.avatar, manager: user.manager };
+    return { name: userName, domain, inbox: `https://${domain}/api/activitepub/inbox/${userName}`, 
+    account: user.actor_account, url, pubkey: user.pubkey, avatar: user.avatar??'', manager: user.manager };
 }
 
 // 从 URL 获取 Inbox
-export async function getInboxFromUrl(url: any, type: any = 'application/activity+json'): Promise<any> {
+export async function getInboxFromUrl(url: string, type: string = 'application/activity+json'): Promise<ActorInfo> {
     const myURL: any = new URL(url);
-    let obj: any = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '', manager: '' };
+    let obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '',
+       manager: '' };
     let re: any = await httpGet(url, { "Content-Type": type });
     if (re.code !== 200) return obj;
     re = re.message;
@@ -312,32 +326,13 @@ export async function getInboxFromUrl(url: any, type: any = 'application/activit
     return obj;
 }
 
-// 内部辅助函数 Inbox
-async function getInboxFromUrl1(url: any, type: any = 'application/activity+json'): Promise<any> {
-    const myURL: any = new URL(url);
-    let obj: any = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '', manager: '' };
-    let re: any = await httpGet(url, { "Content-Type": type });
-    if (re.code !== 200) return obj;
-    re = re.message;
-    if (!re) return obj;
-    if (re.name) obj.name = re.name;
-    if (re.inbox) {
-        obj.inbox = re.inbox;
-        obj.desc = re.summary;
-        obj.manager = re.manager;
-        obj.pubkey = re.publicKey.publicKeyPem;
-        obj.url = re.id;
-        obj.account = `${re.name}@${myURL.hostname}`;
-    }
-    if (re.avatar && re.avatar.url) obj.avatar = re.avatar.url;
-    else if (re.icon && re.icon.url) obj.avatar = re.icon.url;
-    return obj;
-}
 
 // 从 URL 获取网页个人信息
-export async function getUserFromUrl({ url }: any): Promise<any> {
+export async function getUserFromUrl({ url }: any): Promise<ActorInfo> {
+    const reData=await getLocalInboxFromUrl(url);
+    if(reData.inbox && reData.account && reData.url) return reData;
     const myURL: any = new URL(url);
-    let obj: any = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '' };
+    let obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '' };
     let re: any = await httpGet(url, { "Content-Type": 'application/activity+json' });
     if (re.code !== 200) return obj;
     re = re.message;

@@ -9,6 +9,8 @@ import Wecome from "@/components/federation/Wecome";
 import EnKiRigester from "@/components/enki2/form/EnKiRigester";
 import EnkiView from "@/components/enki3/EnkiView";
 import { useSearchParams } from "next/navigation";
+import { useLayout } from "@/contexts/LayoutContext";
+import Loading from "@/components/Loadding";
 
 // ---- Props 类型 ----
 interface ClientActorProps {
@@ -20,7 +22,7 @@ export default function ClientActor({ accountAr }: ClientActorProps) {
   const searchParams = useSearchParams();
   const notice =Number(searchParams?.get("notice")??0);
 
-  console.log("searchParams:",notice)
+  const {isShowBtn}=useLayout();
   
   const user = useSelector((state: RootState) => state.valueData.user);
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe);
@@ -28,7 +30,7 @@ export default function ClientActor({ accountAr }: ClientActorProps) {
   const t = useTranslations("ff");
   const actor = useSelector((state: RootState) => state.valueData.actor);
   const daoActor = useSelector((state: RootState) => state.valueData.daoActor);
-  return (
+  return (<>{ isShowBtn?
     <div>
       {user?.connected !== 1 ? (
         <ShowErrorBar errStr={tc("noConnectText")} />
@@ -47,6 +49,7 @@ export default function ClientActor({ accountAr }: ClientActorProps) {
         )}
       </>
       )}
-    </div>
+    </div>:<Loading />
+ } </>
   );
 }

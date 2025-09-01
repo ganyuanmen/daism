@@ -12,10 +12,9 @@ import Wallet from './wallet/Index';
 
 type Props = {
   children?: ReactNode;
-  env: {version:string};
 };
 
-const PageLayout = memo(({children,env}: Props) => {
+const PageLayout = memo(({children}: Props) => {
 
  
   const t = useTranslations('Navigation')
@@ -48,10 +47,9 @@ const PageLayout = memo(({children,env}: Props) => {
                   <div className="d-flex flex-row p-0 m-0 ">
                   <Nav.Link className={pathname === '/'  ? 'pnavactive'  : ''}  href={`/${locale}`}><div className='no-wrap' > {t('home')}</div></Nav.Link>
                   <NavDropdown className={pathname.startsWith('/communities') ? 'pnavactive'  : ''} title={t('social')} id="basic-nav-dropdown1">   
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/enki' ? 'pnavactive'  : ''} href={`/${locale}/communities/enki?v=${env?.version}`} > {t('myCommunity')}</NavDropdown.Item>
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/SC' ? 'pnavactive'  : ''} href={`/${locale}/communities/SC?v=${env?.version}`} > {t('publicCommunities')}</NavDropdown.Item>
-                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/enkier' ? 'pnavactive'  : ''} href={`/${locale}/communities/enkier?v=${env?.version}`} > {t('personalSocial')}</NavDropdown.Item>
-                    
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/enki' ? 'pnavactive'  : ''} href={`/${locale}/communities/enki?v=${process.env.NEXT_PUBLIC_VERSION}`} > {t('myCommunity')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/SC' ? 'pnavactive'  : ''} href={`/${locale}/communities/SC?v=${process.env.NEXT_PUBLIC_VERSION}`} > {t('publicCommunities')}</NavDropdown.Item>
+                    <NavDropdown.Item style={{paddingLeft:'20px'}} className={pathname === '/communities/enkier' ? 'pnavactive'  : ''} href={`/${locale}/communities/enkier?v=${process.env.NEXT_PUBLIC_VERSION}`} > {t('personalSocial')}</NavDropdown.Item>
                   </NavDropdown>
                 
                   <Nav.Link className={pathname === '/smartcommons' ? 'pnavactive' : ''} href={`/${locale}/smartcommons`}><div className='no-wrap' >{t('smarcommon')}</div></Nav.Link> 

@@ -1,12 +1,6 @@
 import crypto from 'crypto';
 import path from 'path';
 
-interface User {
-  manager: string;
-  actor_desc: string;
-  avatar?: string;
-  pubkey: string;
-}
 
 interface Actor {
   '@context': string[];
@@ -142,7 +136,7 @@ interface DeleteMessage {
 }
 
 
-export function createActor(name: string, domain: string, user: User): Actor {
+export function createActor(name: string, domain: string, user: DaismActor): Actor {
   name = name.toLowerCase();
   const avatarExt = user.avatar ? path.extname(user.avatar).slice(1) : 'svg+xml';
   
@@ -166,12 +160,12 @@ export function createActor(name: string, domain: string, user: User): Actor {
     publicKey: {
       id: `https://${domain}/api/activitepub/users/${name}#main-key`,
       owner: `https://${domain}/api/activitepub/users/${name}`,
-      publicKeyPem: user.pubkey,
+      publicKeyPem: user.pubkey||'',
     },
   };
 }
 
-export function createWebfinger(userName: string, domain: string, id: string, avatar?: string): Webfinger {
+export function createWebfinger(userName: string, domain: string, id: string|number, avatar?: string): Webfinger {
   userName = userName.toLowerCase();
   const avatarExt = avatar ? path.extname(avatar).slice(1) : 'svg';
   
@@ -396,3 +390,4 @@ export function createNoteDel(
     },
   };
 }
+

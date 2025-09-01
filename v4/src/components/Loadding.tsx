@@ -1,20 +1,31 @@
 'use client';
-
-import React from 'react';
+import { Spinner } from 'react-bootstrap';
 
 interface LoadingProps {
-  size?: 'sm' | 'lg'; // 可选参数，限制只能是 sm 或 lg
+  spinnerSize?: 'sm' | undefined;
+  containerSize?: 'sm' | 'lg'; // 单独控制容器大小
+  isImg?: boolean;
 }
 
-export default function Loading({ size = 'lg' }: LoadingProps) {
+export default function Loading({ 
+  spinnerSize, 
+  containerSize = 'lg', 
+  isImg = false 
+}: LoadingProps) {
   return (
-    <div className={size === 'sm' ? '' : 'fs-3 p-5'}>
-      <span
-        className="spinner-grow spinner-grow-sm"
-        role="status"
-        aria-hidden="true"
-      ></span>
-      Loading...
-    </div>
+    <>
+      {isImg ? (
+        <Spinner animation="border" size={spinnerSize} />
+      ) : (
+        <div className={containerSize === 'sm' ? '' : 'fs-3 p-5'}>
+          <span
+            className="spinner-grow spinner-grow-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading...
+        </div>
+      )}
+    </>
   );
 }

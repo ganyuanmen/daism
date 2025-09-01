@@ -49,8 +49,14 @@ export async function getUser({ newAccount, oldAccount }: any): Promise<any> {
   return re[0] || {};
 }
 
+
+export interface UserRegister{
+  allTotal:number; //所有注册数
+  nameTotal:number; //本人是否已注册 >0=>true
+}
+
 // 检测帐号是否存在
-export async function getSelfAccount({ account }: any): Promise<any> {
+export async function getSelfAccount({ account }: any): Promise<UserRegister> {
   const re = await getData('SELECT id FROM a_account WHERE actor_account=?', [account]);
   const re1 = await getData('SELECT count(*) as total FROM a_account', [],true);
   return { nameTotal: re.length, allTotal: re1?.total ?? 1024 };

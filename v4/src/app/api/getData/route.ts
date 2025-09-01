@@ -74,47 +74,47 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ errMsg: 'Invalid Method' }, { status: 400 });
     }
 
-    // // ------------------ messagePageData 跨域情况 ------------------
-    // if (method === 'messagePageData' && query.account && query.account.includes('@')) {
-    //   const { account, pi, menutype, daoid, actorid, w, order, eventnum, v } = query;
-    //   const [, domain] = (account as string).split('@');
+    // ------------------ messagePageData 跨域情况 ------------------
+    if (method === 'messagePageData' && query.account && query.account.includes('@')) {
+      const { account, pi, menutype, daoid, actorid, w, order, eventnum, v } = query;
+      const [, domain] = (account as string).split('@');
 
-    //   if (domain === process.env.NEXT_PUBLIC_DOMAIN) {
-    //     return NextResponse.json(await methods[method](query));
-    //   } else {
-    //     const response = await httpGet(
-    //       `https://${domain}/api/getData?pi=${pi}&menutype=${menutype}&daoid=${daoid}&actorid=${actorid}&w=${w}&order=${order}&eventnum=${eventnum}&account=${account}&v=${v}`,
-    //       { 'Content-Type': 'application/json', 'x-method': 'messagePageData' }
-    //     );
-    //     if (response?.message) {
-    //       response.message.forEach((obj: any) => { obj.httpNetWork = true; });
-    //       return NextResponse.json(response.message);
-    //     } else {
-    //       return NextResponse.json({ errMsg: 'fail' }, { status: 500 });
-    //     }
-    //   }
-    // }
+      if (domain === process.env.NEXT_PUBLIC_DOMAIN) {
+        return NextResponse.json(await methods[method](query));
+      } else {
+        const response = await httpGet(
+          `https://${domain}/api/getData?pi=${pi}&menutype=${menutype}&daoid=${daoid}&actorid=${actorid}&w=${w}&order=${order}&eventnum=${eventnum}&account=${account}&v=${v}`,
+          { 'Content-Type': 'application/json', 'x-method': 'messagePageData' }
+        );
+        if (response?.message) {
+          response.message.forEach((obj: any) => { obj.httpNetWork = true; });
+          return NextResponse.json(response.message);
+        } else {
+          return NextResponse.json({ errMsg: 'fail' }, { status: 500 });
+        }
+      }
+    }
 
-    // // ------------------ replyPageData 跨域情况 ------------------
-    // if (method === 'replyPageData' && query.account && query.account.includes('@')) {
-    //   const { account, pi, ppid, sctype } = query;
-    //   const [, domain] = (account as string).split('@');
+    // ------------------ replyPageData 跨域情况 ------------------
+    if (method === 'replyPageData' && query.account && query.account.includes('@')) {
+      const { account, pi, ppid, sctype } = query;
+      const [, domain] = (account as string).split('@');
 
-    //   if (domain === process.env.NEXT_PUBLIC_DOMAIN) {
-    //     return NextResponse.json(await methods[method](query));
-    //   } else {
-    //     const response = await httpGet(
-    //       `https://${domain}/api/getData?pi=${pi}&ppid=${ppid}&sctype=${sctype}&account=`,
-    //       { 'Content-Type': 'application/json', 'x-method': 'replyPageData' }
-    //     );
-    //     if (response?.message) {
-    //       response.message.forEach((obj: any) => { obj.httpNetWork = true; });
-    //       return NextResponse.json(response.message);
-    //     } else {
-    //       return NextResponse.json({ errMsg: 'fail' }, { status: 500 });
-    //     }
-    //   }
-    // }
+      if (domain === process.env.NEXT_PUBLIC_DOMAIN) {
+        return NextResponse.json(await methods[method](query));
+      } else {
+        const response = await httpGet(
+          `https://${domain}/api/getData?pi=${pi}&ppid=${ppid}&sctype=${sctype}&account=`,
+          { 'Content-Type': 'application/json', 'x-method': 'replyPageData' }
+        );
+        if (response?.message) {
+          response.message.forEach((obj: any) => { obj.httpNetWork = true; });
+          return NextResponse.json(response.message);
+        } else {
+          return NextResponse.json({ errMsg: 'fail' }, { status: 500 });
+        }
+      }
+    }
 
     // ------------------ 其它方法 ------------------
     return NextResponse.json(await methods[method](query));

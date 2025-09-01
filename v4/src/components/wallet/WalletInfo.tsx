@@ -2,12 +2,12 @@
 
 import { Dropdown } from "react-bootstrap";
 import Image from "next/image";
-import {useRef,useEffect, useState } from "react";
+import {useRef,useEffect, useState, SetStateAction, Dispatch } from "react";
 import { useDispatch } from 'react-redux';
 import {useTranslations } from 'next-intl';
-
+import { useLayout } from '@/contexts/LayoutContext';
 // import { onDisconnect,updateLoginData,checkNetwork,recorLogin,showError } from "@/lib/utils/labriry";
-import {type AppDispatch,setLoginsiwe,} from '@/store/store';
+import {type AppDispatch} from '@/store/store';
   
     interface ChildProps { 
       providers: WalletProviderType[],
@@ -16,9 +16,11 @@ import {type AppDispatch,setLoginsiwe,} from '@/store/store';
       checkNetwork:(chainId: number)=> boolean,
       recorLogin:()=>void,
       showError:(str:string)=>void
+    
     }
   
-    export default function WalletInfo({providers,onDisconnect,updateLoginData,checkNetwork,recorLogin,showError}: ChildProps) {
+    export default function WalletInfo({providers,onDisconnect,updateLoginData
+      ,checkNetwork,recorLogin,showError}: ChildProps) {
 
     const [connecting, setConnecting] = useState(false); // 连接状态
     const providerRef = useRef<WalletProviderType | null>(null); // 当前选择的提供者
@@ -27,6 +29,7 @@ import {type AppDispatch,setLoginsiwe,} from '@/store/store';
     
     const netWorkSwitchRef = useRef<(() => void) | null>(null); 
     const userSwithRef = useRef<(() => void) | null>(null);
+    const { isShowBtn, setIsShowBtn } = useLayout(); 
 
   // 恢复登录状态
   useEffect(() => {
@@ -39,8 +42,14 @@ import {type AppDispatch,setLoginsiwe,} from '@/store/store';
       }
 
       if (window.sessionStorage.getItem("isLogin") === '1') {
-        providerRef.current && connectWallet(providerRef.current);
+        if(providerRef.current){
+          connectWallet(providerRef.current);
+        } 
         if (window.sessionStorage.getItem("loginsiwe") === '1') recorLogin()
+      } 
+      else
+      {
+        setIsShowBtn(true);
       }
     }
   }, [providers, dispatch]);
@@ -124,7 +133,7 @@ const setupUserSwithchListener = (provider: any) => {
 
   return (
     <Dropdown>
-              <Dropdown.Toggle 
+              {isShowBtn && <Dropdown.Toggle 
                 variant="primary" 
                 size="sm" 
                 disabled={connecting}
@@ -136,9 +145,11 @@ const setupUserSwithchListener = (provider: any) => {
                   gap: '6px'
                 }}
               >
+                
                 <Image alt="wallet" src='/wallet.svg' width={18} height={18} /> 
                 <span>{connecting ? tc('connectingText') : tc('connectText')}</span>
-              </Dropdown.Toggle>
+              
+              </Dropdown.Toggle>}
               
               <Dropdown.Menu style={{ maxHeight: '300px', overflowY: 'auto' }}>
                 {providers.map(provider => (
@@ -163,7 +174,7 @@ const setupUserSwithchListener = (provider: any) => {
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
-            </Dropdown>
+    </Dropdown>
   );
 }
 

@@ -16,7 +16,7 @@ import DaoApi from '@/lib/contract';
 import {useLocale, useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useFetchToken } from '@/hooks/useFetchToken';
-
+import { useLayout } from '@/contexts/LayoutContext';
 /**
  * 钱包登录管理组件
  */
@@ -29,7 +29,7 @@ function Wallet() {
     const locale = useLocale();
     const pathWiLocale = usePathname() || ''; // 当前路径，例如 /en/about
     const pathname = pathWiLocale.replace(`/${locale}`, '') || '/';
-  
+    const { setIsShowBtn } = useLayout();  //是否开始显示 连接钱包按钮，先检测是否已登录。后显示连接按钮
     const showError=(str:string)=>{ dispatch(setErrText(str));}
     const tc = useTranslations('Common');
     // 获取代币数据
@@ -52,7 +52,7 @@ function Wallet() {
   // 退出登录
   const onDisconnect=()=> {
     
-    try {fetch('/api/siwe/logout');
+    try {fetch('/api/siwe/logout',{method:'POST'});
     } catch (err) {
       console.error("Logout error:", err);
     }
@@ -112,6 +112,9 @@ const updateLoginData=async (tempAccount:string,walletProvider:WalletProviderTyp
   // 保存到 sessionStorage
   window.sessionStorage.setItem("providerinfoname", (walletProvider.info.name));
   window.sessionStorage.setItem("isLogin", "1"); // 标记用户已登录
+  setTimeout(() => {
+    setIsShowBtn(true)
+  }, 100);
 };
 
 
@@ -133,7 +136,7 @@ const recorLogin=()=>{
           {user.connected > 0 ? <ShowAddress address={user.account} />
           :<>{ providers.length > 0 ? <WalletInfo providers={providers} onDisconnect={onDisconnect} 
             updateLoginData={updateLoginData} checkNetwork={checkNetwork} recorLogin={recorLogin} showError={showError} /> 
-              : <MetmaskInstall />
+              : <MetmaskInstall  />
              }
           </>
           }

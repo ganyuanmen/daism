@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Heart } from '@/lib/jssvg/SvgCollection';
 import { useGetHeartAndBook } from "@/hooks/useMessageData";
-import { client } from "@/lib/api/client";
 import { useSelector, useDispatch } from 'react-redux';
 
 import { type RootState, type AppDispatch, setTipText, setErrText } from "@/store/store";
@@ -54,25 +53,24 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
 
   const submit = async (flag: 0 | 1) => { // 0 取消点赞  1 点赞
     showTip(t('submittingText'));
-    let res = await client.post(
-      '/api/postwithsession',
-      'handleHeartAndBook',
-      {
-        account: actor?.actor_account,
-        pid: currentObj?.message_id,
-        flag,
-        table: 'heart',
-        sctype: getSctype()
-      }
-    );
-    if (res.status === 200) {
-      setRefresh(!refresh);
-    } else {
-      showClipError(
-        `${tc('dataHandleErrorText')}!${res.statusText}\n ${
-          res.data.errMsg ? res.data.errMsg : ''
-        }`
-      );
+    const upData= {
+      account: actor?.actor_account,
+      pid: currentObj?.message_id,
+      flag,
+      table: 'heart',
+      sctype: getSctype()
+    };
+
+    const re= await fetch("/api/postwithsession", {
+      method: 'POST',
+      headers: { 'x-method': 'handleHeartAndBook' },
+      body: JSON.stringify(upData)
+    });
+    if(re.ok){
+       setRefresh(!refresh);
+    }else{
+      const reData=await re.json();
+      showClipError(`${tc("dataHandleErrorText")}!\n ${reData?.errMsg}`);
     }
     closeTip();
   };
@@ -101,7 +99,7 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
   }
   return ( <>
     {
-      resData.status==='loading'?<Loadding />
+      resData.status==='loading'?<Loadding isImg={true} spinnerSize="sm" />
       :resData.status==='failed'? <ShowErrorBar errStr={resData.error??'get data err'} />
       :geneButton()
     }

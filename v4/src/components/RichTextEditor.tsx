@@ -1,3 +1,6 @@
+
+
+"use client";
 import React, { useRef, useState, useMemo } from 'react';
 import JoditEditor from 'jodit-react';
 import Video from './enki3/Video';
