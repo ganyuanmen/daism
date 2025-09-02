@@ -11,12 +11,8 @@ module.exports = {
 experimental: {
   serverActions: {
     bodySizeLimit: '20mb',
-  },
-  api: {
-    bodyParser: {
-      sizeLimit: '0', // 禁用默认的 body parser 大小限制
-    },
-  },
+  }
+},
   
   
   // 可选：配置整体请求体大小限制（适用于 Pages Router）
@@ -24,7 +20,7 @@ experimental: {
     // 最大请求体大小（字节）
     maxRequestBodySize: 10 * 1024 * 1024, // 10MB
   },
-},
+
 
   async redirects() {
     return [
