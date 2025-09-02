@@ -8,6 +8,8 @@ import Loginsign from "@/components/Loginsign";
 import CreateMess from "@/components/enki3/CreateMess";
 import ShowErrorBar from "@/components/ShowErrorBar";
 import { type RootState } from "@/store/store";
+import { useLayout } from '@/contexts/LayoutContext';
+import Loading from "@/components/Loadding";
 
 interface MessageProps {
   openObj: EnkiMessType|null;
@@ -19,7 +21,7 @@ export default function ClientIDPage({ openObj, accountAr }: MessageProps) {
   const [activeTab, setActiveTab] = useState<number>(2);
   const [currentObj,setCurrentObj]=useState<EnkiMessType|null>(openObj)
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe); 
-
+  const {isShowBtn}=useLayout();
   const t = useTranslations("ff");
 
   const afterEditCall = (obj: EnkiMessType) => {
@@ -34,7 +36,7 @@ export default function ClientIDPage({ openObj, accountAr }: MessageProps) {
     }
   };
 
-  return (
+  return (<>{isShowBtn?
     <>
       <div className="mb-3 mt-3 d-flex flex-row align-items-center ">
         <EnkiAccount isShow={false} />
@@ -64,5 +66,7 @@ export default function ClientIDPage({ openObj, accountAr }: MessageProps) {
         <ShowErrorBar errStr={t("noPostingText")} />
       )}
     </>
+    :<Loading />
+}</>
   );
 }

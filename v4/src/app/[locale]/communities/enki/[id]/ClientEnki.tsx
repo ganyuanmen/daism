@@ -8,6 +8,8 @@ import EnkiAccount from '@/components/enki2/form/EnkiAccount'
 import Loginsign from '@/components/Loginsign'
 import EnkiCreateMessage from '@/components/enki2/page/EnkiCreateMessage'
 import ShowErrorBar from '@/components/ShowErrorBar'
+import { useLayout } from '@/contexts/LayoutContext';
+import Loading from '@/components/Loadding';
 
 interface ClientEnkiProps {
   openObj: EnkiMessType | null
@@ -21,6 +23,7 @@ export default function ClientEnki({ openObj, accountAr }: ClientEnkiProps) {
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe) ;
   const daoActor = useSelector((state: RootState) => state.valueData.daoActor ) as DaismDao[];
   const t = useTranslations('ff')
+  const {isShowBtn}=useLayout();
 
   const callBack = () => {
     setActiveTab(2)
@@ -38,7 +41,7 @@ export default function ClientEnki({ openObj, accountAr }: ClientEnkiProps) {
     }
   }
 
-  return (
+  return (<>{isShowBtn?
     <>
       <div className="mb-3 mt-3 d-flex flex-row align-items-center ">
         <EnkiAccount isShow={false} />
@@ -69,6 +72,7 @@ export default function ClientEnki({ openObj, accountAr }: ClientEnkiProps) {
       ) : (
         <ShowErrorBar errStr={t('noPostingText')} />
       )}
-    </>
+    </>:<Loading />
+  }</>
   )
 }

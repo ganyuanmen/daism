@@ -146,8 +146,8 @@ export function createActor(name: string, domain: string, user: DaismActor): Act
     type: 'Person',
     preferredUsername: name,
     name: name,
-    manager: user.manager,
-    summary: user.actor_desc,
+    manager: user.manager??'',
+    summary: user.actor_desc??'',
     icon: {
       type: 'Image',
       mediaType: `image/${avatarExt}`,

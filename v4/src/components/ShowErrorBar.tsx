@@ -5,7 +5,7 @@ interface PropsType{
 }
 export default function ShowErrorBar({errStr}:PropsType) {
   return ( 
-    <Alert variant='danger' style={{ margin:'10px auto' }} >{errStr}</Alert>
+    <Alert variant='danger' style={{ margin:'10px auto',textAlign:'center' }} >{errStr}</Alert>
   )
   }
   

@@ -197,7 +197,7 @@ export default function EnkiView({
     <div ref={parentDivRef} className="d-flex justify-content-center">
       <div ref={leftDivRef} className="scsidebar scleft">
         <div className="mb-3" style={{ overflow: "hidden" }}>
-        <EnkiMember url={actor?.actor_url} account={actor?.actor_account??''} avatar={actor?.avatar} isLocal={true} hw={64} />
+        <EnkiMember url={actor.actor_url??''} account={actor?.actor_account??''} avatar={actor.avatar??''} isLocal={true} hw={64} />
         </div>
         <ul>
           <li className={navIndex === paras.mypost ? "scli" : ""}>
