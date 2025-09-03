@@ -35,33 +35,42 @@ export interface ProItem {
 
 // ----------------- 主组件 -----------------
 export default function ProHistory({ st }: { st: number }) {
-  const t = useTranslations("my");
   const tc = useTranslations("Common");
   const user = useSelector((state: RootState) => state.valueData.user);
 
   const [currentPageNum, setCurrentPageNum] = useState<number>(1); //当前页
-  const prosData = useProData(currentPageNum,user.account,st);
+
+//   const prosData = useProData(currentPageNum,user.account,st);
+  
+// // st 1 已完成 2 过期
+// export function useProData(currentPageNum: number,did:string,st:number) {
+//   return usePageFetch<ProItem[]>(`/api/getData?ps=25&pi=${currentPageNum}&did=${did}&st=${st}&t=${new Date().getTime()}` ,'getProsData');
+// }
+
+
+const { rows, total, pages, status, error } = usePageFetch<ProItem[]>(
+  `/api/getData?ps=25&pi=${currentPageNum}&did=${user.account}&st=${st}&t=${new Date().getTime()}`,
+   'getProsData');
+
+
 
   return (
     <>
-      {prosData.rows.length ? (
-        <>
-          <ProPage prosData={prosData.rows}  />
-          <PageItem
-            records={prosData.total}
-            pages={prosData.pages}
-            currentPageNum={currentPageNum}
-            setCurrentPageNum={setCurrentPageNum}
-            postStatus={prosData.status}
-          />
+     {status === 'loading'?<Loadding />
+      :(status === 'failed')?<ShowErrorBar errStr={error || ''} />
+      :rows.length===0?<ShowErrorBar errStr={tc('noDataText')} />
+      :<>
+            <ProPage prosData={rows}  />
+            <PageItem 
+            records={total} 
+            pages={pages} 
+            currentPageNum={currentPageNum} 
+            setCurrentPageNum={setCurrentPageNum} 
+            postStatus={status} 
+            />
         </>
-      ) : prosData.status === "failed" ? (
-        <ShowErrorBar errStr={prosData.error ?? "get data fail"} />
-      ) : prosData.status === "succeeded" ? (
-        <ShowErrorBar errStr={tc("noDataText")} />
-      ) : (
-        <Loadding />
-      )}
+      }
+
     </>
   );
 }
@@ -106,8 +115,3 @@ function ProPage({prosData}: {prosData: ProItem[];}) {
 }
 
 
-
-// st 1 已完成 2 过期
-export function useProData(currentPageNum: number,did:string,st:number) {
-  return usePageFetch<ProItem[]>(`/api/getData?ps=25&pi=${currentPageNum}&did=${did}&st=${st}&t=${new Date().getTime()}` ,'getProsData');
-}

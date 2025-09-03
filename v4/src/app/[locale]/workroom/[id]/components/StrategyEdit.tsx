@@ -19,7 +19,7 @@ export default function StrategyEdit({daoData,ismember,upPro}:PropsType) {
 
 //修改策略
 const strategy=()=>{
-    let _vote=parseInt(strategyRef.current?.getData()??'0')
+    const _vote=parseInt(strategyRef.current?.getData()??'0')
     if (isNaN(_vote) || _vote <0 || _vote>100 ) {strategyRef.current?.notValid(t('passRateText'));return;}
     setShow(false)
     upPro('0x0000000000000000000000000000000000000000',Math.floor(655.35*_vote),'',0) 
@@ -29,7 +29,7 @@ const strategy=()=>{
   return ( <>
     <div className='mb-3 p-1' style={{borderBottom: '1px solid gray'}} >
             <b>{t('proStrategyText')}:</b> {'  '} (<span>{t('voteRateText')}:</span> {daoData.strategy} %)
-            {ismember && <Button  style={{marginLeft:30}} onClick={e=>{setShow(true);
+            {ismember && <Button  style={{marginLeft:30}} onClick={()=>{setShow(true);
                         }}  variant='primary'> <EditSvg size={16} /> {t('changeStrategyText')} 
                 </Button>
             }

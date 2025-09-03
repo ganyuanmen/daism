@@ -5,6 +5,7 @@ import { useState,useEffect,useRef } from "react";
 import { Overlay,Tooltip } from "react-bootstrap";
 import { useTranslations } from 'next-intl'
 import { MoreBtn } from "../../../lib/jssvg/SvgCollection";
+import Image from "next/image";
 
 /**
  * 显示嗯文头部信息，包括用户头像，荣誉证, 时间
@@ -139,5 +140,6 @@ function SvgShow({tokensvg,locale,messageObj}){
       return 'data:image/svg+xml;base64,' + buffer.toString('base64');
 	}
 
-    return <a href={`/${locale}/honortokens/${messageObj.manager}`} alt=''><img src={svgToBase(tokensvg)} className="honor" /></a>
+    return <a href={`/${locale}/honortokens/${messageObj.manager}`} alt=''>
+      <Image src={svgToBase(tokensvg)} className="honor" /></a>
 }

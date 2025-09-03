@@ -32,7 +32,7 @@ interface CreateMessProps {
  */
 
 export default function CreateMess({currentObj,afterEditCall,addCallBack,accountAr,refreshPage}: CreateMessProps) {
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
   const dispatch = useDispatch();
 
   function showTip(str: string) {dispatch(setTipText(str));}

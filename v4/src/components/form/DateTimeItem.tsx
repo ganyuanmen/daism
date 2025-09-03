@@ -1,6 +1,6 @@
 
 import FreeDatePicker,{DateRef} from "../FreeDatePicker";
-import React, { useImperativeHandle, useState, forwardRef, ForwardRefRenderFunction, useRef } from "react";
+import React, { useImperativeHandle, forwardRef, ForwardRefRenderFunction, useRef } from "react";
 
 // 定义组件props的接口
 interface DateTimeItemProps {

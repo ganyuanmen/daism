@@ -8,6 +8,7 @@ import React, {
   import { Button } from 'react-bootstrap';
   import { useTranslations } from 'next-intl';
   import ErrorBar from './ErrorBar';
+import Image from 'next/image';
   
   // 组件外部通过 ref 可调用的方法类型
   export interface DaismImgHandle {
@@ -111,7 +112,7 @@ import React, {
             style={{ border: 0, background: 'transparent' }}
           >
             <span style={{ color: 'black' }}>{title}</span>{' '}
-            <img
+            <Image
               alt=""
               src="/add.svg"
               width={32}
@@ -122,7 +123,7 @@ import React, {
   
           {fileStr && (
             <>
-              <img
+              <Image
                 alt=""
                 src={fileStr}
                 width={110}
@@ -159,6 +160,6 @@ import React, {
       );
     }
   );
-  
-  export default React.memo(DaismImg);
+  DaismImg.displayName="DaismImg";
+  export default DaismImg;
   

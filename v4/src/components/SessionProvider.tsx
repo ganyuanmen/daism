@@ -43,7 +43,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
           isLoading: false,
         });
       }
-    } catch (error) {
+    } catch  {
       setSession({
         did: null,
         isAuthenticated: false,

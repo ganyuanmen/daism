@@ -2,11 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUser } from "@/lib/mysql/user";
 import { createActor } from "@/lib/activity";
 
+// export async function GET(
+//   request: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   const { id: name } = params;
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id: name } = params;
+  const { id:name } = await params;
   const lowerName = name.toLowerCase();
 
   if (!lowerName) {
@@ -37,7 +43,7 @@ export async function GET(
       contentTypeHeader?.startsWith('application/activity');
 
     if (isActivityRequest) {
-      let rejson = createActor(lowerName, domain, localUser);
+      const rejson = createActor(lowerName, domain, localUser);
       
       // 修复 SVG mediaType
       if (rejson.icon?.mediaType === 'image/svg') {

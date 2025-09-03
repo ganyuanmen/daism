@@ -8,7 +8,7 @@ import { type RootState } from '@/store/store';
 import Image from 'next/image';
 
 
-export default function Loginsign({}: {}) {
+export default function Loginsign() {
   
   const loginRef = useRef<LoginButtonRef>(null);
   const tc = useTranslations('Common');

@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { useTranslations } from "next-intl";
 import cssStyle from "@/styles/topSearch.module.css";
 import Loadding from "../Loadding";
+import Image from "next/image";
 
 interface TopSearchProps {
   orderType: boolean; //排序类型
@@ -43,7 +44,7 @@ const TopSearch: React.FC<TopSearchProps> = React.memo((props) => {
       <Row className="mb-1 mt-3 align-items-center">
         <Col className="Col-auto me-auto d-flex">
           <OverlayTrigger placement="bottom" overlay={<Tooltip>{t("tipText")}</Tooltip>}>
-            <img
+            <Image
               className={cssStyle.top_find_img}
               src="/find.svg"
               width={18}
@@ -72,7 +73,7 @@ const TopSearch: React.FC<TopSearchProps> = React.memo((props) => {
 
         <Col className="col-auto">
           {postStatus !== "succeeded" ? (
-            <Loadding size="sm" />
+            <Loadding containerSize="sm" />
           ) : (
             orderMenu.map((obj, idx) => (
               <span
@@ -97,5 +98,5 @@ const TopSearch: React.FC<TopSearchProps> = React.memo((props) => {
     </Container>
   );
 });
-
-export default TopSearch;
+TopSearch.displayName="TopSearch";
+export default React.memo(TopSearch);

@@ -50,12 +50,12 @@ export async function createMess(postbody:ActivityPubBody,name:string,actor:Acto
         
         if(!actor.account) return;
         const[actorName,domain] =actor.account.split('@') ;
-        let localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
+        const localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
         if(!localUser.manager) return;
         const replyType=noteObj.inReplyTo || noteObj.inReplyToAtomUri || null;  //inReplyTo:
         if(!replyType ) //不是回复
         {
-            let linkUrl=noteObj.url || noteObj.atomUri
+            const linkUrl=noteObj.url || noteObj.atomUri
             execute("call inbox_in(?,?,?,?,?,?,?,?,?,?,?,?,?)",[
                 actor.manager??'',noteObj.id,actorName,actor.avatar,actor.account,postbody.actor,noteObj.content,actor.inbox,
                 `${name}@${process.env.NEXT_PUBLIC_DOMAIN}`,linkUrl,imgpath,vedioURL,1]).then(()=>{
@@ -193,7 +193,7 @@ export async function accept(postbody: ActivityPubBody, domain: string, actor: A
 export async function undo(postbody:ActivityPubBody){  
     if(typeof postbody.object==='object' && postbody.object.id && postbody.actor){
         await removeFollow(postbody.object.id);
-        let user=await getUserFromUrl(postbody.actor);
+        const user=await getUserFromUrl(postbody.actor);
          //广播信息
         broadcast({type:'removeFollow',domain:process.env.NEXT_PUBLIC_DOMAIN!,actor:{} as ActorInfo,user,followId:postbody.object.id}); 
     }	
@@ -203,22 +203,22 @@ export async function undo(postbody:ActivityPubBody){
 export async function follow(postbody:ActivityPubBody,name:string,domain:string,actor:ActorInfo) 
 {
     if (postbody.object && typeof postbody.object === 'string' && postbody.object.startsWith('http')) {
-        let user=await getLocalInboxFromUrl(postbody.object) as ActorInfo; //被动关注者
+        const user=await getLocalInboxFromUrl(postbody.object) as ActorInfo; //被动关注者
         if( process.env.IS_DEBUGGER==='1') { 
             console.info("follow get user:-----------------------------------------------------")
             console.info(user)
         }
         if(!actor.inbox) return  `no found for ${postbody.actor}`;
         if(user?.name?.toLowerCase()!==name.toLowerCase() || user?.domain?.toLowerCase()!==domain.toLowerCase()) return 'activity error ';
-        let thebody=createAccept(postbody,name,domain);
-        let follow=await getFollow({actorAccount:user.account,userAccount:actor?.account}); // 注：是actor 关注user
+        const thebody=createAccept(postbody,name,domain);
+        const follow=await getFollow({actorAccount:user.account,userAccount:actor?.account}); // 注：是actor 关注user
         // let localUser=await getUser('actor_account',user.account,'privkey,dao_id')
         if(follow['follow_id']) { 
         console.info("已关注"); //已关注
         await removeFollow(follow['follow_id'])
         } 
         
-        let lok=await saveFollow({actor:user,user:actor,followId:postbody.id});// 被他人关注 
+        const lok=await saveFollow({actor:user,user:actor,followId:postbody.id});// 被他人关注 
         if(lok)
         {
             console.info("follow save is ok")
@@ -267,7 +267,7 @@ export async function verifySignature(request: NextRequest, actor: ActorInfo, re
     }
   
     try {
-      const { keyId, algorithm, headers, signature } = parseSignatureHeader(signatureHeader);
+      const {  algorithm, headers, signature } = parseSignatureHeader(signatureHeader);
       const publicKey = actor.pubkey??'';
       
       // 需要重新实现 createStringToSign 以适应 NextRequest

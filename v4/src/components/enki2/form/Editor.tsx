@@ -105,5 +105,5 @@ const Editor = forwardRef<EditorRef, EditorProps>(
     );
   }
 );
-
+Editor.displayName="Editor";
 export default React.memo(Editor);

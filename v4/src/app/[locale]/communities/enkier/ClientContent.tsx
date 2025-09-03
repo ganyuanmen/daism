@@ -1,11 +1,11 @@
 "use client";
 import { useLocale, useTranslations } from 'next-intl';
-import { useState, useEffect, useRef, JSX } from 'react';
+import { useState, useEffect, useRef, JSX, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import EnkiMember from '@/components/enki2/form/EnkiMember';
 import EnkiAccount from '@/components/enki2/form/EnkiAccount';
 import Loginsign from '@/components/Loginsign';
-import {RootState,AppDispatch,setErrText,setMessageText} from '@/store/store';
+import {RootState,AppDispatch,setErrText} from '@/store/store';
 import SearchInput from '@/components/enki2/form/SearchInput';
 import ShowErrorBar from '@/components/ShowErrorBar';
 import EnKiFollow from '@/components/enki2/form/EnKiFollow';
@@ -82,7 +82,6 @@ export default function ClientContent({accountAr}:ClientContentProps) {
         dispatch(setErrText(str));
       }
     
-      const tc = useTranslations('Common');
       const t = useTranslations('ff');
       const [topText, setTopText] = useState(t('allPostText'));
       const locale = useLocale();
@@ -95,7 +94,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
     
       
 
-      const svgs: Record<string, JSX.Element | string> = {
+      const svgs: Record<string, JSX.Element | string> =useMemo(()=>({
         home: <Home size={24} />,
         mypost: <MyPost size={24} />,
         myreceive: <ReceiveSvg size={24} />,
@@ -107,9 +106,30 @@ export default function ClientContent({accountAr}:ClientContentProps) {
         follow1: <Follow size={24} />,
         at: <SomeOne size={24} />,
         filter: '',
-      };
+      }),[])
     
       const [navIndex, setNavIndex] = useState<ParaKey>(Paras.all);
+
+       
+    const allHandle=useCallback(()=>{ // 公开
+      setCurrentObj(null);
+      window.history.replaceState({}, '', `/${locale}/communities/enkier`);
+      setFetchWhere(pre=>({ ...pre, currentPageNum: 0, eventnum: 5,account: '',where:'' }));
+      setActiveTab(0);
+      setTopText(t('allPostText'));
+      setNavIndex(Paras.all);
+  },[locale,t]);
+
+  
+  const homeHandle=useCallback(()=>{ //首页
+      setCurrentObj(null);
+      window.history.replaceState({}, '', `/${locale}/communities/enkier`);
+      setFetchWhere(pre=>({ ...pre, currentPageNum: 0,where:'', eventnum: 1,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' }));
+      setActiveTab(0);
+      setTopText(t('scHomeText'));
+      setNavIndex(Paras.home);
+  },[locale,t])
+  
 
       useEffect(() => {
         if (actor?.id) actorRef.current = actor;
@@ -120,7 +140,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
         } else {
           allHandle();
         }
-      }, [actor]);
+      }, [actor,homeHandle,allHandle]);
     
       useEffect(() => {
         const resizeObserver = new ResizeObserver(() => {
@@ -146,25 +166,10 @@ export default function ClientContent({accountAr}:ClientContentProps) {
       }, []);
     
 
-    const allHandle=()=>{ // 公开
-        removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 5,account: '',where:'' });
-        setActiveTab(0);
-        setTopText(t('allPostText'));setNavIndex(Paras.all);
-        
-    }
-
-    const homeHandle=()=>{ //首页
-        removeUrlParams() 
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 1,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' });
-        setActiveTab(0);
-        setTopText(t('scHomeText'));setNavIndex(Paras.home);
-        
-      
-    }
+   
     const filterTag=(tag:string)=>{ //过滤标签
         removeUrlParams() 
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0, eventnum: 8,where:tag,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' });
+        setFetchWhere(pre=>({ ...pre, currentPageNum: 0, eventnum: 8,where:tag,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' }));
         setActiveTab(0);
         setTopText(`# ${tag}`);setNavIndex(Paras.filter);
         
@@ -187,7 +192,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
 
     const myPostHandle=()=>{ //我的发文
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 2,account: actorRef.current?.actor_account??'' })
+        setFetchWhere(pre=>({ ...pre, currentPageNum: 0,where:'', eventnum: 2,account: actorRef.current?.actor_account??'' }))
         setActiveTab(0);
         setTopText(t('myPostText'));setNavIndex(Paras.mypost);
         
@@ -195,7 +200,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
  
     const myReceiveHandle=()=>{ //接收到的发文
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 4,account: actorRef.current?.actor_account??'' })
+        setFetchWhere(pre=>({ ...pre, currentPageNum: 0,where:'', eventnum: 4,account: actorRef.current?.actor_account??'' }))
         setActiveTab(0);
         setTopText(t('myReceiveText'));setNavIndex(Paras.myreceive);
         
@@ -219,14 +224,14 @@ export default function ClientContent({accountAr}:ClientContentProps) {
 
     const myBookHandle=()=>{ //我的书签
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 3,actorid:actorRef.current?.id??0,account: actorRef.current?.actor_account??'' })
+        setFetchWhere(pre=>({ ...pre, currentPageNum: 0,where:'', eventnum: 3,actorid:actorRef.current?.id??0,account: actorRef.current?.actor_account??'' }))
         setActiveTab(0);
         setTopText(t('bookTapText'));setNavIndex(Paras.book);
         
     }
     const myLikeHandle=()=>{ //喜欢
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 6,actorid:actorRef.current?.id??0,account: actorRef.current?.actor_account??'' })
+        setFetchWhere(pre=>({ ...pre, currentPageNum: 0,where:'', eventnum: 6,actorid:actorRef.current?.id??0,account: actorRef.current?.actor_account??'' }))
         setActiveTab(0);
         setTopText(t('likeText'));setNavIndex(Paras.like);
         
@@ -234,7 +239,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
     
     const myAtHandle=()=>{ //私下提及
         removeUrlParams()
-        setFetchWhere({ ...fetchWhere, currentPageNum: 0,where:'', eventnum: 7,actorid:actorRef.current?.id??0,account: actorRef.current?.actor_account??'' })
+        setFetchWhere(pre=>({ ...pre, currentPageNum: 0,where:'', eventnum: 7,actorid:actorRef.current?.id??0,account: actorRef.current?.actor_account??'' }))
         setActiveTab(0);
         setTopText(t('atSomeOne'));setNavIndex(Paras.at);
         

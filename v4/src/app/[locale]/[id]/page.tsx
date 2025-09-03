@@ -6,7 +6,7 @@ import { getTranslations } from 'next-intl/server';
 import {getJsonArray } from '@/lib/mysql/common';
 import { getUser } from '@/lib/mysql/user';
 import { headers } from 'next/headers';
-import { redirect, notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { cache } from 'react';
 
 interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}

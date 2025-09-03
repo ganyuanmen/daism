@@ -4,13 +4,14 @@ import EnKiBookmark from "../enki2/form/EnKiBookmark";
 import EnKiHeart from "../enki2/form/EnKiHeart";
 import EnkiShare from "../enki2/form/EnkiShare";
 import ShowVedio from "../enki2/form/ShowVedio";
-import {useState, useEffect, useCallback } from "react";
+import {useState, useEffect, useCallback, useRef } from "react";
 import { Down } from "@/lib/jssvg/SvgCollection";
 import EnkiEditItem from "../enki2/form/EnkiEditItem";
 import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 import ShowAddress from "../ShowAddress";
+import Image from "next/image";
 
 // ========== 类型定义 ==========
 interface ActorType {
@@ -71,16 +72,27 @@ export default function Contentdiv({
   const [isEdit, setIsEdit] = useState(false);
   const [showBtn, setShowBtn] = useState(false);
 
-  // 提取内容 & 判断是否显示“展开更多”
-  const handleDivRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (node !== null) {
-        setDivContent(node?.textContent?.slice(0, 120).replaceAll("\n", "") || null);
-        if (node.scrollHeight > 400) setShowBtn(true);
-      }
-    },
-    [messageObj]
-  );
+  // // 提取内容 & 判断是否显示“展开更多”
+  // const handleDivRef = useCallback(
+  //   (node: HTMLDivElement | null) => {
+  //     if (node !== null) {
+  //       setDivContent(node?.textContent?.slice(0, 120).replaceAll("\n", "") || null);
+  //       if (node.scrollHeight > 400) setShowBtn(true);
+  //     }
+  //   },
+  //   [messageObj]
+  // );
+
+  const handleDivRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const node = handleDivRef.current;
+    if (node !== null) {
+      setDivContent(node?.textContent?.slice(0, 120).replaceAll("\n", "") || null);
+      if (node.scrollHeight > 400) setShowBtn(true);
+    }
+  }, [messageObj]);
+
 
          
     //新增加回复
@@ -101,7 +113,7 @@ export default function Contentdiv({
         // SC
         if (path !== "enki") return false;
         if(daoData){
-          let _member = daoData.find((obj) => obj.dao_id === messageObj.dao_id);
+          const _member = daoData.find((obj) => obj.dao_id === messageObj.dao_id);
           if (_member) return true;
         }
       } else {
@@ -125,7 +137,7 @@ export default function Contentdiv({
     };
 
     setIsEdit(checkIsEdit());
-  }, [actor, messageObj]);
+  }, [actor, messageObj,path,loginsiwe,daoData]);
 
   // 是否允许回复、点赞、收藏
   const ableReply = (): boolean => {
@@ -237,7 +249,7 @@ export default function Contentdiv({
       )}
       {messageObj?.top_img && (
         <div className="image-container">
-          <img
+          <Image
             onClick={() => afterEditCall(messageObj)}
             className="daism-a mt-2 mb-2"
             alt=""
@@ -252,13 +264,14 @@ export default function Contentdiv({
         <div className="d-flex align-items-center mt-1">
           <div className="d-inline-flex align-items-center">
             <span style={{ display: "inline-block", paddingRight: "4px" }}>{t("proposedText")}:</span>
-            <img alt="" width={32} height={32} src={messageObj?.self_avatar}  style={{borderRadius:'10px'}}
+            {messageObj?.self_avatar && <Image alt="" width={32} height={32} src={messageObj.self_avatar}  style={{borderRadius:'10px'}}
               onError={(e) => {
                 // 图片加载失败时使用默认logo
                 const target = e.target as HTMLImageElement;
                 target.src = '/user.svg';
               }}
             />
+            }
           
           </div>
           <div

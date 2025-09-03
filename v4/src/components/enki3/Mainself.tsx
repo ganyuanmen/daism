@@ -1,9 +1,9 @@
 
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { fetchJson } from "@/lib/utils/fetcher";
 import ShowErrorBar from '../ShowErrorBar';
 import Loadding from '../Loadding';
@@ -30,7 +30,7 @@ import Contentdiv from './Contentdiv';
     fetchWhere: FetchWhere;
     filterTag?: (param: string) => void;
     tabIndex: number;
-    setFetchWhere: (fw: FetchWhere) => void;
+    setFetchWhere: Dispatch<SetStateAction<FetchWhere>>;
     afterEditCall: (obj: EnkiMessType) => void;
     refreshPage: () => void;
     path: string;
@@ -56,31 +56,70 @@ import Contentdiv from './Contentdiv';
     const [hasMore, setHasMore] = useState(true);
     const [err, setErr] = useState('');
     const t = useTranslations('ff');
-    const locale = useLocale();
-  
+
+    
     const listRef = useRef<HTMLDivElement>(null);
+const triedRef = useRef(0);
+
+const fetchMoreData = useCallback(() => {
+  if (!isLoading && hasMore) {
+    setFetchWhere((pre) => ({ ...pre, currentPageNum: pageNum }));
+  }
+}, [isLoading, hasMore, pageNum, setFetchWhere]);
+
+useEffect(() => {
+  if (data && data.length) {
+    const _id = parseInt(sessionStorage.getItem('daism-list-id') || '', 10);
+    if (!isNaN(_id)) {
+      const itemElement = listRef.current?.querySelector<HTMLElement>(
+        `#item-${_id}`
+      );
+      if (itemElement) {
+        itemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        sessionStorage.removeItem('daism-list-id');
+        triedRef.current = 0;
+      } else if (hasMore && triedRef.current < 10) {
+        fetchMoreData();
+        triedRef.current += 1;
+      }
+    }
+  }
+}, [data, fetchMoreData, hasMore]);
+
+      
+    // const wRef=useRef<Dispatch<SetStateAction<FetchWhere>>>(setFetchWhere);
+
+    // const listRef = useRef<HTMLDivElement>(null);
   
+    // const fetchMoreData =useCallback(() => {
+    //   if (!isLoading && hasMore) {
+    //     wRef.current(pre=>({ ...pre, currentPageNum: pageNum }));
+        
+    //   }
+    // },[isLoading,hasMore,pageNum]);
+  
+
     useEffect(() => {
       if (fetchWhere.currentPageNum === 0) setPageNum(0);
     }, [fetchWhere]);
   
-    useEffect(() => {
-      // 数据加载完成后，尝试滚动到特定 item
-      if (data && data.length) {
-        const _id = parseInt(sessionStorage.getItem('daism-list-id') || '', 10);
-        if (!isNaN(_id)) {
-          const itemElement = listRef.current?.querySelector<HTMLElement>(
-            `#item-${_id}`
-          );
-          if (itemElement) {
-            itemElement.scrollIntoView({ behavior: 'auto' });
-            sessionStorage.removeItem('daism-list-id');
-          } else {
-            fetchMoreData(); // 循环读取数据，直到找到
-          }
-        }
-      }
-    }, [data]);
+    // useEffect(() => {
+    //   // 数据加载完成后，尝试滚动到特定 item
+    //   if (data && data.length) {
+    //     const _id = parseInt(sessionStorage.getItem('daism-list-id') || '', 10);
+    //     if (!isNaN(_id)) {
+    //       const itemElement = listRef.current?.querySelector<HTMLElement>(
+    //         `#item-${_id}`
+    //       );
+    //       if (itemElement) {
+    //         itemElement.scrollIntoView({ behavior: 'auto' });
+    //         sessionStorage.removeItem('daism-list-id');
+    //       } else {
+    //         fetchMoreData(); // 循环读取数据，直到找到
+    //       }
+    //     }
+    //   }
+    // }, [data,fetchMoreData]);
   
     useEffect(() => {
       const fetchData = async () => {
@@ -136,13 +175,8 @@ import Contentdiv from './Contentdiv';
           fetchData();
         else if (fetchWhere.menutype === 2) fetchData();
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchWhere]);
-  
-    const fetchMoreData = () => {
-      if (!isLoading && hasMore) {
-        setFetchWhere({ ...fetchWhere, currentPageNum: pageNum });
-      }
-    };
   
     const footerdiv = () => {
       if (!isLoading) {

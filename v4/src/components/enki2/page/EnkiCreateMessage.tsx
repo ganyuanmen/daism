@@ -1,4 +1,4 @@
-import { useState, forwardRef, useEffect, useImperativeHandle, Ref, useRef } from 'react';
+import { useState, forwardRef, useEffect, useImperativeHandle,  useRef } from 'react';
 import { Button, Card, Row, Col, Form, InputGroup } from "react-bootstrap";
 import DaismInputGroup,{type DaismInputGroupHandle} from '../../form/DaismInputGroup';
 import { SendSvg, BackSvg } from '@/lib/jssvg/SvgCollection';
@@ -225,17 +225,17 @@ export default function EnkiCreateMessage({
                                 <Col lg><DaismInputGroup defaultValue={currentObj?.event_url ?? ''} title={t('urlText')} ref={urlRef} horizontal /></Col>
                                 <Col lg><DaismInputGroup defaultValue={currentObj?.event_address ?? ''} title={t('addressText')} ref={addressRef} horizontal /></Col>
                             </Row>
-                            <Timedevent ref={timeRef} t={t} currentObj={currentObj} />
+                            <Timedevent ref={timeRef}  currentObj={currentObj} />
                         </Card.Body>
                     </Card>
                 }
 
                 <div className="form-check form-switch mt-3">
-                    <input ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={currentObj?.is_discussion === 1 ?? true} />
+                    <input ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={(currentObj?.is_discussion??1) === 1 } />
                     <label className="form-check-label" htmlFor="isSendbox">{t('emitDiscussion')}</label>
                 </div>
                 <div className="form-check form-switch mb-3 mt-3">
-                    <input disabled ref={sendRef} className="form-check-input" type="checkbox" id="isDiscussionbox" defaultChecked={currentObj?.is_send === 1 ?? true} />
+                    <input disabled ref={sendRef} className="form-check-input" type="checkbox" id="isDiscussionbox" defaultChecked={(currentObj?.is_send??1) === 1} />
                     <label className="form-check-label" htmlFor="isDiscussionbox">{t('sendToFollow')}</label>
                 </div>
 
@@ -251,13 +251,13 @@ export default function EnkiCreateMessage({
 
 // 定时活动
 interface TimedeventProps {
-    t: (key: string) => string;
     currentObj?: EnkiMessType|null;
 }
 
-export const Timedevent = forwardRef<{ getData: () => number }, TimedeventProps>((props, ref) => {
+ const Timedevent = forwardRef<{ getData: () => number }, TimedeventProps>((props, ref) => {
     const [onLine, setOnLine] = useState(false);
     const [vstyle, setVstyle] = useState<React.CSSProperties>({});
+    const t=useTranslations('ff');
 
     useEffect(() => {
         if (props.currentObj && props.currentObj.time_event !== undefined && props.currentObj.time_event > -1) {
@@ -289,13 +289,13 @@ export const Timedevent = forwardRef<{ getData: () => number }, TimedeventProps>
         <>
             <div className="form-check form-switch">
                 <input className="form-check-input" type="checkbox" id="onLineBox" checked={onLine} onChange={handleChange} />
-                <label className="form-check-label" htmlFor="onLineBox">{props.t('timeText')}</label>
+                <label className="form-check-label" htmlFor="onLineBox">{t('timeText')}</label>
             </div>
             <div style={vstyle}>
                 {[1, 2, 3, 4, 5, 6, 7].map((idx) => (
                     <div key={idx} className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name='inlineRadioOptions' id={`inlineRadio${idx}`} value={idx} />
-                        <label className="form-check-label" htmlFor={`inlineRadio${idx}`}> {props.t('weekText').split(',')[idx - 1]}</label>
+                        <label className="form-check-label" htmlFor={`inlineRadio${idx}`}> {t('weekText').split(',')[idx - 1]}</label>
                     </div>
                 ))}
             </div>
@@ -303,3 +303,4 @@ export const Timedevent = forwardRef<{ getData: () => number }, TimedeventProps>
         </>
     );
 });
+Timedevent.displayName="Timedevent";

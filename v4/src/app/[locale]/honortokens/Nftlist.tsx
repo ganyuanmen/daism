@@ -27,7 +27,7 @@ const Nftlist: React.FC<NftlistProps> = ({ mynftData }) => {
           <div key={idx} style={{ width: '320px', margin: '10px' }}>
             <Card>
               <Card.Body>
-                  <SvgImage svgCode={obj.tokensvg} style={{ width: '270px', height: '270px' }} />
+                  <SvgImage svgCode={obj.tokensvg} width={270} height={270} />
                 <div className="daism-nowrap">owner: <ShowAddress address={obj.to_address} isb={true} /></div>
                 <Row>
                   <Col className="Col-auto me-auto">ID: <b>{obj.token_id}</b></Col>
@@ -64,7 +64,7 @@ const Nftlist: React.FC<NftlistProps> = ({ mynftData }) => {
             <Card style={{ margin: '10px' }}>
               <Card.Body>
                 <div style={{ textAlign: 'center' }}>
-                  <SvgImage svgCode={nftObj.tokensvg} style={{ width: '300px', height: '300px' }} />
+                  <SvgImage svgCode={nftObj.tokensvg} width={300} height={300} />
                  
                 </div>
                 <Table striped bordered hover style={{ width: '100%', marginTop: '4px' }}>

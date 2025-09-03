@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import LogoPro from '../LogoPro';
+import Image from 'next/image';
 
 interface PropsType{
     daoData:DaoRecord;
@@ -16,9 +17,9 @@ export default function LogoEdit({daoData,ismember,setMess}:PropsType) {
 
   return ( <>
     <div className='mb-3 p-1' style={{ borderBottom: '1px solid gray'}} >
-        <img height={32} width={32} alt='' src={daoData.dao_logo?daoData.dao_logo:'/logo.svg'} />{'  '}
+        <Image height={32} width={32} alt='' src={daoData.dao_logo?daoData.dao_logo:'/logo.svg'} />{'  '}
         <b>{daoData.dao_name}({daoData.dao_symbol})</b> {'  '}
-        {ismember && <Button  style={{marginLeft:30}} variant="primary" onClick={e=>{setShow(true)}} >
+        {ismember && <Button  style={{marginLeft:30}} variant="primary" onClick={()=>{setShow(true)}} >
             {t('logoChangeText')}
             </Button>
         }

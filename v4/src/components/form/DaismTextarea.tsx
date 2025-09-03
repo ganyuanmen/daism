@@ -67,5 +67,5 @@ const DaismTextarea = forwardRef<DaismTextareaHandle, DaismTextareaProps>(
     );
   }
 );
-
-export default React.memo(DaismTextarea);
+DaismTextarea.displayName="DaismTextarea";
+export default DaismTextarea;

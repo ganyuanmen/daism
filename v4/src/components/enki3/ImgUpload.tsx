@@ -3,8 +3,8 @@ import React, {
     useRef,
     forwardRef,
     useState,
-    ChangeEvent,
-    MouseEvent,
+    ChangeEvent
+    
   } from "react";
   import ErrorBar from "../form/ErrorBar";
   import { useTranslations } from "next-intl";
@@ -82,7 +82,7 @@ import React, {
         reader.readAsDataURL(file);
       };
   
-      const triggerClick = (event: MouseEvent<HTMLButtonElement>) => {
+      const triggerClick = () => {
         setInvalidText("");
         fileInputRef.current?.click();
       };
@@ -115,6 +115,6 @@ import React, {
       );
     }
   );
-  
-  export default React.memo(ImgUpload);
+  ImgUpload.displayName="ImgUpload";
+  export default ImgUpload;
   

@@ -6,7 +6,7 @@ import { Card } from "react-bootstrap";
 import PageItem from "@/components/PageItem";
 import { useTranslations } from "next-intl";
 import { usePageFetch } from "@/hooks/usePageFetch";
-import {type PageDataType} from '@/hooks/usePageFetch'
+// import {type PageDataType} from '@/hooks/usePageFetch'
 
 
  interface LogItem {
@@ -30,42 +30,47 @@ export default function Logs({ user }: LogsProps) {
 
   const [currentPageNum, setCurrentPageNum] = useState<number>(1); // 当前页
   // useLogs 返回的数据
-  const logsData = useLogs( currentPageNum, user.account );
+  // const logsData = useLogs( currentPageNum, user.account );
+
+  const { rows, total, pages, status, error } = usePageFetch<LogItem[]>(
+    `/api/getData?ps=20&pi=${currentPageNum}&did=${user.account}`,
+     'getLogsData');
+
+  // export function useLogs(currentPageNum: number,did:string) {
+  //   return usePageFetch<LogItem[]>(`/api/getData?ps=20&pi=${currentPageNum}&did=${did}` ,'getLogsData');
+  // }
+
+  
+
   const tc = useTranslations('Common')
 
   
-  return (
-    <>
-      {logsData?.rows?.length ? (
-        <>
-          <LogsPage logsData={logsData} />
-          <PageItem
-            records={logsData.total}
-            pages={logsData.pages}
-            currentPageNum={currentPageNum}
-            setCurrentPageNum={setCurrentPageNum}
-            postStatus={logsData.status}
-          />
-        </>
-      ) : logsData.status === "failed" ? (
-        <ShowErrorBar errStr={logsData.error ?? ""} />
-      ) : logsData.status === "succeeded" ? (
-        <ShowErrorBar errStr={tc("noDataText")} />
-      ) : (
-        <Loadding />
-      )}
-    </>
-  );
+  return (<>
+          {status === 'loading'?<Loadding />
+          :(status === 'failed')?<ShowErrorBar errStr={error || ''} />
+          :rows.length===0?<ShowErrorBar errStr={tc('noDataText')} />
+          :<>
+                <LogsPage logsData={rows} />
+                <PageItem 
+                records={total} 
+                pages={pages} 
+                currentPageNum={currentPageNum} 
+                setCurrentPageNum={setCurrentPageNum} 
+                postStatus={status} 
+                />
+            </>
+          }
+    </>);
 }
 
 // ---- 子组件 ----
-interface LogsPageProps {logsData: PageDataType<LogItem[]>;}
+interface LogsPageProps {logsData: LogItem[];}
 
 function LogsPage({logsData}: LogsPageProps) {
   const t = useTranslations("my");
   return (
     <>
-      {logsData.rows.map((obj, idx) => (
+      {logsData.map((obj, idx) => (
         <Card className="mb-2" key={idx}>
           <Card.Body>
             <div>
@@ -100,8 +105,3 @@ function LogsPage({logsData}: LogsPageProps) {
   );
 }
 
-
-
-export function useLogs(currentPageNum: number,did:string) {
-  return usePageFetch<LogItem[]>(`/api/getData?ps=20&pi=${currentPageNum}&did=${did}` ,'getLogsData');
-}

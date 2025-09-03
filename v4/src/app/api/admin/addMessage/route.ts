@@ -79,10 +79,10 @@ export async function POST(req: NextRequest) {
         if(!re.length)  return NextResponse.json({ errMsg: 'Non smart common members!'  }, { status: 500 });
     }
 
-    let message_id = uuidv4().replaceAll('-','')?.toLowerCase();
+    const message_id = uuidv4().replaceAll('-','')?.toLowerCase();
     let insert_type=2; //2默认是个人嗯文, 0 普通公器是哪个嗯文，1 活动嗯文
     if(daoid>0) insert_type=_type;
-    let linkUrl=`https://${process.env.NEXT_PUBLIC_DOMAIN}/communities/${daoid>0?'enki':'enkier'}/${message_id}`
+    const linkUrl=`https://${process.env.NEXT_PUBLIC_DOMAIN}/communities/${daoid>0?'enki':'enkier'}/${message_id}`
     sql = "call in_message(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     paras = [insert_type,title, propertyIndex,typeIndex,vedioURL,accountAt,message_id,account,
         content, isSend, isDiscussion, _path,linkUrl,
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
         eventAddress?eventAddress:'', 
         time_event
     ];
-    let lok = await execute(sql, paras);
+    const lok = await execute(sql, paras);
     console.log("============>>>>>>>>>>>>>>>>>>",lok,paras)
     if (lok) {
         setTimeout(async () => {
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
        
     }
 
-    let lok = await execute(sql,paras);
+    const lok = await execute(sql,paras);
     if(lok) {  
         setTimeout(async () => {  //生成链接卡片
             if(rear.account_at!==accountAt){
@@ -190,7 +190,7 @@ async function addLink(content:string, id:string,sctype:string,flag:string) {
   const furl = findFirstURI(content)
   const sql = `update a_message${sctype} set content_link=? where message_id=?`
   if (furl) {
-      let tootContent = await getTootContent(furl, process.env.NEXT_PUBLIC_DOMAIN as string)
+      const tootContent = await getTootContent(furl, process.env.NEXT_PUBLIC_DOMAIN as string)
       if (tootContent) {
            execute(sql, [tootContent, id]);
       } 

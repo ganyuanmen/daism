@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from "react-bootstrap";
 import ShowAddress from '../ShowAddress';
 import { useTranslations } from "next-intl";
+import Image from 'next/image';
 
 
 interface DaoInfoDivProps {
@@ -22,7 +23,7 @@ const DaoInfoDiv: React.FC<DaoInfoDivProps> = ({ record }) => {
       <Card.Body>
         <div className='row mb-3'>
           <div className='col-auto me-auto d-flex align-items-center'>
-            <img 
+            <Image 
               alt={record.dao_name} 
               width={48} 
               height={48} 

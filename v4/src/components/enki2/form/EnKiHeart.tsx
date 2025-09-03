@@ -1,12 +1,14 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Heart } from '@/lib/jssvg/SvgCollection';
-import { useGetHeartAndBook } from "@/hooks/useMessageData";
+// import { useGetHeartAndBook } from "@/hooks/useMessageData";
 import { useSelector, useDispatch } from 'react-redux';
 
 import { type RootState, type AppDispatch, setTipText, setErrText } from "@/store/store";
 import { useTranslations } from 'next-intl'
 import Loadding from "@/components/Loadding";
 import ShowErrorBar from "@/components/ShowErrorBar";
+import { useFetch } from "@/hooks/useFetch";
+import { HeartAndBookType } from "@/lib/mysql/message";
 
 /**
  * 嗯文喜欢按钮
@@ -47,9 +49,12 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
           : '';
   };
 
-  const [refresh, setRefresh] = useState(false);
+  // const [refresh, setRefresh] = useState(false);
 
-  const resData = useGetHeartAndBook(actor?.actor_account,currentObj?.message_id,refresh,'heart',getSctype());
+  // const resData = useGetHeartAndBook(actor?.actor_account,currentObj?.message_id,refresh,'heart',getSctype());
+  const {data,status,error,refetch} = useFetch<HeartAndBookType>(`/api/getData?account=${actor?.actor_account??''}&pid=${currentObj.message_id}&table=heart&sctype=${getSctype()}`,
+  'getHeartAndBook',[]);
+
 
   const submit = async (flag: 0 | 1) => { // 0 取消点赞  1 点赞
     showTip(t('submittingText'));
@@ -67,7 +72,7 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
       body: JSON.stringify(upData)
     });
     if(re.ok){
-       setRefresh(!refresh);
+      refetch();
     }else{
       const reData=await re.json();
       showClipError(`${tc("dataHandleErrorText")}!\n ${reData?.errMsg}`);
@@ -80,27 +85,27 @@ export default function EnKiHeart({ currentObj, isEdit, path }: EnKiHeartProps) 
       type="button"
       disabled={!isEdit}
       onClick={() => {
-        submit( resData.data.pid ? 0 : 1);
+        submit( data?.pid ? 0 : 1);
       }}
       className="btn btn-light"
       data-bs-toggle="tooltip"
       data-bs-html="true"
       title={t('likeText')}
     >
-      {resData.data.pid ? (
+      {data?.pid ? (
         <span style={{ color: 'red' }}>
           <Heart size={18} />
         </span>
       ) : (
         <Heart size={18} />
       )}
-      {resData.data.total}
+      {data?.total}
     </button>
   }
   return ( <>
     {
-      resData.status==='loading'?<Loadding isImg={true} spinnerSize="sm" />
-      :resData.status==='failed'? <ShowErrorBar errStr={resData.error??'get data err'} />
+      status==='loading'?<Loadding isImg={true} spinnerSize="sm" />
+      :(status==='failed' || !data)? <ShowErrorBar errStr={error??'get data err'} />
       :geneButton()
     }
   </>

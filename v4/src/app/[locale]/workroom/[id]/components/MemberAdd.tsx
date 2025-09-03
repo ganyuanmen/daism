@@ -23,19 +23,19 @@ export default function MemberAdd({daoData,ismember,upPro,user,checkAddress}:Pro
   
    //增加成员
    const add=()=>{
-    let _address=memberAddressRef.current?.getData();
+    const _address=memberAddressRef.current?.getData();
     if (!_address || !checkAddress(_address)) {
         memberAddressRef.current?.notValid(t('managerAddressValid'))
       return
     }
 
-    let _vote=parseInt(voteRef.current?.getData()??'0')
+    const _vote=parseInt(voteRef.current?.getData()??'0')
     if (isNaN(_vote) || _vote <1 ) {
         voteRef.current?.notValid(t('voteErr'))
       return
     }
 
-    let _member=daoData.child.find((obj)=>{return obj.member_address.toLowerCase()===_address.toLowerCase()})
+    const _member=daoData.child.find((obj)=>{return obj.member_address.toLowerCase()===_address.toLowerCase()})
     if(_member) {
         memberAddressRef.current?.notValid(t('alreadyMember'))
         return

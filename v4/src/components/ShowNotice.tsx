@@ -9,13 +9,9 @@ import { Button,Modal } from 'react-bootstrap';
 import Image from 'next/image';
 
 import { useFetch } from "@/hooks/useFetch";
-import { headers } from 'next/headers';
+
 export interface NoticeData {
     id: number;
-  }
-
-  function useNotice(account?: string) {
-    return useFetch<NoticeData[]>(`/api/getData?manager=${account}` ,'getNotice');
   }
 
 
@@ -27,7 +23,9 @@ export default function ShowNotice() {
     const dispatch = useDispatch();
     const user = useSelector((state:RootState) => state.valueData.user)
     const loginsiwe = useSelector((state:RootState) => state.valueData.loginsiwe)
-    const noticeData=useNotice(user.account);
+    const { data } = useFetch<NoticeData[]>(`/api/getData?manager=${user.account}`,
+      'getNotice',[]);
+
 
 
     const clickNotice=()=>{
@@ -39,7 +37,7 @@ export default function ShowNotice() {
       }
 
     return (
-        <Modal className="modal-dialog-scrollable daism-title " centered show={showNotice && loginsiwe && noticeData?.data?.length>0 }
+        <Modal className="modal-dialog-scrollable daism-title " centered show={showNotice && loginsiwe && !!data && data.length>0 }
          onHide={() => {dispatch(setShowNotice(false))}}>
                   <Modal.Header closeButton>
                       <Modal.Title>{t('byTipText')}</Modal.Title>

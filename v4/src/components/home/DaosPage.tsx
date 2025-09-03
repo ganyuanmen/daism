@@ -1,10 +1,11 @@
-import PageItem from "../PageItem";
+
 import Link from 'next/link'
 import ShowAddress from "../ShowAddress";
 import { Card, Row, Col } from "react-bootstrap";
 import TopSearch from "./TopSearch";
 import { useLocale, useTranslations } from 'next-intl'
-import {type PageDataType} from '@/hooks/usePageFetch'
+// import {type PageDataType} from '@/hooks/usePageFetch'
+import Image from "next/image";
 
 export interface DaoRecord {
   dao_id: number;
@@ -20,8 +21,7 @@ export interface DaoRecord {
 }
 
 interface DaosPageProps {
-  daosData: PageDataType<DaoRecord[]>;
-  currentPageNum: number;
+  daosData: DaoRecord[];
   orderType: boolean;
   postStatus: string;
   orderIndex: number;
@@ -34,7 +34,6 @@ interface DaosPageProps {
 
 export default function DaosPage({
   daosData,
-  currentPageNum,
   setCurrentPageNum,
   orderType,
   setOrderType,
@@ -60,7 +59,7 @@ export default function DaosPage({
         postStatus={postStatus}
       />
 
-      {daosData.rows.map((record, idx) =>
+      {daosData.map((record, idx) =>
         <Card key={idx} className="mb-2 daism-title ">
           <Card.Header className="daism-title" >
             <h4>{record.dao_name}(Valuation Token: {record.dao_symbol})</h4>
@@ -82,7 +81,7 @@ export default function DaosPage({
                   href={`/${locale}/workroom/[id]`}
                   as={`/${locale}/workroom/${record.dao_id}`}
                 >
-                  <img
+                  <Image
                     alt=""
                     width={64}
                     height={64}
@@ -111,13 +110,7 @@ export default function DaosPage({
         </Card>
       )}
 
-      <PageItem
-        records={daosData.total}
-        pages={daosData.pages}
-        currentPageNum={currentPageNum}
-        setCurrentPageNum={setCurrentPageNum}
-        postStatus={postStatus}
-      />
+    
     </>
   )
 }

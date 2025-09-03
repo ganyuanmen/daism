@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createLiked } from "@/lib/activity";
 
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id: name } = params;
+  const { id:name } = await params;
 
   if (!name) {
     return NextResponse.json(

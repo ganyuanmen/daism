@@ -1,7 +1,7 @@
 import { getUser } from '../mysql/user';
 import { getFollowers_send } from '../mysql/folllow';
 import { createMessage } from '../activity/createMessage';
-import { getSigneActor } from '../net';
+// import { getSigneActor } from '../net';
 import { sendSignedActivity, SigneActor } from '../activity/sendSignedActivity';
 
 interface Follower {
@@ -31,7 +31,7 @@ export function sendfollow(
 
         getFollowers_send({ account: localUser.actor_account })
           .then((data: Follower[]) => {
-            data.forEach(async (element: Follower, idx: number) => {
+            data.forEach(async (element: Follower) => {
               if (element.user_account !== account) {  // 不推给主发起人
                 try {
                   if (element.user_inbox.includes('/api/activitepub/inbox')) { // enki 长文

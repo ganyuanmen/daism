@@ -1,7 +1,7 @@
 
 
 "use client";
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, useCallback } from 'react';
 import JoditEditor from 'jodit-react';
 import Video from './enki3/Video';
 import { useDispatch } from 'react-redux';
@@ -18,9 +18,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ title, content, setCont
   const t = useTranslations('ff');
   const dispatch = useDispatch();
 
-  const showError = (str: string) => dispatch(setErrText(str));
-  const showTip = (str: string) => dispatch(setTipText(str));
-  const closeTip = () => dispatch(setTipText(''));
+
+
+  const showError =useCallback((str: string) => dispatch(setErrText(str)),[dispatch]);
+  const showTip = useCallback((str: string) => dispatch(setTipText(str)),[dispatch]);
+  const closeTip =useCallback(() => dispatch(setTipText('')),[dispatch]);
 
   // 使用 any 避免 IJodit 类型错误
   const editorRef = useRef<any>(null);
@@ -103,7 +105,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ title, content, setCont
         exec: () => setIsFix(prev => !prev)
       }
     }
-  }), [isFix, t]);
+  }), [isFix, t,showError,showTip,closeTip]);
 
   return (
     <>

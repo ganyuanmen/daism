@@ -1,5 +1,5 @@
 "use client";
-import React, { useImperativeHandle, useState, useRef, forwardRef, useEffect } from "react";
+import React, { useImperativeHandle, useState, useRef, forwardRef } from "react";
 import { Modal, Button,Form } from 'react-bootstrap';
 import { ReplySvg } from '@/lib/jssvg/SvgCollection';
 import Editor from "./Editor";
@@ -88,7 +88,7 @@ export interface MessageReplyRef {
             return "";
           }
   
-          let temp = contentText.replaceAll("\n", "</p><p>");
+          const temp = contentText.replaceAll("\n", "</p><p>");
           return `<p>${temp}</p>`;
         } 
         else { //长文 无字数限制
@@ -127,7 +127,7 @@ export interface MessageReplyRef {
         })
           .then(async (response) => {
             closeTip();
-            let obj = await response.json();
+            const obj = await response.json();
             if (obj.errMsg) {
               showClipError(obj.errMsg);
               return;
@@ -208,5 +208,5 @@ export interface MessageReplyRef {
       );
     }
   );
-  
+  MessageReply.displayName="MessageReply";
   export default React.memo(MessageReply);

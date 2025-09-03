@@ -22,7 +22,12 @@ import Loading from '@/components/Loadding';
 export default function ClientContentWorkHome() {
     const t = useTranslations('my')
     const tc = useTranslations('Common')
-    const imgAr = [<TokenSvg/>,<SwapSvg/>,<DaoSvg/>,<AppSvg/>] //菜单logo
+    const imgAr = [
+        <TokenSvg key="token" />,
+        <SwapSvg key="swap" />,
+        <DaoSvg key="dao" />,
+        <AppSvg key="app" />
+      ]; //菜单logo
     const myMenu=[t('tokens'),t('records'),t('daos'),t('pro')] //菜单
     const user = useSelector((state:RootState) => state.valueData.user) //钱包用户信息
     const ethBalance = useSelector((state:RootState) => state.valueData.ethBalance)
@@ -65,7 +70,7 @@ export default function ClientContentWorkHome() {
                     {activeTab === 0 && <Tokens  />}
                     {activeTab === 1 && <Logs user={user}  />}
                     {activeTab === 2 && <Daos />}
-                    {activeTab === 3 && <Proposal user={user} tc={tc} />}
+                    {activeTab === 3 && <Proposal />}
                 </Container>
             </>
             }  

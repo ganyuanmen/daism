@@ -55,11 +55,11 @@ export function createMessage(
   isNoEnki: boolean
 ): ActivityPubBody {
   userName = userName.toLowerCase();
-  let d = new Date();
-  let suff = imgPath.indexOf('.') > 0 ? imgPath.split('.').splice(-1)[0] : '';
-  let suff_vedio = vedioURL.indexOf('.') > 0 ? vedioURL.split('.').splice(-1)[0] : '';
+  const d = new Date();
+  const suff = imgPath.indexOf('.') > 0 ? imgPath.split('.').splice(-1)[0] : '';
+  const suff_vedio = vedioURL.indexOf('.') > 0 ? vedioURL.split('.').splice(-1)[0] : '';
 
-  let noteMessage: NoteMessage = {
+  const noteMessage: NoteMessage = {
     'id': `https://${message_domain}/communities/${pathtype}/${id}`,
     'url': `https://${message_domain}/communities/${pathtype}/${id}`,
     'atomUri': `https://${message_domain}/communities/${pathtype}/${id}`,
@@ -94,7 +94,7 @@ export function createMessage(
     delete noteMessage.published;
   }
 
-  let createMessage: ActivityPubBody = {
+  const createMessage: ActivityPubBody = {
     '@context': 'https://www.w3.org/ns/activitystreams',
     'id': `https://${message_domain}/communities/${pathtype}/${id}#${contentType}`,
     'type': contentType,

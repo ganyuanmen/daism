@@ -35,7 +35,7 @@ export default function DownBox({slectToken, downTokenPrice,toValue,outObj,downB
                     </Col>
                     <Col className="col-auto" >
                     <Button className={iaddStyle.iadd_btn} variant="outline-secondary" onClick={() => setShow(true)} size="lg">
-                        {outObj.dao_logo && <img alt="" width={24} height={24} src={outObj.dao_logo} />}
+                        {outObj.dao_logo && <Image alt="" width={24} height={24} src={outObj.dao_logo} />}
                         <span style={{ display: "inline-block", padding: "0 4px", fontSize: "20px", color: "#0D111C" }}>
                             {outObj.dao_symbol}</span>
                         <Image alt="" width={24} height={24} src="/down.svg" />

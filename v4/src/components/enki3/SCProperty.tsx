@@ -10,6 +10,7 @@ import { PublicMess, LockSvg, SomeOne } from "@/lib/jssvg/SvgCollection";
 import { InputGroup, Form, Row, Col } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 
 interface SCPropertyProps {
@@ -204,7 +205,7 @@ const SCProperty = forwardRef<SCPropertyRef, SCPropertyProps>(
                       className="messoption d-flex align-items-center"
                       onClick={() => handleSelect(obj.actor_name)}
                     >
-                      <img
+                      <Image
                         src={obj.avatar ?? "/user.svg"}
                         alt=""
                         width={24}
@@ -238,5 +239,5 @@ const SCProperty = forwardRef<SCPropertyRef, SCPropertyProps>(
     );
   }
 );
-
+SCProperty.displayName="SCProperty";
 export default React.memo(SCProperty);

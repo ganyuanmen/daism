@@ -20,7 +20,7 @@ export default function DescEdit({daoData,ismember,upPro}:PropsType) {
     
 //修改dao描述
 const modifyDesc=()=>{
-    let _desc=descRef.current?.getData();
+    const _desc=descRef.current?.getData();
     if(!_desc) return;
     setShow(false)
     upPro(daoData.dao_manager,2,_desc,2) 
@@ -30,7 +30,7 @@ const modifyDesc=()=>{
    <div className='mb-3 p-1'  style={{borderBottom: '1px solid gray'}}>
             <b>{t('descText')}:</b>  {'  '} 
             {ismember && 
-                <Button style={{marginLeft:30}}  onClick={e=>{setShow(true);}}  variant='primary'> 
+                <Button style={{marginLeft:30}}  onClick={()=>{setShow(true);}}  variant='primary'> 
                     <EditSvg size={16} /> {t('changeDescText')} 
                 </Button>
             }

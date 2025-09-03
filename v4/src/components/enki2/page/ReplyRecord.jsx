@@ -20,7 +20,7 @@ export default function ReplyRecord({locale,replyObj}) {
             <div className="daism-reply-item" style={{paddingBottom:'10px'}} >
                 <div style={{minHeight:'40px'}} dangerouslySetInnerHTML={{__html: replyObj.content}}></div>
                 {replyObj?.content_link && <div dangerouslySetInnerHTML={{__html: replyObj.content_link}}></div>}
-                {replyObj?.top_img && <img  className="mt-2 mb-2" alt="" src={replyObj.top_img} style={{maxWidth:'100%'}} />
+                {replyObj?.top_img && <Image  className="mt-2 mb-2" alt="" src={replyObj.top_img} style={{maxWidth:'100%'}} />
                 }
                 {replyObj?.vedio_url && <ShowVedio vedioUrl={replyObj.vedio_url} /> 
                 }

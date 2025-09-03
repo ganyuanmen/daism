@@ -5,20 +5,10 @@ import ProHistory from './ProHistory';
 import { Form } from 'react-bootstrap';
 import { useTranslations } from 'next-intl';
 
-interface User {
-  account: string;
-  // 其他用户字段可以补充
-}
-
-interface ProposalProps {
-  user: User;
-  tc: ReturnType<typeof useTranslations>;
-}
-
 /**
  * 我的提案
  */
-export default function Proposal({ user, tc }: ProposalProps) {
+export default function Proposal() {
   const [st, setSt] = useState<number>(0); // 0 未完成 ，1 已完成 2 过期
   const t = useTranslations<'dao'>('dao');
 

@@ -26,7 +26,7 @@ export default function MetmaskInstall() {
               }}
               onClick={() => setShowMetaMask(true)}
             >
-              <img alt="wallet" src='/wallet.svg' width={18} height={18} /> 
+              <Image alt="wallet" src='/wallet.svg' width={18} height={18} /> 
               {tc('connectText')}
     </Button>}
 

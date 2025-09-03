@@ -23,10 +23,10 @@ export default function ManagerEdit({daoData,ismember,checkAddress,upPro}:PropsT
   
 //修改dao管理者
 const manager=()=>{
-    let _address=managerRef.current?.getData();
+    const _address=managerRef.current?.getData();
     if(!_address) return;
     if (!checkAddress(_address)) {managerRef.current?.notValid(t('managerAddressValid'));return;}
-    let _member=daoData.child.find((obj)=>{return obj.member_address.toLowerCase()===_address.toLowerCase()})
+    const _member=daoData.child.find((obj)=>{return obj.member_address.toLowerCase()===_address.toLowerCase()})
     if(!_member) {managerRef.current?.notValid(t('onlyMemberText'));return;}
     if(_address.toLowerCase()===daoData.dao_manager.toLowerCase()) {managerRef.current?.notValid(t('alreadyManagerText'));return;}
     setShow(false)

@@ -5,13 +5,11 @@ import Table from 'react-bootstrap/Table';
 import { useSelector } from 'react-redux';
 import ShowErrorBar from '@/components/ShowErrorBar';
 import { useTranslations } from 'next-intl';
-import {useMyTokens} from '@/hooks/useMyTokens';
+// import {useMyTokens} from '@/hooks/useMyTokens';
 import { type RootState } from '@/store/store';
+import Image from 'next/image';
+import { useFetch } from '@/hooks/useFetch';
 
-
-interface MyTokensResult {
-  data: DaismToken[];
-}
 
 /**
  * 我的钱包
@@ -24,7 +22,9 @@ export default function ShowWalletInfo() {
     (state: RootState) => state.valueData.user
   ) as DaismUserInfo;
 
-  const tokensData: MyTokensResult = useMyTokens(user.account);
+  // const tokensData: MyTokensResult = useMyTokens(user.account);
+  const tokensData = useFetch<DaismToken[]>(`/api/getData?did=${user.account}`,
+    'getMyTokens',[]);
   const ethBalance = useSelector((state: RootState) => state.valueData.ethBalance);
   const utokenBalance = useSelector((state: RootState) => state.valueData.utoBalance);
 
@@ -60,7 +60,7 @@ export default function ShowWalletInfo() {
                 {tokensData.data && tokensData.data.map((obj, idx) => (
                   <tr key={idx}>
                     <td style={{ textAlign: 'right' }}>
-                      <img
+                      <Image
                         height={24}
                         width={24}
                         alt=""

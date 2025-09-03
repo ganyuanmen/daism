@@ -10,12 +10,14 @@ const corsHeaders = {
   };
   
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+
+  export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+  ) {
+    const { id:name } = await params;
   try {
-    const name = params.id.toLowerCase();
+    // const name = params.id.toLowerCase();
     if (!name) {
       return new Response('Bad request.', {status: 400, headers: corsHeaders});
     }
@@ -30,7 +32,7 @@ export async function GET(
       return new Response(`No record found for ${name}.`, {status: 404, headers: corsHeaders});
     }
 
-    let rejson = createActor(name, process.env.NEXT_PUBLIC_DOMAIN!, localUser);
+    const rejson = createActor(name, process.env.NEXT_PUBLIC_DOMAIN!, localUser);
     
     // 修复 mediaType
     if (rejson.icon?.mediaType === 'image/svg') {

@@ -69,11 +69,14 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const query = Object.fromEntries(searchParams.entries());
     const method = req.headers.get('x-method'); // 改成自定义 header
+    console.log("method:",method)
 
     if (!method || !(method in methods)) {
+      console.log("method:",method)
       return NextResponse.json({ errMsg: 'Invalid Method' }, { status: 400 });
     }
 
+    console.log("methossssssssssssssssssssssssss",method)
     // ------------------ messagePageData 跨域情况 ------------------
     if (method === 'messagePageData' && query.account && query.account.includes('@')) {
       const { account, pi, menutype, daoid, actorid, w, order, eventnum, v } = query;

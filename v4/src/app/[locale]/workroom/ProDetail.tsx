@@ -5,6 +5,7 @@ import {type ProItem } from './ProHistory'
 import { daism_getTime } from '@/lib/utils/windowjs';
 import { useTranslations } from 'next-intl';
 import { useFetch } from '@/hooks/useFetch';
+import Image from 'next/image';
 
 interface ProDetailProps {
   obj: ProItem;
@@ -23,7 +24,11 @@ export default function ProDetail({ obj }: ProDetailProps) {
   const cssType: React.CSSProperties = { display: 'inline-block', padding: '4px' }
   const [show, setShow] = useState(false)
 
-  const daoMember= useProDetail(obj.dao_id,obj.delegator,obj?.createTime??0)
+  // const daoMember= useProDetail(obj.dao_id,obj.delegator,obj?.createTime??0)
+  const { data} = useFetch<MemberType[]>(`/api/getData?daoId=${obj.dao_id}&delegator=${obj.delegator}&createTime=${obj?.createTime??0}`,
+    'getDaoVote',[]);
+
+ 
 
   return (
     <>
@@ -40,7 +45,7 @@ export default function ProDetail({ obj }: ProDetailProps) {
         <Modal.Body>
           <Row className='mb-3 p-1' style={{ borderBottom: '1px solid gray' }} >
             <Col>
-              <img height={32} width={32} alt='' src={obj.dao_logo ?? '/logo.svg'} />{'  '}
+              <Image height={32} width={32} alt='' src={obj.dao_logo ?? '/logo.svg'} />{'  '}
               <b>{obj.dao_name}({obj.dao_symbol})</b>
             </Col>
           </Row>
@@ -71,7 +76,7 @@ export default function ProDetail({ obj }: ProDetailProps) {
             </Col>
           </Row>
 
-          {daoMember.data.map((m, idx) => (
+          {data &&  data.map((m, idx) => (
             <Row key={idx} className='mb-3 p-1' style={{ borderBottom: '1px solid gray' }} >
               <Col className='Col-auto me-auto'>{m.member_address}{'--->'}{m.member_votes}</Col>
               <Col className='col-auto'>
@@ -104,7 +109,7 @@ function Logs({ obj, t }: LogsProps) {
 
   switch (obj.pro_type) {
     case 0: return <div>{t('delMember')} :{obj.account}</div>
-    case 1: return <img width={32} height={32} src={svgToBase(obj.imgstr ?? '')} alt='' />
+    case 1: return <Image width={32} height={32} src={svgToBase(obj.imgstr ?? '')} alt='' />
     case 2: return <div>{obj.dao_desc}</div>
     case 3: return <div>{t('newManagerText')} :{obj.account}</div>
     case 4: return <div>{t('typeName')} :{obj.dao_desc}</div>
@@ -129,7 +134,3 @@ function Logs({ obj, t }: LogsProps) {
   }
 }
 
-
-export function useProDetail(daoId: number,delegator:string,createTime:number) {
-    return useFetch<MemberType[]>(`/api/getData?daoId=${daoId}&delegator=${delegator}&createTime=${createTime}` ,'getDaoVote');
-  }

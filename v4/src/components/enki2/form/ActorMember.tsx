@@ -8,7 +8,7 @@ import { EditSvg, UploadSvg } from '@/lib/jssvg/SvgCollection';
 import EnkiMember from './EnkiMember';
 import dynamic from 'next/dynamic';
 import DaoItem from '../../federation/DaoItem';
-import { useFollow, useTip } from '@/hooks/useMessageData';
+// import { useFollow, useTip } from '@/hooks/useMessageData';
 import MyFollow from './MyFollow';
 import FollowMe from './FollowMe';
 import EnKiRigester from './EnKiRigester';
@@ -16,6 +16,7 @@ import { useTranslations } from 'next-intl';
 import TipToMe from '../../enki3/TipToMe';
 import ShowLogin,{type ShowLoginRef} from '../../enki3/ShowLogin';
 import Link from 'next/link';
+import { useFetch } from '@/hooks/useFetch';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
@@ -45,10 +46,23 @@ export default function ActorMember({ notice }: ActorMemberProps) {
   const loginRef=useRef<ShowLoginRef>(null);
 
 
-  const follow0 = useFollow(actor.actor_account!, 'getFollow0');
-  const follow1 = useFollow(actor.actor_account!, 'getFollow1');
-  const tipToMe = useTip(actor.manager!, 'getTipToMe');
-  const tipFrom = useTip(actor.manager!, 'getTipFrom');
+  const follow0 = useFetch<ActorInfo[]>(`/api/getData?account=${actor.actor_account??''}`,'getFollow0',[]);
+  //useFollow(actor.actor_account!, 'getFollow0');
+  const follow1 = useFetch<ActorInfo[]>(`/api/getData?account=${actor.actor_account??''}`,'getFollow1',[]);
+  //useFollow(actor.actor_account!, 'getFollow1');
+  
+// export function useFollow(account: string,method:string) {
+//   return useFetch<ActorInfo[]>(`/api/getData?account=${account}` ,method);
+// }
+
+  const tipToMe = useFetch<DaismTipType[]>(`/api/getData?manager=${actor.manager??''}`,'getTipToMe',[]);
+  // useTip(actor.manager!, 'getTipToMe');
+  const tipFrom =  useFetch<DaismTipType[]>(`/api/getData?manager=${actor.manager??''}`,'getTipFrom',[]);
+  //useTip(actor.manager!, 'getTipFrom');
+  // export function useTip(manager: string,method:string) {
+  //   return useFetch<DaismTipType[]>(`/api/getData?manager=${manager}` ,method);
+  // }
+
 
   const dispatch = useDispatch<AppDispatch>();
   const showTip = (str: string) => dispatch(setTipText(str));
@@ -151,20 +165,20 @@ export default function ActorMember({ notice }: ActorMemberProps) {
 
           {actor?.actor_account && (
             <Tabs defaultActiveKey={notice > 0 ? 'tipToMe' : 'follow0'} className="mb-3 mt-3">
-              {follow0.status==='succeeded' && <Tab eventKey="follow0" title={t('followingText', { num: follow0.data.length })}>
-                <div>{ follow0.data.map((obj: ActorInfo) => <MyFollow key={obj.id} isEdit={true} followObj={obj} />)}</div>
+              {follow0.status==='succeeded' && <Tab eventKey="follow0" title={t('followingText', { num: follow0.data?.length??0 })}>
+                <div>{follow0.data && follow0.data.map((obj: ActorInfo) => <MyFollow key={obj.id} isEdit={true} followObj={obj} />)}</div>
               </Tab>
               }
-              {follow1.status==='succeeded' && <Tab eventKey="follow1" title={t('followedText', { num: follow1.data.length })}>
-                <div>{follow1.data.map((obj: ActorInfo) => <FollowMe key={obj.id}  followObj={obj} />)}</div>
+              {follow1.status==='succeeded' && <Tab eventKey="follow1" title={t('followedText', { num: follow1.data?.length??0 })}>
+                <div>{follow1.data && follow1.data.map((obj: ActorInfo) => <FollowMe key={obj.id}  followObj={obj} />)}</div>
               </Tab>
               }
-              {tipToMe.status==='succeeded' && <Tab eventKey="tipToMe" title={t('tipToMe', { num: tipToMe.data.length })}>
-                <div>{tipToMe.data.map((obj: DaismTipType) => <TipToMe key={obj.id}  tipObj={obj} />)}</div>
+              {tipToMe.status==='succeeded' && <Tab eventKey="tipToMe" title={t('tipToMe', { num: tipToMe.data?.length??0 })}>
+                <div>{tipToMe.data&& tipToMe.data.map((obj: DaismTipType) => <TipToMe key={obj.id}  tipObj={obj} />)}</div>
               </Tab>
               }
-              {tipFrom.status==='succeeded' && <Tab eventKey="tipFrom" title={t('tipFrom', { num: tipFrom.data.length })}>
-                <div>{tipFrom.data.map((obj: DaismTipType) => <TipToMe key={obj.id} tipObj={obj} />)}</div>
+              {tipFrom.status==='succeeded' && <Tab eventKey="tipFrom" title={t('tipFrom', { num: tipFrom.data?.length??0 })}>
+                <div>{tipFrom.data && tipFrom.data.map((obj: DaismTipType) => <TipToMe key={obj.id} tipObj={obj} />)}</div>
               </Tab>
              }
             </Tabs>

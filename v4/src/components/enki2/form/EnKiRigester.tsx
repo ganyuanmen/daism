@@ -62,7 +62,7 @@ export default function EnKiRigester({ setRegister }: EnKiRigesterProps) {
       return;
     }
 
-    let ree = await daismObj?.Domain.addr2Info(user.account);
+    const ree = await daismObj?.Domain.addr2Info(user.account);
     if (setRegister) setRegister(false);
     if (ree && ree.domain === domain && ree.name === '0x' + actorName) {
       showClipError(`${actorName}@${domain} ${t('registeredText')}`);

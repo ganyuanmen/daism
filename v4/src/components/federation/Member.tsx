@@ -1,14 +1,15 @@
 import { FC } from "react";
 import { User1Svg } from "@/lib/jssvg/SvgCollection";
 import ShowAddress from "../ShowAddress";
-import { useTranslations } from "next-intl";
+// import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 interface Props {
   messageObj: EnkiMessType;
 }
 
 const Member: FC<Props> = ({ messageObj }) => {
-  const t = useTranslations("ff");
+  // const t = useTranslations("ff");
   const manager = messageObj.manager;
   const account = messageObj?.self_account || messageObj.actor_account;
   const avatar = messageObj?.self_avatar || messageObj.avatar;
@@ -18,7 +19,7 @@ const Member: FC<Props> = ({ messageObj }) => {
     <div style={{ width: "90%" }} className="d-inline-flex align-items-center">
       <a href={`https://${domain}/${enkiName}`} className="daism-a">
         {avatar ? (
-          <img
+          <Image
             src={avatar}
             alt=""
             width={48}

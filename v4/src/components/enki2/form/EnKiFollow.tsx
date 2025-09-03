@@ -1,4 +1,3 @@
-import { client } from "../../../lib/api/client";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState, type AppDispatch, setTipText, setErrText, setMyFollow } from "@/store/store";
@@ -60,7 +59,7 @@ export default function EnKiFollow({ url,account, showText = false }: Props) {
           showClipError(data.errMsg);
         }
       })
-      .catch(err =>{ 
+      .catch(() =>{ 
         closeTip();
         showClipError("Unknown error occurred");
       });

@@ -33,26 +33,28 @@ interface ProItem {
 // ---------------- 组件 ----------------
 
 export default function ProsPage() {
-  const t = useTranslations('my');
+
   const tc = useTranslations('Common');
   const user = useSelector((state: RootState) => state.valueData.user);
   
 
   const [refresh, setRefresh] = useState<boolean>(true);
 
-  const prosData = useMyPro(user.account,refresh);
-
+  // const prosData = useMyPro(user.account,refresh);
+  const { data,status,error} = useFetch<ProItem[]>(`/api/getData?did=${user.account}`,
+    'getMyPros',[refresh]);
+  // export function useMyPro(account: string,refresh:boolean) {
+  //   return useFetch<ProItem[]>(`/api/getData?did=${account}` ,'getMyPros',[refresh]);
+  // }
+  
   return (
     <>
-      {prosData?.data?.length ? (
-        <ProsList prosData={prosData.data} setRefresh={setRefresh} />
-      ) : prosData.status === 'failed' ? (
-        <ShowErrorBar errStr={prosData.error??'get Data error'} />
-      ) : prosData.status === 'succeeded' ? (
-        <ShowErrorBar errStr={tc('noDataText')} />
-      ) : (
-        <Loadding />
-      )}
+      {
+        status==='loading'?<Loadding />
+        :(status==='failed' || !data)? <ShowErrorBar errStr={error ?? ''} />
+        :data.length===0? <ShowErrorBar errStr={tc('noDataText')} />
+        :<ProsList prosData={data} setRefresh={setRefresh} />
+      }
     </>
   );
 }
@@ -96,7 +98,7 @@ function ProsList({ prosData, setRefresh }: ProsListProps) {
         } else {
           if (dao_id > 3) {
             // 第2次升级增加的功能
-            let is_vis = await daismObj?.Dao.isVotable(delegator);
+            const is_vis = await daismObj?.Dao.isVotable(delegator);
             if (!is_vis) {
               showError(t('noVoteText'));
               return;
@@ -175,8 +177,4 @@ function ProsList({ prosData, setRefresh }: ProsListProps) {
       </Card.Body>
     </Card>
   );
-}
-
-export function useMyPro(account: string,refresh:boolean) {
-  return useFetch<ProItem[]>(`/api/getData?did=${account}` ,'getMyPros',[refresh]);
 }

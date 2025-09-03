@@ -14,6 +14,7 @@ import { NavDropdown, Button } from 'react-bootstrap';
 import { BackSvg, TimeSvg, EventSvg } from '@/lib/jssvg/SvgCollection';
 import { type RootState } from '@/store/store';
 import { fetchJson } from '@/lib/utils/fetcher';
+import Image from 'next/image';
 
 
 interface DaoWhere {
@@ -88,9 +89,10 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
             { headers: { 'x-method': 'daoPageData' }});
   
           if (resData) {
-            setHasMore(resData.length >= 10);
+            setHasMore(!(resData.length<10));
             if (daoWhere.currentPageNum === 0) setDaoData(resData);
-            else setDaoData([...daoData, ...resData]);
+            else setDaoData(prev => [...prev, ...resData])
+            //setDaoData([...daoData, ...resData]);
           
           } 
         } catch (error: any) {
@@ -195,7 +197,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
             {daoData.map((obj) => (
               <li key={obj.dao_id} className={navObj?.dao_id === obj.dao_id ? 'scli' : ''}>
                 <span style={{ display: 'inline-block', whiteSpace: 'nowrap' }} onClick={() => daoSelectHandle(obj)}>
-                  <img src={obj.avatar} alt={obj.actor_account} height={24} width={24} />{' '}
+                 {obj.avatar && <Image src={obj.avatar} alt={obj.actor_account??''} height={24} width={24} />}{' '}
                   {obj.actor_account}
                 </span>
               </li>
@@ -219,7 +221,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
                     </span>
                   ) : (
                     <>
-                      {navObj?.isFilter ? '' : navObj?.svg ? navObj.svg : <img src={navObj?.avatar} alt={navObj?.actor_account} height={24} width={24} />}
+                      {navObj?.isFilter ? '' : navObj?.svg ? navObj.svg : navObj?.avatar &&<Image src={navObj.avatar} alt={navObj?.actor_account??''} height={24} width={24} />}
                       {' '}
                       {navObj?.isFilter ? navObj.text : navObj?.text ? t(navObj.text) : navObj?.actor_account}
                     </>
@@ -237,7 +239,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
                     {daoData.map((obj, idx) => (
                       <NavDropdown.Item key={`${obj.dao_id}_${idx}`} className={navObj?.dao_id === obj.dao_id ? 'scli' : ''}>
                         <span style={{ display: 'inline-block', whiteSpace: 'nowrap' }} onClick={() => daoSelectHandle(obj)}>
-                          <img src={obj.avatar} alt={obj.actor_account} height={24} width={24} />{' '}
+                          {obj.avatar && <Image src={obj.avatar} alt={obj.actor_account??''} height={24} width={24} />}{' '}
                           {obj.actor_account}
                         </span>
                       </NavDropdown.Item>

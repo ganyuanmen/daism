@@ -4,6 +4,14 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin();
 
 const config: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**', // 允许所有 https 域名（⚠️可能有安全风险）
+      },
+    ],
+  },
     async redirects() {
         return [
           {

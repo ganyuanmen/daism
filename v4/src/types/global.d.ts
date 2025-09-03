@@ -1,13 +1,10 @@
-// src/types/global.d.ts
-
-import type { ContractTransactionResponse, Contract } from "ethers";
-
-
-
 
 export {};
 
 declare global {
+  interface Window {
+    __MY_CACHE__?: Record<string, { value: any; expire: number }>;
+  }
 
   interface EnkiMessType { //嗯文
     id:number;

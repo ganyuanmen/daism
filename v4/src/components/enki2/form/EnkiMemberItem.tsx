@@ -3,13 +3,14 @@ import TimesItem_m from "../../federation/TimesItem_m";
 import EnkiMember from "./EnkiMember";
 import EnKiFollow from "./EnKiFollow";
 import { useState, useEffect, useRef } from "react";
-import { client } from "../../../lib/api/client";
-import { Button, Overlay, Tooltip } from "react-bootstrap";
+import { Overlay, Tooltip } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { MoreBtn, PinTop } from "../../../lib/jssvg/SvgCollection";
 import TipWindow from "../../federation/TipWindow";
 import {useLocale, useTranslations} from 'next-intl';
 import type { RootState } from "@/store/store";
+import Image from "next/image";
+// import { setCache,getCache } from "@/lib/utils/windowCache";
 
 interface EnkiMemberItemProps {
   messageObj: EnkiMessType;
@@ -21,7 +22,7 @@ interface HonorObj {
 
 export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
   const [honor, setHonor] = useState<HonorObj[]>([]);
-  const [isTop, setIsTop] = useState<boolean>(!!messageObj.is_top);
+  // const [isTop, setIsTop] = useState<boolean>(!!messageObj.is_top);
   const [isFollow, setIsFollow] = useState<boolean>(true); // 默认已关注
 
   const myFollow = useSelector(
@@ -30,10 +31,10 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
   const actor = useSelector((state: RootState) => state.valueData.actor);
   const user = useSelector((state: RootState) => state.valueData.user);
 
-  const t = useTranslations("ff");
+  // const t = useTranslations("ff");
 
   useEffect(() => {
-    let item = myFollow.find(
+    const item = myFollow.find(
       (obj) =>
         obj.actor_account?.toLowerCase() ===
         messageObj?.actor_account?.toLowerCase()
@@ -76,7 +77,10 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
       }
     };
   
-    if (messageObj.dao_id === 0 && messageObj.manager) fetchData();
+    if (messageObj.dao_id === 0 && messageObj.manager) {
+      fetchData();
+
+    }
     return () => { controller.abort();};
   }, [messageObj]);
 
@@ -110,7 +114,7 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
             </div>
           )}
           {!isFollow && <div><EnKiFollow url={messageObj.actor_url} account={messageObj.actor_account} /></div>}
-          {(isTop || messageObj.is_top === 1) && (
+          {(messageObj.is_top === 1) && (
             <div>
               <PinTop size={24} />
             </div>
@@ -265,7 +269,7 @@ function SvgShow({tokensvg,manager}: {tokensvg: string; manager: string;}) {
 
   return (
     <a href={`/${locale}/honortokens/${manager}`} aria-label="honor">
-      <img src={svgToBase(tokensvg)} className="honor" />
+      <Image src={svgToBase(tokensvg)} width={24} height={24} className="honor" alt="" />
     </a>
   );
 }

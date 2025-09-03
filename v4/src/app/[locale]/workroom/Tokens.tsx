@@ -6,7 +6,9 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { type RootState } from '@/store/store';
-import { useMyTokens } from '@/hooks/useMyTokens';
+// import { useMyTokens } from '@/hooks/useMyTokens';
+import Image from 'next/image';
+import { useFetch } from '@/hooks/useFetch';
 
 /**
  * 我的 Token 页面
@@ -15,19 +17,25 @@ export default function Tokens() {
   const tc = useTranslations<'Common'>('Common');
   const user = useSelector((state: RootState) => state.valueData.user); // 钱包用户信息
 
-  const tokensData = useMyTokens(user.account);
+  // const tokensData = useMyTokens(user.account);
+  const { data, status, error } = useFetch<DaismToken[]>(`/api/getData?did=${user.account}`,
+    'getMyTokens',[]);
+
+// export function useMyTokens(account: string) {
+//   return useFetch<DaismToken[]>(`/api/getData?did=${account}` ,'getMyTokens');
+// }
+
 
   return (
     <>
-      {tokensData?.data?.length ? (
-        <TokensPage tokensData={tokensData.data} />
-      ) : tokensData.status === 'failed' ? (
-        <ShowErrorBar errStr={tokensData.error ?? ''} />
-      ) : tokensData.status === 'succeeded' ? (
-        <ShowErrorBar errStr={tc('noDataText')} />
-      ) : (
-        <Loadding />
-      )}
+      {
+        status==='loading'?<Loadding />
+        :(status==='failed' || !data)? <ShowErrorBar errStr={error ?? ''} />
+        :data.length===0? <ShowErrorBar errStr={tc('noDataText')} />
+        : <TokensPage tokensData={data}  />
+      }
+
+     
     </>
   );
 }
@@ -59,7 +67,7 @@ function TokensPage({ tokensData }: TokensPageProps) {
                 href={`/${locale}/workroom/[id]`}
                 as={`/${locale}/workroom/${obj.dao_id}`}
               >
-                <img
+                <Image
                   height={32}
                   width={32}
                   alt=""

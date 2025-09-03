@@ -3,12 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { executeID, getData, execute } from "@/lib/mysql/common";
 import { saveImage, findFirstURI, getTootContent, getClientIp } from "@/lib/utils";
 import { createNote } from '@/lib/activity/index';
-import { signAndSend } from "@/lib/net";
 import { getFollowers_send } from "@/lib/mysql/folllow";
-import { getUser } from "@/lib/mysql/user";
 import { v4 as uuidv4 } from 'uuid';
 
 import { getSession } from '@/lib/session';
+import { sendSignedActivity } from '@/lib/activity/sendSignedActivity';
+import { getSigneActor } from '@/lib/net';
 
 
 export async function POST(request: NextRequest) {
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let _path:string=await saveImage(file) as string;
+    const _path:string=await saveImage(file) as string;
     const message_id = uuidv4().replaceAll('-', '').toLowerCase();
 
     // 查询账户信息
@@ -117,34 +117,23 @@ export async function POST(request: NextRequest) {
       if (pid?.startsWith('http')) {
         // 推回源服务器
         if (inbox) {
-          signAndSend(
-            inbox,
-            accountInfo.actor_name,
-            accountInfo.domain,
-            sendbody,
-            accountInfo.privkey
-          );
+          const localActor=await getSigneActor(accountInfo.actor_url);
+          if(localActor) {
+            sendSignedActivity(inbox,sendbody,localActor);
+          }
         }
       } else {
         // 推送给各服务器
         if (account) {
           getFollowers_send({ account}).then(async (data) => {
-            const localUser = await getUser(
-              'actor_account',
-              accountInfo.actor_account,
-              'privkey,Lower(actor_account) account,actor_name,domain'
-            );
-
-            data.forEach((element: any) => {
+           
+            data.forEach(async (element: any) => {
               if (element.user_account !== accountInfo.actor_account) {
                 try {
-                  signAndSend(
-                    element.user_inbox,
-                    localUser.actor_name,
-                    localUser.domain,
-                    sendbody,
-                    localUser.privkey
-                  );
+                  const localActor=await getSigneActor(accountInfo.actor_url);
+                  if(localActor) {
+                    sendSignedActivity(element.user_inbox,sendbody,localActor);
+                  }
                 } catch (e1) {
                   console.error('Send error:', e1);
                 }

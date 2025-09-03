@@ -2,13 +2,11 @@
 
 
 import EnkiView from '@/components/enki3/EnkiView';
-import { useSelector} from 'react-redux';
 import DaoInfoDiv from '@/components/federation/DaoInfoDiv';
 import DaomemberDiv from '@/components/federation/DaomemberDiv';
 import FollowerDiv from '@/components/federation/FollowerDiv';
 import DomainDiv from '@/components/federation/DomainDiv';
 import { useTranslations } from 'next-intl'
-import { RootState } from '@/store/store';
 import ShowErrorBar from '@/components/ShowErrorBar';
 
 interface ChildProps{
@@ -22,9 +20,9 @@ interface ChildProps{
 
 export default function UserPage({daoActor,actor,accountAr,daoData,daoMember,follower}:ChildProps) {
  
-  const loginsiwe = useSelector((state:RootState) => state.valueData.loginsiwe)
+  
     const tc = useTranslations('Common')
-    const t = useTranslations('ff')
+    
 
     return (
     <>{actor?.id??0>0?

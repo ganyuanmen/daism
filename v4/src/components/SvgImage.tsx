@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useMemo } from 'react';
 
 type SvgImageProps = {
@@ -5,6 +6,9 @@ type SvgImageProps = {
   useBase64?: boolean;
   style?: React.CSSProperties;
   className?: string;
+  width:number;
+  height:number;
+
 };
 
 export const SvgImage: React.FC<SvgImageProps> = ({
@@ -12,6 +16,7 @@ export const SvgImage: React.FC<SvgImageProps> = ({
   useBase64 = true,
   style,
   className,
+  width,height
 }) => {
   const imgSrc = useMemo(() => {
     if (!svgCode) return '';
@@ -26,24 +31,21 @@ export const SvgImage: React.FC<SvgImageProps> = ({
     }
   }, [svgCode, useBase64]);
 
-  const { defaultWidth, defaultHeight } = useMemo(() => {
-    const widthMatch = svgCode.match(/width="([\d.]+)"/);
-    const heightMatch = svgCode.match(/height="([\d.]+)"/);
-    return {
-      defaultWidth: widthMatch ? widthMatch[1] : undefined,
-      defaultHeight: heightMatch ? heightMatch[1] : undefined,
-    };
-  }, [svgCode]);
 
   return (
-    <img
-    src={imgSrc || undefined} 
-    // HTML 属性仅作为默认值，如果 style 提供 width/height，会覆盖
-    width={defaultWidth}
-    height={defaultHeight}
-    style={style}
-    className={className}
-    alt="SVG"
-  />
+  <>{
+      imgSrc? <Image
+      src={imgSrc} 
+      width={width}
+      height={height}
+      style={style}
+      className={className}
+      alt="SVG"
+        />
+      :<></>
+    }
+  
+  </>
+   
   );
 };

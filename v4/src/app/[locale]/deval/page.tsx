@@ -1,5 +1,5 @@
 'use client'
-import {Button, Card } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import UpBox from './UpBox'
 import DownBox from './DownBox';
 import { useSelector } from 'react-redux';
@@ -56,7 +56,6 @@ export default function IADD() {
     const outObjRef = useRef<DaismToken>(outObj);
     const upBalanceRef=useRef<string>(upBalance);
 
-    let daismObj=getDaismContract();
     const NOSELECTTOKEN={dao_id:0,dao_logo:'',dao_name:'',dao_symbol:t('selectTokenText'),delegator:'',token_cost:0,token_id:0};
 
     useEffect(()=>{upBalanceRef.current=upBalance; },[upBalance])
@@ -93,14 +92,12 @@ export default function IADD() {
 
     useEffect(()=>{
     if(user.connected===1) {
-      daismObj=getDaismContract();
       if(inObjRef.current.token_id===-2) setUpBalance(ethBalance);
       else if(inObjRef.current.token_id===-1) setUpBalance(utoBalance);
 
       if(outObjRef.current.token_id===-1) setDownBalance(utoBalance);
     }
     else {
-      daismObj=undefined; 
       setUpVita('');setDownVita('');
       if(inObjRef.current.token_id===-2) setUpBalance('0');
       else if(inObjRef.current.token_id===-1) setUpBalance('0');
@@ -109,13 +106,13 @@ export default function IADD() {
       
 
     }
-    },[user])
+    },[user,ethBalance,utoBalance])
    
  
 
     const setShowValue=(upVita:number,downVita:number,toValue:number,inputValue:number)=>{ 
       if(toValue>0){  
-          let ratio=Math.round((downVita-upVita)/upVita*10000)/100
+          const ratio=Math.round((downVita-upVita)/upVita*10000)/100
           setDownVita(`${downVita.toFixed(6)} (${ratio}%)`);
           setShowButton(!(inputValue>parseFloat(upBalanceRef.current) || toValue<=0));
           setToValue(Math.round(toValue*1000000)/1000000)
@@ -145,7 +142,7 @@ export default function IADD() {
       setUpVita('loading');
       setInputError('');
     
-      if (!daismObj) daismObj = getDaismContract();
+      
       const id = ++requestInputChangeId;
       // 获取路径key并执行对应的处理函数
       const key =(in_id === -2 ? "eth" : in_id === -1 ? "uto" : "token") +
@@ -178,6 +175,7 @@ export default function IADD() {
     const inputValueListenHandlers:Record<string,(inputValue:number,tip_value:number,id:number) => Promise<void>>  = {
       'eth_uto': async (inputValue,tip_value,id) => { //没有打赏功能，但有锻造NFT选择
         console.info(tip_value)
+        const daismObj=getDaismContract();
         const contractObj=daismObj?daismObj.UnitToken:unitToken;
         const e = await contractObj?.getOutputAmount(getEther(inputValue));
         if(!e || !e[0]) return;
@@ -193,6 +191,7 @@ export default function IADD() {
       },
 
       'eth_token': async (inputValue,tip_value,id) => { //有打赏，锻造nft，打赏nft
+        const daismObj=getDaismContract();
         const ethToutokenPrice = await daismObj?.UnitToken.getOutputAmount(getEther(inputValue));
         if(!ethToutokenPrice || !ethToutokenPrice[0]) return;
         const _upvita = parseFloat(fromUtoken(ethToutokenPrice[0]));
@@ -221,7 +220,9 @@ export default function IADD() {
         
       },
 
+      
       'uto_token': async (inputValue,tip_value,id) => { //有打赏，打赏nft
+        const daismObj=getDaismContract();
         const _upvita = inputValue;
         let _tipToValue=0;
         setUpVita(_upvita.toFixed(6));
@@ -252,6 +253,7 @@ export default function IADD() {
       },
 
       'token_uto': async (inputValue,tip_value,id) => {
+        const daismObj=getDaismContract();
         const e0 = await daismObj?.IADD.getPool(inObjRef.current.token_id);
         if(!e0) return;
         const _price = e0.utoken / e0.token;
@@ -260,7 +262,7 @@ export default function IADD() {
         
         const e = await daismObj?.Commulate.daoTokenToUnitToken(getEther(inputValue), inObjRef.current.token_id);
         if(!e)  return;
-        let _downVita = parseFloat(fromUtoken(e));
+        const _downVita = parseFloat(fromUtoken(e));
         let toValue = _downVita;
         
         // 处理打赏
@@ -280,6 +282,7 @@ export default function IADD() {
       },
 
       'token_token': async (inputValue,tip_value,id) => {
+        const daismObj=getDaismContract();
         const e0 = await daismObj?.IADD.getPool(inObjRef.current.token_id);
         if(!e0) return;
         const _price = e0.utoken / e0.token;
@@ -324,6 +327,7 @@ export default function IADD() {
 
     const tokenSelectHandlers: Record<string,( id:number) => Promise<void>> = {
     "eth_uto": async (id) => {
+      const daismObj=getDaismContract();
       const ethToutokenPrice = await daismObj?.UnitToken.getOutputAmount(getEther(1));
       if(!ethToutokenPrice) return;
       if(id===requestSelectId) 
@@ -331,6 +335,7 @@ export default function IADD() {
       
     },
     "eth_token": async (id) => {
+      const daismObj=getDaismContract();
       const ethToutokenPrice = await daismObj?.UnitToken.getOutputAmount(getEther(1));
       if(!ethToutokenPrice) return;
       const e = await daismObj?.Commulate.unitTokenToDaoToken(ethToutokenPrice[0], outObjRef.current.token_id);
@@ -341,6 +346,7 @@ export default function IADD() {
     },
 
     "uto_token": async (id) => {
+      const daismObj=getDaismContract();
       const e = await daismObj?.Commulate.unitTokenToDaoToken(getUtoEther(1), outObjRef.current.token_id);
       if(!e) return;
       if(id===requestSelectId)
@@ -349,6 +355,7 @@ export default function IADD() {
     },
 
     "token_uto": async (id) => {
+      const daismObj=getDaismContract();
       const e = await daismObj?.Commulate.daoTokenToUnitToken(getEther(1), inObjRef.current.token_id);
       if(!e) return;
       if(id===requestSelectId)
@@ -356,6 +363,7 @@ export default function IADD() {
       
     },
     "token_token": async (id) => {
+      const daismObj=getDaismContract();
       const e = await daismObj?.Commulate.DaoTokenToDaoToken(getEther(1), inObjRef.current.token_id, outObjRef.current.token_id);
       if(!e) return;
       if(id===requestSelectId)
@@ -393,6 +401,7 @@ export default function IADD() {
     //计算token 单价
     const getPrice=async (id:number,flag:'up'|'down')=>{
       const ex_id = ++requestBalanceId; // 当前请求的编号
+      const daismObj=getDaismContract();
       const re=await daismObj?.IADD.getPool(id);
       if (ex_id === requestBalanceId){ // 只更新最新请求的结果
         if(re)
@@ -408,6 +417,7 @@ export default function IADD() {
     //计算余额
     const getBalance=async (id:number,flag:'up'|'down')=>{
       const ex_id = ++requestPriceId; // 当前请求的编号
+      const daismObj=getDaismContract();
       const re=await daismObj?.DaoToken.balanceOf(id,user.account);
       if (ex_id === requestPriceId){ // 只更新最新请求的结果
         if(re) {
@@ -422,12 +432,12 @@ export default function IADD() {
     let requestSelectId=0;
     //选择token 触发
     const slectToken=async (obj:DaismToken,flag:'up'|'down')=>{
-      if(!daismObj) daismObj=getDaismContract();
+
       //重复选择
-      let selectToken=flag==='up'?inObj:outObj;
+      const selectToken=flag==='up'?inObj:outObj;
       if(obj.token_id===selectToken.token_id) return; 
 
-      let otherToken=flag==='up'?outObj:inObj;
+      const otherToken=flag==='up'?outObj:inObj;
       if(obj.token_id===otherToken.token_id) handNoSelect(flag); //上下选择相同
 
       //单价

@@ -6,111 +6,6 @@ import { getInboxFromAccount } from '../mysql/message'
 import path from 'node:path';
 import * as fs from "node:fs/promises"; 
 
-// export async function saveHTML(actorName,content,title,mid,textContent,avatar,account,manager,avatar1)
-// {
- 
-//   const filePath = `./enki/${mid.toLowerCase()}.html`  // 指定文件保存路径
-//   const MAX_DESCRIPTION_LENGTH = 160; // 按字节计算
-
-//   const truncatedDescription = textContent.slice(0, MAX_DESCRIPTION_LENGTH).replaceAll('<p>','').replaceAll('</p>','').replace(/\s+\S*$/, '') + '...';
-//   const url=`https://${process.env.NEXT_PUBLIC_DOMAIN}/enki/${mid.toLowerCase()}.html`
-//   // const browser = await puppeteer.launch();
-//   // const page = await browser.newPage();
-//   // await page.goto(url, { waitUntil: 'networkidle0' });
-
-//   // const html = await page.content();
-
-
-//   const html=`<!DOCTYPE html>
-// <html>
-// 	<head>
-// 		<meta charset="utf-8">
-// 		<title>${title}</title>
-//     <link rel="canonical" href="${url}" />
-//     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
-//     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-//     <meta content="${avatar}" property="og:image" />
-//     <meta name="description" content="${truncatedDescription}" />
-//     <meta property="og:title" content="${title}" />
-//     <meta property="og:description" content="${truncatedDescription}" />
-//     <meta name="viewport" content="width=device-width, initial-scale=1" />
-//     <link rel="stylesheet" href="/staticHTML.css" />
-//     <script type="application/ld+json">
-//       {
-//         "@context": "${url}",
-//         "@type": "Article",
-//         "headline": "${title}",
-//         "datePublished": "${new Date().toISOString()}",
-//         "author": { "@type": "Person", "name": "${actorName}" }
-//       }
-//     </script>
-// 	</head>
-// 	<body>
-
-//   <div class="container mt-3 mb-3">
-//   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-// 		  <div class="container-fluid">
-// 		     <a href="/" class="navbar-brand"><img src="/logo.svg" alt="daism Logo" width="32" height="32"></a>
-// 		    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-// 		      <span class="navbar-toggler-icon"></span>
-// 		    </button>
-// 		    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-// 		      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-// 		        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-// 		        <li class="nav-item"><a class="nav-link" href="/deval">DeVal</a></li>
-// 				<li class="nav-item"><a class="nav-link" href="/smartcommons">Smart Commons</a></li>
-// 				<li class="nav-item"><a class="nav-link" href="/honortokens">Honor Tokens</a></li>
-// 				<li class="nav-item"><a class="nav-link" href="/workroom">My Workroom</a></li>
-// 		        <li class="nav-item dropdown">
-// 		          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Social</a>
-// 		          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-// 		            <li><a class="dropdown-item" href="/communities/enki">My Community</a></li>
-// 		            <li><a class="dropdown-item" href="/communities/SC">Public Communities</a></li>
-// 		            <li><a class="dropdown-item" href="/communities/enkier">Personal Socia</a></li>
-// 		          </ul>
-// 		        </li>
-// 				<li class="nav-item dropdown">
-// 				  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">College</a>
-// 				  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-// 				    <li><a class="dropdown-item" href="https://learn.daism.io/">Overview</a></li>
-// 				    <li><a class="dropdown-item" href="https://learn.daism.io/docs.html">Documentation</a></li>
-// 				  </ul>
-// 				</li>
-// 		      </ul>
-// 		    </div>
-// 		  </div>
-// 		</nav>
-
-//     <div class=" mt-2 mb-3 card">
-//       <div class="card-header">
-//         <div class="d-inline-flex align-items-center">
-//         <a href="/smartcommons/actor/${account}" class="daism-a"><img src="${avatar1}" alt="" width="48" height="48" style="border-radius:10px"></a>
-//         <div style="padding-left:2px;width:100%">
-//           <div>${account}</div> 
-//           <div>${manager}</div>
-//         </div>
-//       </div>
-//       </div>
-//       <div class="card-body">
-//         <div class="daismCard">
-//         ${content}
-//         </div>
-//       </div>
-//     </div>
-//   </div>
-// 	</body>
-// </html>`
-//   fs.writeFile(filePath, html, 'utf8', (err) => {
-//     if (err) {
-//       console.error(`${actorName}写入失败:`, err);
-//     } else {
-//       console.info(`${actorName}文件写入成功`);
-//     }
-//   });
-
-
-// }
-
 
 export async function saveImage(file:File)
 {
@@ -168,7 +63,7 @@ export  function findFirstURI(code:string) {
 export  async function getTootContent(tootUrl:string,domain:string) {
     try {
         const myURL = new URL(tootUrl);
-        let targetDomain = myURL.hostname;
+        const targetDomain = myURL.hostname;
         const response = await axios.get(tootUrl);
         const html = response.data;
         const $ = cheerio.load(html);
@@ -182,7 +77,7 @@ export  async function getTootContent(tootUrl:string,domain:string) {
       let content = $('meta[property="og:description"]').attr('content'); //.replaceAll('\n','  ');
       const name=$('meta[property="profile:username"]').attr('content');
       if(!image && name){
-        let actor=await getInboxFromAccount(name); 
+        const actor=await getInboxFromAccount(name); 
         image=actor?.avatar;
 
       }

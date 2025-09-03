@@ -1,12 +1,19 @@
 'use client'
 import { Button, Modal, InputGroup, Form, FormControl } from 'react-bootstrap';
-import { useGetDappOwner } from '@/hooks/useGetDappOwner';
-import { useState, useEffect, useMemo } from 'react';
+// import { useGetDappOwner } from '@/hooks/useGetDappOwner';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslations } from 'next-intl';
 import { Honor } from '@/lib/jssvg/SvgCollection';
 import { RootState, AppDispatch, setTipText, setErrText } from '@/store/store';
 import { getDaismContract } from '@/lib/globalStore';
+import { useFetch } from '@/hooks/useFetch';
+
+export interface DaoType {
+  dao_id: number;
+  dao_name: string;
+  dao_symbol: string;
+}
 
 
 interface Member {
@@ -32,7 +39,15 @@ const Nftmint: React.FC = () => {
   const [firstNameError, setFirstNameError] = useState(false);
   const [firstVoteError, setFirstVoteError] = useState(false);
 
-  const daoData = useGetDappOwner(user.account);
+  // const daoData = useGetDappOwner(user.account);
+  
+  const { data } = useFetch<DaoType[]>(`/api/getData?did=${user.account}`,
+    'getDappOwner',[]);
+  // export function useGetDappOwner(account?: string) {
+  //   return useFetch<DaoType[]>(account ? `/api/getData?did=${account}` : '','getDappOwner');
+  // }
+
+
 
  
   let daismObj=getDaismContract();
@@ -154,7 +169,7 @@ const Nftmint: React.FC = () => {
                 </Button>
               </div>
               <Form.Select id='daoselect' style={{ width: '300px' }}>
-                {daoData?.data?.map((obj, idx) => (
+                {data && data.map((obj, idx) => (
                     <option key={'dao_' + idx} value={obj.dao_id}>
                       {obj.dao_name}(Valuation Token: {obj.dao_symbol})
                     </option>

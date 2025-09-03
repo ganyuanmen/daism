@@ -1,4 +1,4 @@
-import React, {  useRef, useEffect } from "react";
+import React, {  useRef } from "react";
 import {type tipType } from './TipWin'
 
 interface InputBoxProps { 
@@ -21,7 +21,7 @@ export default function InputBox({setTokenValue,setInputError,inputError,tipValu
  
   const inputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let prev = valueRef.current;
-    let cur = e.currentTarget.value.trim();
+    const cur = e.currentTarget.value.trim();
     if (!cur) prev = "";
     else if (cur[0] === "0" && cur[1] !== ".") prev = "0";// 第一位是0，第二位不是.
     else if (!isNaN(parseFloat(cur)) && isFinite(+cur)) prev = cur;  //+cur 一元加号运算符，作用是把 string 转换成 number

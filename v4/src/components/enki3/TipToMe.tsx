@@ -1,5 +1,6 @@
 import { Row, Col } from "react-bootstrap";
 import {useLocale} from 'next-intl';
+import Image from "next/image";
 
 interface TipToMeProps {
   tipObj: DaismTipType;
@@ -13,7 +14,7 @@ export default function TipToMe({ tipObj }: TipToMeProps) {
       style={{ borderBottom: "1px solid #D2D2D2", padding: "5px 2px" }}
     >
       <Col className="d-flex align-items-center">
-        <img src={tipObj.avatar} width={32} height={32} alt="" />
+        <Image src={tipObj.avatar} width={32} height={32} alt="" />
         <span style={{ marginLeft: "8px" }}>{tipObj.actor_account}</span>
       </Col>
       <Col>{tipObj.utoken} UTO</Col>

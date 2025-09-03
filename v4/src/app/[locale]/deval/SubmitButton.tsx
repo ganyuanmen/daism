@@ -1,10 +1,9 @@
-import {type RootState,type AppDispatch, setErrText,setTipText,setEthBalance,setTokenList,setTokenFilter,setUtoBalance} from '@/store/store';
+import {type RootState,type AppDispatch, setErrText,setTipText,setEthBalance,setUtoBalance} from '@/store/store';
 import { ethers } from 'ethers';
 import { Button } from 'react-bootstrap'
 import { useDispatch } from 'react-redux';
 import { SwapTokenSvg } from '@/lib/jssvg/SvgCollection';
 import { useTranslations } from 'next-intl'
-import { client } from '@/lib/api/client';
 import { useSelector } from 'react-redux';
 import {type StatusBarState} from "./StatusBar"
 import {type tipType} from "./TipWin"; 
@@ -85,7 +84,7 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
         const {_isBurnNFT}=geneParas();
             //锻造锻造荣誉通证
          if(tipValue.isShowTip && tipValue.isTip) { //mint
-            daismObj?.SingNft.mintByBurnETH(user.account,tokenValue,_isBurnNFT).then(re => {
+            daismObj?.SingNft.mintByBurnETH(user.account,tokenValue,_isBurnNFT).then(() => {
                 closeTip();
                 daismObj?.signer.provider?.getBalance(user.account).then(e1 => {
                     const _b1 = fromEther(e1)
@@ -142,7 +141,7 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
             closeTip()
             return
         }
-        daismObj?.IADD_EX.ethToDaoToken(tokenValue,outObj.token_id,_uto,status.slippage,user.account,_isMintNFT,_isBurnNFT,user.account).then(e => {
+        daismObj?.IADD_EX.ethToDaoToken(tokenValue,outObj.token_id,_uto,status.slippage,user.account,_isMintNFT,_isBurnNFT,user.account).then(() => {
             closeTip();
             daismObj?.signer.provider?.getBalance(user.account).then(e1 => {
                 const _b1 = fromEther(e1);
@@ -166,7 +165,7 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
             return
         }
         showTip(t('walltSubmitText'));
-        daismObj?.IADD_EX.unitTokenToDaoToken(tokenValue, outObj.token_id,status.slippage,_uto,user.account,_isMintNFT,user.account).then(e => {
+        daismObj?.IADD_EX.unitTokenToDaoToken(tokenValue, outObj.token_id,status.slippage,_uto,user.account,_isMintNFT,user.account).then(() => {
             closeTip();
             daismObj?.UnitToken.balanceOf(user.account).then(e1 => {
                 const _b1 = e1.utoken;
@@ -203,7 +202,7 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
     }
     //_value,_id1,_id2,_minRatio,_uto,recipient,_isMintNFT,_nftRecipient
     const token_token =async () => {
-        const {_uto,_isMintNFT,_tokenId,_isBurnNFT}=geneParas();
+        const {_uto,_isMintNFT,_tokenId}=geneParas();
         showTip(t('walltSubmitText'));
 
            const res=await daismObj?.Commulate.daoTokenToUnitToken(getEther(tokenValue), inObj.token_id) // 计算可以获多少utoken
@@ -215,7 +214,7 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
             return
            }
            const flag=!(_tokenId===inObj.token_id);
-           daismObj?.IADD_EX.daoTokenToDaoToken(tokenValue, inObj.token_id, outObj.token_id,status.slippage,_uto,user.account,_isMintNFT,user.account,flag).then(e => {
+           daismObj?.IADD_EX.daoTokenToDaoToken(tokenValue, inObj.token_id, outObj.token_id,status.slippage,_uto,user.account,_isMintNFT,user.account,flag).then(() => {
             closeTip();
             daismObj?.DaoToken.balanceOf(inObj.token_id, user.account).then(e1 => {
                  const _b1 = e1.token;

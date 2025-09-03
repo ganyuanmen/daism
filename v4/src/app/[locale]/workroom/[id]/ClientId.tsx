@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { getDaismContract } from '@/lib/globalStore';
 import { ethers } from 'ethers';
 import { Card, Button, Modal } from 'react-bootstrap';
-import { type RootState, type AppDispatch, setTipText, setMessageText,setErrText } from '@/store/store';
+import { type RootState, type AppDispatch, setTipText,setErrText } from '@/store/store';
 import Link from 'next/link';
 import { daism_getTime } from '@/lib/utils/windowjs';
 import { type DaoRecord } from '@/lib/mysql/daism';
@@ -19,6 +19,7 @@ import StrategyEdit from './components/StrategyEdit';
 import TypeEdit from './components/TypeEdit';
 import MemberAdd from './components/MemberAdd';
 import MemberList from './components/MemberList';
+import Image from 'next/image';
 
 
 
@@ -158,7 +159,7 @@ const getDivdend=async ()=>{
                 <Modal.Title>{tc('tipText')}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="daism-tip-body">
-                <img alt="" src='/mess1.svg' width={32} height={32} />
+                <Image alt="" src='/mess1.svg' width={32} height={32} />
                 <div className="daism-tip-text">
                     {t("uploadPro")}<br/>
                     <Link  href={`/${locale}/workroom#3`} as={`/${locale}/workroom#3`}>

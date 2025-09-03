@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { User1Svg } from '@/lib/jssvg/SvgCollection';
+import Image from 'next/image';
 
 interface GeneImgProps {
   avatar: string;
@@ -15,7 +16,7 @@ export default function GeneImg({ avatar, hw = 64 }: GeneImgProps) {
   }
 
   return (
-    <img
+    <Image
       src={avatar}
       alt="avatar"
       width={hw}

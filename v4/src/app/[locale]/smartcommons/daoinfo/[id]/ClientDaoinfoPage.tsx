@@ -15,7 +15,6 @@ export default function ClientDaoinfoPage({daoData,daoMember,follower}
     const daoActor=useSelector((state:RootState) => state.valueData.daoActor) as DaismDao[];
 
     const tc = useTranslations('Common')
-    const t = useTranslations('ff')
     const [member,setMember]=useState<DaoMember[]>([])
     const [follow,setFollow]=useState<ActorInfo[]>([])
 

@@ -19,7 +19,7 @@ export default function TypeEdit({daoData,ismember,upPro}:PropsType) {
 
   //修改类型
   const typeEdit=()=>{
-    let _type=typeRef.current?.getData();
+    const _type=typeRef.current?.getData();
 
     if(!_type) {typeRef.current?.notValid(t('noEmpty'));return;}
     setShow(false)
@@ -31,7 +31,7 @@ export default function TypeEdit({daoData,ismember,upPro}:PropsType) {
   return ( <>
     <div className='mb-3 p-1' style={{borderBottom: '1px solid gray'}} >
             <b>{t('typeName')}:</b> {'  '} ({daoData.sctype})
-            {ismember && <Button  style={{marginLeft:30}} onClick={e=>{setShow(true)}}  variant='primary'> 
+            {ismember && <Button  style={{marginLeft:30}} onClick={()=>{setShow(true)}}  variant='primary'> 
                 <EditSvg size={16} /> {t('editTypeText')}
                 </Button>
             }

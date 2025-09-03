@@ -19,6 +19,7 @@ import ShowAddress from "../../ShowAddress";
 
 import { fetchJson } from "@/lib/utils/fetcher";
 import {type RootState,setTipText,setErrText,type AppDispatch} from "@/store/store";
+import Image from "next/image";
 
 interface MessagePageProps {
   tabIndex: number; //修改 所在页面的tab
@@ -86,7 +87,7 @@ export default function MessagePage({
         if (node !== null)
           setDivContent(node?.textContent?.slice(0, 120).replaceAll("\n", "") ?? "");
       },
-      [enkiMessObj]
+      []
     );
   
     const actor = useSelector((state: RootState) => state.valueData.actor);
@@ -109,7 +110,7 @@ export default function MessagePage({
             if(actor?.manager?.toLowerCase()===(process.env.NEXT_PUBLIC_ADMI_ACTOR as string) .toLowerCase()) return true;
             if(path==='enki'){
                 if(daoData){
-                let _member=daoData.find((obj)=>{return obj.dao_id===enkiMessObj.dao_id})
+                const _member=daoData.find((obj)=>{return obj.dao_id===enkiMessObj.dao_id})
                 return !!_member;
                 }
             }else if(path==='enkier'){
@@ -119,7 +120,7 @@ export default function MessagePage({
         }
         setIsEdit(checkIsEdit())
 
-    },[actor,enkiMessObj,loginsiwe,daoData])
+    },[actor,enkiMessObj,loginsiwe,daoData,path])
 
     const ableReply = () => { //是否允许回复，点赞，书签
         if(!loginsiwe || !actor?.actor_account) return false;
@@ -238,9 +239,9 @@ const replyDelCallBack = (index: number,mid:string) => {
         
     const regex = /#([\p{L}\p{N}]+)(?=[^\p{L}\p{N}]|$)/gu;
 
-    const filter = (para:string) => {
-    if(typeof filterTag === 'function') filterTag.call(null,para)
-    };
+    // const filter = (para:string) => {
+    // if(typeof filterTag === 'function') filterTag.call(null,para)
+    // };
 
   const replacedText = enkiMessObj?.content.replace(regex, (match, p1) => {
     const escapedParam = p1.replace(/"/g, '&quot;');
@@ -253,10 +254,10 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
     if (target.classList.contains("tagclass")) {
       const param = target.dataset.param;
       if (param) {
-        filter(param);
+        if(typeof filterTag === 'function') filterTag.call(null,param)
       }
     }
-  }, []);
+  }, [filterTag]);
 
 
   //显示回复记录
@@ -285,7 +286,7 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
             {/* 链接条 */}
             {enkiMessObj?.content_link && <div dangerouslySetInnerHTML={{__html: enkiMessObj.content_link}}></div>}
             {/* 首页图片 */}
-            {enkiMessObj?.top_img && <img  className="mt-2 mb-2" alt="" src={enkiMessObj.top_img} style={{width:'100%'}} /> }
+            {enkiMessObj?.top_img && <Image  className="mt-2 mb-2" alt="" src={enkiMessObj.top_img} style={{width:'100%'}} /> }
             {/* 首页视频 */}
             {enkiMessObj?.vedio_url && <ShowVedio videoUrl={enkiMessObj.vedio_url} /> }
  
@@ -298,13 +299,6 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
                 <div style={{paddingLeft:'10px'}} className="d-inline-flex align-items-center" >
                     <span style={{display:'inline-block',paddingRight:'4px'}}>{t('proposedText')}:</span>{' '}
                     <ImageWithFallback alt="" width={32} height={32} src={enkiMessObj?.self_avatar} fallback="/user.svg"/>
-                    {/* <img alt="" width={32} height={32} src={enkiMessObj?.self_avatar}  style={{borderRadius:'10px'}}
-                      onError={(e) => {
-                        // 图片加载失败时使用默认logo
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/user.svg';
-                      }}
-                      /> */}
                 </div>
                 <div style={{flex:1}}  className="d-flex flex-column flex-md-row justify-content-between ">
                     <span> {enkiMessObj?.self_account} </span>

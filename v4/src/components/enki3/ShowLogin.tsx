@@ -4,8 +4,9 @@ import { Button, Modal } from 'react-bootstrap';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import LoginButton,{type LoginButtonRef} from '../LoginButton';
 import { useState } from 'react';
+import Image from 'next/image';
 
-type ShowLoginProps = {};
+type ShowLoginProps = unknown;
 
 export interface ShowLoginRef {
   checkLogin: () => Promise<boolean>;
@@ -46,7 +47,7 @@ const ShowLogin = forwardRef<ShowLoginRef, ShowLoginProps>((_, ref) => {
         <Modal.Title>{t('loginFailure')}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="daism-tip-body">
-        <img alt="" src="/mess.svg" width={32} height={32} />
+        <Image alt="" src="/mess.svg" width={32} height={32} />
         <div className="daism-tip-text">
           {t('reLoginText')}{' '}
           <Button
@@ -56,7 +57,7 @@ const ShowLogin = forwardRef<ShowLoginRef, ShowLoginProps>((_, ref) => {
               setShowLogin(false);
             }}
           >
-            <img
+            <Image
               alt=""
               src="/loginbutton.svg"
               width={18}
@@ -70,5 +71,5 @@ const ShowLogin = forwardRef<ShowLoginRef, ShowLoginProps>((_, ref) => {
     </Modal>
   );
 });
-
+ShowLogin.displayName="ShowLogin";
 export default ShowLogin;

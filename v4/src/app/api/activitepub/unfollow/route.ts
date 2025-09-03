@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUndo } from "@/lib/activity";
 import { broadcast, getSigneActor } from "@/lib/net";
-import { getUser } from "@/lib/mysql/user";
 import { getData } from "@/lib/mysql/common";
 import { removeFollow } from "@/lib/mysql/folllow";
-import {  getInboxFromUrl, getUserFromUrl } from "@/lib/mysql/message";
+import {  getInboxFromUrl } from "@/lib/mysql/message";
 import { sendSignedActivity } from "@/lib/activity/sendSignedActivity";
 
 interface UnfollowRequestBody {

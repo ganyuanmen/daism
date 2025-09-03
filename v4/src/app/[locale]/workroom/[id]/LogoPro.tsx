@@ -55,7 +55,6 @@ export default function LogoPro({ daoName, setChangeLogo, delegator, setMess }: 
       fileType: 'svg',
       fileContent: imgstr
     }
-1
     try {
       await daismObj?.Dao.addProposal(delegator,pro,logo);
       closeTip();

@@ -1,6 +1,6 @@
 'use client';
 import { useLocale, useTranslations } from 'next-intl'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { NavDropdown } from 'react-bootstrap'
 
@@ -16,6 +16,7 @@ import { useLayout } from '@/contexts/LayoutContext';
 import { type RootState } from '@/store/store'
 import {BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg} from '@/lib/jssvg/SvgCollection'
 import Loading from '@/components/Loadding';
+import Image from 'next/image';
 
 
 interface DaoActor {
@@ -84,14 +85,23 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
     )
   }
 
-  const svgs = [
+  // const svgs = [
+  //   { svg: <TimeSvg size={24} />, text: 'latestText' },
+  //   { svg: <EventSvg size={24} />, text: 'eventText' },
+  //   { svg: <MyFollowSvg size={24} />, text: 'followCommunity' },
+  //   { svg: <BookSvg size={24} />, text: 'bookTapText' },
+  //   { svg: <Heart size={24} />, text: 'likeText' },
+  //   { svg: <EditSvg size={24} />, text: 'publishText' }
+  // ]
+  const svgs = useMemo(() => [
     { svg: <TimeSvg size={24} />, text: 'latestText' },
     { svg: <EventSvg size={24} />, text: 'eventText' },
     { svg: <MyFollowSvg size={24} />, text: 'followCommunity' },
     { svg: <BookSvg size={24} />, text: 'bookTapText' },
     { svg: <Heart size={24} />, text: 'likeText' },
     { svg: <EditSvg size={24} />, text: 'publishText' }
-  ]
+  ], []); // 固定不变
+
 
   const [navObj, setNavObj] = useState<NavObj>(svgs[0])
 
@@ -104,7 +114,24 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
         setDaoData(daoActor.filter((obj) => obj.actor_account))
   }, [daoActor])
 
-  useEffect(() => {latestHandle()}, [daoData])
+  const latestHandle = useCallback(() => {
+    setCurrentObj(null)
+    window.history.replaceState({},'',`${locale === 'en' ? '' : '/zh'}/communities/enki`);
+    setFetchWhere(pre=>({
+      ...pre,
+      currentPageNum: 0,
+      order: 'reply_time',
+      v: 0,
+      account: '',
+      eventnum: 0,
+      where: '',
+      daoid: daoData.map((item) => item.dao_id).join(',')
+    }));
+    setActiveTab(0)
+    setNavObj(svgs[0])
+  },[locale,daoData,svgs]);
+
+  useEffect(() => {latestHandle()}, [daoData,latestHandle])
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(() => {
@@ -145,33 +172,19 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
     setNavObj({ isFilter: true, text: `# ${tag}` })
   }
 
-  const latestHandle = () => {
-    removeUrlParams()
-    setFetchWhere({
-      ...fetchWhere,
-      currentPageNum: 0,
-      order: 'reply_time',
-      v: 0,
-      account: '',
-      eventnum: 0,
-      where: '',
-      daoid: daoData.map((item) => item.dao_id).join(',')
-    })
-    setActiveTab(0)
-    setNavObj(svgs[0])
-  }
+  
 
   const eventHandle = () => {
     removeUrlParams()
-    setFetchWhere({
-      ...fetchWhere,
+    setFetchWhere(pre=>({
+      ...pre,
       currentPageNum: 0,
       account: '',
       v: 0,
       eventnum: 1,
       where: '',
       daoid: daoData.map((item) => item.dao_id).join(',')
-    })
+    }));
     setActiveTab(0)
     setNavObj(svgs[1])
   }
@@ -186,60 +199,60 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
 
   const myFollowHandle = () => {
     removeUrlParams()
-    setFetchWhere({
-      ...fetchWhere,
+    setFetchWhere(pre=>({
+      ...pre,
       currentPageNum: 0,
       account: actorRef.current?.actor_account ?? '',
       eventnum: 0,
       daoid: 0,
       v: 1,
       where: ''
-    })
+    }))
     setNavObj(svgs[2])
     setActiveTab(0)
   }
 
   const myBookHandle = () => {
     removeUrlParams()
-    setFetchWhere({
-      ...fetchWhere,
+    setFetchWhere(pre=>({
+      ...pre,
       currentPageNum: 0,
       account: actorRef.current?.actor_account ?? '',
       eventnum: 0,
       daoid: 0,
       v: 3,
       where: ''
-    })
+    }));
     setActiveTab(0)
     setNavObj(svgs[3])
   }
 
   const myLikeHandle = () => {
     removeUrlParams()
-    setFetchWhere({
-      ...fetchWhere,
+    setFetchWhere(pre=>({
+      ...pre,
       currentPageNum: 0,
       account: actorRef.current?.actor_account ?? '',
       eventnum: 0,
       daoid: 0,
       v: 6,
       where: ''
-    })
+    }))
     setActiveTab(0)
     setNavObj(svgs[4])
   }
 
   const daoSelectHandle = (obj: DaoActor) => {
     removeUrlParams()
-    setFetchWhere({
-      ...fetchWhere,
+    setFetchWhere(pre=>({
+      ...pre,
       currentPageNum: 0,
       where: '',
       eventnum: 0,
       v: 0,
       daoid: obj.dao_id,
       account: obj.actor_account
-    })
+    }))
     setActiveTab(0)
     setNavObj(obj)
   }
@@ -317,7 +330,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
                         }}
                         onClick={() => daoSelectHandle(obj)}
                       >
-                        <img
+                        <Image
                           src={obj.dao_logo}
                           alt={obj.actor_account}
                           height={24}
@@ -352,10 +365,10 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
                         ''
                       ) : navObj?.svg ? (
                         navObj.svg
-                      ) : (
-                        <img
+                      ) : (navObj.dao_logo &&
+                        <Image
                           src={navObj.dao_logo}
-                          alt={navObj.actor_account}
+                          alt={navObj.actor_account??''}
                           height={24}
                           width={24}
                         />
@@ -434,7 +447,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
                               }}
                               onClick={() => daoSelectHandle(obj)}
                             >
-                              <img
+                              <Image
                                 src={obj.dao_logo}
                                 alt={obj.actor_account}
                                 height={24}

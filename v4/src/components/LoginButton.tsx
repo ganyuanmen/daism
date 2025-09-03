@@ -26,7 +26,7 @@ const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = 
   const showLoadding = (str: string) => dispatch(setTipText(str));
   const showTip = (str: string) => dispatch(setErrText(str));
   const showError = (str: string) => dispatch(setErrText(str));
-  let daismObj=getDaismContract();
+   const daismObj=getDaismContract();
 
   async function createSiweMessage(): Promise<SiweMessage> {
     const res = await fetch(`/api/siwe/nonce`);

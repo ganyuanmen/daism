@@ -69,7 +69,7 @@ function GeneImg({ avatar, hw=48 }: GeneImageProps) {
   }
 
   return (
-    <img
+    <Image
       src={avatar}
       alt="avatar"
       width={hw}

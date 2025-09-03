@@ -2,6 +2,7 @@ import ShowAddress from '../ShowAddress';
 import Link from 'next/link';
 import { Card, Row, Col } from 'react-bootstrap';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 
 
@@ -22,7 +23,7 @@ export default function DaoItem({ record }: DaoItemProps) {
         <Card.Body>
           <Row>
             <Col className="col-auto me-auto  d-flex align-items-center">
-              <img
+              <Image
                 alt={record.dao_name}
                 width={48}
                 height={48}

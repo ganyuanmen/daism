@@ -14,11 +14,17 @@ interface OutboxCollection {
   "@context": string[];
 }
 
+// export async function GET(
+//   request: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   const { id: name } = params;
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id: name } = params;
+  const { id:name } = await params;
 
   if (!name) {
     return new NextResponse('Bad request.', { status: 400 });

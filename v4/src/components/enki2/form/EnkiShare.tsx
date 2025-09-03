@@ -2,6 +2,7 @@ import { Button, Modal, Overlay, Tooltip } from "react-bootstrap";
 import { useState, useRef, useEffect } from "react";
 import { LocationSvg } from '@/lib/jssvg/SvgCollection';
 import { useTranslations } from 'next-intl'
+import Image from "next/image";
 
 
 // 定义组件 props 类型
@@ -131,7 +132,7 @@ export default function EnkiShare({ content, currentObj }: EnkiShareProps) {
                 onClick={copyUrl}
                 ref={target1}
               >
-                <img src='/clipboard.svg' alt="clipboard" width={16} height={16} /> 
+                <Image src='/clipboard.svg' alt="clipboard" width={16} height={16} /> 
                 {t('copyText')}
               </Button> 
             </div>
@@ -146,7 +147,7 @@ export default function EnkiShare({ content, currentObj }: EnkiShareProps) {
               onClick={getHtml}
               ref={target2}
             >
-              <img src='/clipboard.svg' alt="clipboard" width={16} height={16} /> 
+              <Image src='/clipboard.svg' alt="clipboard" width={16} height={16} /> 
               {t('copyLinkText')}
             </Button>
           </div>

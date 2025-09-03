@@ -22,7 +22,7 @@ export default function FollowMe({ followObj, isEdit = false }: Props) {
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe) as boolean;
   const myFollow = useSelector((state: RootState) => state.valueData.myFollow) as DaismFollow[];
 
-  const checkFollow = (obj: ActorInfo): boolean => {
+  const checkFollow = (): boolean => {
     const item = myFollow.find((f: DaismFollow) => f.actor_account.toLowerCase() === followObj.account?.toLowerCase());
     return !!item;
   };
@@ -59,7 +59,7 @@ export default function FollowMe({ followObj, isEdit = false }: Props) {
 
       </Col>
       <Col>
-        {isEdit && loginsiwe && actor?.actor_account && !checkFollow(followObj) && (
+        {isEdit && loginsiwe && actor?.actor_account && !checkFollow() && (
           <EnKiFollow url={followObj.url} account={followObj.account} showText={true} />
         )}
       </Col>

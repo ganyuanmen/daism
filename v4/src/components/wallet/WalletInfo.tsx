@@ -2,12 +2,14 @@
 
 import { Dropdown } from "react-bootstrap";
 import Image from "next/image";
-import {useRef,useEffect, useState, SetStateAction, Dispatch } from "react";
-import { useDispatch } from 'react-redux';
+import {useRef,useEffect, useState } from "react";
+// import { useDispatch } from 'react-redux';
 import {useTranslations } from 'next-intl';
 import { useLayout } from '@/contexts/LayoutContext';
+// import { useStableCallbackRef } from "@/hooks/useStableCallbackRef";
+// import { current } from "@reduxjs/toolkit";
 // import { onDisconnect,updateLoginData,checkNetwork,recorLogin,showError } from "@/lib/utils/labriry";
-import {type AppDispatch} from '@/store/store';
+// import {type AppDispatch} from '@/store/store';
   
     interface ChildProps { 
       providers: WalletProviderType[],
@@ -25,14 +27,62 @@ import {type AppDispatch} from '@/store/store';
     const [connecting, setConnecting] = useState(false); // 连接状态
     const providerRef = useRef<WalletProviderType | null>(null); // 当前选择的提供者
     const tc = useTranslations('Common');
-    const dispatch: AppDispatch = useDispatch();
+    // const dispatch: AppDispatch = useDispatch();
     
     const netWorkSwitchRef = useRef<(() => void) | null>(null); 
     const userSwithRef = useRef<(() => void) | null>(null);
     const { isShowBtn, setIsShowBtn } = useLayout(); 
+    // const recorLoginRef = useStableCallbackRef(recorLogin);
+    // const setIsShowBtnRef = useStableCallbackRef(setIsShowBtn);
+
+    
+       
+// 连接钱包
+const connectWallet =async (providerWithInfo: WalletProviderType) => {
+  providerRef.current = providerWithInfo;
+  setConnecting(true);
+  
+  try { // 请求账户访问权限
+      const accounts = await providerWithInfo.provider.request({method: 'eth_requestAccounts' });
+      
+      const tempAccount = accounts?.[0];
+      if (!tempAccount){
+          showError('No accounts found');
+          return;
+      }
+
+      // 先移除旧的监听器
+      if (netWorkSwitchRef.current) {
+          netWorkSwitchRef.current();
+          netWorkSwitchRef.current = null;
+      }
+      if (userSwithRef.current) {
+          userSwithRef.current();
+          userSwithRef.current = null;
+      }
+       
+      setupChainChangeListener(providerWithInfo.provider,tempAccount); // 网络切换监听
+      setupUserSwithchListener(providerWithInfo.provider); // 监听账户变化
+      updateLoginData(tempAccount,providerWithInfo);
+
+  } catch (err) {
+      window.sessionStorage.setItem("providerinfoname", '');
+      window.sessionStorage.setItem("isLogin", ""); 
+      console.error("Wallet connection error:", err);
+      showError(tc('connectionFailed'));
+  } finally {
+      setConnecting(false);
+  }
+  }
+
+  // const connectWalletRef = useStableCallbackRef(connectWallet);
 
   // 恢复登录状态
   useEffect(() => {
+    // const connectWallet = connectWalletRef.current;
+    // const recorLogin = recorLoginRef.current;
+    // const setIsShowBtn = setIsShowBtnRef.current;
+  
     if (providers.length > 0) {
       const providerName = window.sessionStorage.getItem("providerinfoname");
       
@@ -52,46 +102,10 @@ import {type AppDispatch} from '@/store/store';
         setIsShowBtn(true);
       }
     }
-  }, [providers, dispatch]);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [providers]);
 
-   
-// 连接钱包
-const connectWallet = async (providerWithInfo: WalletProviderType) => {
-    providerRef.current = providerWithInfo;
-    setConnecting(true);
-    
-    try { // 请求账户访问权限
-        const accounts = await providerWithInfo.provider.request({method: 'eth_requestAccounts' });
-        
-        const tempAccount = accounts?.[0];
-        if (!tempAccount){
-            showError('No accounts found');
-            return;
-        }
 
-        // 先移除旧的监听器
-        if (netWorkSwitchRef.current) {
-            netWorkSwitchRef.current();
-            netWorkSwitchRef.current = null;
-        }
-        if (userSwithRef.current) {
-            userSwithRef.current();
-            userSwithRef.current = null;
-        }
-         
-        setupChainChangeListener(providerWithInfo.provider,tempAccount); // 网络切换监听
-        setupUserSwithchListener(providerWithInfo.provider); // 监听账户变化
-        updateLoginData(tempAccount,providerWithInfo);
-
-    } catch (err) {
-        window.sessionStorage.setItem("providerinfoname", '');
-        window.sessionStorage.setItem("isLogin", ""); 
-        console.error("Wallet connection error:", err);
-        showError(tc('connectionFailed'));
-    } finally {
-        setConnecting(false);
-    }
-    };
 
     // 处理网络切换（使用匿名函数）
 const setupChainChangeListener = (provider: any,account:string) => {

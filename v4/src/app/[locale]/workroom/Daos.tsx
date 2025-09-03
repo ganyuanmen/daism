@@ -8,6 +8,7 @@ import CreateDao from '@/components/my/CreateDao';
 import { useSelector } from 'react-redux';
 import { type RootState } from '@/store/store';
 import { useFetch } from '@/hooks/useFetch';
+import Image from 'next/image';
 
 interface DaoItem {
   dao_id: string | number;
@@ -25,20 +26,22 @@ export default function Daos() {
   const tc = useTranslations('Common');
   const user = useSelector((state: RootState) => state.valueData.user); // 钱包用户信息
 
-  const daosData = useMyDaoData(user.account);
+  const { data, status, error } = useFetch<DaoItem[]>(`/api/getData?did=${user.account}`,
+    'getMyDaos',[]);
+  // const daosData = useMyDaoData(user.account);
+  
+
 
   return (
     <>
       <CreateDao   />
-      {daosData?.data?.length ? (
-        <DaosPage daosData={daosData.data}  />
-      ) : daosData.status === 'failed' ? (
-        <ShowErrorBar errStr={daosData.error ?? ''} />
-      ) : daosData.status === 'succeeded' && !daosData.data.length ? (
-        <ShowErrorBar errStr={tc('noDataText')} />
-      ) : (
-        <Loadding />
-      )}
+      {
+        status==='loading'?<Loadding />
+        :(status==='failed' || !data)? <ShowErrorBar errStr={error ?? ''} />
+        :data.length===0? <ShowErrorBar errStr={tc('noDataText')} />
+        : <DaosPage daosData={data}  />
+      }
+     
     </>
   );
 }
@@ -71,7 +74,7 @@ function DaosPage({ daosData }: DaosPageProps) {
               style={{ borderBottom: '1px solid gray' }}
             >
               <Col className="col-auto me-auto">
-                <img
+                <Image
                   alt=""
                   width={32}
                   height={32}
@@ -105,7 +108,3 @@ function DaosPage({ daosData }: DaosPageProps) {
 }
 
 
-
-export function useMyDaoData(account: string) {
-  return useFetch<DaoItem[]>(`/api/getData?did=${account}` ,'getMyDaos');
-}

@@ -34,7 +34,7 @@ export function useSessionCheck(): SessionCheckResult {
         setIsAuthenticated(false);
         setUser(null);
       }
-    } catch (err) {
+    } catch  {
       setError('Failed to check session');
       setIsAuthenticated(false);
       setUser(null);

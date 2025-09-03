@@ -124,9 +124,9 @@ const recorLogin=()=>{
   const actor = window.sessionStorage.getItem("actor");
   const myFollow = window.sessionStorage.getItem("myFollow");
 
-  daoActor && dispatch(setDaoActor(JSON.parse(daoActor)));
-  actor && dispatch(setActor(JSON.parse(actor)));
-  myFollow && dispatch(setMyFollow(JSON.parse(myFollow)));
+ if(daoActor) dispatch(setDaoActor(JSON.parse(daoActor)));
+ if(actor) dispatch(setActor(JSON.parse(actor)));
+ if(myFollow)  dispatch(setMyFollow(JSON.parse(myFollow)));
 }
   return (
     <>

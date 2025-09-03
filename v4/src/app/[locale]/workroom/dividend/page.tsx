@@ -10,7 +10,8 @@ import { useSelector } from 'react-redux';
 import { type RootState } from "@/store/store";
 import ShowAddress from '@/components/ShowAddress'
 
-import { usePageFetch, type FetchResult } from "@/hooks/usePageFetch"; // 导入 FetchResult 类型
+import { usePageFetch } from "@/hooks/usePageFetch"; // 导入 FetchResult 类型
+import Image from "next/image";
 
 interface DividType {
   delegator: string;
@@ -25,42 +26,51 @@ interface DividType {
 }
 
 interface DividendPageProps {
-  dividendData: FetchResult<DividType[]>; // 使用 FetchResult 类型
+  dividendData: DividType[]; // 使用 FetchResult 类型
 }
 
-interface UseGetDividendParams {
-  currentPageNum: number;
-  did: string;
-}
+// interface UseGetDividendParams {
+//   currentPageNum: number;
+//   did: string;
+// }
 
 /**
  * 我的奖励
  */
 export default function Dividend() {
-  const t = useTranslations('my')
+
   const tc = useTranslations('Common')
 
   const user = useSelector((state: RootState) => state.valueData.user) //钱包用户信息
 
   const [currentPageNum, setCurrentPageNum] = useState<number>(1); //当前页
-  const dividendData = useGetDividend({ currentPageNum, did: user.account })
+  // const dividendData = useGetDividend({ currentPageNum, did: user.account })
+
+  const { rows, total, pages, status, error } = usePageFetch<DividType[]>(
+    `/api/getData?ps=20&pi=${currentPageNum}&did=${user.account}`,
+    'getDividend');
+
+  
+// function useGetDividend({ currentPageNum, did }: UseGetDividendParams): FetchResult<DividType[]> {
+//   return usePageFetch<DividType[]>(`/api/getData?ps=20&pi=${currentPageNum}&did=${did}`, 'getDividend');
+// }
 
   return (
   <>
     <div style={{ marginTop: "20px" }} >
       {user.connected < 1 ? <ShowErrorBar errStr={tc('noConnectText')} />
         :<>
-          {dividendData.status === 'loading'?<Loadding />
-          :dividendData.status === 'failed'?<ShowErrorBar errStr={dividendData.error || ''} />
-          :dividendData.rows.length===0?<ShowErrorBar errStr={tc('noDataText')} />
+          {status === 'loading'?<Loadding />
+          :(status === 'failed')?<ShowErrorBar errStr={error || ''} />
+          :rows.length===0?<ShowErrorBar errStr={tc('noDataText')} />
             :<>
-                <DividendPage dividendData={dividendData} />
+                <DividendPage dividendData={rows} />
                 <PageItem 
-                records={dividendData.total} 
-                pages={dividendData.pages} 
+                records={total} 
+                pages={pages} 
                 currentPageNum={currentPageNum} 
                 setCurrentPageNum={setCurrentPageNum} 
-                postStatus={dividendData.status} 
+                postStatus={status} 
                 />
             </>
            }
@@ -84,11 +94,11 @@ function DividendPage({ dividendData }: DividendPageProps) {
       </tr>
     </thead>
     <tbody>
-      {dividendData.rows.map((obj, idx) =>
+      {dividendData.map((obj, idx) =>
 
         <tr key={idx}  >
           <td  >
-            <img alt="" width={32} height={32} src={obj.dao_logo ? obj.dao_logo : '/logo.svg'} />
+            <Image alt="" width={32} height={32} src={obj.dao_logo ? obj.dao_logo : '/logo.svg'} />
             {'  '}<b>{obj.dao_name}(Valuation Token: {obj.dao_symbol})</b>
           </td>
           <td><ShowAddress address={obj.account} /></td>
@@ -99,8 +109,4 @@ function DividendPage({ dividendData }: DividendPageProps) {
       }
     </tbody>
   </Table>
-}
-
-function useGetDividend({ currentPageNum, did }: UseGetDividendParams): FetchResult<DividType[]> {
-  return usePageFetch<DividType[]>(`/api/getData?ps=20&pi=${currentPageNum}&did=${did}`, 'getDividend');
 }

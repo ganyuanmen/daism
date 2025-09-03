@@ -63,7 +63,7 @@ export default function EnkiView({
     t("myEnkiText", { num: personNum })
   );
 
-  const tc = useTranslations("Common");
+  // const tc = useTranslations("Common");
 
   const paras = {
     home: "home",

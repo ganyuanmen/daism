@@ -1,55 +1,7 @@
 
 import { getData } from '../mysql/common';
-// import crypto from 'crypto';
-// import request from 'request';
 import { sendSignedActivity,type SigneActor } from '../activity/sendSignedActivity';
 import { getUser } from '../mysql/user';
-
-// export async function signAndSend(url: any, name: any, domain: any, message: any, privkey: any): Promise<void> {
-//     if (process.env.IS_DEBUGGER === '1') {
-//         console.info(`${new Date().toLocaleString()}: signAndSend --->`, [url, name, domain, message]);
-//     }
-
-//     const myURL: any = new URL(url);
-//     const targetDomain: any = myURL.hostname;
-//     const inboxFragment: any = url.replace('https://' + targetDomain, '');
-
-//     const digestHash: any = crypto.createHash('sha256').update(JSON.stringify(message)).digest('base64');
-//     const signer: any = crypto.createSign('RSA-SHA256');
-
-//     const d: any = new Date();
-//     const stringToSign: any = `(request-target): post ${inboxFragment}\nhost: ${targetDomain}\ndate: ${d.toUTCString()}\ndigest: SHA-256=${digestHash}\ncontent-type: application/activity+json`;
-
-//     signer.update(stringToSign);
-//     signer.end();
-
-//     const signature: any = signer.sign(privkey);
-//     const signature_b64: any = signature.toString('base64');
-
-//     const header: any = `keyId="https://${domain}/api/activitepub/users/${name}",algorithm="rsa-sha256",headers="(request-target) host date digest content-type",signature="${signature_b64}"`;
-
-//     request({
-//         url,
-//         headers: {
-//             'Host': targetDomain,
-//             'Date': d.toUTCString(),
-//             'Digest': `SHA-256=${digestHash}`,
-//             'Signature': header,
-//             'content-type': 'application/activity+json'
-//         },
-//         method: 'POST',
-//         json: true,
-//         body: message
-//     }, (error: any, response: any) => {
-//         if (error) {
-//             console.error('signAndSend Error:', error, (response && response.body) ? response.body : '');
-//         } else {
-//             if (process.env.IS_DEBUGGER === '1') {
-//                 console.info(`signAndSend Info: Code:${response?.statusCode}, Response:${response?.body?.error}`);
-//             }
-//         }
-//     });
-// }
 
 interface FirstActor{
   privkey:string;

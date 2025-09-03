@@ -1,11 +1,11 @@
-import { getData, execute, getJsonArray } from './common';
+import { getData, execute} from './common';
 import { getSigneActor, httpGet } from "../net"; 
 import { getUser } from './user';
 import { getFollowers_send } from './folllow';
 import { createAnnounce } from '../activity';
 import { sendfollow } from '../utils/sendfollow';
 import { sendcommont } from '../utils/sendcommont';
-import { sendSignedActivity, SigneActor } from '../activity/sendSignedActivity';
+import { sendSignedActivity } from '../activity/sendSignedActivity';
 
 ////pi,menutype,daoid,w,actorid:嗯文人ID,account,order,eventnum
 // menutype 1 我的社区，2 公区社区 3 个人社区
@@ -15,7 +15,7 @@ import { sendSignedActivity, SigneActor } from '../activity/sendSignedActivity';
 export async function messagePageData(params: any): Promise<any[]> {
   const { pi, menutype, daoid, w, actorid, account, order, eventnum, v } = params;
   let sql = `select a.* from v_message${parseInt(menutype) === 3 ? '' : 'sc'} a where 1=1`;
-  let sctype = '';
+  // let sctype = '';
 
   switch(parseInt(menutype)) {
     case 1:
@@ -28,14 +28,14 @@ export async function messagePageData(params: any): Promise<any[]> {
         if(parseInt(eventnum) === 1) sql = `${sql} and _type=1`;
         else if(parseInt(eventnum) === 8) sql = `select a.* from v_messagesc a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`;
       }
-      sctype = 'sc';
+      // sctype = 'sc';
       break;
     case 2:
       if(parseInt(daoid) > 0) sql = `select * from v_messagesc a where dao_id=${daoid}`;
       else if(parseInt(eventnum) === 1) sql = "select * from v_messagesc a where _type=1";
       else if(parseInt(eventnum) === 8) sql = `select * from v_messagesc a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`;
       else if(parseInt(eventnum) === 9) sql = `select * from v_messagesc a where actor_id=${actorid}`;
-      sctype = 'sc';
+      // sctype = 'sc';
       break;
     default:
       if(parseInt(eventnum) === 1) sql = `select a.* from v_message a where ((a.send_type=0 and a.actor_account='${account}') or a.receive_account='${account}')`;
@@ -54,7 +54,7 @@ export async function messagePageData(params: any): Promise<any[]> {
   re = re.filter(obj => obj.is_top === 0);
 
   if(parseInt(pi) === 0) {
-    let re1: any[] = await getData(`${sql} and a.is_top=1 order by ${order} desc`, []);
+    const re1: any[] = await getData(`${sql} and a.is_top=1 order by ${order} desc`, []);
     re = [...re1, ...re];
   }
 
@@ -73,24 +73,24 @@ export async function getEnkiTotal(params: any): Promise<EnkiTotal[]> {
   } else {
     sql = 'SELECT COUNT(*) AS total FROM v_message WHERE LOWER(actor_account)=? and send_type=0 UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
   }
-  let re: any = await getData(sql, [account, actorid, account]);
+  const re: any = await getData(sql, [account, actorid, account]);
   return re;
 }
 
 // ====================== DAO 分页 ======================
 export async function daoPageData(params: any): Promise<any[]> {
   const { pi, w } = params;
-  let sql = w
+  const sql = w
     ? `SELECT dao_id,actor_account,avatar FROM a_account WHERE dao_id>0 and actor_name like '%${w}%' order by id limit ${Number(pi)*10},10`
     : `SELECT dao_id,actor_account,avatar FROM a_account WHERE dao_id>0 order by id limit ${Number(pi)*10},10`;
-  let re: any[] = await getData(sql, []);
+  const re: any[] = await getData(sql, []);
   return re;
 }
 
 // ====================== 消息操作 ======================
 export async function insertMessage(account: any, message_id: any, pathtype: any, contentType: any, idx: any): Promise<void> {
   const sctype = pathtype === 'enkier' ? '' : 'sc';
-  let re: any = await getData(`SELECT message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,title,content,top_img FROM v_message${sctype} WHERE message_id=?`, [message_id], true);
+  const re: any = await getData(`SELECT message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,title,content,top_img FROM v_message${sctype} WHERE message_id=?`, [message_id], true);
 
   const linkUrl = `https://${process.env.NEXT_PUBLIC_DOMAIN}/communities/${pathtype}/${message_id}`;
   let sql: string;
@@ -125,7 +125,7 @@ export async function updateNotice(params: any): Promise<any> {
 export async function replyPageData(params: any): Promise<any[]> {
   const { pi, sctype, pid } = params;
   const sql = `SELECT * FROM v_message${sctype}_commont WHERE pid=? ORDER BY bid DESC, createtime ASC LIMIT ${pi*20},20`;
-  let re: any[] = await getData(sql, [pid]);
+  const re: any[] = await getData(sql, [pid]);
   return re;
 }
 
@@ -145,7 +145,7 @@ export async function messageDel(params: any): Promise<any> {
                                           : await execute(`DELETE FROM a_message WHERE message_id=?`, [mid]);
     if(lok && !rAccount) sendfollow(account, '', '', '', mid, sctype==='sc'?'enki':'enkier', '', 'Delete');
   } else {
-    let lok: any = await execute(`CALL del_commont(?,?,?)`, [sctype, mid, pid]);
+    const lok: any = await execute(`CALL del_commont(?,?,?)`, [sctype, mid, pid]);
     if(lok) sendcommont(account, mid, sctype==='sc'?'enki':'enkier');
   }
 }
@@ -207,13 +207,13 @@ export async function getLastDonate({ did }: any): Promise<any> {
 // 获取一条嗯文
 export async function getOne({ id, sctype }: any): Promise<EnkiMessType> {
     const re: any = await getData(`SELECT * FROM v_message${sctype} WHERE ${id.length < 10 ? 'id' : 'message_id'}=?`, [id]);
-    return re.length ? re[0] : {};
+    return re.length ? re[0] : {} as EnkiMessType;
 }
 
 // 获取一条嗯文
 export async function getOneByMessageId(id1: any, id2: any, sctype: any): Promise<EnkiMessType> {
     const re: any = await getData(`SELECT * FROM v_message${sctype} WHERE message_id=? OR message_id=?`, [id1, id2]);
-    return re.length ? re[0] : {};
+    return re.length ? re[0] : {} as EnkiMessType;
 }
 
 // 获取是否已转发
@@ -306,7 +306,7 @@ export async function getLocalInboxFromUrl(url: any): Promise<ActorInfo> {
 // 从 URL 获取 Inbox
 export async function getInboxFromUrl(url: string, type: string = 'application/activity+json'): Promise<ActorInfo> {
     const myURL: any = new URL(url);
-    let obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '',
+    const obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '',
        manager: '' };
     let re: any = await httpGet(url, { "Content-Type": type });
     if (re.code !== 200) return obj;
@@ -332,7 +332,7 @@ export async function getUserFromUrl({ url }: any): Promise<ActorInfo> {
     const reData=await getLocalInboxFromUrl(url);
     if(reData.inbox && reData.account && reData.url) return reData;
     const myURL: any = new URL(url);
-    let obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '' };
+    const obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '' };
     let re: any = await httpGet(url, { "Content-Type": 'application/activity+json' });
     if (re.code !== 200) return obj;
     re = re.message;

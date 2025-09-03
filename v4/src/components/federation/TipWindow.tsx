@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, Button, InputGroup, Form, Alert } from "react-bootstrap";
 import { YesSvg } from "../../lib/jssvg/SvgCollection";
 import { useTranslations } from "next-intl";
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {type RootState, type AppDispatch, setTipText, setErrText } from "@/store/store";
 import Member from "./Member";
 import { getDaismContract } from "@/lib/globalStore";
+import Image from "next/image";
 
 interface TipWindowProps {
   owner: string;
@@ -90,7 +91,7 @@ export default function TipWindow({ owner, messageObj }: TipWindowProps) {
           utoken: messageObj.utoken,
         })}
       >
-        <img
+        <Image
           src="/vita.svg"
           width={20}
           height={24}
@@ -178,7 +179,7 @@ export default function TipWindow({ owner, messageObj }: TipWindowProps) {
           <Modal.Title>{t("blanceTipText")}</Modal.Title>
         </Modal.Header>
         <Modal.Body className="daism-tip-body">
-          <img alt="" src="/mess.svg" width={32} height={32} />
+          <Image alt="" src="/mess.svg" width={32} height={32} />
           <div className="daism-tip-text">
             {t("InsufficientBalance")}
             <p>

@@ -1,7 +1,6 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { BookTap } from "@/lib/jssvg/SvgCollection";
-import { useGetHeartAndBook } from "@/hooks/useMessageData";
-import { client } from "../../../lib/api/client";
+// import { useGetHeartAndBook } from "@/hooks/useMessageData";
 import { useSelector, useDispatch } from "react-redux";
 import {
   type RootState,
@@ -13,6 +12,8 @@ import { useTranslations } from "next-intl";
 import { Button } from "react-bootstrap";
 import Loadding from "@/components/Loadding";
 import ShowErrorBar from "@/components/ShowErrorBar";
+import { useFetch } from "@/hooks/useFetch";
+import { HeartAndBookType } from "@/lib/mysql/message";
 
 interface EnKiBookmarkProps {
   isEdit: boolean;
@@ -43,8 +44,7 @@ export default function EnKiBookmark({
   const actor = useSelector((state: RootState) => state.valueData.actor);
   const t = useTranslations("ff");
   const tc = useTranslations("Common");
-  const [refresh, setRefresh] = useState(false);
-
+  
   const getSctype = (): string => {
     return path === "enki" || path === "SC"
       ? "sc"
@@ -55,7 +55,17 @@ export default function EnKiBookmark({
       : "";
   };
 
-  const resData = useGetHeartAndBook(actor?.actor_account,currentObj?.message_id,refresh,"bookmark",getSctype())  ;
+  // const resData = useGetHeartAndBook(actor?.actor_account,currentObj?.message_id,refresh,"bookmark",getSctype())  ;
+  const {data,status,error,refetch} = useFetch<HeartAndBookType>(`/api/getData?account=${actor?.actor_account??''}&pid=${currentObj.message_id}&table=bookmark&sctype=${getSctype()}`,
+    'getHeartAndBook',[]);
+
+  //点赞或收藏
+  // export function useGetHeartAndBook(account:string|undefined,pid:string|undefined,refresh:boolean,table:string,sctype:string) {
+  //   return useFetch<HeartAndBookType>(`/api/getData?account=${account}&pid=${pid}&table=${table}&sctype=${sctype}` ,'getHeartAndBook',[refresh]);
+  // }
+
+
+
 
   const submit = async (flag: 0 | 1) => {
     //0 取消收藏  1 收藏
@@ -73,8 +83,7 @@ export default function EnKiBookmark({
       headers: { 'x-method': 'handleHeartAndBook' },
       body: JSON.stringify(upData)
     });
-    if(re.ok){
-       setRefresh(!refresh);
+    if(re.ok){ refetch();
     }else{
       const reData=await re.json();
       showClipError(`${tc("dataHandleErrorText")}!\n ${reData?.errMsg}`);
@@ -90,26 +99,26 @@ const geneButton=()=>{
       variant="light"
       disabled={!isEdit}
       onClick={() => {
-        submit(resData.data.pid ? 0 : 1);
+        submit(data?.pid ? 0 : 1);
       }}
       title={t("bookmastText")}
     >
-      {resData.data.pid ? (
+      {data?.pid ? (
         <span style={{ color: "red" }}>
           <BookTap size={18} />
         </span>
       ) : (
         <BookTap size={18} />
       )}
-      {resData.data.total}
+      {data?.total??0}
     </Button>
   );
 }
   return (
      <>
       {
-        resData.status==='loading'?<Loadding isImg={true} spinnerSize="sm" />
-        :resData.status==='failed'? <ShowErrorBar errStr={resData.error??'get data err'} />
+        status==='loading'?<Loadding isImg={true} spinnerSize="sm" />
+        :(status==='failed' || !data)? <ShowErrorBar errStr={error??'get data err'} />
         :geneButton()
       }
     </>

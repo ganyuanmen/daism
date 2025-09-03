@@ -63,4 +63,5 @@ const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(({ currentObj, isS
   );
 });
 
+RichEditor.displayName = 'RichEditor';
 export default React.memo(RichEditor);

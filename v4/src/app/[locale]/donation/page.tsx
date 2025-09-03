@@ -9,6 +9,8 @@ import ConfirmWin from '@/components/federation/ConfirmWin';
 import ShowErrorBar from '@/components/ShowErrorBar';
 import ShowAddress from '@/components/ShowAddress';
 import { getDaismContract } from '@/lib/globalStore';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface DonaType{
     block_num:bigint;
@@ -29,8 +31,8 @@ export default function Donation() {
   const user = useSelector((state:RootState) => state.valueData.user);
 
   const locale = useLocale();
-  let tc = useTranslations('Common')
-  let t = useTranslations('wallet')
+  const tc = useTranslations('Common')
+  const t = useTranslations('wallet')
   const dispatch = useDispatch<AppDispatch>();
   function showError(str:string){dispatch(setErrText(str))}
   function showTip(str:string){dispatch(setTipText(str))}
@@ -72,12 +74,12 @@ export default function Donation() {
   return (
     <div style={{maxWidth:'700px',margin:'0 auto',fontSize:'1.2em'}} >
      
-        <h1 style={{color:'#e74c3c',textAlign:'center'}} ><img src="/logo.svg" alt="道易程" className="logo" /> {t('donateTitle')}</h1>
+        <h1 style={{color:'#e74c3c',textAlign:'center'}} ><Image src="/logo.svg" alt="道易程" className="logo" /> {t('donateTitle')}</h1>
       
 
       <div style={{backgroundColor:'#f9f9f9',padding:'10px',borderRadius:'10px'}}>
         <p>{t('donateTop1')}
-        {t('donateTop2')} (<a href={locale==='zh'?`https://learn.daism.io/zh/blogcn/136-pol.html`:'https://learn.daism.io/coreblog/138-pol?format=html'} target="_blank" rel="noopener noreferrer">{t('loveText')}</a>)
+        {t('donateTop2')} (<Link href={locale==='zh'?`https://learn.daism.io/zh/blogcn/136-pol.html`:'https://learn.daism.io/coreblog/138-pol?format=html'} target="_blank" rel="noopener noreferrer">{t('loveText')}</Link>)
         —— {t('donateTop3')}
         </p>
         <ul>
@@ -88,10 +90,10 @@ export default function Donation() {
 
       {donationStatus?.block_num ? <div className='mt-3 mb-3'  style={{backgroundColor:'#f0f0f0',padding:'10px',borderRadius:'10px'}}>
           {t('donationStatusText',{num:donationAmount})}<br/>
-          {t('donorText')} <a href='/honortokens'>{t('donorTextLink')}</a><br/>
+          {t('donorText')} <Link href='/honortokens'>{t('donorTextLink')}</Link><br/>
           {t('rewardUTOText')}{' '}:{' '}{donationStatus?.uTokenAmount} <br/>
-          {t('registerText')}(<a href='/smartcommons/actor' > {t('justRegister')} </a>)<br/>
-          <a href='/smartcommons/actor' > {t('alreadyRegister')} </a>
+          {t('registerText')}(<Link href='/smartcommons/actor' > {t('justRegister')} </Link>)<br/>
+          <Link href='/smartcommons/actor' > {t('alreadyRegister')} </Link>
         </div>:<> <div style={{display:'flex',justifyContent:'center'}} >
             <div className='mt-3 mb-3' style={{maxWidth:'340px'}} >
               <InputGroup size='lg' >
@@ -123,7 +125,7 @@ export default function Donation() {
       
         <div className='mt-3'  style={{backgroundColor:'#f0f0f0',textAlign:'center',padding:'10px',borderRadius:'10px'}} >
         <p>{t('donatrQcodeText')}：</p>
-        <img src='/donate.png'  /> 
+        <Image src='/donate.png' alt=''  /> 
 
         <div className='mt-3 mb-t' >
           <div> {t('donateAddress')}:{' '} <ShowAddress address={process.env.NEXT_PUBLIC_DONATION as string} /></div>

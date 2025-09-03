@@ -1,16 +1,34 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getFollowers } from "@/lib/mysql/folllow";
+import { createFollowers } from "@/lib/activity";
 
-import { createFollowers } from '@/lib/activity';
-import { getFollowers } from '@/lib/mysql/folllow';
-import { NextRequest, NextResponse } from 'next/server';
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+  ) {
+    const { id } = await params;
 
-export async function GET(request: NextRequest,{ params }: { params: { id: string } }) {
+  if (!id) {
+    return NextResponse.json({ errMsg: "Bad request." }, { status: 400 });
+  }
 
-    const { id } = params;
-  
-    const followers =await getFollowers({account:`${id}@${process.env.NEXT_PUBLIC_DOMAIN}`})
-    const followersCollection = createFollowers(id,process.env.NEXT_PUBLIC_DOMAIN as string,followers)
+  try {
+    const followers = await getFollowers({
+      account: `${id}@${process.env.LOCAL_DOMAIN}`,
+    });
 
-  
-  return NextResponse.json(followersCollection);
+    const followersCollection = createFollowers(
+      id,
+      process.env.LOCAL_DOMAIN as string,
+      followers
+    );
+
+    return NextResponse.json(followersCollection, { status: 200 });
+  } catch (error: any) {
+    console.error("followers API error:", error);
+    return NextResponse.json(
+      { errMsg: "Internal server error." },
+      { status: 500 }
+    );
+  }
 }
-

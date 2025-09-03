@@ -11,9 +11,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoginButton from '../LoginButton';
 import editStyle from '@/styles/editor.module.css';
 import { getDaismContract } from '@/lib/globalStore';
-import { useEipTypes } from '@/hooks/useMessageData';
+// import { useEipTypes } from '@/hooks/useMessageData';
 import { type AppDispatch,type RootState, setErrText, setTipText } from '@/store/store';
 import { useTranslations } from 'next-intl';
+import { useFetch } from '@/hooks/useFetch';
 
 interface DaoFormProps {
   setRefresh?: (refresh: boolean) => void;
@@ -56,9 +57,22 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
   const tc = useTranslations('Common')
 
 
-  const typeData=useEipTypes() //所有eip类型
+  // const typeData=useEipTypes() //所有eip类型
+  const typeData= useFetch<DaismTipType[]>(`/api/getData`,
+    'getEipTypes',[]);
+    
+  
+//  export interface EipTypes{
+//   type_name:string;
+//   type_desc:string;
+// }
+// export function useEipTypes() {
+//   return useFetch<DaismTipType[]>(`/api/getData` ,'getEipTypes');
+// }
 
-  let daismObj=getDaismContract();
+
+
+  // let daismObj=getDaismContract();
 
   const checkAddress = (v: string): boolean => /^0x[A-Fa-f0-9]{40}$/.test(v);
   const checkNum = (v: string): boolean => /^[1-9][0-9]*$/.test(v);
@@ -150,8 +164,8 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
           const imgstr = window.atob(imgbase64.split(',')[1]);
           const re = await response.json();
           if (!re.creator && !re.dao_name && !re.dao_symbol) {
-            let members = [(form.elements.namedItem('org_firstName') as HTMLInputElement).value.trim()];
-            let votes = [(form.elements.namedItem('org_firstvote') as HTMLInputElement).value.trim()];
+            const members = [(form.elements.namedItem('org_firstName') as HTMLInputElement).value.trim()];
+            const votes = [(form.elements.namedItem('org_firstvote') as HTMLInputElement).value.trim()];
             addAr.forEach(v => {
               members.push((form.elements.namedItem('org_firstName' + v.index) as HTMLInputElement).value.trim());
               votes.push((form.elements.namedItem('org_firstvote' + v.index) as HTMLInputElement).value.trim());
@@ -159,12 +173,12 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
 
             let mintnftparas = '0x';
             if (batch) {
-              let abicoder = new ethers.AbiCoder();
-              let functionData = abicoder.encode(['address[]', 'uint256'], [members, (form.elements.namedItem('per_number') as HTMLInputElement).value.trim()]);
+              const abicoder = new ethers.AbiCoder();
+              const functionData = abicoder.encode(['address[]', 'uint256'], [members, (form.elements.namedItem('per_number') as HTMLInputElement).value.trim()]);
               mintnftparas = abicoder.encode(["address", "bytes"], [process.env.NEXT_PUBLIC_DAISMSINGLENFT, functionData]);
             }
 
-            let daoinfo:SCInfo = {
+            const daoinfo:SCInfo = {
               name:(form.elements.namedItem('createdao_name') as HTMLInputElement).value.trim(),
               symbol:(form.elements.namedItem('createdao_sysmobl') as HTMLInputElement).value.trim().toUpperCase(),
               desc:(form.elements.namedItem('createdao_dsc') as HTMLInputElement).value.trim(),
@@ -178,9 +192,9 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
             const cool = parseInt((form.elements.namedItem('org_cool') as HTMLInputElement).value);
 
             const _logo:SCFile={fileType:'svg',fileContent:imgstr}
-
+            const  daismObj=getDaismContract();
             daismObj?.Register.createSC(daoinfo, members, votes, s, life, cool,_logo,mintnftparas).then(
-              (re: any) => setTimeout(() => { closeTip(); setShow(false); setRefresh?.(true); }, 1000),
+              () => setTimeout(() => { closeTip(); setShow(false); setRefresh?.(true); }, 1000),
               (err: any) => {
                 closeTip();
                 if (err.message && (err.message.includes('bad address') || err.message.includes('sender must be contract'))) {
@@ -200,7 +214,7 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
   };
 
   const delMember = (event: MouseEvent<HTMLButtonElement>) => {
-    let _num = parseInt(event.currentTarget.getAttribute('data-key')!);
+    const _num = parseInt(event.currentTarget.getAttribute('data-key')!);
     for (let i = 0; i < addAr.length; i++) {
       if (addAr[i].index === _num) { addAr.splice(i, 1); setAddAr([...addAr]); }
     }
@@ -221,7 +235,7 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const filtered = typeData.data.filter((item: any) => item.type_name.toLowerCase().includes(value.toLowerCase()));
+    const filtered = !typeData.data?[]: typeData.data.filter((item: any) => item.type_name.toLowerCase().includes(value.toLowerCase()));
     setFilteredData(filtered);
   };
 
@@ -241,7 +255,7 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
 
       {type === 1 && <InputGroup hasValidation className="mb-2">
         <InputGroup.Text style={stylea} >{t('contractText')}</InputGroup.Text>
-        <FormControl id='createdao_manager' isInvalid={errorManager} type="text" onFocus={e => { setErrorManager(false) }} placeholder="0x" defaultValue="" />
+        <FormControl id='createdao_manager' isInvalid={errorManager} type="text" onFocus={() => { setErrorManager(false) }} placeholder="0x" defaultValue="" />
         <Form.Control.Feedback type="invalid">
           {createName ? <span>{t('alreadyMint')} </span> : errcontract ? <span>{t('invalidContract')}</span> : <span>{t('addressCheck')}</span>}
         </Form.Control.Feedback>
@@ -250,7 +264,7 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
       {type === 3 && <>
         <InputGroup hasValidation className="mb-1 mt-1">
           <InputGroup.Text style={stylea} >{t('typeName')}</InputGroup.Text>
-          <FormControl id='type_name' ref={typeNameRef} isInvalid={typeNameErr} type="text" placeholder={t('typeName')} onFocus={e => { setTypeNameErr(false); setFilteredData([]) }} onChange={handleInputChange} />
+          <FormControl id='type_name' ref={typeNameRef} isInvalid={typeNameErr} type="text" placeholder={t('typeName')} onFocus={() => { setTypeNameErr(false); setFilteredData([]) }} onChange={handleInputChange} />
           <Form.Control.Feedback type="invalid">{t('noEmptyorlg8')}</Form.Control.Feedback>
         </InputGroup>
         {filteredData.length > 0 && (<div className={editStyle.autocompleteitems}>
@@ -260,32 +274,32 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
         </div>)}
         <InputGroup hasValidation className="mt-2 mb-2">
           <InputGroup.Text style={stylea} >{t('typeDesc')}</InputGroup.Text>
-          <FormControl id='type_desc' isInvalid={typeDescErr} type="text" placeholder={t('typeDesc')} onFocus={e => { setTypeDescErr(false) }} />
+          <FormControl id='type_desc' isInvalid={typeDescErr} type="text" placeholder={t('typeDesc')} onFocus={() => { setTypeDescErr(false) }} />
           <Form.Control.Feedback type="invalid">{t('noEmpty')}</Form.Control.Feedback>
         </InputGroup>
       </>}
 
       <InputGroup hasValidation className="mb-2">
         <InputGroup.Text style={stylea}>{t('nameText')}</InputGroup.Text>
-        <FormControl id='createdao_name' isInvalid={errorDaoName} type="text" onFocus={e => { setErrorDaoName(false) }} placeholder={t('nameText')} defaultValue='' />
+        <FormControl id='createdao_name' isInvalid={errorDaoName} type="text" onFocus={() => { setErrorDaoName(false) }} placeholder={t('nameText')} defaultValue='' />
         <Form.Control.Feedback type="invalid">{daoName ? <span>{t('alreadyUsed')} </span> : <span>{t('nameCheck')}</span>}</Form.Control.Feedback>
       </InputGroup>
 
       <InputGroup hasValidation className="mb-2">
         <InputGroup.Text style={stylea}>{t('tokenSymbol')}</InputGroup.Text>
-        <FormControl id='createdao_sysmobl' isInvalid={errorDaoSymbol} type="text" onFocus={e => { setErrorDaoSymbol(false) }} placeholder={t('tokenSymbol')} defaultValue='' />
+        <FormControl id='createdao_sysmobl' isInvalid={errorDaoSymbol} type="text" onFocus={() => { setErrorDaoSymbol(false) }} placeholder={t('tokenSymbol')} defaultValue='' />
         <Form.Control.Feedback type="invalid">{daoSymbol ? <span>{t('tokenUsed')} </span> : <span>{t('nameCheck')}</span>}</Form.Control.Feedback>
       </InputGroup>
 
       <InputGroup hasValidation className="mb-0">
         <InputGroup.Text style={stylea} >{t('memberText')}</InputGroup.Text>
-        <FormControl id='org_firstName' isInvalid={errorFirrstName} type="text" placeholder="0x" onFocus={e => { setErrorFirrstName(false) }} defaultValue={user.account} />
+        <FormControl id='org_firstName' isInvalid={errorFirrstName} type="text" placeholder="0x" onFocus={() => { setErrorFirrstName(false) }} defaultValue={user.account} />
         <Form.Control.Feedback type="invalid">{t('addressCheck')}</Form.Control.Feedback>
       </InputGroup>
 
       <InputGroup hasValidation className="mb-2">
         <InputGroup.Text style={stylea} >{t('voteText')}</InputGroup.Text>
-        <FormControl id='org_firstvote' isInvalid={errorFirrstVote} type="text" placeholder="" onFocus={e => { setErrorFirrstVote(false) }} defaultValue="10" />
+        <FormControl id='org_firstvote' isInvalid={errorFirrstVote} type="text" placeholder="" onFocus={() => { setErrorFirrstVote(false) }} defaultValue="10" />
         <Button variant="primary" onClick={addMember}>{t('addMember')}</Button>
         <Form.Control.Feedback type="invalid">{t('voteValue')}</Form.Control.Feedback>
       </InputGroup>
@@ -293,12 +307,12 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
       {addAr.map((placement) => (<div key={'org_' + placement.index} >
         <InputGroup hasValidation className="mb-0">
           <InputGroup.Text style={stylea} >{t('memberText')}</InputGroup.Text>
-          <FormControl id={'org_firstName' + placement.index} isInvalid={placement.isErr1} onFocus={e => { placement.isErr1 = false; setAddAr([...addAr]) }} type="text" placeholder="0x" defaultValue="" />
+          <FormControl id={'org_firstName' + placement.index} isInvalid={placement.isErr1} onFocus={() => { placement.isErr1 = false; setAddAr([...addAr]) }} type="text" placeholder="0x" defaultValue="" />
           <Form.Control.Feedback type="invalid">{t('addressCheck')}</Form.Control.Feedback>
         </InputGroup>
         <InputGroup hasValidation className="mb-2">
           <InputGroup.Text style={stylea}>{t('voteText')}</InputGroup.Text>
-          <FormControl id={'org_firstvote' + placement.index} isInvalid={placement.isErr2} type="text" onFocus={e => { placement.isErr2 = false; setAddAr([...addAr]) }} placeholder="" defaultValue="10" />
+          <FormControl id={'org_firstvote' + placement.index} isInvalid={placement.isErr2} type="text" onFocus={() => { placement.isErr2 = false; setAddAr([...addAr]) }} placeholder="" defaultValue="10" />
           <Button variant="warning" data-key={placement.index} onClick={delMember}>{t('delMember')}</Button>
           <Form.Control.Feedback type="invalid">{t('voteValue')}</Form.Control.Feedback>
         </InputGroup>
@@ -306,21 +320,21 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
 
       <InputGroup hasValidation className="mb-2">
         <InputGroup.Text style={stylea} >{t('proPassText')}</InputGroup.Text>
-        <FormControl id='org_s' isInvalid={errorS} type="text" placeholder="" onFocus={e => { setErrorS(false) }} defaultValue="50" />
+        <FormControl id='org_s' isInvalid={errorS} type="text" placeholder="" onFocus={() => { setErrorS(false) }} defaultValue="50" />
         <InputGroup.Text >%</InputGroup.Text>
         <Form.Control.Feedback type="invalid">{t('errorS')}</Form.Control.Feedback>
       </InputGroup>
 
       <InputGroup hasValidation className="mb-2">
         <InputGroup.Text style={stylea} >{t('proLifeText')}</InputGroup.Text>
-        <FormControl id='org_life' isInvalid={errorLife} type="text" placeholder="" onFocus={e => { setErrorLife(false) }} defaultValue="3" />
+        <FormControl id='org_life' isInvalid={errorLife} type="text" placeholder="" onFocus={() => { setErrorLife(false) }} defaultValue="3" />
         <InputGroup.Text >{t('dayText')}</InputGroup.Text>
         <Form.Control.Feedback type="invalid">{t('errorDay')}</Form.Control.Feedback>
       </InputGroup>
 
       <InputGroup hasValidation className="mb-2">
         <InputGroup.Text style={stylea} >{t('proCoolText')}</InputGroup.Text>
-        <FormControl id='org_cool' isInvalid={errorCool} type="text" placeholder="" onFocus={e => { setErrorCool(false) }} defaultValue="3" />
+        <FormControl id='org_cool' isInvalid={errorCool} type="text" placeholder="" onFocus={() => { setErrorCool(false) }} defaultValue="3" />
         <InputGroup.Text >{t('dayText')}</InputGroup.Text>
         <Form.Control.Feedback type="invalid">{t('errorDay')}</Form.Control.Feedback>
       </InputGroup>
@@ -335,7 +349,7 @@ export default function DaoForm({setRefresh, setShow }: DaoFormProps) {
 
       {batch && <> <InputGroup hasValidation className="mb-2 mt-3">
         <InputGroup.Text style={{ width: "240px" }} >{t('mintNumberText')}</InputGroup.Text>
-        <FormControl id='per_number' isInvalid={errorPerNumber} type="text" placeholder="1" onFocus={e => { setErrorPerNumber(false) }} defaultValue="1" />
+        <FormControl id='per_number' isInvalid={errorPerNumber} type="text" placeholder="1" onFocus={() => { setErrorPerNumber(false) }} defaultValue="1" />
         <Form.Control.Feedback type="invalid"> {t('mintValue')} </Form.Control.Feedback>
       </InputGroup></>}
 

@@ -41,5 +41,5 @@ const FreeDatePicker = forwardRef<DateRef, DateProps>(({defaultValue}, ref) => {
   );
 });
 
-
-export default React.memo(FreeDatePicker);
+FreeDatePicker.displayName="FreeDatePicker";
+export default FreeDatePicker;

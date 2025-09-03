@@ -52,7 +52,7 @@ export default function DappVersion({daoData,ismember,user,checkAddress,showTip,
   
   //直接修改，不用提案
 const creatorEdit=()=>{
-    let _address=updateRef.current?.getData();
+    const _address=updateRef.current?.getData();
     if(!_address) return;
     if (!checkAddress(_address)) {updateRef.current?.notValid(t('managerAddressValid'));return;}
     if(_address.toLowerCase()===daoData.creator.toLowerCase()) {updateRef.current?.notValid(t('alreadyCreatorText'));return;}
@@ -71,7 +71,7 @@ const creatorEdit=()=>{
     {daoData.sctype==='dapp' && <div className='mb-3 p-1' style={{borderBottom: '1px solid gray'}}  >
             {t('execText')}:<ShowAddress  address={daoData.creator} />  {'  '} 
             {ismember &&  user.account.toLowerCase()===daoData.dao_manager.toLowerCase() &&
-                <Button  style={{marginLeft:30}} onClick={e=>{  setShow(true);}}  variant='primary'> 
+                <Button  style={{marginLeft:30}} onClick={()=>{  setShow(true);}}  variant='primary'> 
                 <EditSvg size={16} /> {t('updateText')}</Button>
             }{'  '} 
          

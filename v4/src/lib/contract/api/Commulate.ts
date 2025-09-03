@@ -1,5 +1,5 @@
 import { ethers,type Contract,type Signer } from "ethers";
-import commulate_abi from "../data/commulate.json";
+// import commulate_abi from "../data/commulate.json";
 
 /**
  * Commulate 合约前端调用封装

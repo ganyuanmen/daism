@@ -9,8 +9,14 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id: name } = params;
+// export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+//   const { id: name } = params;
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id: name } = await params;
 
   try {
     const bodyText = await request.text();
@@ -18,7 +24,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     let postbody: ActivityPubBody;
     try {
       postbody = JSON.parse(bodyText);
-    } catch (e) {
+    } catch  {
       return NextResponse.json(
         { errMsg: 'Invalid JSON in request body' },
         { status: 400, headers: corsHeaders }

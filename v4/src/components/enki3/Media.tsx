@@ -10,6 +10,7 @@ import React, {
   import { Row, Col } from "react-bootstrap";
   import ShowVedio from "../enki2/form/ShowVedio";
   import { useTranslations } from "next-intl";
+import Image from "next/image";
  
   
   interface MediaProps {
@@ -24,7 +25,7 @@ import React, {
   }
   
   const Media = forwardRef<MediaRef, MediaProps>(({ children, currentObj }, ref) => {
-    const t = useTranslations("ff");
+    // const t = useTranslations("ff");
     const tc = useTranslations("Common");
   
     const geneType = (): string => {
@@ -70,7 +71,7 @@ import React, {
           <Col>
             {fileStr && (
               <div style={{ position: "relative" }}>
-                <img alt="" src={fileStr} style={{ maxWidth: "100%" }} />
+                <Image alt="" src={fileStr} style={{ maxWidth: "100%" }} />
                 <button
                   style={{ position: "absolute", top: 0, right: 0 }}
                   className="btn btn-light"
@@ -88,7 +89,7 @@ import React, {
           <Col>
             {vedioUrl && (
               <div style={{ position: "relative" }}>
-                <ShowVedio vedioUrl={vedioUrl} />
+                <ShowVedio videoUrl={vedioUrl} />
                 <button
                   style={{ position: "absolute", top: 0, right: 0 }}
                   className="btn btn-light"
@@ -103,6 +104,6 @@ import React, {
       </>
     );
   });
-  
-  export default React.memo(Media);
+  Media.displayName="Media";
+  export default Media;
   

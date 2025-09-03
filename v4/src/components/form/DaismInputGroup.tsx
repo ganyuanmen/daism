@@ -98,5 +98,5 @@ const DaismInputGroup = forwardRef<
     </>
   );
 });
-
-export default React.memo(DaismInputGroup);
+DaismInputGroup.displayName="DaismInputGroup";
+export default DaismInputGroup;

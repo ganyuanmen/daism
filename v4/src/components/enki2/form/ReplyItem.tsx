@@ -8,6 +8,7 @@ import { DeleteSvg, ReplySvg } from "@/lib/jssvg/SvgCollection";
 import { type RootState } from "@/store/store";
 import { useTranslations } from "next-intl";
 import ConfirmWin from "@/components/federation/ConfirmWin";
+import Image from "next/image";
 
 
 /**
@@ -118,7 +119,7 @@ import ConfirmWin from "@/components/federation/ConfirmWin";
             <div dangerouslySetInnerHTML={{ __html: replyObj.content_link }}></div>
           )}
           {replyObj?.top_img && (
-            <img
+            <Image
               className="mt-2 mb-2"
               alt=""
               src={replyObj.top_img}

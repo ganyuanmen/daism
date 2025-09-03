@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+
 import IADD from '@/lib/contract/api/IADD';
 import Commulate from '@/lib/contract/api/Commulate';
 import UnitToken from '@/lib/contract/api/UnitToken';
@@ -13,11 +13,6 @@ import  DaoToken  from '@/lib/contract/api/DaoToken';
 import type { Signer } from 'ethers';
 
 
-// export interface signeredObjType {
-//   address: string;
-//   signMessage: (message: string) => Promise<string>;
-//   provider:ethers.BrowserProvider;
-// }
 
 export interface DaismContract {
   UnitToken: UnitToken;
@@ -32,22 +27,10 @@ export interface DaismContract {
   IADD_EX:IADD_EX;
   SingNft:SingNft;
   signer:Signer;
-  
-
 }
 
-
-
-  // const signeredObj: { instance?: signeredObjType } = {};
-  // const ethersProver: { instance?: ethers.BrowserProvider } = {};
   const daismObj: { instance?: DaismContract } = {};
 
-  // export function setSigneredObj(obj: signeredObjType|undefined) {signeredObj.instance = obj;}
-  // export function getSigneredObj() { return signeredObj.instance;}
-  
-  // export function setEthersProver(obj: ethers.BrowserProvider|undefined) {ethersProver.instance = obj;}
-  // export function getEthersProver() { return ethersProver.instance;}
-  
   export function setDaismContract(obj: DaismContract|undefined) {daismObj.instance = obj;}
   export function getDaismContract() { return daismObj.instance;}
 

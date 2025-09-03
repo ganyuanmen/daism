@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-    let imagePath = await saveImage(file);
+    const imagePath = await saveImage(file);
 
     // 更新用户信息
     const updateSuccess = await updateActor({ 

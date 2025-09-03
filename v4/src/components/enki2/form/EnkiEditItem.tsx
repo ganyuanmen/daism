@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { EditSvg, DeleteSvg, Pin, AnnounceSvg } from "../../../lib/jssvg/SvgCollection";
 import { Nav, NavDropdown } from "react-bootstrap";
 import ConfirmWin from "../../federation/ConfirmWin";
@@ -39,19 +39,19 @@ export default function EnkiEditItem({
 
   const sctype=messageObj.dao_id>0?'sc':'';
 
-  const isAnnoce = () => {
+  const isAnnoce =useCallback(() => {
     if (!actor?.actor_account || !actor.actor_account.includes("@")) return false;
     if (messageObj.actor_account === actor.actor_account) return false;
     if (messageObj.send_type === 9 && messageObj.receive_account === actor.actor_account) return false;
     if (process.env.NEXT_PUBLIC_DOMAIN !== actor.actor_account.split("@")[1]) return false;
 
     return true;
-  };
+  },[actor,messageObj]);
 
   // 找是否已转发
   useEffect(() => {
     const controller = new AbortController();
-    let _isAn = isAnnoce();
+    const _isAn = isAnnoce();
     if (_isAn) {
      
       const fetchData = async () => {
@@ -72,7 +72,7 @@ export default function EnkiEditItem({
     } else setIsAn(false);
 
     return () => { controller.abort();};
-  }, [messageObj,actor]);
+  }, [messageObj,actor,isAnnoce]);
 
   const handler=async (method:string,upData:any,flag:string)=>{
     showTip(t("submittingText"));

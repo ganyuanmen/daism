@@ -3,6 +3,7 @@ import { Card } from "react-bootstrap";
 import ShowAddress from '../ShowAddress';
 import { User1Svg } from "../../lib/jssvg/SvgCollection";
 import { useTranslations } from "next-intl";
+import Image from 'next/image';
 
 
 
@@ -42,7 +43,7 @@ const DaoMemberDiv: React.FC<DaoMemberDivProps> = ({ record, dao_manager }) => {
                   rel="noopener noreferrer"
                 >
                   {obj.avatar ? (
-                    <img 
+                    <Image 
                       src={obj.avatar} 
                       alt={obj.actor_account || ''} 
                       style={{

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useState, useEffect, useRef, ImgHTMLAttributes } from 'react';
 
 interface ImageWithFallbackProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
@@ -29,7 +30,7 @@ export default function ImageWithFallback({
     }
 
     // 检查图片是否可加载
-    const img = new Image();
+    const img =  new window.Image();
     img.onload = () => {
       setImgSrc(src);
     };
@@ -52,11 +53,11 @@ export default function ImageWithFallback({
   };
 
   return (
-    <img
+    <Image
       ref={imgRef}
       alt={alt}
-      width={width}
-      height={height}
+      width={Number(width)}
+      height={Number(height)}
       src={imgSrc}
       style={{ borderRadius: '10px', ...style }}
       onError={handleError}

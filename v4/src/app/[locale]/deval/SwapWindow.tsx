@@ -48,19 +48,19 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
                 <div style={{width:'100%'}} >
                     <div className="mb-2 mt-2 d-flex justify-content-between align-items-center" style={{padding:'4px 18px 4px 18px'}}  >
                         <div> Token {t('selectText')} </div>
-                        <CloseButton onClick={e=>{setShow(false)}} />
+                        <CloseButton onClick={()=>{setShow(false)}} />
                     </div>
                     <div style={{backgroundColor:'white',width:'100%',padding:'10px'}} >
                         <TopSearch tokenList={tokenList} dispatch={dispatch} inputRef={inputRef}  />
                         <div>
                         {/* 上层窗口打开多显示eth */}
                         {workspace==='up' && <Button className={iaddStyle.iadd_btn} variant="outline-secondary"  onClick={()=>clickSelect(ethObj)}>
-                            <img alt='' width={24} height={24}  src='/eth.png' />
+                            <Image alt='' width={24} height={24}  src='/eth.png' />
                             <span className={iaddStyle.iadd_text} >ETH</span>
                         </Button>
                         }{'   '}
                         <Button className={iaddStyle.iadd_btn} variant="outline-secondary"  onClick={()=>clickSelect(utokenObj)} >
-                            <img alt='' width={24} height={24}  src='/vita.svg' />
+                            <Image alt='' width={24} height={24}  src='/vita.svg' />
                             <span  className={iaddStyle.iadd_text}>UTO</span>
                         </Button> 
                         </div>
@@ -72,7 +72,7 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
              {tokenFilter.map((obj, idx) =>                 
                <Row key={idx} className={`mb-1 ${iaddStyle.iadd_tokenlist}`}  onClick={()=>{clickSelect(obj)}} >
                     <Col className="Col-auto me-auto d-flex  align-items-center" >
-                        <img width={36} height={36}  alt="" src={obj.dao_logo ? obj.dao_logo : '/logo.svg'}  />
+                        <Image width={36} height={36}  alt="" src={obj.dao_logo ? obj.dao_logo : '/logo.svg'}  />
                         <div style={{paddingLeft:'12px'}} >
                             <div style={{color:'#0D111C',fontSize:'16px'}} >{obj.dao_name}</div>
                             <div style={{color:'#98AEC0',fontSize:'12px'}} >{obj.dao_symbol}</div>

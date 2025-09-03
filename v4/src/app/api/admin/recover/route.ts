@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
         );
         
         if (re.code === 200) {
-          await insertData(re.message, actorName, domain, avatar, sctype, daoid);
+          await insertData(re.message, actorName, domain, avatar, sctype);
           if (re.message.length < 12) break;
         } else {
           break;
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function insertData(data: any[], actor_name: string, domain: string, avatar: string, sctype: any, daoid?: any) {
+async function insertData(data: any[], actor_name: string, domain: string, avatar: string, sctype: string) {
   try {
     for (const e of data) {
       let sql: string;

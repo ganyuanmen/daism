@@ -1,5 +1,5 @@
 // lib/auth/session.ts
-import { jwtVerify, SignJWT, type JWTPayload } from 'jose';
+import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 

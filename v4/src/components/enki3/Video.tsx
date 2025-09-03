@@ -1,4 +1,4 @@
-import React, { useRef, useState, ChangeEvent } from 'react';
+import React, { useRef, useState } from 'react';
 import { Modal, Button, InputGroup, Form } from 'react-bootstrap';
 import ErrorBar from '../form/ErrorBar';
 import { useTranslations } from 'next-intl';
@@ -28,7 +28,7 @@ const Video: React.FC<VideoProps> = ({
     try {
       const url = new URL(input);
       return url.protocol === 'http:' || url.protocol === 'https:';
-    } catch (err) {
+    } catch  {
       return false;
     }
   }
