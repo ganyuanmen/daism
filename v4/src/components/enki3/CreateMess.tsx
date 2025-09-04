@@ -115,14 +115,8 @@ export default function CreateMess({currentObj,afterEditCall,addCallBack,account
     formData.append("actorid", String(actor?.id ?? ""));
     formData.append("title", titleRef.current.getData());
     formData.append("actorName", actor?.actor_name ?? "");
-    formData.append(
-      "image",
-      (typeIndex === 0 ? editorRef : richEditorRef).current.getImg()
-    );
-    formData.append(
-      "fileType",
-      (typeIndex === 0 ? editorRef : richEditorRef).current.getFileType()
-    );
+    formData.append("file", (typeIndex === 0 ? editorRef : richEditorRef).current.getImg()); // 图片
+  
     formData.append("isSend", sendRef.current?.checked ? "1" : "0");
     formData.append("isDiscussion", discussionRef.current?.checked ? "1" : "0");
     // formData.append('tags',JSON.stringify(inputRef.current.getData()));

@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ errMsg: 'Invalid Method' }, { status: 400 });
     }
 
-    console.log("methossssssssssssssssssssssssss",method)
+    // console.log("methossssssssssssssssssssssssss",method)
     // ------------------ messagePageData 跨域情况 ------------------
     if (method === 'messagePageData' && query.account && query.account.includes('@')) {
       const { account, pi, menutype, daoid, actorid, w, order, eventnum, v } = query;

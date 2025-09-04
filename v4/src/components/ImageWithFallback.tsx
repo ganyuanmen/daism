@@ -12,12 +12,14 @@ export default function ImageWithFallback({
   alt, 
   width, 
   height, 
-  fallback = '/user.svg', 
+  fallback = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="100"><rect width="150" height="100" fill="#ccc"/><text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" fill="#000">No Image</text></svg>`, 
   style,
   ...props 
 }: ImageWithFallbackProps) {
   const [imgSrc, setImgSrc] = useState<string>(src || fallback);
   const imgRef = useRef<HTMLImageElement>(null);
+  const[realWidth,setRealWidth]=useState(0);
+  const[realHeigh,setRealHeight]=useState(0);
 
   useEffect(() => {
     // 重置为传入的src或fallback
@@ -33,6 +35,9 @@ export default function ImageWithFallback({
     const img =  new window.Image();
     img.onload = () => {
       setImgSrc(src);
+      setRealHeight(img.height);
+      setRealWidth(img.width)
+      // resolve({ width: , height:  });
     };
     img.onerror = () => {
       setImgSrc(fallback);
@@ -56,8 +61,8 @@ export default function ImageWithFallback({
     <Image
       ref={imgRef}
       alt={alt}
-      width={Number(width)}
-      height={Number(height)}
+      width={width?Number(width):realWidth>0?realWidth:30}
+      height={height?Number(height):realHeigh>0?realHeigh:30}
       src={imgSrc}
       style={{ borderRadius: '10px', ...style }}
       onError={handleError}

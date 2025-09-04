@@ -9,6 +9,7 @@ import { type RootState } from "@/store/store";
 import { useTranslations } from "next-intl";
 import ConfirmWin from "@/components/federation/ConfirmWin";
 import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 
 /**
@@ -118,14 +119,15 @@ import Image from "next/image";
           {replyObj?.content_link && (
             <div dangerouslySetInnerHTML={{ __html: replyObj.content_link }}></div>
           )}
-          {replyObj?.top_img && (
+          {replyObj?.top_img &&<ImageWithFallback src={replyObj?.top_img}  alt=""  style={{ maxWidth: "100%" }} />}
+          {/* {replyObj?.top_img && (
             <Image
               className="mt-2 mb-2"
               alt=""
               src={replyObj.top_img}
               style={{ maxWidth: "100%" }}
             />
-          )}
+          )} */}
           {replyObj?.vedio_url && <ShowVedio videoUrl={replyObj.vedio_url} />}
         </div>
       </div>

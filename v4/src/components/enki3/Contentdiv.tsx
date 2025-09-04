@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 import ShowAddress from "../ShowAddress";
 import Image from "next/image";
+import ImageWithFallback from "../ImageWithFallback";
 
 // ========== 类型定义 ==========
 interface ActorType {
@@ -249,12 +250,14 @@ export default function Contentdiv({
       )}
       {messageObj?.top_img && (
         <div className="image-container">
-          <Image
+          {messageObj?.top_img &&<ImageWithFallback src={messageObj?.top_img}  alt="" 
+           onClick={() => afterEditCall(messageObj)}  className="daism-a mt-2 mb-2" style={{ maxWidth: "100%" }} />}
+          {/* <Image
             onClick={() => afterEditCall(messageObj)}
             className="daism-a mt-2 mb-2"
             alt=""
             src={messageObj.top_img}
-          />
+          /> */}
         </div>
       )}
       {messageObj?.vedio_url && <ShowVedio videoUrl={messageObj.vedio_url} />}
@@ -264,14 +267,15 @@ export default function Contentdiv({
         <div className="d-flex align-items-center mt-1">
           <div className="d-inline-flex align-items-center">
             <span style={{ display: "inline-block", paddingRight: "4px" }}>{t("proposedText")}:</span>
-            {messageObj?.self_avatar && <Image alt="" width={32} height={32} src={messageObj.self_avatar}  style={{borderRadius:'10px'}}
+            <ImageWithFallback src={messageObj.self_avatar} width={32} height={32} alt="=" />
+            {/* {messageObj?.self_avatar && <Image alt="" width={32} height={32} src={messageObj.self_avatar}  style={{borderRadius:'10px'}}
               onError={(e) => {
                 // 图片加载失败时使用默认logo
                 const target = e.target as HTMLImageElement;
                 target.src = '/user.svg';
               }}
             />
-            }
+            } */}
           
           </div>
           <div

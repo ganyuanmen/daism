@@ -286,7 +286,10 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
             {/* 链接条 */}
             {enkiMessObj?.content_link && <div dangerouslySetInnerHTML={{__html: enkiMessObj.content_link}}></div>}
             {/* 首页图片 */}
-            {enkiMessObj?.top_img && <Image  className="mt-2 mb-2" alt="" src={enkiMessObj.top_img} style={{width:'100%'}} /> }
+            {enkiMessObj?.top_img &&<ImageWithFallback src={enkiMessObj?.top_img}  alt="" 
+          className="daism-a mt-2 mb-2" style={{ maxWidth: "100%" }} />}
+
+            {/* {enkiMessObj?.top_img && <Image  className="mt-2 mb-2" alt="" src={enkiMessObj.top_img} style={{width:'100%'}} /> } */}
             {/* 首页视频 */}
             {enkiMessObj?.vedio_url && <ShowVedio videoUrl={enkiMessObj.vedio_url} /> }
  

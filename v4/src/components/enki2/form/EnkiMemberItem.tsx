@@ -10,18 +10,19 @@ import TipWindow from "../../federation/TipWindow";
 import {useLocale, useTranslations} from 'next-intl';
 import type { RootState } from "@/store/store";
 import Image from "next/image";
+import { useHonorData,type HonorItem } from "@/hooks/useHonorData";
 // import { setCache,getCache } from "@/lib/utils/windowCache";
 
 interface EnkiMemberItemProps {
   messageObj: EnkiMessType;
 }
 
-interface HonorObj {
-  tokensvg: string;
-}
+// interface HonorObj {
+//   tokensvg: string;
+// }
 
 export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
-  const [honor, setHonor] = useState<HonorObj[]>([]);
+  // const [honor, setHonor] = useState<HonorObj[]>([]);
   // const [isTop, setIsTop] = useState<boolean>(!!messageObj.is_top);
   const [isFollow, setIsFollow] = useState<boolean>(true); // 默认已关注
 
@@ -32,6 +33,7 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
   const user = useSelector((state: RootState) => state.valueData.user);
 
   // const t = useTranslations("ff");
+  const honor = useHonorData(messageObj.manager, messageObj.dao_id);
 
   useEffect(() => {
     const item = myFollow.find(
@@ -61,28 +63,29 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
     else return true;
   };
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`/api/getData?did=${messageObj.manager}`,
-           { signal: controller.signal,headers:{'x-method':'getMynft'} });
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data)) setHonor(data.map((item: any) => ({ tokensvg: item.tokensvg })));
-        }
-      } catch (err: any) {
-        if (err.name === 'AbortError') return; // 请求被取消
-      
-      }
-    };
-  
-    if (messageObj.dao_id === 0 && messageObj.manager) {
-      fetchData();
 
-    }
-    return () => { controller.abort();};
-  }, [messageObj]);
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await fetch(`/api/getData?did=${messageObj.manager}`,
+  //          { signal: controller.signal,headers:{'x-method':'getMynft'} });
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         if (Array.isArray(data)) setHonor(data.map((item: any) => ({ tokensvg: item.tokensvg })));
+  //       }
+  //     } catch (err: any) {
+  //       if (err.name === 'AbortError') return; // 请求被取消
+      
+  //     }
+  //   };
+  
+  //   if (messageObj.dao_id === 0 && messageObj.manager) {
+  //     fetchData();
+
+  //   }
+  //   return () => { controller.abort();};
+  // }, [messageObj]);
 
   const isforward=()=>{
     if(messageObj.send_type>7) return true;
@@ -155,7 +158,7 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
 }
 
 
-function Honor({honor,manager}: {honor: HonorObj[]; manager: string}) {
+function Honor({honor,manager}: {honor: HonorItem[]; manager: string}) {
     const overlayRef = useRef<HTMLDivElement>(null);
     const t = useTranslations("ff");
     const [show, setShow] = useState(false);
@@ -213,7 +216,7 @@ function Honor({honor,manager}: {honor: HonorObj[]; manager: string}) {
   }
 
 
-function Honor_m({honor, manager }: {honor: HonorObj[];  manager: string;}) {
+function Honor_m({honor, manager }: {honor: HonorItem[];  manager: string;}) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(false);
   const target = useRef<HTMLButtonElement | null>(null);

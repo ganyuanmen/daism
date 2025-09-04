@@ -32,7 +32,7 @@ const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = 
     const res = await fetch(`/api/siwe/nonce`);
  
     const data = await res.json();
-    console.log("res once:",data)
+    
 
     return new SiweMessage({
       domain: window.location.host,

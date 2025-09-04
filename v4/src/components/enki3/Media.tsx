@@ -11,6 +11,7 @@ import React, {
   import ShowVedio from "../enki2/form/ShowVedio";
   import { useTranslations } from "next-intl";
 import Image from "next/image";
+import ImageWithFallback from "../ImageWithFallback";
  
   
   interface MediaProps {
@@ -71,7 +72,8 @@ import Image from "next/image";
           <Col>
             {fileStr && (
               <div style={{ position: "relative" }}>
-                <Image alt="" src={fileStr} style={{ maxWidth: "100%" }} />
+                <ImageWithFallback src={fileStr}  style={{ maxWidth: "100%" }} alt="" />
+                {/* <Image alt="" src={fileStr} style={{ maxWidth: "100%" }} /> */}
                 <button
                   style={{ position: "absolute", top: 0, right: 0 }}
                   className="btn btn-light"
