@@ -162,7 +162,7 @@ export function useSidebarVisibility(
         try {
           if (typeof mq.removeEventListener === "function") mq.removeEventListener("change", mqListener);
           else (mq as any).removeListener?.(mqListener);
-        } catch (e) { /* ignore */ }
+        } catch  { /* ignore */ }
       }
       transitionTargets.forEach((node) => node.removeEventListener("transitionend", recomputeAll));
     };

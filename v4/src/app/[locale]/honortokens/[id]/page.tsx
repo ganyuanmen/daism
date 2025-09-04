@@ -12,12 +12,8 @@ import { getMynft } from '@/lib/mysql/daism';
  */
 
 interface HonorPageProps {
-    // params: {
-    //   locale: string;
-    //   id: string;
-    // };
     params: Promise<{ locale: string;id:string;}>
-  }
+}
 
 export default async function HonorPage({ params }: HonorPageProps) {
     const { id } = await params;

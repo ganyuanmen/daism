@@ -60,7 +60,7 @@ const PageLayout = memo(({children}: Props) => {
                   </div>
                   <div  className="d-flex flex-row p-0 m-0 ">
                  
-                  <Nav.Link className={pathname === '/deval'  ? 'pnavactive'  : ''}  href={`/${locale}/deval`}><div className='no-wrap' >{t('iadd')}</div></Nav.Link>
+                  {/* <Nav.Link className={pathname === '/deval'  ? 'pnavactive'  : ''}  href={`/${locale}/deval`}><div className='no-wrap' >{t('iadd')}</div></Nav.Link> */}
 
                   <NavDropdown title={t('college')} id="basic-nav-dropdown2">
                     <NavDropdown.Item style={{paddingLeft:'20px'}} target='_blank' href={locale==='en'?"https://learn.daism.io":"https://learn.daism.io/zh"}><div className='no-wrap' >{t('daism')}</div></NavDropdown.Item>

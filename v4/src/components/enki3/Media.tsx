@@ -10,7 +10,7 @@ import React, {
   import { Row, Col } from "react-bootstrap";
   import ShowVedio from "../enki2/form/ShowVedio";
   import { useTranslations } from "next-intl";
-import Image from "next/image";
+// import Image from "next/image";
 import ImageWithFallback from "../ImageWithFallback";
  
   

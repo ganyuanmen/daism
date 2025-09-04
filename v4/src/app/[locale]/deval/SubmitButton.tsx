@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import {type StatusBarState} from "./StatusBar"
 import {type tipType} from "./TipWin"; 
 import { getDaismContract } from '@/lib/globalStore';
-import { useFetchToken } from '@/hooks/useFetchToken';
+// import { useFetchToken } from '@/hooks/useFetchToken';
 
 interface SubmitButtonProps{
 
@@ -45,12 +45,12 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
   function fromEther(v:string|number|bigint){return  ethers.formatEther(v+'')}
   function fromUtoken(v:string|number|bigint){return  ethers.formatUnits(v+'',8)}
     // 获取代币数据
-    const getTokens=useFetchToken();
+    // const getTokens=useFetchToken();
 
     // 兑换操作完成后清理
      const resulthandle = (upBalace:string, downBalance:string) => {
         clearStutes(upBalace,downBalance);
-        getTokens(user.account)
+        // getTokens(user.account)
        }
 
      

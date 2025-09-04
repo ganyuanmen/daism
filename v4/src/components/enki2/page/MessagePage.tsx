@@ -19,7 +19,7 @@ import ShowAddress from "../../ShowAddress";
 
 import { fetchJson } from "@/lib/utils/fetcher";
 import {type RootState,setTipText,setErrText,type AppDispatch} from "@/store/store";
-import Image from "next/image";
+// import Image from "next/image";
 
 interface MessagePageProps {
   tabIndex: number; //修改 所在页面的tab

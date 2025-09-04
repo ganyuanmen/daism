@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import axios from 'axios';
+// import axios from 'axios';
 // import cheerio from 'cheerio';
 import * as cheerio from 'cheerio';
 import { getInboxFromAccount } from '../mysql/message'
@@ -64,8 +64,20 @@ export  async function getTootContent(tootUrl:string,domain:string) {
     try {
         const myURL = new URL(tootUrl);
         const targetDomain = myURL.hostname;
-        const response = await axios.get(tootUrl);
-        const html = response.data;
+
+        const response = await fetch(tootUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const html = await response.text(); 
+        // console.log(html);
+
+
+        // const response = await axios.get(tootUrl);
+        // const html = response.data;
+
+
+
         const $ = cheerio.load(html);
         const localimg=`https://${domain}/article.svg`
   

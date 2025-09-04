@@ -58,7 +58,11 @@ export async function GET(
         }
       });
     } else {
-      return NextResponse.redirect(new URL(`/${lowerName}`, request.url));
+      const host = request.headers.get("host");
+
+      return NextResponse.redirect(`https://${host}/${lowerName}`);
+
+      // return NextResponse.redirect(new URL(`/${lowerName}`, request.url));
     }
 
   } catch (error) {

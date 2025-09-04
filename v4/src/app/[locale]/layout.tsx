@@ -27,7 +27,7 @@ export const viewport = {
 };
 
 // ⚡ 生成多语言 SEO
-export async function generateMetadata({ params }: { params: Promise<{ locale: string}>;}) {
+export async function generateMetadata({ params }:Props) {
 
   const { locale } = await params; 
   

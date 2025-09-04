@@ -8,7 +8,7 @@ import { DeleteSvg, ReplySvg } from "@/lib/jssvg/SvgCollection";
 import { type RootState } from "@/store/store";
 import { useTranslations } from "next-intl";
 import ConfirmWin from "@/components/federation/ConfirmWin";
-import Image from "next/image";
+// import Image from "next/image";
 import ImageWithFallback from "@/components/ImageWithFallback";
 
 

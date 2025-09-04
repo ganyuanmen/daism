@@ -11,7 +11,7 @@ import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 import ShowAddress from "../ShowAddress";
-import Image from "next/image";
+// import Image from "next/image";
 import ImageWithFallback from "../ImageWithFallback";
 
 // ========== 类型定义 ==========

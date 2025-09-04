@@ -15,7 +15,7 @@ import { setDaismContract } from "@/lib/globalStore";
 import DaoApi from '@/lib/contract';
 import {useLocale, useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import { useFetchToken } from '@/hooks/useFetchToken';
+// import { useFetchToken } from '@/hooks/useFetchToken';
 import { useLayout } from '@/contexts/LayoutContext';
 /**
  * 钱包登录管理组件
@@ -33,7 +33,7 @@ function Wallet() {
     const showError=(str:string)=>{ dispatch(setErrText(str));}
     const tc = useTranslations('Common');
     // 获取代币数据
-    const getTokens=useFetchToken();
+    // const getTokens=useFetchToken();
 
     // 初始化组件
      useEffect(() => {
@@ -68,11 +68,12 @@ function Wallet() {
     window.sessionStorage.setItem("providerinfouuid", '');
     setDaismContract(undefined);  
     
-    if(pathname==='/') getTokens('');
+    // if(pathname==='/') getTokens('');
   };
 
   
 const checkNetwork= (chainId: number): boolean=>  {
+  conso
   const chainIdKey = `_${chainId}`;
     if (NET[chainIdKey] !== NETWORKNAME) {
       showError(tc('mustLoginText', { netName: NETWORKNAME }));
@@ -107,7 +108,7 @@ const updateLoginData=async (tempAccount:string,walletProvider:WalletProviderTyp
   provider.getBalance(tempAccount).then((balance:bigint) => { dispatch(setEthBalance(ethers.formatEther(balance))); });
   
   // 获取代币数据
-  if(pathname==='/deval')  getTokens(tempAccount);
+  // if(pathname==='/deval')  getTokens(tempAccount);
 
   // 保存到 sessionStorage
   window.sessionStorage.setItem("providerinfoname", (walletProvider.info.name));
