@@ -49,7 +49,7 @@ export default function ProHistory({ st }: { st: number }) {
 
 
 const { rows, total, pages, status, error } = usePageFetch<ProItem[]>(
-  `/api/getData?ps=25&pi=${currentPageNum}&did=${user.account}&st=${st}&t=${new Date().getTime()}`,
+  `/api/getData?ps=25&pi=${currentPageNum}&did=${user.account}&st=${st}`,
    'getProsData');
 
 
@@ -82,7 +82,7 @@ function ProPage({prosData}: {prosData: ProItem[];}) {
     padding: "4px",
   };
 
-  const t = useTranslations("my");
+  const t = useTranslations("dao");
   return (
     <Card className="mt-1 daism-title ">
       <Card.Header>{t("myProText")}</Card.Header>

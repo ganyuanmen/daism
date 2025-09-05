@@ -15,6 +15,7 @@ import { BackSvg, TimeSvg, EventSvg } from '@/lib/jssvg/SvgCollection';
 import { type RootState } from '@/store/store';
 import { fetchJson } from '@/lib/utils/fetcher';
 import Image from 'next/image';
+import { useSidebarVisibility } from '@/hooks/useSidebarVisibility';
 
 
 interface DaoWhere {
@@ -52,8 +53,8 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
     eventnum: 0
   });
 
-  const [leftHidden, setLeftHidden] = useState<boolean>(false);
-  const [rightHidden, setRightHidden] = useState<boolean>(false);
+  // const [leftHidden, setLeftHidden] = useState<boolean>(false);
+  // const [rightHidden, setRightHidden] = useState<boolean>(false);
   const [currentObj, setCurrentObj] = useState<any>(null);
   const [daoWhere, setDaoWhere] = useState<DaoWhere>({ currentPageNum: 0, where: '' }); //dao列表
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -107,56 +108,62 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
     fetchData(); 
   }, [daoWhere]);
 
-  useEffect(() => {
-    if (!isShowBtn) return; // 还在 <Loading/> 阶段，refs 都是 null
-    const recompute = () => {
-      if (leftDivRef.current) {
-        const display = getComputedStyle(leftDivRef.current).display;
-        setLeftHidden(display === 'none');
-      }
-      if (rightDivRef.current) {
-        const display = getComputedStyle(rightDivRef.current).display;
-        setRightHidden(display === 'none');
-      }
-    };
+  const { leftHidden, rightHidden } = useSidebarVisibility(leftDivRef, rightDivRef, parentDivRef, isShowBtn, {
+    debug: false, 
+    waitFrames: 40,
+    matchQuery: '(max-width: 991.98px)'
+  });
+
+  // useEffect(() => {
+  //   if (!isShowBtn) return; // 还在 <Loading/> 阶段，refs 都是 null
+  //   const recompute = () => {
+  //     if (leftDivRef.current) {
+  //       const display = getComputedStyle(leftDivRef.current).display;
+  //       setLeftHidden(display === 'none');
+  //     }
+  //     if (rightDivRef.current) {
+  //       const display = getComputedStyle(rightDivRef.current).display;
+  //       setRightHidden(display === 'none');
+  //     }
+  //   };
   
-    // 首帧：等布局完成再读，避免读到旧样式
-    const raf = requestAnimationFrame(recompute);
-    // 窗口尺寸变化（媒体查询最常见的触发源）
-    window.addEventListener('resize', recompute);
+  //   // 首帧：等布局完成再读，避免读到旧样式
+  //   const raf = requestAnimationFrame(recompute);
+  //   // 窗口尺寸变化（媒体查询最常见的触发源）
+  //   window.addEventListener('resize', recompute);
   
-    // 如果 display 是通过切 class/style 控制的，也能捕获
-    const moTargets: HTMLElement[] = [];
-    if (parentDivRef.current) moTargets.push(parentDivRef.current);
-    if (leftDivRef.current) moTargets.push(leftDivRef.current);
-    if (rightDivRef.current) moTargets.push(rightDivRef.current);
+  //   // 如果 display 是通过切 class/style 控制的，也能捕获
+  //   const moTargets: HTMLElement[] = [];
+  //   if (parentDivRef.current) moTargets.push(parentDivRef.current);
+  //   if (leftDivRef.current) moTargets.push(leftDivRef.current);
+  //   if (rightDivRef.current) moTargets.push(rightDivRef.current);
   
-    const mo = new MutationObserver(recompute);
-    moTargets.forEach(el =>
-      mo.observe(el, { attributes: true, attributeFilter: ['class', 'style'], subtree: false })
-    );
+  //   const mo = new MutationObserver(recompute);
+  //   moTargets.forEach(el =>
+  //     mo.observe(el, { attributes: true, attributeFilter: ['class', 'style'], subtree: false })
+  //   );
   
-    // 保险：如果你确实也会有几何变化，这也能触发一次
-    const ros: ResizeObserver[] = [];
-    if (leftDivRef.current) {
-      const ro = new ResizeObserver(recompute);
-      ro.observe(leftDivRef.current);
-      ros.push(ro);
-    }
-    if (rightDivRef.current) {
-      const ro = new ResizeObserver(recompute);
-      ro.observe(rightDivRef.current);
-      ros.push(ro);
-    }
+  //   // 保险：如果你确实也会有几何变化，这也能触发一次
+  //   const ros: ResizeObserver[] = [];
+  //   if (leftDivRef.current) {
+  //     const ro = new ResizeObserver(recompute);
+  //     ro.observe(leftDivRef.current);
+  //     ros.push(ro);
+  //   }
+  //   if (rightDivRef.current) {
+  //     const ro = new ResizeObserver(recompute);
+  //     ro.observe(rightDivRef.current);
+  //     ros.push(ro);
+  //   }
   
-    // 组件卸载或 isShowBtn 变化时清理
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', recompute);
-      mo.disconnect();
-      ros.forEach(ro => ro.disconnect());
-    };
-  }, [isShowBtn]); // 当从 <Loading/> 切到真实 DOM 时重新绑定
+  //   // 组件卸载或 isShowBtn 变化时清理
+  //   return () => {
+  //     cancelAnimationFrame(raf);
+  //     window.removeEventListener('resize', recompute);
+  //     mo.disconnect();
+  //     ros.forEach(ro => ro.disconnect());
+  //   };
+  // }, [isShowBtn]); // 当从 <Loading/> 切到真实 DOM 时重新绑定
   
   
   const filterTag = (tag: string): void => {

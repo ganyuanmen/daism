@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 
 export type FetchStatus = 'loading' | 'succeeded' | 'failed';
 
@@ -14,19 +14,18 @@ export interface FetchResult<T> extends PageDataType<T> {
   error?: string;
 }
 
+// 全局缓存池
+const cache = new Map<string, PageDataType<any>>();
+
 /**
- * 通用分页请求 Hook
- * @param url 请求地址
- * @param xmethod 请求头里的 x-method
- * @param deps 依赖数组，变化时自动重新请求
- * @param initialData 初始数据
+ * 通用分页请求 Hook（带缓存）
  */
 export function usePageFetch<T>(
   url: string,
   xmethod: string,
   deps: any[] = [],
   initialData: T | null = null
-): FetchResult<T> & { refetch: () => void } {
+): FetchResult<T> & { refetch: () => void; clearCache: () => void } {
   const [result, setResult] = useState<FetchResult<T>>({
     rows: initialData as T,
     pages: 0,
@@ -34,8 +33,16 @@ export function usePageFetch<T>(
     status: 'loading',
   });
 
+  const cacheKey = `${url}::${xmethod}`;
+
   const fetchData = useCallback(
-    async (signal?: AbortSignal) => {
+    async (signal?: AbortSignal, useCache = true) => {
+      if (useCache && cache.has(cacheKey)) {
+        const cached = cache.get(cacheKey)! as PageDataType<T>;
+        setResult({ ...cached, status: 'succeeded' });
+        return;
+      }
+
       try {
         const res = await fetch(url, {
           signal,
@@ -52,6 +59,7 @@ export function usePageFetch<T>(
           });
         } else {
           const data = (await res.json()) as PageDataType<T>;
+          cache.set(cacheKey, data);
           setResult({ ...data, status: 'succeeded' });
         }
       } catch (err: any) {
@@ -65,8 +73,11 @@ export function usePageFetch<T>(
         });
       }
     },
-    [url, xmethod, initialData]
+    [url, xmethod, initialData, cacheKey]
   );
+
+  // ✅ 用 useMemo 把外部 deps 合并成一个 key
+  const depKey = useMemo(() => JSON.stringify(deps), [deps]);
 
   useEffect(() => {
     if (!url || !xmethod) {
@@ -90,8 +101,12 @@ export function usePageFetch<T>(
     fetchData(controller.signal);
 
     return () => controller.abort();
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchData, ...deps]);
+  }, [fetchData, url, xmethod, initialData, depKey]); 
+  // ✅ 依赖数组是字面量，不会再警告
 
-  return { ...result, refetch: () => fetchData() };
+  return {
+    ...result,
+    refetch: () => fetchData(undefined, false),
+    clearCache: () => cache.delete(cacheKey),
+  };
 }

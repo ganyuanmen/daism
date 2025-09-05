@@ -20,7 +20,7 @@ interface MemberType {
 }
 
 export default function ProDetail({ obj }: ProDetailProps) {
-  const t = useTranslations("my");
+  const t = useTranslations("dao");
   const cssType: React.CSSProperties = { display: 'inline-block', padding: '4px' }
   const [show, setShow] = useState(false)
 

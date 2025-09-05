@@ -69,7 +69,7 @@ interface ProsListProps {
 }
 
 function ProsList({ prosData, setRefresh }: ProsListProps) {
-  const t = useTranslations('my');
+  const t = useTranslations('dao');
   const tc = useTranslations('Common');
   const user = useSelector((state: RootState) => state.valueData.user);
   const dispatch = useDispatch<AppDispatch>();

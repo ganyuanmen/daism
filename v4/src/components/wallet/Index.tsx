@@ -13,8 +13,8 @@ import {type RootState, type AppDispatch, setUser,setLoginsiwe,setActor,setDaoAc
 import { ethers } from 'ethers';
 import { setDaismContract } from "@/lib/globalStore";
 import DaoApi from '@/lib/contract';
-import {useLocale, useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
+import {useTranslations } from 'next-intl';
+// import { usePathname } from 'next/navigation';
 // import { useFetchToken } from '@/hooks/useFetchToken';
 import { useLayout } from '@/contexts/LayoutContext';
 /**
@@ -26,9 +26,9 @@ function Wallet() {
     const allProviders = useSyncProviders() as WalletProviderType[];
     const dispatch = useDispatch<AppDispatch>();
     const NETWORKNAME=process.env.NEXT_PUBLIC_BLOCKCHAIN_NETWORK || '';
-    const locale = useLocale();
-    const pathWiLocale = usePathname() || ''; // 当前路径，例如 /en/about
-    const pathname = pathWiLocale.replace(`/${locale}`, '') || '/';
+    // const locale = useLocale();
+    // const pathWiLocale = usePathname() || ''; // 当前路径，例如 /en/about
+    // const pathname = pathWiLocale.replace(`/${locale}`, '') || '/';
     const { setIsShowBtn } = useLayout();  //是否开始显示 连接钱包按钮，先检测是否已登录。后显示连接按钮
     const showError=(str:string)=>{ dispatch(setErrText(str));}
     const tc = useTranslations('Common');
@@ -73,7 +73,7 @@ function Wallet() {
 
   
 const checkNetwork= (chainId: number): boolean=>  {
-  conso
+  
   const chainIdKey = `_${chainId}`;
     if (NET[chainIdKey] !== NETWORKNAME) {
       showError(tc('mustLoginText', { netName: NETWORKNAME }));
