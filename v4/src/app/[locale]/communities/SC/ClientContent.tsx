@@ -60,7 +60,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<number>(0);
-  const {isShowBtn} =useLayout();
+  const {isShowBtn,setIsShowBtn} =useLayout();
   const leftDivRef = useRef<HTMLDivElement>(null);
   const rightDivRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
@@ -81,7 +81,12 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
     setCurrentObj(null);
     window.history.replaceState({}, '', `${locale === 'en' ? '' : '/zh'}/communities/SC`);
   }
-
+  useEffect(() => {
+    if (sessionStorage.getItem('langSwitch') === '1') {
+      setIsShowBtn(true);
+      sessionStorage.removeItem('langSwitch'); // 用一次后清掉
+    }
+  }, []);
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       setIsLoading(true);

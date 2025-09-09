@@ -18,8 +18,8 @@ export default function LocaleSwitcher() {
    const path=`${pathname}${restoredURL.length>1?restoredURL:''}`
 
   return (
-    <div className='wlanguage'>
-      <Link  href={path}  prefetch={false}>
+    <div className='wlanguage'> 
+      <Link  href={path}  prefetch={false} onClick={()=>{ sessionStorage.setItem('langSwitch', '1');}} >
         {t('switchLocale')}
       </Link>
     </div>

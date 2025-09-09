@@ -9,6 +9,8 @@ import { useTranslations } from 'next-intl';
 import { type RootState } from '@/store/store';
 import Image from 'next/image';
 import { useFetch } from '@/hooks/useFetch';
+import { useEffect, useState } from 'react';
+import { getDaismContract } from '@/lib/globalStore';
 
 
 /**
@@ -68,7 +70,7 @@ export default function ShowWalletInfo() {
                       />{'  '}
                       {obj.dao_symbol} {t('balanceText')}
                     </td>
-                    <td>{obj.token_cost}</td>
+                    <td><ShowToken obj={obj} /> </td>
                   </tr>
                 ))}
               </tbody>
@@ -78,4 +80,30 @@ export default function ShowWalletInfo() {
       </div>
     </>
   );
+}
+
+function ShowToken({obj}:{obj:DaismToken}){
+  const user = useSelector((state: RootState) => state.valueData.user) as DaismUserInfo;
+  const daismObj=getDaismContract();
+  const [token,setToken]=useState(0);
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const res=await daismObj?.DaoToken.balanceOf(obj.token_id,user.account);
+        setToken(Number(res?.token??'0'))       
+      } catch (err) {
+        console.error("fetch token from BLOCKCHAIN failed", err);
+      
+      }
+    };
+
+    fetchData();
+
+  },[obj])
+
+
+
+
+  return(<span>{token}</span>);
+
 }

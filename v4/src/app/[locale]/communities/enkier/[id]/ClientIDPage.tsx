@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl";
 import MessagePage from "@/components/enki2/page/MessagePage";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EnkiAccount from "@/components/enki2/form/EnkiAccount";
 import Loginsign from "@/components/Loginsign";
 import CreateMess from "@/components/enki3/CreateMess";
@@ -21,7 +21,7 @@ export default function ClientIDPage({ openObj, accountAr }: MessageProps) {
   const [activeTab, setActiveTab] = useState<number>(2);
   const [currentObj,setCurrentObj]=useState<EnkiMessType|null>(openObj)
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe); 
-  const {isShowBtn}=useLayout();
+  const {isShowBtn,setIsShowBtn}=useLayout();
   const t = useTranslations("ff");
 
   const afterEditCall = (obj: EnkiMessType) => {
@@ -35,7 +35,12 @@ export default function ClientIDPage({ openObj, accountAr }: MessageProps) {
       setCurrentObj(null);
     }
   };
-
+  useEffect(() => {
+    if (sessionStorage.getItem('langSwitch') === '1') {
+      setIsShowBtn(true);
+      sessionStorage.removeItem('langSwitch'); // 用一次后清掉
+    }
+  }, []);
   return (<>{isShowBtn?
     <>
       <div className="mb-3 mt-3 d-flex flex-row align-items-center ">

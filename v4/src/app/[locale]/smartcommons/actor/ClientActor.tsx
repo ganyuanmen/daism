@@ -11,6 +11,7 @@ import EnkiView from "@/components/enki3/EnkiView";
 import { useSearchParams } from "next/navigation";
 import { useLayout } from "@/contexts/LayoutContext";
 import Loading from "@/components/Loadding";
+import { useEffect } from "react";
 
 // ---- Props 类型 ----
 interface ClientActorProps {
@@ -22,7 +23,7 @@ export default function ClientActor({ accountAr }: ClientActorProps) {
   const searchParams = useSearchParams();
   const notice =Number(searchParams?.get("notice")??0);
 
-  const {isShowBtn}=useLayout();
+  const {isShowBtn,setIsShowBtn}=useLayout();
   
   const user = useSelector((state: RootState) => state.valueData.user);
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe);
@@ -30,6 +31,12 @@ export default function ClientActor({ accountAr }: ClientActorProps) {
   const t = useTranslations("ff");
   const actor = useSelector((state: RootState) => state.valueData.actor);
   const daoActor = useSelector((state: RootState) => state.valueData.daoActor);
+  useEffect(() => {
+    if (sessionStorage.getItem('langSwitch') === '1') {
+      setIsShowBtn(true);
+      sessionStorage.removeItem('langSwitch'); // 用一次后清掉
+    }
+  }, []);
   return (<>{ isShowBtn?
     <div>
       {user?.connected !== 1 ? (

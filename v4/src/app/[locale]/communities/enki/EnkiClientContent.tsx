@@ -71,7 +71,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
   const rightDivRef = useRef<HTMLDivElement>(null)
   const parentDivRef = useRef<HTMLDivElement>(null)
   const actorRef = useRef<DaismActor>(null)
-  const {isShowBtn}=useLayout();
+  const {isShowBtn,setIsShowBtn}=useLayout();
   const { leftHidden, rightHidden } = useSidebarVisibility(leftDivRef, rightDivRef, parentDivRef, isShowBtn, {
     debug: false, 
     waitFrames: 40,
@@ -113,7 +113,13 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
 
   const [navObj, setNavObj] = useState<NavObj>(svgs[0])
 
-  useEffect(() => {if (actor?.id) actorRef.current = actor}, [actor])
+  useEffect(() => {if (actor?.id) actorRef.current = actor}, [actor]);
+  useEffect(() => {
+    if (sessionStorage.getItem('langSwitch') === '1') {
+      setIsShowBtn(true);
+      sessionStorage.removeItem('langSwitch'); // 用一次后清掉
+    }
+  }, []);
 
     //过滤已注册
   useEffect(() => {

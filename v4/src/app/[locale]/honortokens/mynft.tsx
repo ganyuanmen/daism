@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslations } from 'next-intl';
 import Loadding from '@/components/Loadding';
@@ -18,12 +18,20 @@ export default function Mynft() {
 
   const tc = useTranslations('Common')
   const user = useSelector((state:RootState) => state.valueData.user) as DaismUserInfo;
-  const { isShowBtn } = useLayout();  //是否开始显示 连接钱包按钮，先检测是否已登录。后显示连接按钮
+  const { isShowBtn,setIsShowBtn } = useLayout();  //是否开始显示 连接钱包按钮，先检测是否已登录。后显示连接按钮
   const { data, status, error } = useFetch<NftObjType[]>(
     `/api/getData?did=${user.account}`,
     'getMynft',
     []
   );
+
+  
+  useEffect(() => {
+    if (sessionStorage.getItem('langSwitch') === '1') {
+      setIsShowBtn(true);
+      sessionStorage.removeItem('langSwitch'); // 用一次后清掉
+    }
+  }, []);
 
   // 渲染逻辑
   const renderContent = useMemo(() => {
@@ -35,6 +43,8 @@ export default function Mynft() {
 
     return data? <Nftlist mynftData={data} />:<ShowErrorBar errStr={error??''} />;
   }, [data,status,error, tc]); // 依赖 daoData / tc，当它们变化时才重新计算
+
+  console.log("isSwitching :",isShowBtn)
 
   return (
        <> 

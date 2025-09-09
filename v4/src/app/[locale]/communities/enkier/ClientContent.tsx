@@ -75,7 +75,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
       const rightDivRef = useRef<HTMLDivElement | null>(null);
       const parentDivRef = useRef<HTMLDivElement | null>(null);
       const actorRef = useRef<DaismActor|null>(null);
-      const {isShowBtn}=useLayout();
+      const {isShowBtn,setIsShowBtn}=useLayout();
     
       const dispatch = useDispatch<AppDispatch>();
     
@@ -92,7 +92,12 @@ export default function ClientContent({accountAr}:ClientContentProps) {
             window.history.replaceState({}, '', `/${locale}/communities/enkier`);
       }
      
-    
+      useEffect(() => {
+        if (sessionStorage.getItem('langSwitch') === '1') {
+          setIsShowBtn(true);
+          sessionStorage.removeItem('langSwitch'); // 用一次后清掉
+        }
+      }, []);
       
 
       const svgs: Record<string, JSX.Element | string> =useMemo(()=>({

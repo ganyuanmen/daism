@@ -4,14 +4,20 @@ import { Modal, Button } from 'react-bootstrap';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLayout } from '@/contexts/LayoutContext';
 
 
 export default function MetmaskInstall() {
     const [showMetaMask, setShowMetaMask] = useState(false); // 显示MetaMask安装提示
     const tc = useTranslations('Common');
-    const { isShowBtn } = useLayout(); 
+    const { isShowBtn,setIsShowBtn } = useLayout(); 
+    useEffect(() => {
+      if (sessionStorage.getItem('langSwitch') === '1') {
+        setIsShowBtn(true);
+        sessionStorage.removeItem('langSwitch'); // 用一次后清掉
+      }
+    }, []);
   return (
     <>
      {isShowBtn && <Button 

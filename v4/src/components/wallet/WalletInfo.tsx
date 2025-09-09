@@ -35,7 +35,12 @@ import { useLayout } from '@/contexts/LayoutContext';
     // const recorLoginRef = useStableCallbackRef(recorLogin);
     // const setIsShowBtnRef = useStableCallbackRef(setIsShowBtn);
 
-    
+    useEffect(() => {
+      if (sessionStorage.getItem('langSwitch') === '1') {
+        setIsShowBtn(true);
+        sessionStorage.removeItem('langSwitch'); // 用一次后清掉
+      }
+    }, []);
        
 // 连接钱包
 const connectWallet =async (providerWithInfo: WalletProviderType) => {
