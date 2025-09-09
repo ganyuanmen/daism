@@ -2,30 +2,52 @@ const abi=require('../abi/SCLogo_abi.json');
 const utils = require("../utils");
 // const JSZip= require('jszip')
 const fs = require('node:fs');
+
+const BaseSubscription = require('./base-subscription');
+const globalSubscriptionManager = require('../subscription-manager');
+
 //logo 事件
- class DaoLogo {
+ class DaoLogo extends BaseSubscription {
 
      /**根据daoId获取logo图片
      * @param {int} id daoId
      * @returns 
      */
     async getLogo(id) {
-        if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address, { from: this.account });
- 
-        let re = await this.contract.methods.getLogo(id).call({ from: this.account });
-        let result = await this.get_async_file(re[1],id);
-        return { src: result };
-    }
-    async getLogoByDaoId(id) {
-        if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address, { from: this.account });
-       return await this.contract.methods.getLogo(id).call({ from: this.account });
+        // if (this.rpcClient.getHealthyCount() === 0) {await this.rpcClient.checkAllProviders();}
+            
+        return await this.rpcClient.callContract(
+             this.address, 
+             this.abi, 
+             'getLogo', 
+             [id]
+         );
 
+      
+
+        // return await this.readWeb3(this.address,this.abi,'getLogo',[id])
+        // if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address, { from: this.account });
+ 
+        // let re = await this.contract.methods.getLogo(id).call({ from: this.account });
+        // let result = await this.get_async_file(re[1],id);
+        // return { src: result };
     }
+    // async getLogoByDaoId(id) {
+    //     if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address, { from: this.account });
+    //    return await this.contract.methods.getLogo(id).call({ from: this.account });
+
+    // }
 
     async getLogoByConfigID(id) {
-        if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address, { from: this.account });
-        let re = await this.contract.methods.getLogoByConfigID(id).call({ from: this.account });
-        return re;
+        // if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address, { from: this.account });
+        // let re = await this.contract.methods.getLogoByConfigID(id).call({ from: this.account });
+        // return re;
+        return await this.rpcClient.callContract(
+            this.address, 
+            this.abi, 
+            'getLogoByConfigID', 
+            [id]
+        );
     }
 
     // async logoStorages(id) {
@@ -123,18 +145,42 @@ const fs = require('node:fs');
 
     //修改logo事件
     changeLogoEvent(maxBlockNumber,callbackFun) {
+        const subscriptionKey='changeLogoEvent';
+        this.unsubscribe(subscriptionKey);
         const _this = this
         if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address, { from: this.account });
-        this.eventObj2=this.contract.events.ChangeLogo({filter: {},fromBlock: maxBlockNumber}); 
-        this.eventObj2.on('data', async function (data,_error) { 
-                if(!data || !data.returnValues) {utils.log("changeLogoEvent error");throw _error;}
-                _this.har.push({fn:callbackFun,data:utils.valueFactory(data,{
-                    "daoId": data.returnValues.SC_id,
-                    "logo_id":data.returnValues.logoConfigID
-                    })
-                 })  
+        const subscribe=()=>{
+        const subscription=this.contract.events.ChangeLogo({filter: {},fromBlock: maxBlockNumber}); 
+        subscription.on('data', async function (data,_error) { 
+                if(!data || !data.returnValues) {utils.log("changeLogoEvent error",_error);throw _error;}
+                const release = await _this.parentThis.queueMutex.acquire();
+                try {
+                    _this.parentThis.eventQueue.push(
+                        {
+                            type:'DaoLogo.har',
+                            fn:callbackFun,
+                            data:utils.valueFactory(data,{
+                                "daoId": data.returnValues.SC_id,
+                                "logo_id":data.returnValues.logoConfigID
+                            })
+                        });
+                        _this.parentThis.processQueue();
+                } finally {
+                    release();
+                }
             }
-        )
+        );
+        subscription.on('error', (error) => {
+            console.error('changeLogoEvent Subscription  error:');
+            setTimeout(() => {subscribe();}, 3000);
+        });
+        subscription.on('connected', (subscriptionId) => {
+            console.log('changeLogoEvent Subscription connected with ID:', subscriptionId);
+        });
+        _this.subscriptions.set(subscriptionKey, subscription);
+        
+        }
+        subscribe();
     } 
 
     
@@ -158,7 +204,7 @@ const fs = require('node:fs');
     //取消订阅
     unsub(){
         try{
-            if(this.eventObj2 && this.eventObj2.unsubscribe){this.eventObj2.unsubscribe()}
+            if(this.eventObj2 && this.eventObj2.unsubscribe){this.eventObj2.unsubscribe();this.eventObj2.removeAllListeners();}
             // if(this.eventObj1 && this.eventObj1.unsubscribe){this.eventObj1.unsubscribe()}
             // if(this.eventObj3 && this.eventObj3.unsubscribe){this.eventObj3.unsubscribe()}
             this.eventObj2=null;
@@ -167,13 +213,15 @@ const fs = require('node:fs');
         }catch(e){console.error(e);}
     }
  
-    constructor(_web3,_account,_address,_daotoken) {
+    constructor(_web3,_account,_address,_rpcClient,_parentThis) {
+        super();
         this.web3=_web3;
         this.account=_account;
         this.address = _address;
         this.abi=abi
-        this.har=[]
-        this.daotoken=_daotoken
+        this.rpcClient=_rpcClient;
+        this.parentThis=_parentThis;
+        globalSubscriptionManager.registerInstance('DaoLogo', this);
     }
 }
 

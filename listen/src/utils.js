@@ -78,9 +78,9 @@ class Utils{
         return {address,blockHash,blockNumber,transactionHash,transactionIndex,data,event}
     }
 
-    log(str) {
+    log(str,err) {
         var myDate = new Date();
-        console.log(myDate.getFullYear() + '-' + (myDate.getMonth() + 1) + '-' + myDate.getDate() + ' ' + myDate.getHours() + ":" + myDate.getMinutes() + ":" + myDate.getSeconds() + "-->" + str)
+        console.log(`${myDate.getFullYear()}-${(myDate.getMonth() + 1)}-${myDate.getDate()} ${myDate.getHours()}:${myDate.getMinutes()}:${myDate.getSeconds()}-->${str}`,err)
     }
 
 

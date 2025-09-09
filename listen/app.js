@@ -1,9 +1,11 @@
-const Server = require("./src/server")
+
+const Server = require('./src/server');
+const globalSubscriptionManager = require('./src/subscription-manager'); // 单独引入
 const schedule =require("node-schedule");
-const daoabi=require('./src/abi/SC_abi.json')
 const mysql = require('mysql2/promise'); 
 const dotenv=require('dotenv');
 const crypto = require('node:crypto');
+
 dotenv.config();
 
 let start_block=21232473n  //Start listening for block numbers
@@ -34,6 +36,30 @@ async function daoListenStart() {
    await server1.restart();
    daoListen();
 }
+
+if (server1.web3 && server1.web3.currentProvider && server1.web3.currentProvider.on) {
+   // server1.web3.currentProvider.on('close', async (code, reason) => {
+   //   console.warn(`[WebSocket] disconnected. code=${code}, reason=${reason}`);
+   //   console.log('[Server] Attempting automatic restart...');
+   //   try {
+   //     await server1.restart();
+   //     console.log('[Server] Automatic restart successful');
+   //   } catch (err) {
+   //     console.error('[Server] Automatic restart failed:', err.message);
+   //   }
+   // });
+
+   server1.web3.currentProvider.on('error', async (err) => {
+     console.error('[WebSocket] error:', err.message);
+     console.log('[Server] Attempting automatic restart due to WS error...');
+     try {
+       await server1.restart();
+       console.log('[Server] Automatic restart successful');
+     } catch (err) {
+       console.error('[Server] Automatic restart failed:', err.message);
+     }
+   });
+ }
 
 async function hand() {
     //Obtain the maximum block number that needs to be monitored from the database
@@ -67,86 +93,188 @@ async function hand() {
    rows[0].forEach(element => {maxData.push(element.s>start_block?element.s:start_block)});
    console.info(maxData)
    p("start...........")
-   daoListenStart(); 
+   await server1.start();
+   daoListen();
    //1分钟循环执行
    schedule.scheduleJob("*/5 * * * * *",async() => {
-      if(!server1.daoapi.running) server1.daoapi.run();
-      if (monitor > 15*12 && !server1.daoapi.running) daoListenStart();
+      // console.log("monitor:",monitor,server1.daoapi.eventQueue.length)
+      server1.daoapi.processQueue();
+      if (monitor > 20*12 && server1.daoapi.eventQueue.length===0 && !server1.daoapi.isProcessing) daoListenStart();
       monitor++;  
    });  
 }
 
 
-//监听
-function daoListen() {
-   p('begin listent...')
-   // addLogoEvent()  
-   // SatoshiUTOFund()
+// 监听所有事件，带延迟执行
+async function daoListen() {
+   // console.log('开始监听DAO事件，带延迟执行...');
+   
+   // 先取消所有现有订阅
+   await globalSubscriptionManager.unsubscribeAll();
+   
+   // 等待一段时间确保订阅完全取消
+   await new Promise(resolve => setTimeout(resolve, 1000));
  
-  daoCreate() //创建dao事件处理
-  domainsing()  //个人社区帐号建立
+   // 使用数组定义所有订阅方法和参数
+   const subscribeMethods = [
+     { method: daoCreate, name: 'daoCreate', delay: true },
+     { method: domainsing, name: 'domainsing', delay: true },
+     { method: domain, name: 'domain', delay: true },
+     { method: DonationReceived, name: 'DonationReceived', delay: true },
+     { method: addProEvent, name: 'addProEvent', delay: true },
+     { method: voteEvent, name: 'voteEvent', delay: true },
+     { method: execEvent, name: 'execEvent', delay: true },
+     { method: changeLogo, name: 'changeLogo', delay: true },
+     { method: mintEvent, name: 'mintEvent', delay: true },
+     { method: mintTipEvent, name: 'mintTipEvent', delay: true },
+     { method: mintSmartCommon, name: 'mintSmartCommon', delay: true },
+     { method: updateSCEvent, name: 'updateSCEvent', delay: true },
+     { method: addCreatorCEvent, name: 'addCreatorCEvent', delay: true },
+     { method: accountDividendRight, name: 'accountDividendRight', delay: true },
+     { method: publishTolen, name: 'publishTolen', delay: true }
+   ];
+ 
+   // 顺序执行带延迟
+   for (let i = 0; i < subscribeMethods.length; i++) {
+     const { method, name, delay } = subscribeMethods[i];
+     
+     try {
 
-  DonationReceived(); //捐赠
-//   ERC20Withdraw(); //erc 捐赠
+       method(); // 执行订阅方法
+       
+       // 如果不是最后一个方法，添加延迟
+       if (delay && i < subscribeMethods.length - 1) {
+         const delayMs = Math.floor(Math.random() * 2000) + 1000; // 1-3秒随机延迟
+       
+         await new Promise(resolve => setTimeout(resolve, delayMs));
+       }
+       
+     } catch (error) {
+       console.error(`执行订阅 ${name} 时出错:`, error);
+       
+       // 出错时也等待一段时间再继续
+       const errorDelay = 2000; // 错误时等待2秒
+       console.log(`发生错误，等待 ${errorDelay}ms 后继续...`);
+       await new Promise(resolve => setTimeout(resolve, errorDelay));
+     }
+   }
+   
+   globalSubscriptionManager.isListening = true;
+   // console.log('所有订阅监听已启动完成');
+   
+   return globalSubscriptionManager.getStatus();
+ }
 
-  publishTolen()  // dao发布token事件
-  // //以下的监听需要dao条件下才能处理，所以延迟监听
-  setTimeout(() => listen_attach(), 10000);     //5
-  //延迟监听兑换，需要处理前期事件
-  setTimeout(() => listen_swap(),16000);  //8
-  // updateVersion()  //升级
-  // transfer()  // 转帐
+// //监听
+// function daoListen() {
+//    p('begin listent...')
+//    // addLogoEvent()  
+//    // SatoshiUTOFund()
+ 
+//   daoCreate() //创建dao事件处理
+//   domainsing()  //个人社区帐号建立
+//   domain()  //smart common 注册社区帐号
+//   DonationReceived(); //捐赠
+// //   ERC20Withdraw(); //erc 捐赠
 
-  //荣誉通证
-  nfttransfer() // 发布mint nft  UnitNFT  t_nft_transfer  0 
-  nftsing()  //打赏 mint nft  Daismnftsing  t_nft_swap 2 
-  mintEvent();  //其它脚本mint  DaismNft   t_nft  1  
-  mintTipEvent(); //个人打赏 Daismnftsing  t_nft_tip 5
-  mintBurnEvent()  //Daismnftsing  t_nft_swaphonor 4
-  mintSmartCommon(); //mint smart common  Daismnftsing  t_nft_mint  3
+// // setTimeout(() => {
+//    addProEvent();
+// // }, 10000);
+// // setTimeout(() => {
+//    voteEvent() //投票
+//    execEvent()  //执行
+//    changeLogo() //chanelogo 修改 dao logo 事件
+ 
+//    //荣誉通证
+//  // 关闭市场  nfttransfer() // 发布mint nft  UnitNFT  t_nft_transfer  0 
+//  //  关闭市场 nftsing()  //打赏 mint nft  Daismnftsing  t_nft_swap 2 
+//    mintEvent();  //手工mint 其它脚本mint  DaismNft   t_nft  1  
+//    mintTipEvent(); //个人打赏 Daismnftsing  t_nft_tip 5
+//  // 关闭市场  mintBurnEvent()  //Daismnftsing  t_nft_swaphonor 4
+//    mintSmartCommon(); //mint smart common  Daismnftsing  t_nft_mint  3
+ 
   
-}
-
-function listen_swap()
-{
-   domain()  //smart common 注册社区帐号
-
-   changeLogo() //chanelogo 修改 dao logo 事件
-   execEvent()  //提案执行
-   eth2token() //eth to token eth 兑换 token
-   eth2tokenex()
-   token2token() //t2t token 兑换 token 
-   token2tokenex() 
+//    // setLogo()   //setlogo 创建dao logo 事件
+//    updateSCEvent() //修改dapp 地址 不经提案，直接修改
+//    addCreatorCEvent() // 增加dapp 地址对应 版本号
+//  //   getDividendEvent() //提取分红
+//    accountDividendRight()  //增加成员
  
-   utoken2token()  //u2t utoken 兑换 token 事件
-   utoken2tokenex()
-   token2utoken()  //t2u token 兑换 utoken 事件
-   token2utokenex()
- 
-   eth2utoken() //eth to utoken eth 兑换 utoken
-   addProEvent()   //addProEvent 创建提案事件
-   voteEvent()
-}
+//    publishTolen()  // dao发
+// // }, 16000);
 
-function listen_attach()
-{
-   // setLogo()   //setlogo 创建dao logo 事件
-   updateSCEvent()
-   addCreatorCEvent()
-   getDividendEvent() //提取分红
-   accountDividendRight()  //增加成员
-}
+//   // //以下的监听需要dao条件下才能处理，所以延迟监听
+// //   setTimeout(() => listen_attach(), 10000);     //5
+//   //延迟监听兑换，需要处理前期事件
+// //   setTimeout(() => listen_swap(),16000);  //8
+//   // updateVersion()  //升级
+//   // transfer()  // 转帐
+  
+// //   addProEvent()   //addProEvent 创建提案事件
+// //   voteEvent() //投票
+// //   execEvent()  //执行
+
+// //   changeLogo() //chanelogo 修改 dao logo 事件
+
+// //   //荣誉通证
+// // // 关闭市场  nfttransfer() // 发布mint nft  UnitNFT  t_nft_transfer  0 
+// // //  关闭市场 nftsing()  //打赏 mint nft  Daismnftsing  t_nft_swap 2 
+// //   mintEvent();  //手工mint 其它脚本mint  DaismNft   t_nft  1  
+// //   mintTipEvent(); //个人打赏 Daismnftsing  t_nft_tip 5
+// // // 关闭市场  mintBurnEvent()  //Daismnftsing  t_nft_swaphonor 4
+// //   mintSmartCommon(); //mint smart common  Daismnftsing  t_nft_mint  3
+
+ 
+// //   // setLogo()   //setlogo 创建dao logo 事件
+// //   updateSCEvent() //修改dapp 地址 不经提案，直接修改
+// //   addCreatorCEvent() // 增加dapp 地址对应 版本号
+// // //   getDividendEvent() //提取分红
+// //   accountDividendRight()  //增加成员
+
+// //   publishTolen()  // dao发布token事件
+// }
+
+// function listen_swap()
+// {
+//    domain()  //smart common 注册社区帐号
+
+//    changeLogo() //chanelogo 修改 dao logo 事件
+//    execEvent()  //提案执行
+//    // 关闭市场eth2token() //eth to token eth 兑换 token
+//    // 关闭市场eth2tokenex()
+//    // 关闭市场token2token() //t2t token 兑换 token 
+//    // 关闭市场token2tokenex() 
+ 
+//    // 关闭市场utoken2token()  //u2t utoken 兑换 token 事件
+//    // 关闭市场utoken2tokenex()
+//    // 关闭市场token2utoken()  //t2u token 兑换 utoken 事件
+//    // 关闭市场token2utokenex()
+ 
+//    // 关闭市场eth2utoken() //eth to utoken eth 兑换 utoken
+//    // addProEvent()   //addProEvent 创建提案事件
+//    // voteEvent()
+// }
+
+// function listen_attach()
+// {
+//    voteEvent()
+//    // setLogo()   //setlogo 创建dao logo 事件
+//    updateSCEvent()
+//    addCreatorCEvent()
+//    getDividendEvent() //提取分红
+//    accountDividendRight()  //增加成员
+// }
 
 // 开始监听
 hand();
 
-function SatoshiUTOFund()
-{
-   server1.daoapi.SatoshiUTOFund.addRuleEvent(0, undefined);
-   // server1.daoapi.SatoshiUTOFund.deleteRuleEvent(0, undefined);
-   // server1.daoapi.SatoshiUTOFund.useRuleEvent(0, undefined);
-   // server1.daoapi.SatoshiUTOFund.approveEvent(0, undefined);
-}
+// function SatoshiUTOFund()
+// {
+//    server1.daoapi.SatoshiUTOFund.addRuleEvent(0, undefined);
+//    // server1.daoapi.SatoshiUTOFund.deleteRuleEvent(0, undefined);
+//    // server1.daoapi.SatoshiUTOFund.useRuleEvent(0, undefined);
+//    // server1.daoapi.SatoshiUTOFund.approveEvent(0, undefined);
+// }
 
 //统计个人当前的token 值
 async function token_cost(id, address) {
@@ -250,7 +378,7 @@ function mintTipEvent()
          const {data}=obj;
          let svg='';
          if(data['tokenId']>0){
-            const tokenSvg=await server1.daoapi.DaoLogo.getLogoByDaoId(data['daoId']);
+            const tokenSvg=await server1.daoapi.DaoLogo.getLogo(data['daoId']);
              svg=tokenSvg?.fileContent ?? '';
          }
        
@@ -290,7 +418,7 @@ function nftsing()
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
       // let tokenSvg=['','']
-     let tokenSvg=await server1.daoapi.DaoLogo.getLogoByDaoId(data['daoId'])
+     let tokenSvg=await server1.daoapi.DaoLogo.getLogo(data['daoId'])
       let sql ="INSERT IGNORE INTO t_nft_swap(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address,utoken) VALUES(?,?,?,?,?,?,?,?)";
       let params = [obj.blockNumber,data['daoId'],data['tokenId'],data['to'],tokenSvg[1],data['timestamp'], server1.daoapi.Daismnftsing.address,data['utokenAmount']];
       maxData[22] = obj.blockNumber+1n;  //Cache last block number
@@ -488,7 +616,7 @@ function mintSmartCommon()  // mint smart common
    server1.daoapi.Daismnftsing.mintBatchEvent(maxData[12], async (obj) => {
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
-      let tokenSvg=await server1.daoapi.DaoLogo.getLogoByDaoId(data['daoId'])
+      let tokenSvg=await server1.daoapi.DaoLogo.getLogo(data['daoId'])
       let sql ="INSERT IGNORE INTO t_nft_mint(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address) VALUES(?,?,?,?,?,?,?)";
       let params ;
       data['to'].forEach((account,idx)=>{
@@ -554,6 +682,7 @@ function voteEvent()
       // maxData[10] = obj.blockNumber+1n; //Cache last block number
       // await executeSql(sql, params);
       //p_nump BIGINT,p_delegator CHAR(42), p_createTime INT,p_creator CHAR(42),p_rights INT,p_antirights INT,p_time INT,p_type
+      maxData[10] = obj.blockNumber+1n; //Cache last block number
       await executeSql("call calc_pro(?,?,?,?,?,?,?,?)",[obj.blockNumber,data['delegator'],data['createTime'],data['creator'],data['rights'],data['antirights'],data['_time'],data['proposalType']]); //处理是结束
       // let contract= new server1.web3.eth.Contract(daoabi, data['delegator'], { from: server1.account });
       // let res=await contract.methods.proposal().call({ from: server1.account })

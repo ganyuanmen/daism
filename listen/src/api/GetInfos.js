@@ -1,18 +1,23 @@
 
 const abi = require('../abi/GetInfos_abi.json');
 
- // 获取数据, 减少http请求
 class GetInfos {
 
-    /**获取dao信息
-     * @param {int} _daoId  dao ID
-     * @returns 
-    */
-    async getDaoInfo(_daoId) {
-        this.genegateContract()
-        return await this.contract.methods.getSCInfo(_daoId).call({ from: this.account })
+    getDaoInfo = async (_daoId) => {
+      
+            // if (this.rpcClient.getHealthyCount() === 0) {await this.rpcClient.checkAllProviders();}
+            
+           return await this.rpcClient.callContract(
+                this.address, 
+                this.abi, 
+                'getSCInfo', 
+                [_daoId]
+            );
+            
+        
+     
     }
-
+    
     /** 获取 dao 的成员及票权
     * @param {*} _daoId  dao ID
     * @returns
@@ -34,11 +39,12 @@ class GetInfos {
         if (!this.contract) this.contract = new this.web3.eth.Contract(this.abi, this.address, { from: this.account });
     }
 
-    constructor(_web3, _account,_address) {
+    constructor(_web3, _account,_address,_rpcClient) {
         this.web3 = _web3;
         this.account = _account;
         this.address =_address;
         this.abi = abi
+        this.rpcClient=_rpcClient
     }
 }
 
