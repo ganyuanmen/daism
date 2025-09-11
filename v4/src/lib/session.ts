@@ -56,7 +56,7 @@ export async function getSession(): Promise<SessionPayload | null> {
     
     // 检查过期时间
     if (session && session.exp && session.exp < Date.now() / 1000) {
-      console.log('Session token expired');
+      console.info('Session token expired');
       return null;
     }
     

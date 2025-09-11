@@ -9,80 +9,73 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-// export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
-//   const { id: name } = params;
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest,{ params }: { params: Promise<{ id: string }> }) {
   const { id: name } = await params;
 
   try {
-    const bodyText = await request.text();
-    // const postbody: ActivityPubBody = JSON.parse(bodyText);
+    const bodyText = await request.text();   
     let postbody: ActivityPubBody;
     try {
       postbody = JSON.parse(bodyText);
-    } catch  {
+      if (Number(process.env.IS_DEBUGGER??'0') === 1) console.info(postbody);
+  
+    if (typeof postbody !== 'object' || !postbody.type || !postbody.actor) {
+      return NextResponse.json({ errMsg: 'Invalid request body' }, {status: 400, headers: corsHeaders});
+    } 
+    else {
+      const _type = postbody.type.toLowerCase();
+      if (_type === 'delete' && !(postbody.object as any)?.id) {
+        return new NextResponse('Accepted',  {status: 202, headers: corsHeaders});
+      } 
+      else {
+        console.info(`${new Date().toLocaleString()}:inbox-----${name}-${_type}-${postbody.actor}`);
+        const validTypes = ['follow', 'accept', 'undo', 'create', 'update', 'delete', 'announce'];
+        if (!validTypes.includes(_type)) {
+          return NextResponse.json({ errMsg: 'No need to handle' },  {status: 200, headers: corsHeaders});
+        }else {
+          const actor = await getCachedActor(postbody.actor);
+          if (!actor?.pubkey || !actor.account) {
+            console.error("not pubkey not account:",actor)
+            return NextResponse.json({ errMsg: 'actor not found' },  {status: 404, headers: corsHeaders});
+          } else {
+            if (!await verifySignature(request, actor, `/api/activitepub/inbox/${name}`)) {
+              console.error("verifySignature fail :",actor,name)
+              return NextResponse.json({ error: 'Invalid signature' },  {status: 401, headers: corsHeaders});
+            }else {
+
+              console.info("Signature verified successfully!");
+              const domain = process.env.NEXT_PUBLIC_DOMAIN!;
+              const handlers = {
+                accept: () => accept(postbody, domain, actor),
+                undo: () => undo(postbody),
+                delete: () => handle_delete((postbody.object as any)?.id),
+                update: () => handle_update(postbody),
+                create: () => createMess(postbody, name, actor),
+                announce: () => handle_announce(postbody, name, actor),
+                follow: () => follow(postbody, name, domain, actor)
+              };
+
+              const handler = handlers[_type as keyof typeof handlers];
+              if (handler) {
+                await handler();
+              } else {
+                console.warn(`No handler for type: ${_type}`);
+              }
+
+              return new NextResponse('Accepted', {status: 202, headers: corsHeaders});
+            }
+          }
+        }
+      }
+    }
+
+    } catch  (err) {
+      console.error('Invalid JSON in request body',err)
       return NextResponse.json(
         { errMsg: 'Invalid JSON in request body' },
         { status: 400, headers: corsHeaders }
       );
     }
-
-
-    if (typeof postbody !== 'object' || !postbody.type || !postbody.actor) {
-      return NextResponse.json({ errMsg: 'Invalid request body' }, {status: 400, headers: corsHeaders});
-    }
-
-    const _type = postbody.type.toLowerCase();
-    if (_type === 'delete' && !(postbody.object as any)?.id) {
-      return new NextResponse('Accepted',  {status: 202, headers: corsHeaders});
-    }
-
-    console.info(`${new Date().toLocaleString()}:inbox-----${name}-${_type}-${postbody.actor}`);
-    if (process.env.IS_DEBUGGER === '1') console.info(postbody);
-
-    const validTypes = ['follow', 'accept', 'undo', 'create', 'update', 'delete', 'announce'];
-    if (!validTypes.includes(_type)) {
-      return NextResponse.json({ errMsg: 'No need to handle' },  {status: 200, headers: corsHeaders});
-    }
-
-    const actor = await getCachedActor(postbody.actor);
-    if (!actor?.pubkey || !actor.account) {
-      return NextResponse.json({ errMsg: 'actor not found' },  {status: 404, headers: corsHeaders});
-    }
-
-    if (!await verifySignature(request, actor, `/api/activitepub/inbox/${name}`)) {
-      return NextResponse.json({ error: 'Invalid signature' },  {status: 401, headers: corsHeaders});
-    }
-
-    console.info("Signature verified successfully!");
-    
-    const domain = process.env.NEXT_PUBLIC_DOMAIN!;
-    const handlers = {
-      accept: () => accept(postbody, domain, actor),
-      undo: () => undo(postbody),
-      delete: () => handle_delete((postbody.object as any)?.id),
-      update: () => handle_update(postbody),
-      create: () => createMess(postbody, name, actor),
-      announce: () => handle_announce(postbody, name, actor),
-      follow: () => follow(postbody, name, domain, actor)
-    };
-
-    // if (handlers[_type as keyof typeof handlers]) {
-    //   await handlers[_type as keyof typeof handlers]();
-    // }
-    const handler = handlers[_type as keyof typeof handlers];
-    if (handler) {
-      await handler();
-    } else {
-      console.warn(`No handler for type: ${_type}`);
-    }
-
-    return new NextResponse('Accepted', {status: 202, headers: corsHeaders});
-
   } catch (error) {
     console.error("Error in inbox handler:", error);
     return NextResponse.json({ error: 'Internal server error' },  {status: 500, headers: corsHeaders});

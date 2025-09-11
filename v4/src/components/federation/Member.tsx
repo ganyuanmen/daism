@@ -1,8 +1,7 @@
 import { FC } from "react";
 import { User1Svg } from "@/lib/jssvg/SvgCollection";
 import ShowAddress from "../ShowAddress";
-// import { useTranslations } from "next-intl";
-import Image from "next/image";
+import ImageWithFallback from "../ImageWithFallback";
 
 interface Props {
   messageObj: EnkiMessType;
@@ -19,9 +18,10 @@ const Member: FC<Props> = ({ messageObj }) => {
     <div style={{ width: "90%" }} className="d-inline-flex align-items-center">
       <a href={`https://${domain}/${enkiName}`} className="daism-a">
         {avatar ? (
-          <Image
+          <ImageWithFallback
             src={avatar}
             alt=""
+            fallback="/user.svg"
             width={48}
             height={48}
             style={{ borderRadius: "10px" }}

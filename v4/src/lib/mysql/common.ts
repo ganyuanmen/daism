@@ -24,15 +24,13 @@ async function createConnection(): Promise<Pool> {
 }
 
 // 查询数据
-export async function getData(
-  sql: string,
-  sqlParams: any[] = [],
-  single = false
-): Promise<any | any[]> {
+export async function getData(sql: string,sqlParams: any[] = [],single = false): Promise<any | any[]> {
   const pool = await createConnection();
 
-  if (process.env.IS_DEBUGGER === '1') 
-    console.info(`${new Date().toLocaleString()}: getData: ${sql} --> ${sqlParams.join()}`);
+  // if (Number(process.env.IS_DEBUGGER??'0') === 1) {
+  //   console.info(`${new Date().toLocaleString()}: getData: ${sql} --> ${sqlParams.join()}`);
+  // }
+    
 
   try {
     const [rows] = await pool.query<any[]>(sql, sqlParams);
@@ -44,13 +42,12 @@ export async function getData(
 }
 
 // 执行 SQL（增删改）
-export async function execute(
-  sql: string,
-  sqlParams: any[] = []
-): Promise<number> {
+export async function execute(sql: string,sqlParams: any[] = []): Promise<number> {
   
-  if (process.env.IS_DEBUGGER === '0') 
+  if (Number(process.env.IS_DEBUGGER??'0') === 1) {
     console.info(`${new Date().toLocaleString()}: execute: ${sql} --> ${sqlParams.join()}`);
+  }
+    
   const pool = await createConnection();
   let attempt = 0;
   const maxRetries = 3;
@@ -58,7 +55,8 @@ export async function execute(
   while (attempt < maxRetries) {
     try {
       const [result] = await pool.execute<any>(sql, sqlParams);
-      if (sql.trim().toUpperCase().startsWith('CALL')) return 1; else return result.affectedRows as number;   
+      if (sql.trim().toUpperCase().startsWith('CALL')) return 1; 
+      else return (result as any).affectedRows as number;   
     } catch (err: any) {
       if (err.code === 'ER_LOCK_DEADLOCK') {
         attempt++;
@@ -76,8 +74,22 @@ export async function execute(
 
 // 执行 SQL 并返回自增 ID
 export async function executeID(sql: string, sqlParams: any[] = []): Promise<number> {
-  const result: any = await execute(sql, sqlParams);
-  return typeof result === 'number' ? 0 : result.insertId ?? 0;
+
+   
+  if (Number(process.env.IS_DEBUGGER??'0') === 1) {
+    console.info(`${new Date().toLocaleString()}: executeID: ${sql} --> ${sqlParams.join()}`);
+  }
+
+  try {
+    const pool = await createConnection();
+    const [result] = await pool.execute(sql,sqlParams );
+    const insertId = (result as any).insertId;
+    return Number(insertId??'0');
+  } catch (error) {
+    console.error('Database executeID error:', error);
+    return 0;
+  }
+
 }
 
 // getJsonArray
@@ -90,7 +102,7 @@ export async function getJsonArray(
   const [rows] = await pool.query<any[]>("SELECT sqls FROM aux_tree WHERE id=?", [cid]);
   const sql = rows[0]?.sqls as string;
 
-  if (process.env.IS_DEBUGGER === '1') 
+  if (Number(process.env.IS_DEBUGGER??'0') === 1) 
     console.info(`${new Date().toLocaleString()}: ${cid} --> getJsonArray: ${sql} --> ${sqlParams.join()}`);
 
   try {
@@ -111,7 +123,7 @@ export async function getPageData(
   a: 'asc' | 'desc',
   w: string
 ): Promise<{ rows: any[]; total: number; pages: number }> {
-  if (process.env.IS_DEBUGGER === '1') 
+  if (Number(process.env.IS_DEBUGGER??'0') === 1) 
     console.info(`${new Date().toLocaleString()}: getPageData --> ${[tid, ps, pi, s, a, w].join()}`);
 
   const re: any = await getData('CALL get_page(?,?,?,?,?,?)', [tid, ps, pi, s, a, w]);

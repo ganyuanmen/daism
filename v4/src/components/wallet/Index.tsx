@@ -113,7 +113,6 @@ const updateLoginData=async (tempAccount:string,walletProvider:WalletProviderTyp
   // 保存到 sessionStorage
   window.sessionStorage.setItem("providerinfoname", (walletProvider.info.name));
   window.sessionStorage.setItem("isLogin", "1"); // 标记用户已登录
-  console.log("11111111111111111111111111111111111111111111111")
   setTimeout(() => {
     setIsShowBtn(true)
   }, 100);

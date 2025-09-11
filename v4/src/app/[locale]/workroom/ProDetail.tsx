@@ -5,7 +5,8 @@ import {type ProItem } from './ProHistory'
 import { daism_getTime } from '@/lib/utils/windowjs';
 import { useTranslations } from 'next-intl';
 import { useFetch } from '@/hooks/useFetch';
-import Image from 'next/image';
+import ImageWithFallback from '@/components/ImageWithFallback';
+import { SvgImage } from '@/components/SvgImage';
 
 interface ProDetailProps {
   obj: ProItem;
@@ -45,7 +46,7 @@ export default function ProDetail({ obj }: ProDetailProps) {
         <Modal.Body>
           <Row className='mb-3 p-1' style={{ borderBottom: '1px solid gray' }} >
             <Col>
-              <Image height={32} width={32} alt='' src={obj.dao_logo ?? '/logo.svg'} />{'  '}
+              <ImageWithFallback height={32} width={32} alt='' src={obj.dao_logo ?? '/logo.svg'} />{'  '}
               <b>{obj.dao_name}({obj.dao_symbol})</b>
             </Col>
           </Row>
@@ -101,15 +102,15 @@ interface LogsProps {
 }
 
 function Logs({ obj, t }: LogsProps) {
-  function svgToBase(svgCode: string) {
-    const utf8Bytes = new window.TextEncoder().encode(svgCode);
-    return 'data:image/svg+xml;base64,' +
-      window.btoa(String.fromCharCode.apply(null, utf8Bytes as unknown as number[]));
-  }
+  // function svgToBase(svgCode: string) {
+  //   const utf8Bytes = new window.TextEncoder().encode(svgCode);
+  //   return 'data:image/svg+xml;base64,' +
+  //     window.btoa(String.fromCharCode.apply(null, utf8Bytes as unknown as number[]));
+  // }
 
   switch (obj.pro_type) {
     case 0: return <div>{t('delMember')} :{obj.account}</div>
-    case 1: return <Image width={32} height={32} src={svgToBase(obj.imgstr ?? '')} alt='' />
+    case 1: return <SvgImage width={32} height={32} svgCode={obj.imgstr ?? ''}  />
     case 2: return <div>{obj.dao_desc}</div>
     case 3: return <div>{t('newManagerText')} :{obj.account}</div>
     case 4: return <div>{t('typeName')} :{obj.dao_desc}</div>

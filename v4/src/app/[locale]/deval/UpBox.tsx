@@ -8,7 +8,7 @@ import SwapWindow from "./SwapWindow";
 import iaddStyle from "@/styles/iadd.module.css";
 import { type tipType } from "./TipWin";
 import type { Dispatch, SetStateAction } from 'react';
-import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 interface UpBoxProps { 
    inObj:DaismToken; //上层选择的token
@@ -48,9 +48,9 @@ interface UpBoxProps {
                /></Col>
             <Col className="col-auto">
               <Button className={iaddStyle.iadd_btn} variant="outline-secondary" onClick={() => setShow(true)} size="lg">
-                {inObj.dao_logo && <Image alt="" width={24} height={24} src={inObj.dao_logo} />}
+                {inObj.dao_logo && <ImageWithFallback alt="" width={24} height={24} src={inObj.dao_logo} />}
                 <span style={{ display: "inline-block", padding: "0 4px", fontSize: "20px", color: "#0D111C" }}>{inObj.dao_symbol}</span>
-                <Image alt="" width={24} height={24} src="/down.svg" />
+                <ImageWithFallback alt="" width={24} height={24} src="/down.svg" />
               </Button>
             </Col>
           </Row>

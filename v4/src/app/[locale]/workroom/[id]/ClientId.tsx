@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { getDaismContract } from '@/lib/globalStore';
 import { ethers } from 'ethers';
 import { Card, Button, Modal } from 'react-bootstrap';
-import { type RootState, type AppDispatch, setTipText,setErrText } from '@/store/store';
+import { type RootState, type AppDispatch, setTipText,setErrText,setMessageText } from '@/store/store';
 import Link from 'next/link';
 import { daism_getTime } from '@/lib/utils/windowjs';
 import { type DaoRecord } from '@/lib/mysql/daism';
@@ -99,7 +99,8 @@ const getDivdend=async ()=>{
     const daismObj=getDaismContract();
     daismObj?.Dao.getDividend(daoData.delegator,user.account).then(() => {
         closeTip()
-        showError(`${t('divdendComplete')}_*_`)
+        dispatch(setMessageText(t('divdendComplete')))
+        // showError(`${t('divdendComplete')}_*_`)
         setDivdend('0')
       }, err => {
           console.error(err);closeTip();

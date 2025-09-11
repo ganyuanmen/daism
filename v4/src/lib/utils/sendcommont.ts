@@ -9,6 +9,7 @@ interface Follower {
 }
 
 export function sendcommont(account: string, message_id: string, pathtype: string): void {
+  
   getUser('actor_account', account, 'privkey,Lower(actor_account) actor_account,actor_url,actor_name,domain')
     .then((localUser: Partial<DaismActor>) => {
       try {
@@ -19,7 +20,9 @@ export function sendcommont(account: string, message_id: string, pathtype: strin
         
         getFollowers_send({ account: localUser.actor_account })
           .then((data: Follower[]) => {
+            
             data.forEach((element: Follower) => {
+
               try {
                 if (!thebody) {
                   thebody = createNoteDel(

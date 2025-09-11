@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from "react-bootstrap";
 import ShowAddress from '../ShowAddress';
 import { useTranslations } from "next-intl";
-import Image from 'next/image';
+import ImageWithFallback from '../ImageWithFallback';
 
 
 interface DaoInfoDivProps {
@@ -23,16 +23,17 @@ const DaoInfoDiv: React.FC<DaoInfoDivProps> = ({ record }) => {
       <Card.Body>
         <div className='row mb-3'>
           <div className='col-auto me-auto d-flex align-items-center'>
-            <Image 
+            <ImageWithFallback 
               alt={record.dao_name} 
               width={48} 
               height={48} 
               src={logoUrl}
-              onError={(e) => {
-                // 图片加载失败时使用默认logo
-                const target = e.target as HTMLImageElement;
-                target.src = '/logo.svg';
-              }}
+              fallback='/logo.svg'
+              // onError={(e) => {
+              //   // 图片加载失败时使用默认logo
+              //   const target = e.target as HTMLImageElement;
+              //   target.src = '/logo.svg';
+              // }}
             />
             <div style={{ paddingLeft: '10px' }}>
               <div>{record.dao_name}</div>

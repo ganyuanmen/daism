@@ -11,10 +11,10 @@ import usePrice from "@/hooks/usePrice";
 import ShowErrorBar from "@/components/ShowErrorBar";
 import { useTranslations } from 'next-intl'
 import {type RootState} from '@/store/store';
-import Image from 'next/image';
 import {type tipType } from '@/app/[locale]/deval/TipWin';
 import {type StatusBarState }  from '@/app/[locale]/deval/StatusBar';
 import { getDaismContract } from '@/lib/globalStore';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 export default function IADD() {
     const t = useTranslations('iadd');
@@ -490,7 +490,7 @@ export default function IADD() {
                             setInputError={setInputError}
                             slectToken={slectToken} 
                             calcStatus={calcStatus}  />
-                        <div style={{textAlign:'center'}}><Image height={24} width={24}  alt='' src='/split.svg' /></div>
+                        <div style={{textAlign:'center'}}><ImageWithFallback height={24} width={24}  alt='' src='/split.svg' /></div>
                         <DownBox downTokenPrice={downTokenPrice} downBalance={downBalance} toValue={toValue}
                             outObj={outObj}  downVita={downVita}
                             slectToken={slectToken}

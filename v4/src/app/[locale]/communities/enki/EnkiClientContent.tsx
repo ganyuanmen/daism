@@ -16,8 +16,8 @@ import { useLayout } from '@/contexts/LayoutContext';
 import { type RootState } from '@/store/store'
 import {BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg} from '@/lib/jssvg/SvgCollection'
 import Loading from '@/components/Loadding';
-import Image from 'next/image';
 import { useSidebarVisibility } from '@/hooks/useSidebarVisibility';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 
 interface DaoActor {
@@ -71,7 +71,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
   const rightDivRef = useRef<HTMLDivElement>(null)
   const parentDivRef = useRef<HTMLDivElement>(null)
   const actorRef = useRef<DaismActor>(null)
-  const {isShowBtn,setIsShowBtn}=useLayout();
+  const {isShowBtn}=useLayout();
   const { leftHidden, rightHidden } = useSidebarVisibility(leftDivRef, rightDivRef, parentDivRef, isShowBtn, {
     debug: false, 
     waitFrames: 40,
@@ -114,16 +114,11 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
   const [navObj, setNavObj] = useState<NavObj>(svgs[0])
 
   useEffect(() => {if (actor?.id) actorRef.current = actor}, [actor]);
-  useEffect(() => {
-    if (sessionStorage.getItem('langSwitch') === '1') {
-      setIsShowBtn(true);
-      sessionStorage.removeItem('langSwitch'); // 用一次后清掉
-    }
-  }, []);
+  
 
     //过滤已注册
   useEffect(() => {
-    console.log("daoActor:",daoActor)
+    
     if (Array.isArray(daoActor) && daoActor.length)
         setDaoData(daoActor.filter((obj) => obj.actor_account))
   }, [daoActor])
@@ -331,7 +326,8 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
         <div ref={leftDivRef} className="scsidebar scleft">
           <div className="mb-3" style={{ overflow: 'hidden' }}>
             {actor?.actor_account ? (
-              <EnkiMember url={actor.actor_url!} account={actor.actor_account} avatar={actor.avatar!} isLocal={true} hw={64}/>
+              <EnkiMember url={actor.actor_url!} account={actor.actor_account} manager={actor.manager} 
+              avatar={actor.avatar!} isLocal={true} hw={64}/>
             ) : (
               <EnkiAccount />
             )}
@@ -372,7 +368,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
                         }}
                         onClick={() => daoSelectHandle(obj)}
                       >
-                        <Image
+                        <ImageWithFallback
                           src={obj.dao_logo}
                           alt={obj.actor_account}
                           height={24}
@@ -408,7 +404,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
                       ) : navObj?.svg ? (
                         navObj.svg
                       ) : (navObj.dao_logo &&
-                        <Image
+                        <ImageWithFallback
                           src={navObj.dao_logo}
                           alt={navObj.actor_account??''}
                           height={24}
@@ -489,7 +485,7 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
                               }}
                               onClick={() => daoSelectHandle(obj)}
                             >
-                              <Image
+                              <ImageWithFallback
                                 src={obj.dao_logo}
                                 alt={obj.actor_account}
                                 height={24}

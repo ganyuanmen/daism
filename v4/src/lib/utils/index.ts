@@ -9,7 +9,12 @@ import * as fs from "node:fs/promises";
 
 export async function saveImage(file:File)
 {
-  if(!file) return '';
+
+  if (!(file instanceof File)) {
+    console.error("no file object:", file);
+    return '';
+  }
+
   try {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -70,12 +75,6 @@ export  async function getTootContent(tootUrl:string,domain:string) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const html = await response.text(); 
-        // console.log(html);
-
-
-        // const response = await axios.get(tootUrl);
-        // const html = response.data;
-
 
 
         const $ = cheerio.load(html);
@@ -126,15 +125,6 @@ export  async function getTootContent(tootUrl:string,domain:string) {
     }
 }
   
-
-  // export function getClientIp(req) {
-  //   return (
-  //     req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
-  //     req.connection?.remoteAddress 
-  //   );
-  // }
-
- // lib/ip-utils.ts
 
 
 export function getClientIp(req: NextRequest): string | undefined {

@@ -13,7 +13,7 @@ export default function Follower_div({record}:{record:ActorInfo[]}) {
         <Card.Header>{t('followerText')}</Card.Header>
         <Card.Body>
         {  record.map((obj,idx)=> <Row key={idx} className="d-flex align-items-center" style={{borderBottom:"1px solid #D2D2D2",padding:"5px 2px"}}  >
-                <Col><EnkiMember url={obj.url} account={obj.account} avatar={obj.avatar} isLocal={false} hw={32} /></Col>
+                <Col><EnkiMember url={obj.url} manager={obj?.manager??''} account={obj.account} avatar={obj.avatar} isLocal={false} hw={32} /></Col>
                 <Col>{obj.createtime}(UTC+8)</Col>
             </Row>)}
         </Card.Body>

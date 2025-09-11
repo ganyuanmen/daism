@@ -39,7 +39,7 @@ export const config = {
     
 //     // 检查 token 是否即将过期（可选）
 //     if (payload.exp && payload.exp - Date.now() / 1000 < 3600) {
-//       console.log('Token will expire soon');
+
 //     }
 //   }
 

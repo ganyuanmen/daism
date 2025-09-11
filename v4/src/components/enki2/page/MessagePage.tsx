@@ -131,7 +131,7 @@ export default function MessagePage({
 const replyDelCallBack = (index: number,mid:string) => {
   const upData = {
     mid,
-    account: enkiMessObj.actor_account,
+    account: actor?.actor_account??'',
     type: 1,
     sctype: enkiMessObj.dao_id > 0 ? "sc" : '',
     path,

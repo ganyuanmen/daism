@@ -5,12 +5,11 @@ import Table from 'react-bootstrap/Table';
 import { useSelector } from 'react-redux';
 import ShowErrorBar from '@/components/ShowErrorBar';
 import { useTranslations } from 'next-intl';
-// import {useMyTokens} from '@/hooks/useMyTokens';
 import { type RootState } from '@/store/store';
-import Image from 'next/image';
 import { useFetch } from '@/hooks/useFetch';
 import { useEffect, useState } from 'react';
 import { getDaismContract } from '@/lib/globalStore';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 
 /**
@@ -62,7 +61,7 @@ export default function ShowWalletInfo() {
                 {tokensData.data && tokensData.data.map((obj, idx) => (
                   <tr key={idx}>
                     <td style={{ textAlign: 'right' }}>
-                      <Image
+                      <ImageWithFallback
                         height={24}
                         width={24}
                         alt=""
@@ -84,11 +83,12 @@ export default function ShowWalletInfo() {
 
 function ShowToken({obj}:{obj:DaismToken}){
   const user = useSelector((state: RootState) => state.valueData.user) as DaismUserInfo;
-  const daismObj=getDaismContract();
+ 
   const [token,setToken]=useState(0);
   useEffect(()=>{
     const fetchData = async () => {
       try {
+        const daismObj=getDaismContract();
         const res=await daismObj?.DaoToken.balanceOf(obj.token_id,user.account);
         setToken(Number(res?.token??'0'))       
       } catch (err) {
@@ -99,7 +99,7 @@ function ShowToken({obj}:{obj:DaismToken}){
 
     fetchData();
 
-  },[obj])
+  },[obj,user.account])
 
 
 

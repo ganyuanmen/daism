@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
     }
     
   const formData = await req.formData();
-  const actorName = formData.get("actorName") as string;//昵称
+//   const actorName = formData.get("actorName") as string;//昵称
   const account = formData.get("account") as string;//帐号
-  const avatar = formData.get("avatar") as string;//头像
+//   const avatar = formData.get("avatar") as string;//头像
   const title = formData.get("title") as string;// 标题
   const content = formData.get("content") as string;//内容
   const vedioURL = formData.get("vedioURL") as string;// 视频
@@ -36,31 +36,6 @@ export async function POST(req: NextRequest) {
   const isDiscussion = formData.get("isDiscussion") as string; //允许评论
   const textContent = formData.get("textContent") as string; //推送的信息
   const file = formData.get("file") as File; //首页图片
-
-  console.log("----------------------------------")
-
-   console.log("avatar:",avatar)
-   console.log("actorName:",actorName)
-   console.log("title:",title)
-   console.log("vedioURL:",vedioURL)
-   console.log("propertyIndex:",propertyIndex)
-   console.log("accountAt:",accountAt)
-   console.log("typeIndex:",typeIndex)
-   console.log("messageId:",messageId)
-   console.log("startTime:",startTime)
-   console.log("endTime:",endTime)
-   console.log("eventUrl:",eventUrl)
-   console.log("eventAddress:",eventAddress)
-   console.log("time_event:",time_event)
-   console.log("actorid:",actorid)
-   console.log("daoid:",daoid)
-   console.log("_type:",_type)
-   console.log("account:",account)
-   console.log("content:",content)
-   console.log("isSend:",isSend)
-   console.log("isDiscussion:",isDiscussion)
-   console.log("textContent:",textContent)
-   console.log("file:",file)
 
    let _path:string=await saveImage(file) as string;
   
@@ -94,7 +69,7 @@ export async function POST(req: NextRequest) {
         time_event
     ];
     const lok = await execute(sql, paras);
-    console.log("============>>>>>>>>>>>>>>>>>>",lok,paras)
+
     if (lok) {
         setTimeout(async () => {
             await addLink(content, message_id,sctype,'insert'); //生成链接卡片

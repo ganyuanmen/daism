@@ -6,6 +6,7 @@ import {useRef,useEffect, useState } from "react";
 // import { useDispatch } from 'react-redux';
 import {useTranslations } from 'next-intl';
 import { useLayout } from '@/contexts/LayoutContext';
+import ImageWithFallback from "../ImageWithFallback";
 // import { useStableCallbackRef } from "@/hooks/useStableCallbackRef";
 // import { current } from "@reduxjs/toolkit";
 // import { onDisconnect,updateLoginData,checkNetwork,recorLogin,showError } from "@/lib/utils/labriry";
@@ -27,20 +28,12 @@ import { useLayout } from '@/contexts/LayoutContext';
     const [connecting, setConnecting] = useState(false); // 连接状态
     const providerRef = useRef<WalletProviderType | null>(null); // 当前选择的提供者
     const tc = useTranslations('Common');
-    // const dispatch: AppDispatch = useDispatch();
+    
     
     const netWorkSwitchRef = useRef<(() => void) | null>(null); 
     const userSwithRef = useRef<(() => void) | null>(null);
     const { isShowBtn, setIsShowBtn } = useLayout(); 
-    // const recorLoginRef = useStableCallbackRef(recorLogin);
-    // const setIsShowBtnRef = useStableCallbackRef(setIsShowBtn);
-
-    useEffect(() => {
-      if (sessionStorage.getItem('langSwitch') === '1') {
-        setIsShowBtn(true);
-        sessionStorage.removeItem('langSwitch'); // 用一次后清掉
-      }
-    }, []);
+  
        
 // 连接钱包
 const connectWallet =async (providerWithInfo: WalletProviderType) => {
@@ -182,7 +175,7 @@ const setupUserSwithchListener = (provider: any) => {
                       padding: '8px 12px'
                     }}
                   >
-                    <Image 
+                    <ImageWithFallback 
                       src={provider.info.icon} 
                       alt={provider.info.name}  
                       width={24} 

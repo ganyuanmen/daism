@@ -54,6 +54,7 @@ export async function GET(
         status: 200,
         headers: {
           'Content-Type': 'application/activity+json; charset=utf-8',
+          'Accept': 'application/activity+json',
           'Connection': 'close'
         }
       });

@@ -19,22 +19,22 @@ export const SvgImage: React.FC<SvgImageProps> = ({
   width,height
 }) => {
   const imgSrc = useMemo(() => {
-    if (!svgCode) return '';
+    const code=svgCode ||`<svg xmlns="http://www.w3.org/2000/svg" width="150" height="100"><rect width="150" height="100" fill="#ccc"/><text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" fill="#000">No Image</text></svg>`;
 
     if (useBase64) {
-      const utf8Bytes = new TextEncoder().encode(svgCode);
+      const utf8Bytes = new TextEncoder().encode(code);
       let binary = '';
       utf8Bytes.forEach((b) => (binary += String.fromCharCode(b)));
       return 'data:image/svg+xml;base64,' + btoa(binary);
     } else {
-      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgCode);
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(code);
     }
   }, [svgCode, useBase64]);
 
 
   return (
   <>{
-      imgSrc? <Image
+      <Image
       src={imgSrc} 
       width={width}
       height={height}
@@ -42,7 +42,7 @@ export const SvgImage: React.FC<SvgImageProps> = ({
       className={className}
       alt="SVG"
         />
-      :<></>
+     
     }
   
   </>

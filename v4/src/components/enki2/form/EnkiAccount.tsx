@@ -39,7 +39,8 @@ export default function EnkiAccount({ isShow = true }: Props) {
       {actor && actor.manager ? ( // 已登录
         <>
           {actor.actor_account ? ( // 已注册
-            <>{isShow && <EnkiMember url={actor?.actor_url??''} hw={64}  account={actor?.actor_account??''} avatar={actor?.avatar??''} manager={actor?.manager} />
+            <>{isShow && <EnkiMember url={actor?.actor_url??''} hw={64} account={actor?.actor_account??''} 
+            avatar={actor?.avatar??''} manager={actor?.manager} />
             }</>
           ) : (
             <div onClick={() => setShow(false)}>

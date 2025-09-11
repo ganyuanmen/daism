@@ -5,7 +5,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { useTranslations } from 'next-intl'
 import SwapWindow from "./SwapWindow";
 import iaddStyle from "@/styles/iadd.module.css";
-import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
  interface DownBoxProps{
   toValue:number;
@@ -35,10 +35,10 @@ export default function DownBox({slectToken, downTokenPrice,toValue,outObj,downB
                     </Col>
                     <Col className="col-auto" >
                     <Button className={iaddStyle.iadd_btn} variant="outline-secondary" onClick={() => setShow(true)} size="lg">
-                        {outObj.dao_logo && <Image alt="" width={24} height={24} src={outObj.dao_logo} />}
+                        {outObj.dao_logo && <ImageWithFallback alt="" width={24} height={24} src={outObj.dao_logo} />}
                         <span style={{ display: "inline-block", padding: "0 4px", fontSize: "20px", color: "#0D111C" }}>
                             {outObj.dao_symbol}</span>
-                        <Image alt="" width={24} height={24} src="/down.svg" />
+                        <ImageWithFallback alt="" width={24} height={24} src="/down.svg" />
                     </Button>
                     </Col>
                 </Row>

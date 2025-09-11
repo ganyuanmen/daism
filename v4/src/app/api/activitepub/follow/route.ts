@@ -9,12 +9,13 @@ import { sendSignedActivity } from "@/lib/activity/sendSignedActivity";
 interface FollowRequestBody {
   account: string; // 本地用户，关注人
   url: string;     // 被关注人 url
+  inbox:string;
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body: FollowRequestBody = await req.json();
-    const { account, url } = body;
+    const { account, url,inbox } = body;
     if (!account || !account.includes('@') || !url) return NextResponse.json({ errMsg: "missing params" }, { status: 400 });
 
     const guid = uuidv4().replaceAll("-", "");
@@ -28,14 +29,17 @@ export async function POST(req: NextRequest) {
       const re = await saveFollow({ actor, user, followId: guid });
       if (!re) return NextResponse.json({ errMsg: "fail" }, { status: 500 });
       broadcast({ type: "follow", domain, user, actor, followId: guid }); //广播到其它服务器
-    } else {
-      // 远程关注
-      const actor = await getInboxFromUrl(url);
+    } else { // 远程关注
+      let sendInbox=inbox;
+      if(!inbox) {
+        const actor:ActorInfo = await getInboxFromUrl(url);
+        sendInbox=actor.inbox;
+      }
+      
       const bodyData = createFollow(userName, domain, url, guid);
-      // const localUser = await getUser("actor_account", account, "privkey");
       const localActor=await getSigneActor(account);
       if(localActor){
-        sendSignedActivity(actor.inbox, bodyData,localActor )
+        sendSignedActivity(sendInbox, bodyData,localActor )
         .catch(error => console.error('sendSignedActivity error:', error));
       }
 

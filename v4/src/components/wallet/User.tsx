@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import Loginsign from '../Loginsign';
 import { useTranslations } from 'next-intl';
-import {type RootState,type AppDispatch,setErrText,setTipText} from '@/store/store';
+import {type RootState,type AppDispatch,setErrText,setMessageText,setTipText} from '@/store/store';
 import GeneImg from '../enki3/GeneImg';
 
   
@@ -101,7 +101,8 @@ const closeTip=()=> { dispatch(setTipText(''));}
     const data = await response.json();
 
     if (response.ok) {
-      showError(`${data.msg}_*_`);
+      dispatch(setMessageText(data.msg))
+      // showError(`${data.msg}_*_`);
     } else {
       showError(data.errMsg);
     }

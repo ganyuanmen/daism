@@ -4,8 +4,7 @@ import ShowAddress from "../ShowAddress";
 import { Card, Row, Col } from "react-bootstrap";
 import TopSearch from "./TopSearch";
 import { useLocale, useTranslations } from 'next-intl'
-// import {type PageDataType} from '@/hooks/usePageFetch'
-import Image from "next/image";
+import ImageWithFallback from '../ImageWithFallback';
 
 export interface DaoRecord {
   dao_id: number;
@@ -81,7 +80,7 @@ export default function DaosPage({
                   href={`/${locale}/workroom/[id]`}
                   as={`/${locale}/workroom/${record.dao_id}`}
                 >
-                  <Image
+                  <ImageWithFallback
                     alt=""
                     width={64}
                     height={64}

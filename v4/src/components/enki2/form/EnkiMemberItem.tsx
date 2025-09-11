@@ -9,8 +9,8 @@ import { MoreBtn, PinTop } from "../../../lib/jssvg/SvgCollection";
 import TipWindow from "../../federation/TipWindow";
 import {useLocale, useTranslations} from 'next-intl';
 import type { RootState } from "@/store/store";
-import Image from "next/image";
 import { useHonorData,type HonorItem } from "@/hooks/useHonorData";
+import { SvgImage } from "@/components/SvgImage";
 // import { setCache,getCache } from "@/lib/utils/windowCache";
 
 interface EnkiMemberItemProps {
@@ -116,7 +116,7 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
               <Honor honor={honor} manager={messageObj.manager}  />
             </div>
           )}
-          {!isFollow && <div><EnKiFollow url={messageObj.actor_url} account={messageObj.actor_account} /></div>}
+          {!isFollow && <div><EnKiFollow url={messageObj.actor_url} inbox={messageObj.actor_inbox} account={messageObj.actor_account} /></div>}
           {(messageObj.is_top === 1) && (
             <div>
               <PinTop size={24} />
@@ -147,7 +147,7 @@ export default function EnkiMemberItem({messageObj}: EnkiMemberItemProps) {
               <Honor_m honor={honor} manager={messageObj.manager}  />
             </div>
           )}
-          {!isFollow && <div><EnKiFollow  url={messageObj.actor_url} account={messageObj.actor_account} /></div>}
+          {!isFollow && <div><EnKiFollow  url={messageObj.actor_url} inbox={messageObj.actor_inbox} account={messageObj.actor_account} /></div>}
           <div style={{ paddingLeft: "4px" }}>
             <TimesItem_m currentObj={messageObj} />
           </div>
@@ -262,17 +262,17 @@ function SvgShow({tokensvg,manager}: {tokensvg: string; manager: string;}) {
 
     const locale = useLocale();
 
-    const svgToBase = (svgCode: string): string => {
-        const utf8Bytes = new window.TextEncoder().encode(svgCode);
-        return (
-        "data:image/svg+xml;base64," +
-        window.btoa(String.fromCharCode.apply(null, Array.from(utf8Bytes)))
-        );
-    };
+    // const svgToBase = (svgCode: string): string => {
+    //     const utf8Bytes = new window.TextEncoder().encode(svgCode);
+    //     return (
+    //     "data:image/svg+xml;base64," +
+    //     window.btoa(String.fromCharCode.apply(null, Array.from(utf8Bytes)))
+    //     );
+    // };
 
   return (
     <a href={`/${locale}/honortokens/${manager}`} aria-label="honor">
-      <Image src={svgToBase(tokensvg)} width={24} height={24} className="honor" alt="" />
+      <SvgImage svgCode={tokensvg} width={24} height={24} className="honor"  />
     </a>
   );
 }

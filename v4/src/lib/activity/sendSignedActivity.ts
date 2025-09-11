@@ -8,6 +8,12 @@ export interface SigneActor {
 
 
 export async function sendSignedActivity(url: string, message: any, actor: SigneActor): Promise<void> {
+  if (Number(process.env.IS_DEBUGGER??'0') === 1){
+    console.info("message:",message);
+    console.info("url:",url);
+    console.info("actor:",actor);
+    console.log("------------------------------------------------")
+  }
   try {
     const messageString = JSON.stringify(message);
     const digest = crypto.createHash('sha256').update(messageString).digest('base64');
@@ -47,7 +53,7 @@ export async function sendSignedActivity(url: string, message: any, actor: Signe
         let data = '';
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
-          console.log('发送成功:', data);
+          console.info('发送成功:', data);
           resolve();
         });
       });

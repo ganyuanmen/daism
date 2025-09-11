@@ -3,7 +3,7 @@ import { Card } from "react-bootstrap";
 import ShowAddress from '../ShowAddress';
 import { User1Svg } from "../../lib/jssvg/SvgCollection";
 import { useTranslations } from "next-intl";
-import Image from 'next/image';
+import ImageWithFallback from '../ImageWithFallback';
 
 
 
@@ -43,8 +43,9 @@ const DaoMemberDiv: React.FC<DaoMemberDivProps> = ({ record, dao_manager }) => {
                   rel="noopener noreferrer"
                 >
                   {obj.avatar ? (
-                    <Image 
+                    <ImageWithFallback 
                       src={obj.avatar} 
+                      fallback='/user.svg'
                       alt={obj.actor_account || ''} 
                       style={{
                         width: "32px", 

@@ -8,11 +8,12 @@ import { Button } from "react-bootstrap";
 
 interface Props {
   url:string; //被关注者url
+  inbox:string; //被关注者的inbox
   account:string; //被关注者帐号
   showText?: boolean; //显示文字，不显示按钮
 }
 
-export default function EnKiFollow({ url,account, showText = false }: Props) {
+export default function EnKiFollow({ url,inbox, account, showText = false }: Props) {
 
   const [showBtn, setShowBtn] = useState(true);
   const dispatch = useDispatch<AppDispatch>();
@@ -36,7 +37,7 @@ export default function EnKiFollow({ url,account, showText = false }: Props) {
 
     const body = {
       account: actor.actor_account,  // 本地用户账号
-      url
+      url,inbox
     };
     
     fetch("/api/activitepub/follow", {

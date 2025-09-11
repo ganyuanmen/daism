@@ -147,6 +147,7 @@ export async function messageDel(params: any): Promise<any> {
   } else {
     const lok: any = await execute(`CALL del_commont(?,?,?)`, [sctype, mid, pid]);
     if(lok) sendcommont(account, mid, sctype==='sc'?'enki':'enkier');
+    else console.error("CALL del_commont fail!")
   }
 }
 
@@ -262,11 +263,9 @@ export async function getInboxFromAccount(account: string): Promise<ActorInfo> {
     try {
         const strs: any = account.split('@');
         const obj: any = { name: strs[0], domain: strs[1], inbox: '' };
-        let re: any = await httpGet(`https://${strs[1]}/.well-known/webfinger?resource=acct:${account}`);
-        if (re.code !== 200) return obj;
-        re = re.message;
+        const reData: any = await httpGet(`https://${strs[1]}/.well-known/webfinger?resource=acct:${account}`);
+        const re=typeof(reData)==='string'?JSON.parse(reData):reData;
         if (!re) return obj;
-
         let url='', type='';
         for (let i = 0; i < re.links.length; i++) {
             if (re.links[i].rel === 'self') {
@@ -278,9 +277,9 @@ export async function getInboxFromAccount(account: string): Promise<ActorInfo> {
         reobj = await getInboxFromUrl(url, type);
     } catch (e) {
         console.error(e);
-    } finally {
-        return reobj;
-    }
+    } 
+
+    return reobj;
 }
 
 // 本地账户 Inbox
@@ -308,9 +307,8 @@ export async function getInboxFromUrl(url: string, type: string = 'application/a
     const myURL: any = new URL(url);
     const obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '',
        manager: '' };
-    let re: any = await httpGet(url, { "Content-Type": type });
-    if (re.code !== 200) return obj;
-    re = re.message;
+    const reData: any = await httpGet(url, { "Content-Type": type,'Accept': type });
+    const re=typeof(reData)==='string'?JSON.parse(reData):reData;
     if (!re) return obj;
     if (re.name) obj.name = re.name;
     if (re.inbox) {
@@ -329,14 +327,15 @@ export async function getInboxFromUrl(url: string, type: string = 'application/a
 
 // 从 URL 获取网页个人信息
 export async function getUserFromUrl({ url }: any): Promise<ActorInfo> {
+
     const reData=await getLocalInboxFromUrl(url);
     if(reData.inbox && reData.account && reData.url) return reData;
     const myURL: any = new URL(url);
     const obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '' };
-    let re: any = await httpGet(url, { "Content-Type": 'application/activity+json' });
-    if (re.code !== 200) return obj;
-    re = re.message;
+    const reDataNet: any = await httpGet(url, { "Content-Type": 'application/activity+json','Accept': 'application/activity+json' });
+    const re=typeof(reDataNet)==='string'?JSON.parse(reDataNet):reDataNet;
     if (!re) return obj;
+  
     if (re.name) obj.name = re.name;
     if (re.inbox) {
         obj.inbox = re.inbox;

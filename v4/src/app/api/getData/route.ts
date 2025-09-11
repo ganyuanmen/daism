@@ -69,14 +69,14 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const query = Object.fromEntries(searchParams.entries());
     const method = req.headers.get('x-method'); // 改成自定义 header
-    console.log("method:",method)
+
 
     if (!method || !(method in methods)) {
-      console.log("method:",method)
+      console.info("not method:",method)
       return NextResponse.json({ errMsg: 'Invalid Method' }, { status: 400 });
     }
 
-    // console.log("methossssssssssssssssssssssssss",method)
+
     // ------------------ messagePageData 跨域情况 ------------------
     if (method === 'messagePageData' && query.account && query.account.includes('@')) {
       const { account, pi, menutype, daoid, actorid, w, order, eventnum, v } = query;
@@ -85,13 +85,14 @@ export async function GET(req: NextRequest) {
       if (domain === process.env.NEXT_PUBLIC_DOMAIN) {
         return NextResponse.json(await methods[method](query));
       } else {
-        const response = await httpGet(
+        const reData:any = await httpGet(
           `https://${domain}/api/getData?pi=${pi}&menutype=${menutype}&daoid=${daoid}&actorid=${actorid}&w=${w}&order=${order}&eventnum=${eventnum}&account=${account}&v=${v}`,
           { 'Content-Type': 'application/json', 'x-method': 'messagePageData' }
         );
-        if (response?.message) {
-          response.message.forEach((obj: any) => { obj.httpNetWork = true; });
-          return NextResponse.json(response.message);
+        const response=typeof(reData)==='string'?JSON.parse(reData):reData;
+        if (response) {
+          response.forEach((obj: any) => { obj.httpNetWork = true; });
+          return NextResponse.json(response);
         } else {
           return NextResponse.json({ errMsg: 'fail' }, { status: 500 });
         }
@@ -106,13 +107,14 @@ export async function GET(req: NextRequest) {
       if (domain === process.env.NEXT_PUBLIC_DOMAIN) {
         return NextResponse.json(await methods[method](query));
       } else {
-        const response = await httpGet(
+        const reData = await httpGet(
           `https://${domain}/api/getData?pi=${pi}&ppid=${ppid}&sctype=${sctype}&account=`,
           { 'Content-Type': 'application/json', 'x-method': 'replyPageData' }
         );
-        if (response?.message) {
-          response.message.forEach((obj: any) => { obj.httpNetWork = true; });
-          return NextResponse.json(response.message);
+        const response=typeof(reData)==='string'?JSON.parse(reData):reData;
+        if (response) {
+          response.forEach((obj: any) => { obj.httpNetWork = true; });
+          return NextResponse.json(response);
         } else {
           return NextResponse.json({ errMsg: 'fail' }, { status: 500 });
         }

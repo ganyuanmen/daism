@@ -32,16 +32,13 @@ export default function ClientContentWorkHome() {
     const user = useSelector((state:RootState) => state.valueData.user) //钱包用户信息
     const ethBalance = useSelector((state:RootState) => state.valueData.ethBalance)
     const utoBalance = useSelector((state:RootState) => state.valueData.utoBalance)
-    const {isShowBtn,setIsShowBtn} =useLayout();
+    const {isShowBtn} =useLayout();
     const [activeTab, setActiveTab] = useState(0);
    
       useEffect(() => {
         const hash = window.location.hash.substring(1); // string
         setActiveTab(parseInt(hash || "0", 10)); // 默认用 "0"
-        if (sessionStorage.getItem('langSwitch') === '1') {
-          setIsShowBtn(true);
-          sessionStorage.removeItem('langSwitch'); // 用一次后清掉
-        }
+      
       }, []);
     
       const cStyle: React.CSSProperties = { fontWeight: 'bold', textAlign: 'center' };

@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { executeID, getData, execute } from "@/lib/mysql/common";
+import { getData, execute } from "@/lib/mysql/common";
 import { saveImage, findFirstURI, getTootContent, getClientIp } from "@/lib/utils";
 import { createNote } from '@/lib/activity/index';
 import { getFollowers_send } from "@/lib/mysql/folllow";
@@ -32,20 +32,6 @@ export async function POST(request: NextRequest) {
      const bid= formData.get('bid') as string;
      const account= formData.get('account') as string;
      const file = formData.get("file") as File; //首页图片
-
-
-     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-
-     console.log("vedioURL:",vedioURL)
-     console.log("typeIndex:",typeIndex)
-     console.log("pid:",pid)
-     console.log("actorid:",actorid)
-     console.log("content:",content)
-     console.log("sctype:",sctype)
-     console.log("inbox:",inbox)
-     console.log("bid:",bid)
-     console.log("account:",account)
-     console.log("file:",file)
 
       
 
@@ -117,7 +103,7 @@ export async function POST(request: NextRequest) {
       if (pid?.startsWith('http')) {
         // 推回源服务器
         if (inbox) {
-          const localActor=await getSigneActor(accountInfo.actor_url);
+          const localActor=await getSigneActor(accountInfo.actor_account);
           if(localActor) {
             sendSignedActivity(inbox,sendbody,localActor);
           }
@@ -130,7 +116,7 @@ export async function POST(request: NextRequest) {
             data.forEach(async (element: any) => {
               if (element.user_account !== accountInfo.actor_account) {
                 try {
-                  const localActor=await getSigneActor(accountInfo.actor_url);
+                  const localActor=await getSigneActor(accountInfo.actor_account);
                   if(localActor) {
                     sendSignedActivity(element.user_inbox,sendbody,localActor);
                   }
@@ -180,11 +166,11 @@ async function addLink(content: string, mid: string, sctype: string) {
   if (furl) {
     const tootContent = await getTootContent(furl, process.env.NEXT_PUBLIC_DOMAIN || '');
     if (tootContent) {
-      await executeID(sql, [tootContent, mid]);
+      await execute(sql, [tootContent, mid]);
     } else {
-      await executeID(sql, ['', mid]);
+      await execute(sql, ['', mid]);
     }
   } else {
-    await executeID(sql, ['', mid]);
+    await execute(sql, ['', mid]);
   }
 }

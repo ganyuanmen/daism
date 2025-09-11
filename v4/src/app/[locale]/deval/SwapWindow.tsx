@@ -4,8 +4,8 @@ import iaddStyle from '@/styles/iadd.module.css'
 import { Modal,Button,Row,Col,CloseButton} from "react-bootstrap";
 import { useSelector,useDispatch } from 'react-redux';
 import { useTranslations } from 'next-intl'
-import Image from "next/image";
 import {type RootState, type AppDispatch, setTokenFilter} from '@/store/store';
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 interface SwapWindowProps {
     workspace: string;
@@ -55,12 +55,12 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
                         <div>
                         {/* 上层窗口打开多显示eth */}
                         {workspace==='up' && <Button className={iaddStyle.iadd_btn} variant="outline-secondary"  onClick={()=>clickSelect(ethObj)}>
-                            <Image alt='' width={24} height={24}  src='/eth.png' />
+                            <ImageWithFallback alt='' width={24} height={24}  src='/eth.png' />
                             <span className={iaddStyle.iadd_text} >ETH</span>
                         </Button>
                         }{'   '}
                         <Button className={iaddStyle.iadd_btn} variant="outline-secondary"  onClick={()=>clickSelect(utokenObj)} >
-                            <Image alt='' width={24} height={24}  src='/vita.svg' />
+                            <ImageWithFallback alt='' width={24} height={24}  src='/vita.svg' />
                             <span  className={iaddStyle.iadd_text}>UTO</span>
                         </Button> 
                         </div>
@@ -72,7 +72,7 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
              {tokenFilter.map((obj, idx) =>                 
                <Row key={idx} className={`mb-1 ${iaddStyle.iadd_tokenlist}`}  onClick={()=>{clickSelect(obj)}} >
                     <Col className="Col-auto me-auto d-flex  align-items-center" >
-                        <Image width={36} height={36}  alt="" src={obj.dao_logo ? obj.dao_logo : '/logo.svg'}  />
+                        <ImageWithFallback width={36} height={36}  alt="" src={obj.dao_logo ? obj.dao_logo : '/logo.svg'}  />
                         <div style={{paddingLeft:'12px'}} >
                             <div style={{color:'#0D111C',fontSize:'16px'}} >{obj.dao_name}</div>
                             <div style={{color:'#98AEC0',fontSize:'12px'}} >{obj.dao_symbol}</div>
@@ -113,7 +113,7 @@ interface TopSearchProps {
   
     return (
       <div className="d-flex mb-2" style={{ paddingLeft: '16px', paddingRight: '6px' }}>
-        <Image
+        <ImageWithFallback
           alt=""
           width={20}
           height={20}

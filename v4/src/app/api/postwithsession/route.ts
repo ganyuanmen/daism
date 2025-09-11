@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     
     if(result && method==='addEipType')  //广播类型
     {
-      broadcast({type:'addType',domain:process.env.LOCAL_DOMAIN as string,
+      broadcast({type:'addType',domain:process.env.NEXT_PUBLIC_DOMAIN as string,
         actor:{name:body._type,desc:body._desc} as ActorInfo,user:{} as ActorInfo,followId:'0'})  //广播信息
     } 
 

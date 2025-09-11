@@ -37,14 +37,14 @@ export async function POST(request: NextRequest) {
     let actor_desc = '';
     
     try {
-      const re1:any = await httpGet(
+      const reData:any = await httpGet(
         `https://${oldDomain}/api/getUserMwssage?newAccount=${newAccount}&oldAccount=${oldAccount}`,
-        { 'content-type': 'application/activity+json' }
+        {'content-type': 'application/activity+json','Accept': 'application/activity+json', }
       );
-      
-      if (re1 && re1.code === 200) {
-        avatar = re1.message.avatar;
-        actor_desc = re1.message.actor_desc;
+      const re1=typeof(reData)==='string'?JSON.parse(reData):reData;
+      if (re1) {
+        avatar = re1.avatar;
+        actor_desc = re1.actor_desc;
       }
     } catch (error) {
       console.error('Error fetching user message:', error);
@@ -59,14 +59,14 @@ export async function POST(request: NextRequest) {
     let pi = 0;
     while (true) {
       try {
-        const re:any = await httpGet(
+        const reData:any = await httpGet(
           `https://${oldDomain}/api/getMessage?account=${oldAccount}&pi=${pi}&menutype=${sctype ? 2 : 3}&daoid=${daoid}&eventnum=${sctype ? 0 : 2}`,
-          { 'content-type': 'application/activity+json' }
+          { 'content-type': 'application/activity+json','Accept': 'application/activity+json', }
         );
-        
-        if (re.code === 200) {
-          await insertData(re.message, actorName, domain, avatar, sctype);
-          if (re.message.length < 12) break;
+        const re=typeof(reData)==='string'?JSON.parse(reData):reData;
+        if (re) {
+          await insertData(re, actorName, domain, avatar, sctype);
+          if (re.length < 12) break;
         } else {
           break;
         }

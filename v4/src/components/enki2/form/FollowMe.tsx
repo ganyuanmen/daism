@@ -55,12 +55,13 @@ export default function FollowMe({ followObj, isEdit = false }: Props) {
       style={{ borderBottom: "1px solid #D2D2D2", padding: "5px 2px" }}
     >
       <Col>
-      <EnkiMember url={followObj.url} hw={32} isLocal={Boolean(followObj?.actor_id && followObj.actor_id > 0)} account={followObj.account} avatar={followObj.avatar}  />
+      <EnkiMember url={followObj.url} hw={32} isLocal={Boolean(followObj?.actor_id && followObj.actor_id > 0)}
+       account={followObj.account} avatar={followObj.avatar} manager={followObj?.manager??''} />
 
       </Col>
       <Col>
         {isEdit && loginsiwe && actor?.actor_account && !checkFollow() && (
-          <EnKiFollow url={followObj.url} account={followObj.account} showText={true} />
+          <EnKiFollow url={followObj.url} inbox={followObj.inbox} account={followObj.account} showText={true} />
         )}
       </Col>
       <Col>{followObj.createtime}(UTC+8)</Col>

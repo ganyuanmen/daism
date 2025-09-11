@@ -29,7 +29,8 @@ export default function MyFollow({ followObj,  isEdit = false }: Props) {
       style={{ borderBottom: "1px solid #D2D2D2", padding: "5px 2px" }}
     >
       <Col>
-       <EnkiMember url={followObj.url} hw={32} account={followObj.account} isLocal={Boolean(followObj?.actor_id && followObj.actor_id > 0)} avatar={followObj.avatar}  />
+       <EnkiMember url={followObj.url} hw={32} account={followObj.account} manager={followObj?.manager??''}
+        isLocal={Boolean(followObj?.actor_id && followObj.actor_id > 0)} avatar={followObj.avatar}  />
       </Col>
       {isEdit && loginsiwe && (
         <Col>

@@ -14,12 +14,12 @@ export async function GET(
 
   try {
     const followers = await getFollowers({
-      account: `${id}@${process.env.LOCAL_DOMAIN}`,
+      account: `${id}@${process.env.NEXT_PUBLIC_DOMAIN}`,
     });
 
     const followersCollection = createFollowers(
       id,
-      process.env.LOCAL_DOMAIN as string,
+      process.env.NEXT_PUBLIC_DOMAIN as string,
       followers
     );
 

@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 import MessagePage from '@/components/enki2/page/MessagePage'
 import { useSelector } from 'react-redux'
 import { type RootState } from '@/store/store'
-import { useEffect, useState } from 'react'
+import {  useState } from 'react'
 import EnkiAccount from '@/components/enki2/form/EnkiAccount'
 import Loginsign from '@/components/Loginsign'
 import EnkiCreateMessage from '@/components/enki2/page/EnkiCreateMessage'
@@ -23,7 +23,7 @@ export default function ClientEnki({ openObj, accountAr }: ClientEnkiProps) {
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe) ;
   const daoActor = useSelector((state: RootState) => state.valueData.daoActor ) as DaismDao[];
   const t = useTranslations('ff')
-  const {isShowBtn,setIsShowBtn}=useLayout();
+  const {isShowBtn}=useLayout();
 
   const callBack = () => {
     setActiveTab(2)
@@ -40,12 +40,7 @@ export default function ClientEnki({ openObj, accountAr }: ClientEnkiProps) {
       setCurrentObj(null)
     }
   }
-  useEffect(() => {
-    if (sessionStorage.getItem('langSwitch') === '1') {
-      setIsShowBtn(true);
-      sessionStorage.removeItem('langSwitch'); // 用一次后清掉
-    }
-  }, []);
+ 
 
   return (<>{isShowBtn?
     <>

@@ -39,7 +39,7 @@ export function useSidebarVisibility(
         const position = style.position || "";
         const offsetParentImpliesHidden = offsetParentNull && !position.includes("fixed");
         const result = displayNone || visibilityHidden || opacityZero || rectsZero || sizeZero || offsetParentImpliesHidden;
-        if (debug) console.log("[useSidebarVisibility] check", {
+        if (debug) console.info("[useSidebarVisibility] check", {
           el,
           display: style.display,
           visibility: style.visibility,
@@ -60,7 +60,7 @@ export function useSidebarVisibility(
     const recomputeAll = () => {
       const l = computeHidden(leftRef.current);
       const r = computeHidden(rightRef.current);
-      if (debug) console.log("[useSidebarVisibility] recompute", { left: l, right: r });
+      if (debug) console.info("[useSidebarVisibility] recompute", { left: l, right: r });
       setLeftHidden(l);
       setRightHidden(r);
     };

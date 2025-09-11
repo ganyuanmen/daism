@@ -14,8 +14,8 @@ import { NavDropdown, Button } from 'react-bootstrap';
 import { BackSvg, TimeSvg, EventSvg } from '@/lib/jssvg/SvgCollection';
 import { type RootState } from '@/store/store';
 import { fetchJson } from '@/lib/utils/fetcher';
-import Image from 'next/image';
 import { useSidebarVisibility } from '@/hooks/useSidebarVisibility';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 
 interface DaoWhere {
@@ -60,7 +60,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<number>(0);
-  const {isShowBtn,setIsShowBtn} =useLayout();
+  const {isShowBtn} =useLayout();
   const leftDivRef = useRef<HTMLDivElement>(null);
   const rightDivRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
@@ -81,12 +81,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
     setCurrentObj(null);
     window.history.replaceState({}, '', `${locale === 'en' ? '' : '/zh'}/communities/SC`);
   }
-  useEffect(() => {
-    if (sessionStorage.getItem('langSwitch') === '1') {
-      setIsShowBtn(true);
-      sessionStorage.removeItem('langSwitch'); // 用一次后清掉
-    }
-  }, []);
+ 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       setIsLoading(true);
@@ -219,7 +214,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
       <div ref={parentDivRef} className='d-flex justify-content-center'>
         <div ref={leftDivRef} className='scsidebar scleft'>
           <div className='mb-3' style={{ overflow: 'hidden' }}>
-            {actor?.actor_account ? <EnkiMember url={actor.actor_url??''} account={actor.actor_account} avatar={actor.avatar??''} isLocal={true} hw={64} /> : 
+            {actor?.actor_account ? <EnkiMember url={actor.actor_url??''}  manager={actor.manager}  account={actor.actor_account} avatar={actor.avatar??''} isLocal={true} hw={64} /> : 
             <EnkiAccount  />}
             {!loginsiwe && <Loginsign />}
           </div>
@@ -236,7 +231,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
             {daoData.map((obj) => (
               <li key={obj.dao_id} className={navObj?.dao_id === obj.dao_id ? 'scli' : ''}>
                 <span style={{ display: 'inline-block', whiteSpace: 'nowrap' }} onClick={() => daoSelectHandle(obj)}>
-                 {obj.avatar && <Image src={obj.avatar} alt={obj.actor_account??''} height={24} width={24} />}{' '}
+                 {obj.avatar && <ImageWithFallback src={obj.avatar} alt={obj.actor_account??''} height={24} width={24} />}{' '}
                   {obj.actor_account}
                 </span>
               </li>
@@ -260,7 +255,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
                     </span>
                   ) : (
                     <>
-                      {navObj?.isFilter ? '' : navObj?.svg ? navObj.svg : navObj?.avatar &&<Image src={navObj.avatar} alt={navObj?.actor_account??''} height={24} width={24} />}
+                      {navObj?.isFilter ? '' : navObj?.svg ? navObj.svg : navObj?.avatar &&<ImageWithFallback src={navObj.avatar} alt={navObj?.actor_account??''} height={24} width={24} />}
                       {' '}
                       {navObj?.isFilter ? navObj.text : navObj?.text ? t(navObj.text) : navObj?.actor_account}
                     </>
@@ -278,7 +273,7 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
                     {daoData.map((obj, idx) => (
                       <NavDropdown.Item key={`${obj.dao_id}_${idx}`} className={navObj?.dao_id === obj.dao_id ? 'scli' : ''}>
                         <span style={{ display: 'inline-block', whiteSpace: 'nowrap' }} onClick={() => daoSelectHandle(obj)}>
-                          {obj.avatar && <Image src={obj.avatar} alt={obj.actor_account??''} height={24} width={24} />}{' '}
+                          {obj.avatar && <ImageWithFallback src={obj.avatar} alt={obj.actor_account??''} height={24} width={24} />}{' '}
                           {obj.actor_account}
                         </span>
                       </NavDropdown.Item>

@@ -95,7 +95,7 @@ export default function EnkiEditItem({
   const deldiscussions = async () => {
     const upData= {
       mid:messageObj?.message_id??'',
-      account:messageObj?.actor_account??'',
+      account:actor?.actor_account??'', //发送删除的人
       type:0,  //0 对象是嗯文， 1 对象是回复
       sctype,
       path,

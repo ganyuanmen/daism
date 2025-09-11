@@ -88,7 +88,9 @@ import ImageWithFallback from "@/components/ImageWithFallback";
           className="d-inline-flex justify-content-between align-items-center"
         >
           <div style={{ width: "50%" }}>
-            <EnkiMember url={replyObj.actor_url} account={replyObj.actor_account} avatar={replyObj.avatar} isLocal={false} hw={32} />
+            <EnkiMember url={replyObj.actor_url}  manager={replyObj.manager}  account={replyObj.actor_account}
+             avatar={replyObj.avatar} 
+            isLocal={false} hw={32} />
           </div>
           {loginsiwe && actor?.actor_account && (
             <div>
@@ -102,7 +104,7 @@ import ImageWithFallback from "@/components/ImageWithFallback";
           )}
           {!isFollow && (
             <div>
-              <EnKiFollow  url={replyObj.actor_url} account={replyObj.actor_account} />
+              <EnKiFollow  url={replyObj.actor_url} inbox='' account={replyObj.actor_account} />
             </div>
           )}
   
@@ -119,15 +121,8 @@ import ImageWithFallback from "@/components/ImageWithFallback";
           {replyObj?.content_link && (
             <div dangerouslySetInnerHTML={{ __html: replyObj.content_link }}></div>
           )}
-          {replyObj?.top_img &&<ImageWithFallback src={replyObj?.top_img}  alt=""  style={{ maxWidth: "100%" }} />}
-          {/* {replyObj?.top_img && (
-            <Image
-              className="mt-2 mb-2"
-              alt=""
-              src={replyObj.top_img}
-              style={{ maxWidth: "100%" }}
-            />
-          )} */}
+          {replyObj?.top_img &&<ImageWithFallback src={replyObj?.top_img}  className="mt-2 mb-2"  alt=""  style={{ maxWidth: "100%" }} />}
+        
           {replyObj?.vedio_url && <ShowVedio videoUrl={replyObj.vedio_url} />}
         </div>
       </div>

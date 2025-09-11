@@ -75,7 +75,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
       const rightDivRef = useRef<HTMLDivElement | null>(null);
       const parentDivRef = useRef<HTMLDivElement | null>(null);
       const actorRef = useRef<DaismActor|null>(null);
-      const {isShowBtn,setIsShowBtn}=useLayout();
+      const {isShowBtn}=useLayout();
     
       const dispatch = useDispatch<AppDispatch>();
     
@@ -91,13 +91,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
         setCurrentObj(null);
             window.history.replaceState({}, '', `/${locale}/communities/enkier`);
       }
-     
-      useEffect(() => {
-        if (sessionStorage.getItem('langSwitch') === '1') {
-          setIsShowBtn(true);
-          sessionStorage.removeItem('langSwitch'); // 用一次后清掉
-        }
-      }, []);
+    
       
 
       const svgs: Record<string, JSX.Element | string> =useMemo(()=>({
@@ -327,7 +321,8 @@ export default function ClientContent({accountAr}:ClientContentProps) {
             <div ref={parentDivRef}  className='d-flex justify-content-center'>
                 <div  ref={leftDivRef} className='scsidebar scleft' >
                     <div className='mb-3' style={{overflow:'hidden'}} >
-                        {actor?.actor_account ? <EnkiMember url={actor.actor_url??''} account={actor.actor_account} avatar={actor.avatar??''} hw={64} /> : 
+                        {actor?.actor_account ? <EnkiMember url={actor.actor_url??''} account={actor.actor_account} 
+                        manager={actor.manager} avatar={actor.avatar??''} hw={64} /> : 
                         <EnkiAccount/>}
                         {!loginsiwe && <Loginsign />}
                     </div>
@@ -348,10 +343,11 @@ export default function ClientContent({accountAr}:ClientContentProps) {
                     {loginsiwe && actor?.actor_account?.includes('@') && process.env.NEXT_PUBLIC_DOMAIN===actor?.actor_account.split('@')[1] && <div>
                     <SearchInput setSearObj={setSearObj} setFindErr={setFindErr} />
                     {searObj && <div className='mt-3' >
-                        <EnkiMember  url={searObj.url} account={searObj.account} avatar={searObj.avatar} isLocal={!!searObj.manager} />
+                        <EnkiMember  url={searObj.url} account={searObj.account} avatar={searObj.avatar}
+                        manager={searObj?.manager??''} isLocal={!!searObj.manager} />
                         <div className='mb-3 mt-3'>
                         {(searObj?.id && searObj.id>0)?<EnKiUnFollow searObj={searObj}  />
-                        :<EnKiFollow url={searObj.url} account={searObj.account} showText={true} />
+                        :<EnKiFollow url={searObj.url} inbox={searObj.inbox} account={searObj.account} showText={true} />
                         }
                         </div>
                     </div>

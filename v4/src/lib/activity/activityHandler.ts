@@ -37,21 +37,28 @@ export async function handle_update(postbody: ActivityPubBody) {
 }
   //建新的嗯文 ,对方的推送
 export async function createMess(postbody:ActivityPubBody,name:string,actor:ActorInfo){
+
     if (typeof postbody.object === 'object' && postbody.object.content){
         const noteObj = postbody.object as NoteMessage;
         let imgpath='';
         let vedioURL='';
+
         if(noteObj.attachment && Array.isArray(noteObj.attachment)){
             noteObj.attachment.forEach((element:Attachment) =>{
                 if(element.mediaType && element.mediaType.startsWith("image")) imgpath=element?.url as string;
                 else if(element.mediaType && element.mediaType.startsWith("video")) vedioURL=element?.url as string;
             })
         }
-        
-        if(!actor.account) return;
+        if(!actor.account) {
+          console.error("no account:",actor)
+          return;}
         const[actorName,domain] =actor.account.split('@') ;
-        const localUser=await getUser('actor_account',`${name}@${process.env.LOCAL_DOMAIN}`,'manager');
-        if(!localUser.manager) return;
+        const localUser=await getUser('actor_account',`${name}@${process.env.NEXT_PUBLIC_DOMAIN}`,'manager');
+        if(!localUser.manager){ 
+          console.error("no found account for name:",name)
+          return;
+
+        }
         const replyType=noteObj.inReplyTo || noteObj.inReplyToAtomUri || null;  //inReplyTo:
         if(!replyType ) //不是回复
         {
@@ -158,20 +165,40 @@ export async function handle_announce(postbody: ActivityPubBody, name: string, a
 
 //删除
 export async function handle_delete(rid?: string) {
-    if (!rid) return;
-    
-    if (rid.includes('communities/enki')) {
-     await execute(`delete from a_message where message_id =?`, [rid]);
+    if (!rid){
+      console.error("no foun rid:",rid)
+      return;
     } 
-    else 
-    {
+
+    //有两特别是可能，删除嗯文和删除回复
+    
+   
+    if (rid.includes('communities/enki')) {  //enki 嗯文
+      await execute(`delete from a_message where message_id =?`, [rid]);
+    } 
+    else if(rid.includes('commont/enki')) { //enki 回复
         let sctype = '';
         if (rid.includes('commont/enki')) sctype = rid.includes('commont/enkier/') ? '' : 'sc';
-        const row=await getData(`select pid from a_message${sctype}_commont where message_id=?`, [rid], true);
-    
+        const row=await getData(`select pid from a_message${sctype}_commont where message_id=?`, [rid], true);   
         if (row.pid) {
             await execute(`call del_commont(?,?,?)`, [sctype, rid, row.pid]);
         }
+    } else
+    { //其它
+      //先试删除回复
+      let row=await getData(`select pid from a_message_commont where message_id=?`, [rid], true);   
+      if (row.pid) { //是个人回复
+          await execute(`call del_commont(?,?,?)`, ['', rid, row.pid]);
+      } else { //不是个人回复 ，试公器回复
+        row=await getData(`select pid from a_messagesc_commont where message_id=?`, [rid], true);   
+        if (row.pid) { //是公器回复
+          await execute(`call del_commont(?,?,?)`, ['sc', rid, row.pid]);
+        }else { //找不到回复， 哪只能是 嗯文
+          //删除嗯文
+          await execute(`delete from a_message where message_id =?`, [rid]);
+        }
+      }
+
     }
 }
 
@@ -181,7 +208,7 @@ export async function accept(postbody: ActivityPubBody, domain: string, actor: A
       // 使用类型断言
         const object = postbody.object as { actor: string; id: string };
         
-        const user=await getUserFromUrl(object.actor);
+        const user=await getUserFromUrl({url:object.actor});
         
         saveFollow({ actor, user, followId: object.id });
         broadcast({ type: 'follow', domain, user, actor, followId: object.id });
@@ -193,7 +220,7 @@ export async function accept(postbody: ActivityPubBody, domain: string, actor: A
 export async function undo(postbody:ActivityPubBody){  
     if(typeof postbody.object==='object' && postbody.object.id && postbody.actor){
         await removeFollow(postbody.object.id);
-        const user=await getUserFromUrl(postbody.actor);
+        const user=await getUserFromUrl({url:postbody.actor});
          //广播信息
         broadcast({type:'removeFollow',domain:process.env.NEXT_PUBLIC_DOMAIN!,actor:{} as ActorInfo,user,followId:postbody.object.id}); 
     }	
@@ -204,7 +231,7 @@ export async function follow(postbody:ActivityPubBody,name:string,domain:string,
 {
     if (postbody.object && typeof postbody.object === 'string' && postbody.object.startsWith('http')) {
         const user=await getLocalInboxFromUrl(postbody.object) as ActorInfo; //被动关注者
-        if( process.env.IS_DEBUGGER==='1') { 
+        if( Number(process.env.IS_DEBUGGER??'0')===1) { 
             console.info("follow get user:-----------------------------------------------------")
             console.info(user)
         }

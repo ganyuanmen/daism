@@ -6,9 +6,8 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { type RootState } from '@/store/store';
-// import { useMyTokens } from '@/hooks/useMyTokens';
-import Image from 'next/image';
 import { useFetch } from '@/hooks/useFetch';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 /**
  * 我的 Token 页面
@@ -67,7 +66,7 @@ function TokensPage({ tokensData }: TokensPageProps) {
                 href={`/${locale}/workroom/[id]`}
                 as={`/${locale}/workroom/${obj.dao_id}`}
               >
-                <Image
+                <ImageWithFallback
                   height={32}
                   width={32}
                   alt=""

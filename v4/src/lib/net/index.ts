@@ -15,6 +15,7 @@ export async function httpGet<T = any>(
   headers: HttpHeaders = {}
 ): Promise<T | null> {
   try {
+
     const res = await fetch(url, {
       method: "GET",
       headers,
@@ -26,7 +27,7 @@ export async function httpGet<T = any>(
     }
 
     const contentType = res.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
+    if (contentType && (contentType.includes("application/json") || contentType.includes('application/activity') )) {
       return (await res.json()) as T;
     } else {
       return (await res.text()) as unknown as T;

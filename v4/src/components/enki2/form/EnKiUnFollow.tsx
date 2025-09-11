@@ -40,7 +40,7 @@ export default function EnKiUnFollow({ searObj }: Props) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({account: actor?.actor_account, url: searObj.url, id: searObj.id}),
+      body: JSON.stringify({account: actor?.actor_account, url: searObj.url,inbox:searObj.inbox, id: searObj.id}),
     });
   
     if (res.ok) {

@@ -8,7 +8,7 @@ import CreateDao from '@/components/my/CreateDao';
 import { useSelector } from 'react-redux';
 import { type RootState } from '@/store/store';
 import { useFetch } from '@/hooks/useFetch';
-import Image from 'next/image';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 interface DaoItem {
   dao_id: string | number;
@@ -74,7 +74,7 @@ function DaosPage({ daosData }: DaosPageProps) {
               style={{ borderBottom: '1px solid gray' }}
             >
               <Col className="col-auto me-auto">
-                <Image
+                <ImageWithFallback
                   alt=""
                   width={32}
                   height={32}

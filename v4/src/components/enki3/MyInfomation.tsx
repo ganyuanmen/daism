@@ -53,7 +53,7 @@ const MyInfomation: React.FC<MyInfomationProps> = ({ daoActor, actor }) => {
       </Card.Header>
       <Card.Body>
         <div className="d-flex justify-content-between align-items-center">
-        <EnkiMember url={actor.actor_url??''} account={actor.actor_account??''} avatar={actor.avatar??''} isLocal={true} />
+        <EnkiMember url={actor.actor_url??''} account={actor.actor_account??''} manager={actor.manager} avatar={actor.avatar??''} isLocal={true} />
           {actor.dao_id??0 > 0 ? t("groupAccount") : t("selfAccount")}
         </div>
 

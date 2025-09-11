@@ -42,6 +42,7 @@ const corsHeaders = {
     // 返回 JSON 响应
     return new Response(JSON.stringify(rejson), {status: 200, headers:{
         'Content-Type': 'application/activity+json; charset=utf-8',
+        'Accept': 'application/activity+json',
         'Connection': 'close',...corsHeaders}}
     // {
     //   status: 200,
