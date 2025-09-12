@@ -3,6 +3,7 @@
     "inputText":"Input",
     "outputText":"Output",
     "selectTokenText":"Select token",
+    "noselectTokenText":"Please select the token to be redeemed",
     "rateText":"Exchange rate",
     "swapText":"Swap",
     "balanceText":"Balance",

@@ -3,6 +3,7 @@
     "inputText":"输入",
     "outputText":"输出",
     "selectTokenText":"选择通证",
+    "noselectTokenText":"请选择兑换的通证",
     "rateText":"兑换比率",
     "swapText":"兑换",
     "balanceText":"余额",

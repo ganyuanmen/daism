@@ -306,8 +306,21 @@ const SubmitButton = forwardRef(({comulate,upRef,downRef,statusRef,setUtokenBala
         const out_id=downRef.current.getToken().token_id;
         let minRatio=ratioRef.current
 
-        if (!parseFloat(value)) { statusRef.current.setStatus({err:t('enter an amount')}) ; setShow(false); return; } //0 或非数字
-        if (parseFloat(value) > parseFloat(upRef.current.getBalance())) { statusRef.current.setStatus({err:t('Insufficient balance')}); setShow(false); return; } //余额是足
+        if(in_id===0 || out_id===0) {
+            showClipError(t("noselectTokenText"));
+            statusRef.current.setStatus({err:t('noselectTokenText')});
+            return;
+        }
+        if (!parseFloat(value)) { 
+            statusRef.current.setStatus({err:t('enter an amount')}) ; 
+            showClipError(t("enter an amount")); 
+            return; 
+        } //0 或非数字
+        if (parseFloat(value) > parseFloat(upRef.current.getBalance())) { 
+            statusRef.current.setStatus({err:t('Insufficient balance')}); 
+            showClipError(t("Insufficient balance")); 
+            return; 
+        } //余额是足
         if (in_id === -2 && out_id === -1) { eth_utoken(value); }
         else if (in_id === -2 && out_id > 0) { eth_token(out_id,value,minRatio); }
         else if (in_id === -1 && out_id > 0) { utoken_token(out_id,value,minRatio); }
@@ -316,11 +329,12 @@ const SubmitButton = forwardRef(({comulate,upRef,downRef,statusRef,setUtokenBala
     }
 
     return <>
-       {show && <>
+     <Button   variant='primary' onClick={handleswap}  ><SwapTokenSvg size={20} />  {t('swapText')}</Button>
+       {/* {show && <>
                 <br/>
                 <Button   variant='primary' onClick={handleswap}  ><SwapTokenSvg size={20} />  {t('swapText')}</Button>
                 </>
-       }
+       } */}
     </>
    
 });
