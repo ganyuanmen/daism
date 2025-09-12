@@ -5,7 +5,7 @@ const DaoToken = require('./api/DaoToken');
 const DaoLogo = require('./api/DaoLogo');
 // const IADD = require('./api/IADD');
 // const IADD_EX = require('./api/IADD_EX');
-// const UnitToken = require('./api/UnitToken');
+const UnitToken = require('./api/UnitToken');
 const EventSum = require('./api/EventSum');
 const Domain=require("./api/Domain")
 const Daismnft=require("./api/Daismnft")
@@ -19,19 +19,28 @@ const abiDecoder = require('abi-decoder'); // NodeJS
 const fabi=require('./abi/SC_abi.json')
 const f_abi=require("./abi/ForSCRegister_abi.json")
 const daismAddress = require('../config/address.json');
-const MultiRpcClient=require('./MultiRpcClient ')
+const MultiRpcClient=require('./MultiRpcClient')
 const  Mutex = require('async-mutex').Mutex;
 abiDecoder.addABI(fabi);
 console.log(daismAddress)
 
 const PROCESSING_INTERVAL = 2000; // 处理间隔（毫秒）
 
+// const rpcProviders = [
+//     'https://sepolia.infura.io/v3/2e68e4d6017344cd89bab57981783954',
+//     'https://eth-sepolia.g.alchemy.com/v2/Q5CwDjcSGYsGkbO7J4cQ1TQL7vrsjMad',
+//     'https://eth.llamarpc.com/sepolia',
+//     'https://sepolia.infura.io/v3/982d49c829f4428db93d5a077085d995',
+//     'https://sepolia.infura.io/v3/9676a35d629d488fb90d7eac1348c838',
+// ];
+
+
 const rpcProviders = [
-    'https://sepolia.infura.io/v3/2e68e4d6017344cd89bab57981783954',
-    'https://eth-sepolia.g.alchemy.com/v2/Q5CwDjcSGYsGkbO7J4cQ1TQL7vrsjMad',
-    'https://eth.llamarpc.com/sepolia',
-    'https://sepolia.infura.io/v3/982d49c829f4428db93d5a077085d995',
-    'https://sepolia.infura.io/v3/9676a35d629d488fb90d7eac1348c838',
+    'https://mainnet.infura.io/v3/2e68e4d6017344cd89bab57981783954',
+    'https://eth-mainnet.g.alchemy.com/v2/Q5CwDjcSGYsGkbO7J4cQ1TQL7vrsjMad',
+    'https://eth.llamarpc.com',
+    'https://mainnet.infura.io/v3/982d49c829f4428db93d5a077085d995',
+    'https://mainnet.infura.io/v3/9676a35d629d488fb90d7eac1348c838',
 ];
 
 // 使用示例
@@ -222,11 +231,11 @@ class DaoApi {
     //     new IADD_EX(this.web3, this.account,daismAddress['DAismIADDProxy'],this.IADD,eventQueue);
     //     return this.dao_iaddex_obj; 
     //     }
-    // get UnitToken() { 
-    //     if (!this.dao_uToken_obj) this.dao_uToken_obj = 
-    //     new UnitToken(this.web3, daismAddress['UnitToken'],eventQueue); 
-    //     return this.dao_uToken_obj; 
-    // }
+    get UnitToken() { 
+        if (!this.dao_uToken_obj) this.dao_uToken_obj = 
+        new UnitToken(this.web3, daismAddress['UnitToken'],this); 
+        return this.dao_uToken_obj; 
+    }
     // get UnitNFT() { 
     //     if (!this.dao_UnitNFT_obj) this.dao_UnitNFT_obj = 
     //     new UnitNFT(this.web3, this.account,daismAddress['UnitNFT'],this.DaoToken,eventQueue,queueMutex); 

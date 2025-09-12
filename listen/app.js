@@ -133,6 +133,9 @@ async function daoListen() {
      { method: accountDividendRight, name: 'accountDividendRight', delay: true },
      { method: publishTolen, name: 'publishTolen', delay: true },
      { method: getDividendEvent, name: 'getDividendEvent', delay: true },
+     { method: eth2utoken, name: 'eth2utoken', delay: true },
+
+     
      
    ];
  
@@ -594,7 +597,7 @@ function eth2utoken()
       if(process.env.IS_DEBUGGER==='1') console.info(obj);
       const {data}=obj
       let sql = "call i_swap(?,?,?,?,?,?,?)";
-      let params = [obj.blockNumber, data['address'], data['swap_time'], data['ethAmount'], data['utokenAmount'],obj.transactionHash,data['gas']];
+      let params = [obj.blockNumber, data['address'], data['timestamp'], data['ethAmount'], data['utokenAmount'],obj.transactionHash,0];
       maxData[7] = obj.blockNumber+1n; //Cache last block number
       await executeSql(sql, params);
    })
