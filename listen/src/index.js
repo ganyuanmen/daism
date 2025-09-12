@@ -22,31 +22,24 @@ const daismAddress = require('../config/address.json');
 const MultiRpcClient=require('./MultiRpcClient')
 const  Mutex = require('async-mutex').Mutex;
 abiDecoder.addABI(fabi);
-console.log(daismAddress)
+console.log(daismAddress);
+const dotenv=require('dotenv');
+dotenv.config();
 
 const PROCESSING_INTERVAL = 2000; // 处理间隔（毫秒）
 
-// const rpcProviders = [
-//     'https://sepolia.infura.io/v3/2e68e4d6017344cd89bab57981783954',
-//     'https://eth-sepolia.g.alchemy.com/v2/Q5CwDjcSGYsGkbO7J4cQ1TQL7vrsjMad',
-//     'https://eth.llamarpc.com/sepolia',
-//     'https://sepolia.infura.io/v3/982d49c829f4428db93d5a077085d995',
-//     'https://sepolia.infura.io/v3/9676a35d629d488fb90d7eac1348c838',
-// ];
-
-
 const rpcProviders = [
-    'https://mainnet.infura.io/v3/2e68e4d6017344cd89bab57981783954',
-    'https://eth-mainnet.g.alchemy.com/v2/Q5CwDjcSGYsGkbO7J4cQ1TQL7vrsjMad',
+    `https://${process.env.BLOCKCHAIN_NETWORK}.infura.io/v3/2e68e4d6017344cd89bab57981783954`,
+    `https://eth-${process.env.BLOCKCHAIN_NETWORK}.g.alchemy.com/v2/Q5CwDjcSGYsGkbO7J4cQ1TQL7vrsjMad`,
     'https://eth.llamarpc.com',
-    'https://mainnet.infura.io/v3/982d49c829f4428db93d5a077085d995',
-    'https://mainnet.infura.io/v3/9676a35d629d488fb90d7eac1348c838',
+    `https://${process.env.BLOCKCHAIN_NETWORK}.infura.io/v3/982d49c829f4428db93d5a077085d995`,
+    `https://${process.env.BLOCKCHAIN_NETWORK}.infura.io/v3/9676a35d629d488fb90d7eac1348c838`,
 ];
+
+console.log(rpcProviders)
 
 // 使用示例
 const rpcClient = new MultiRpcClient(rpcProviders);
-
-
 
 class DaoApi {
         

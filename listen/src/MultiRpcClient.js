@@ -1,4 +1,6 @@
 const ethers = require('ethers');
+const dotenv=require('dotenv');
+dotenv.config();
 
 class MultiRpcClient {
     constructor(rpcUrls) {
@@ -7,7 +9,6 @@ class MultiRpcClient {
         }
         
         this.providers = rpcUrls.map(url => {
-            // return new ethers.JsonRpcProvider(url, "sepolia", {
                 return new ethers.JsonRpcProvider(url, process.env.BLOCKCHAIN_NETWORK, {
                 timeout: 15000,
                 batchMaxCount: 1
