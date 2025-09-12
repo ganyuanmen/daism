@@ -42,7 +42,7 @@ const rpcClient = new MultiRpcClient(rpcProviders);
 class DaoApi {
         
     // 处理队列中的事件
-     processQueue=async()=> {
+    processQueue=async()=> {
 
         const _this=this;
         if (this.isProcessing || this.eventQueue.length === 0) {
@@ -57,7 +57,7 @@ class DaoApi {
         } catch (error) {
             console.error("Error processing event:", error);
         } finally {
-            // 设置定时器，2秒后处理下一个事件
+            // 设置定时器，1秒后处理下一个事件
             setTimeout(() => {
                 _this.isProcessing = false;
                 _this.processQueue();

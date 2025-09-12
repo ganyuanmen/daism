@@ -2,8 +2,10 @@
 
 # dependencies
 /v3/uploads
+/v4/uploads
 /listen/uploads
 /v3/node_modules
+/v4/node_modules
 /listen/node_modules
 /nginx
 /发布费用
@@ -19,7 +21,7 @@
 
 # next.js
 /v3/.next/
-
+/v4/.next/
 # debug
 npm-debug.log*
 yarn-debug.log*

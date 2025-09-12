@@ -1,5 +1,5 @@
 import https from 'https';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 export interface SigneActor {
   privateKey: string;

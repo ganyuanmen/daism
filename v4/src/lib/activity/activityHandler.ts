@@ -6,7 +6,8 @@ import { getUser } from "../mysql/user";
 import { broadcast, getSigneActor } from "../net";
 import { findFirstURI, getTootContent } from "../utils";
 import type { ActivityPubBody, NoteMessage,Attachment } from "./createMessage";
-import crypto from 'crypto';
+import crypto from 'node:crypto';
+// const crypto = require('node:crypto');
 import { createAccept } from "@/lib/activity";
 import { sendSignedActivity } from "./sendSignedActivity";
 

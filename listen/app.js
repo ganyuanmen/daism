@@ -131,7 +131,9 @@ async function daoListen() {
      { method: updateSCEvent, name: 'updateSCEvent', delay: true },
      { method: addCreatorCEvent, name: 'addCreatorCEvent', delay: true },
      { method: accountDividendRight, name: 'accountDividendRight', delay: true },
-     { method: publishTolen, name: 'publishTolen', delay: true }
+     { method: publishTolen, name: 'publishTolen', delay: true },
+     { method: getDividendEvent, name: 'getDividendEvent', delay: true },
+     
    ];
  
    // 顺序执行带延迟
@@ -151,7 +153,6 @@ async function daoListen() {
        
      } catch (error) {
        console.error(`执行订阅 ${name} 时出错:`, error);
-       
        // 出错时也等待一段时间再继续
        const errorDelay = 2000; // 错误时等待2秒
        console.log(`发生错误，等待 ${errorDelay}ms 后继续...`);
