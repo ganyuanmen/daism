@@ -174,7 +174,7 @@ export default function IADD() {
       // 1. 定义路径处理函数（映射表的值）
     const inputValueListenHandlers:Record<string,(inputValue:number,tip_value:number,id:number) => Promise<void>>  = {
       'eth_uto': async (inputValue,tip_value,id) => { //没有打赏功能，但有锻造NFT选择
-        console.info(tip_value)
+        // console.info(tip_value)
         const daismObj=getDaismContract();
         const contractObj=daismObj?daismObj.UnitToken:unitToken;
         const e = await contractObj?.getOutputAmount(getEther(inputValue));

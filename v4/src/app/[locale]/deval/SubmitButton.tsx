@@ -232,11 +232,26 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
     //兑换处理
     const handleswap = () => {
         if(!daismObj) daismObj=getDaismContract();
-        if (tokenValue<=0) {setInputError(t('enter an amount'));  return; } 
+        
+        if(inObj.token_id===0 || outObj.token_id===0) {
+            showClipError(t("noselectTokenText"));
+            setInputError(t('noselectTokenText'));
+            return;
+        }
+        if (tokenValue<=0) {
+            showClipError(t("enter an amount")); 
+            setInputError(t('enter an amount')); 
+             return;
+        } 
+
+  
+        
         if (tokenValue > parseFloat(upBalance)) {  //余额是足
-            setInputError(t('Insufficient balance'))
+            setInputError(t('Insufficient balance'));
+            showClipError(t("Insufficient balance")); 
             return; 
         }
+        
         if (inObj.token_id === -2 && outObj.token_id === -1) { eth_utoken(); }  
         else if (inObj.token_id === -2 && outObj.token_id > 0) { eth_token(); }
         else if (inObj.token_id === -1 && outObj.token_id > 0) { utoken_token(); }
@@ -245,11 +260,12 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
     }
 
     return <>
-       {showButton && inputError==='' && user.connected===1 && <>
+    <Button   variant='primary' onClick={handleswap}  ><SwapTokenSvg size={20} />  {t('swapText')}</Button>
+       {/* {showButton && inputError==='' && user.connected===1 && <>
                 <br/>
                 <Button   variant='primary' onClick={handleswap}  ><SwapTokenSvg size={20} />  {t('swapText')}</Button>
                 </>
-       }
+       } */}
     </>
    
 }

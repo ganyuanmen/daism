@@ -38,10 +38,10 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
    
     return ( 
         <Modal show={show} scrollable={true} className="daism-title" 
-            onShow={() => {
-                if (inputRef.current) inputRef.current.value = '';
-                if (tokenList.length !== tokenFilter.length) dispatch(setTokenFilter(tokenList));
-            }}
+            // onShow={() => {
+            //     if (inputRef.current) inputRef.current.value = '';
+            //     if (tokenList.length !== tokenFilter.length) dispatch(setTokenFilter(tokenList));
+            // }}
             onHide={() => {setShow(false)}}>
 
             <Modal.Header style={{padding:0,margin:0}} >
@@ -51,7 +51,7 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
                         <CloseButton onClick={()=>{setShow(false)}} />
                     </div>
                     <div style={{backgroundColor:'white',width:'100%',padding:'10px'}} >
-                        <TopSearch tokenList={tokenList} dispatch={dispatch} inputRef={inputRef}  />
+                        {/* <TopSearch tokenList={tokenList} dispatch={dispatch} inputRef={inputRef}  /> */}
                         <div>
                         {/* 上层窗口打开多显示eth */}
                         {workspace==='up' && <Button className={iaddStyle.iadd_btn} variant="outline-secondary"  onClick={()=>clickSelect(ethObj)}>
@@ -59,17 +59,17 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
                             <span className={iaddStyle.iadd_text} >ETH</span>
                         </Button>
                         }{'   '}
-                        <Button className={iaddStyle.iadd_btn} variant="outline-secondary"  onClick={()=>clickSelect(utokenObj)} >
+                        {workspace==='down' && <Button className={iaddStyle.iadd_btn} variant="outline-secondary"  onClick={()=>clickSelect(utokenObj)} >
                             <ImageWithFallback alt='' width={24} height={24}  src='/vita.svg' />
                             <span  className={iaddStyle.iadd_text}>UTO</span>
-                        </Button> 
+                        </Button> }
                         </div>
                     </div>
                 </div>
             </Modal.Header>
             <Modal.Body>
               
-             {tokenFilter.map((obj, idx) =>                 
+             {/* {tokenFilter.map((obj, idx) =>                 
                <Row key={idx} className={`mb-1 ${iaddStyle.iadd_tokenlist}`}  onClick={()=>{clickSelect(obj)}} >
                     <Col className="Col-auto me-auto d-flex  align-items-center" >
                         <ImageWithFallback width={36} height={36}  alt="" src={obj.dao_logo ? obj.dao_logo : '/logo.svg'}  />
@@ -84,49 +84,49 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
                     </Col>
                </Row>            
                 )
-             }
+             } */}
             </Modal.Body>
             </Modal> ) 
 }
 
 
-interface TopSearchProps {
-    tokenList: DaismToken[];
-    dispatch: AppDispatch;
-    inputRef: React.RefObject<HTMLInputElement | null>;
-}
+// interface TopSearchProps {
+//     tokenList: DaismToken[];
+//     dispatch: AppDispatch;
+//     inputRef: React.RefObject<HTMLInputElement | null>;
+// }
   
-  function TopSearch({ tokenList, dispatch, inputRef }: TopSearchProps) {
-    const checkAddress = (v: string) => /^0x[0-9a-fA-F]{40}$/.test(v);
+//   function TopSearch({ tokenList, dispatch, inputRef }: TopSearchProps) {
+//     const checkAddress = (v: string) => /^0x[0-9a-fA-F]{40}$/.test(v);
   
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const v = e.currentTarget.value.toLowerCase().trim();
-      if (!v) {
-        dispatch(setTokenFilter(tokenList));
-      } else {
-        let curData: DaismToken[];
-        if (checkAddress(v)) curData = tokenList.filter(o => o.delegator.toLowerCase() === v);
-        else curData = tokenList.filter(o => o.dao_name.toLowerCase().includes(v));
-        dispatch(setTokenFilter(curData));
-      }
-    };
+//     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+//       const v = e.currentTarget.value.toLowerCase().trim();
+//       if (!v) {
+//         dispatch(setTokenFilter(tokenList));
+//       } else {
+//         let curData: DaismToken[];
+//         if (checkAddress(v)) curData = tokenList.filter(o => o.delegator.toLowerCase() === v);
+//         else curData = tokenList.filter(o => o.dao_name.toLowerCase().includes(v));
+//         dispatch(setTokenFilter(curData));
+//       }
+//     };
   
-    return (
-      <div className="d-flex mb-2" style={{ paddingLeft: '16px', paddingRight: '6px' }}>
-        <ImageWithFallback
-          alt=""
-          width={20}
-          height={20}
-          className={iaddStyle.iadd_find_img}
-          src="/find.svg"
-        />
-        <input
-          ref={inputRef}
-          autoComplete="off"
-          className={`form-control form-control-lg ${iaddStyle.iadd_find_input}`}
-          placeholder="Search name or paste address"
-          onChange={handleChange}
-        />
-      </div>
-    );
-  }
+//     return (
+//       <div className="d-flex mb-2" style={{ paddingLeft: '16px', paddingRight: '6px' }}>
+//         <ImageWithFallback
+//           alt=""
+//           width={20}
+//           height={20}
+//           className={iaddStyle.iadd_find_img}
+//           src="/find.svg"
+//         />
+//         <input
+//           ref={inputRef}
+//           autoComplete="off"
+//           className={`form-control form-control-lg ${iaddStyle.iadd_find_input}`}
+//           placeholder="Search name or paste address"
+//           onChange={handleChange}
+//         />
+//       </div>
+//     );
+//   }
