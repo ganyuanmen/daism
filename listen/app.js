@@ -92,14 +92,14 @@ async function hand() {
    const rows=await promisePool.query(sql,[]);
    rows[0].forEach(element => {maxData.push(element.s>start_block?element.s:start_block)});
    console.info(maxData)
-   p("start...........")
+   
    await server1.start();
    daoListen();
    //1分钟循环执行
    schedule.scheduleJob("*/5 * * * * *",async() => {
       // console.log("monitor:",monitor,server1.daoapi.eventQueue.length)
       server1.daoapi.processQueue();
-      if (monitor > 20*12 && server1.daoapi.eventQueue.length===0 && !server1.daoapi.isProcessing) daoListenStart();
+      if (monitor > 60*12 && server1.daoapi.eventQueue.length===0 && !server1.daoapi.isProcessing) daoListenStart();
       monitor++;  
    });  
 }
@@ -107,13 +107,14 @@ async function hand() {
 
 // 监听所有事件，带延迟执行
 async function daoListen() {
+   p("start...........")
    // console.log('开始监听DAO事件，带延迟执行...');
    
    // 先取消所有现有订阅
    await globalSubscriptionManager.unsubscribeAll();
    
    // 等待一段时间确保订阅完全取消
-   await new Promise(resolve => setTimeout(resolve, 1000));
+   await new Promise(resolve => setTimeout(resolve, 2000));
  
    // 使用数组定义所有订阅方法和参数
    const subscribeMethods = [
