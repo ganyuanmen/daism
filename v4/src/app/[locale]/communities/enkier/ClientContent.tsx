@@ -139,7 +139,7 @@ export default function ClientContent({accountAr}:ClientContentProps) {
 
       useEffect(() => {
         if (actor?.id) actorRef.current = actor;
-        if (window.sessionStorage.getItem('loginsiwe') === '1') {
+        if (window.sessionStorage.getItem('loginsiwe') === '1' && actor?.id) {
           setTimeout(() => {
             homeHandle();
           }, 200);

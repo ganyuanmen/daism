@@ -25,8 +25,7 @@ interface SubmitButtonProps{
     showButton:boolean;
 }
 
-export default function SubmitButton({setInputError,inObj,outObj,status,tokenValue,inputError,showButton
-    ,tipValue,upBalance,clearStutes}:SubmitButtonProps)  {
+export default function SubmitButton({setInputError,inObj,outObj,status,tokenValue,tipValue,upBalance,clearStutes}:SubmitButtonProps)  {
 
     const dispatch = useDispatch<AppDispatch>();
     const t = useTranslations('iadd')

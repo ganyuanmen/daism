@@ -1,10 +1,10 @@
 
-import { ChangeEvent, useRef } from "react";
+// import { useRef } from "react";
 import iaddStyle from '@/styles/iadd.module.css'
-import { Modal,Button,Row,Col,CloseButton} from "react-bootstrap";
-import { useSelector,useDispatch } from 'react-redux';
+import { Modal,Button,CloseButton} from "react-bootstrap";
+// import { useSelector,useDispatch } from 'react-redux';
 import { useTranslations } from 'next-intl'
-import {type RootState, type AppDispatch, setTokenFilter} from '@/store/store';
+// import {type RootState, type AppDispatch} from '@/store/store';
 import ImageWithFallback from "@/components/ImageWithFallback";
 
 interface SwapWindowProps {
@@ -21,10 +21,10 @@ interface SwapWindowProps {
  * @returns 
  */
 export default function SwapWindow({ workspace, show, setShow,selectToken }: SwapWindowProps) {
-    const inputRef = useRef<HTMLInputElement>(null);
-    const tokenFilter = useSelector((state: RootState) => state.valueData.tokenFilter);
-    const tokenList = useSelector((state: RootState) => state.valueData.tokenList);
-    const dispatch = useDispatch<AppDispatch>();
+    // const inputRef = useRef<HTMLInputElement>(null);
+    // const tokenFilter = useSelector((state: RootState) => state.valueData.tokenFilter);
+    // const tokenList = useSelector((state: RootState) => state.valueData.tokenList);
+    // const dispatch = useDispatch<AppDispatch>();
     const ethObj:DaismToken={dao_id:-2,dao_logo:'/eth.png',dao_name:'ETH',dao_symbol:'ETH',delegator:'',token_cost:0,token_id:-2}
     const utokenObj:DaismToken={dao_id:-1,dao_logo:'/vita.svg',dao_name:'UTO',dao_symbol:'UTO',delegator:'',token_cost:0,token_id:-1}
     const t = useTranslations('iadd')
