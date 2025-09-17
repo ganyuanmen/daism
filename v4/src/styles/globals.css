@@ -528,7 +528,7 @@ blockquote p {
 .secconddiv{
   margin: 0;
   position: sticky;
-  top: 49px;
+  top: 48px;
   padding: 10px;
   z-index: 256;
   background-color: #f4f4f4;
@@ -536,3 +536,10 @@ blockquote p {
   border-top-right-radius: 6px;
 
 }
+
+/* 调整手机端弹出菜单宽度 */
+.offcanvas {
+  width: 200px !important;
+  max-width: 80%; /* 防止屏幕太窄时超出 */
+}
+
