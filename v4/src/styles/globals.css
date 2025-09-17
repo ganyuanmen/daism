@@ -528,20 +528,11 @@ blockquote p {
 .secconddiv{
   margin: 0;
   position: sticky;
-  top: 58px;
+  top: 49px;
   padding: 10px;
   z-index: 256;
   background-color: #f4f4f4;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
 
-}
-
-
-
-@media (max-width: 992px) {
-
-  .secconddiv{
-    top: 50px;
-  }
 }

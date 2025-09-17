@@ -20,7 +20,7 @@ import { useLayout } from '@/contexts/LayoutContext';
 /**
  * 钱包登录管理组件
  */
-function Wallet() {
+function Wallet({isPhone}:{isPhone:boolean}) {
     const user = useSelector((state: RootState) => state.valueData.user) as DaismUserInfo;
     const [providers, setProviders] = useState<WalletProviderType[]>([]); // 钱包提供者列表
     const allProviders = useSyncProviders() as WalletProviderType[];
@@ -131,7 +131,7 @@ const recorLogin=()=>{
 }
   return (
     <>
-      <div className='d-flex justify-content-end align-items-center' style={{ minWidth: '300px' }}> 
+      <div className={`d-flex ${isPhone?'justify-content-start':'justify-content-end'} align-items-center`} style={{ minWidth:isPhone?'100px':'300px' }}> 
         {user.connected >0  && <User onDisconnect={onDisconnect} />}
         <div style={{ marginTop: '6px', marginRight: '10px' }}>
           {user.connected > 0 ? <ShowAddress address={user.account} />
@@ -142,7 +142,7 @@ const recorLogin=()=>{
           </>
           }
         </div>
-        <LocaleSwitcher />
+        {!isPhone && <LocaleSwitcher flag={true} />}
       </div>     
     </>
   );

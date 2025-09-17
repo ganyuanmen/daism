@@ -15,6 +15,7 @@ export default function MetmaskInstall() {
 
     useEffect(()=>{
       setIsShowBtn(true)
+       // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
    
   return (
