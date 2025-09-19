@@ -142,7 +142,7 @@ const recorLogin=()=>{
           {user.connected > 0 ? <ShowAddress address={user.account} />
           :<>{ providers.length > 0 ? <WalletInfo providers={providers} onDisconnect={onDisconnect} 
             updateLoginData={updateLoginData} checkNetwork={checkNetwork} recorLogin={recorLogin} showError={showError} /> 
-              : <MetmaskInstall  />
+              :<>{!loading && <MetmaskInstall  />}</>
              }
           </>
           }
