@@ -1,7 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import ShowAddress from '../ShowAddress';
-import { useSyncProviders } from "@/hooks/useSyncProviders";
+import { useProviders } from '@/hooks/useProviders';
 import LocaleSwitcher from '../LocaleSwitcher';
 import MetmaskInstall from './MetmaskInstall';
 import WalletInfo from './WalletInfo';
@@ -22,8 +22,9 @@ import { useLayout } from '@/contexts/LayoutContext';
  */
 function Wallet({isPhone}:{isPhone:boolean}) {
     const user = useSelector((state: RootState) => state.valueData.user) as DaismUserInfo;
-    const [providers, setProviders] = useState<WalletProviderType[]>([]); // 钱包提供者列表
-    const allProviders = useSyncProviders() as WalletProviderType[];
+    // const [providers, setProviders] = useState<WalletProviderType[]>([]); // 钱包提供者列表
+    // const allProviders = useSyncProviders() as WalletProviderType[];
+    const [providers, loading] = useProviders();
     const dispatch = useDispatch<AppDispatch>();
     const NETWORKNAME=process.env.NEXT_PUBLIC_BLOCKCHAIN_NETWORK || '';
     // const locale = useLocale();
@@ -35,10 +36,14 @@ function Wallet({isPhone}:{isPhone:boolean}) {
     // 获取代币数据
     // const getTokens=useFetchToken();
 
-    // 初始化组件
-     useEffect(() => {
-       setProviders(allProviders);  // 设置提供者列表
-    }, [allProviders]);
+   
+    useEffect(()=>{
+      if(!loading && providers.length===0){
+        setIsShowBtn(true) //不安装钱包，直接显示界面
+      }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[loading,providers])
+
 
     const NET: Record<string, string> = {
       '_0xaa36a7': 'sepolia',

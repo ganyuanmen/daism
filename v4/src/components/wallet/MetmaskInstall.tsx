@@ -4,19 +4,16 @@ import { Modal, Button } from 'react-bootstrap';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Image from 'next/image';
-import {  useEffect, useState } from 'react';
-import { useLayout } from '@/contexts/LayoutContext';
+import {  useState } from 'react';
+
 
 
 export default function MetmaskInstall() {
     const [showMetaMask, setShowMetaMask] = useState(false); // 显示MetaMask安装提示
     const tc = useTranslations('Common');
-    const { setIsShowBtn } = useLayout(); 
 
-    useEffect(()=>{
-      setIsShowBtn(true)
-       // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+
+ 
    
   return (
     <>
