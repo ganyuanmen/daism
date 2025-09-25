@@ -107,6 +107,8 @@
     "contenText":"内容",
     "eventArtice":"活动嗯文",
     "esctext":"返回",
+    "seachPloText":"按标题/内容搜索",
+    "clickTosearchText":"单击搜索",
     "submitText":"提交",
     "contenValidText":"内容不能为空，或小于10个字符",
     "monthText":"1月,2月,3月,4月,5月,6月,7月,8月,9月,10月,11月,12月",

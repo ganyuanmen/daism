@@ -16,6 +16,7 @@ import { type RootState } from '@/store/store';
 import { fetchJson } from '@/lib/utils/fetcher';
 import { useSidebarVisibility } from '@/hooks/useSidebarVisibility';
 import ImageWithFallback from '@/components/ImageWithFallback';
+import SearchBox from '@/components/SearchBox';
 
 
 interface DaoWhere {
@@ -248,17 +249,24 @@ export default function ClientContent({ accountAr }: ClientContentProps) {
           {Array.isArray(daoData) && daoData.length > 0 && (
             <>
               <div className='d-flex justify-content-between align-items-center secconddiv'>
-                <div className='selectText' style={{ paddingLeft: '12px' }}>
+                <div className='selectText' style={{ paddingLeft: '12px',width:'100%' }}>
                   {activeTab === 2 ? (
                     <span className='daism-a selectText' onClick={callBack}>
                       <BackSvg size={24} /> {t('esctext')}
                     </span>
                   ) : (
-                    <>
-                      {navObj?.isFilter ? '' : navObj?.svg ? navObj.svg : navObj?.avatar &&<ImageWithFallback src={navObj.avatar} alt={navObj?.actor_account??''} height={24} width={24} />}
-                      {' '}
-                      {navObj?.isFilter ? navObj.text : navObj?.text ? t(navObj.text) : navObj?.actor_account}
-                    </>
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <div>
+                        {navObj?.isFilter ? '' : navObj?.svg ? navObj.svg : navObj?.avatar &&<ImageWithFallback src={navObj.avatar} alt={navObj?.actor_account??''} height={24} width={24} />}
+                        {' '}
+                        {navObj?.isFilter ? navObj.text : navObj?.text ? t(navObj.text) : navObj?.actor_account}
+                      </div>
+                      <div>
+                        {
+                         activeTab===0 && <SearchBox setFetchWhere={setFetchWhere} />
+                        }
+                      </div>
+                    </div>
                   )}
                 </div>
                 

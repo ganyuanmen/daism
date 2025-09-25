@@ -112,7 +112,8 @@
     "eventArtice":"Event posting",
     "esctext":"return",
     "submitText":"Submit",
-
+    "seachPloText":"Search by title/content",
+    "clickTosearchText":"Click to search",
     "contenValidText":"Content cannot be empty or less than 10 characters",
     "monthText":"Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sept,Oct,Nov,Dec",
     "loginText":"Login",

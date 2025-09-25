@@ -50,16 +50,39 @@ export async function messagePageData(params: any): Promise<any[]> {
       break;
   }
 
-  let re: any[] = await getData(`${sql} order by ${order} desc limit ${pi*12},12`, []);
+  let re: any[]=[];
+  let sql1='';
+  if(w){
+    sql1=`${sql} and (a.title like ? or a.content like ?) order by ${order} desc limit ${pi*12},12`;
+    re = await getData(sql1, [`%${w}%`,`%${w}%`]);
+  } else 
+  {
+    sql1=`${sql} order by ${order} desc limit ${pi*12},12`;
+    re = await getData(sql1, []); 
+  }
+  
+  console.log(w,"000000000000000000000000000000000000000:",sql1)
+
   re = re.filter(obj => obj.is_top === 0);
 
   if(parseInt(pi) === 0) {
-    const re1: any[] = await getData(`${sql} and a.is_top=1 order by ${order} desc`, []);
+    let re1:any[]=[];
+    if(w){
+      sql1=`${sql} and a.is_top=1 and (a.title like ? or a.content like ?) order by ${order} desc`;
+      re1 = await getData(sql1, [`%${w}%`,`%${w}%`]);
+    } else 
+    {
+      sql1=`${sql} and a.is_top=1  order by ${order} desc`;
+      re1 = await getData(sql1, []); 
+    }
+
+    // const re1: any[] = await getData(`${sql} and a.is_top=1 order by ${order} desc`, []);
     re = [...re1, ...re];
   }
 
   return re;
 }
+
 
 // ====================== 消息统计 ======================
 export interface EnkiTotal{

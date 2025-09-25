@@ -18,6 +18,7 @@ import {BookSvg,Heart,BackSvg,EditSvg,TimeSvg,EventSvg,MyFollowSvg} from '@/lib/
 import Loading from '@/components/Loadding';
 import { useSidebarVisibility } from '@/hooks/useSidebarVisibility';
 import ImageWithFallback from '@/components/ImageWithFallback';
+import SearchBox from '@/components/SearchBox';
 
 
 interface DaoActor {
@@ -391,15 +392,16 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
           {Array.isArray(daoData) && daoData.length > 0 && (
             <>
               <div className="d-flex justify-content-between align-items-center secconddiv">
-                <div className="selectText" style={{ paddingLeft: '12px' }}>
+                <div className="selectText" style={{ paddingLeft: '12px',width:'100%' }}>
                   {activeTab === 2 ? (
                     <span className="daism-a selectText" onClick={callBack}>
                       <BackSvg size={24} />
                       {t('esctext')}
                     </span>
                   ) : (
-                    <>
-                      {navObj.isFilter ? (
+                    <div className='d-flex justify-content-between align-items-center'>
+                    <div>
+                       {navObj.isFilter ? (
                         ''
                       ) : navObj?.svg ? (
                         navObj.svg
@@ -416,7 +418,14 @@ export default function EnkiClientContent({ accountAr }: ClientContentProps) {
                         : navObj?.text
                         ? t(navObj.text)
                         : navObj.actor_account}
-                    </>
+                    </div>
+                    <div>
+                      {
+                       activeTab===0 && <SearchBox setFetchWhere={setFetchWhere} />
+                      }
+                    </div>
+                  </div>
+                  
                   )}
                 </div>
 

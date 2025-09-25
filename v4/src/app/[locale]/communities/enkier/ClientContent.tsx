@@ -20,6 +20,7 @@ import { useLayout } from '@/contexts/LayoutContext';
 import {Home,BookSvg,SomeOne,Heart,BackSvg,PublicMess,EditSvg,Follow,MyPost,ReceiveSvg} from '@/lib/jssvg/SvgCollection';
 import Loading from '@/components/Loadding';
 import { useSidebarVisibility } from '@/hooks/useSidebarVisibility';
+import SearchBox from '@/components/SearchBox';
 
 interface ClientContentProps {
   accountAr: AccountType[];
@@ -361,9 +362,19 @@ export default function ClientContent({accountAr}:ClientContentProps) {
                 <div className='sccontent' >
                 <div className='d-flex justify-content-between align-items-center secconddiv'  > 
                 
-                  <div className='selectText' style={{paddingLeft:'12px'}} >
+                  <div className='selectText' style={{paddingLeft:'12px',width:'100%'}} >
                     {activeTab===2 ? <span className='daism-a selectText' onClick={refreshPage} ><BackSvg size={24} />{t('esctext')} </span>
-                    :<>{svgs[navIndex]} {topText}</>}
+                    :<div className='d-flex justify-content-between align-items-center'>
+                      <div>
+                      {svgs[navIndex]} {topText}
+                      </div>
+                      <div>
+                        {
+                         activeTab===0 && <SearchBox setFetchWhere={setFetchWhere} />
+                        }
+                      </div>
+                    </div>
+                    }
                    
                     </div>  
                   {leftHidden && <NavDropdown className='daism-a' title="..." >

@@ -99,23 +99,32 @@ export default function SubmitButton({setInputError,inObj,outObj,status,tokenVal
                 showClipError(tc('errorText') + (err.message ? err.message : err));
             });
         } 
-        // else {
-        //     daismObj?.UnitToken.swap(user.account,tokenValue).then(re => {
-        //         closeTip();
-        //         daismObj?.signer.provider.getBalance(user.account).then(e1 => {
-        //             const _b1 = fromEther(e1);
-        //             setEth(_b1)
-        //             daismObj?.UnitToken.balanceOf(user.account).then(e2 => {
-        //                 const _b2 = e2.utoken;
-        //             setUto(_b2)
-        //             resulthandle(_b1, _b2);
-        //             })
-        //         })
-        //     }, err => {
-        //         console.error(err); closeTip();
-        //         showClipError(tc('errorText') + (err.message ? err.message : err));
-        //     });
-        // }
+        else {
+            daismObj?.UnitToken.swap(user.account,tokenValue).then(re => {
+                closeTip();
+                daismObj?.signer.provider?.getBalance(user.account).then(e1 => {
+                    const _b1 = fromEther(e1)
+                    setEth(_b1)
+                    daismObj?.UnitToken.balanceOf(user.account).then(e2 => {
+                        const _b2 = e2.utoken;
+                    setUto(_b2)
+                    resulthandle(_b1, _b2);
+                    })
+                })
+                // daismObj?.signer.provider.getBalance(user.account).then(e1 => {
+                //     const _b1 = fromEther(e1);
+                //     setEth(_b1)
+                //     daismObj?.UnitToken.balanceOf(user.account).then(e2 => {
+                //         const _b2 = e2.utoken;
+                //     setUto(_b2)
+                //     resulthandle(_b1, _b2);
+                //     })
+                // })
+            }, err => {
+                console.error(err); closeTip();
+                showClipError(tc('errorText') + (err.message ? err.message : err));
+            });
+        }
     }
 
 
