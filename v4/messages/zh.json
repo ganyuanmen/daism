@@ -490,6 +490,9 @@
   "Common":{
     "connectionFailed":"钱包登录失败",
     "about":"关于",
+    "rejectText":"用户拒绝了交易",
+    "notEnoughTip":"钱包余额不足以支付 gas",
+    "droppedText":"交易被丢弃（可能因为 Gas 太低或网络拥堵）",
     "donationText":"捐赠",
     "title":"去估值-道易程",
     "smartTitle":"智能公器-道易程",

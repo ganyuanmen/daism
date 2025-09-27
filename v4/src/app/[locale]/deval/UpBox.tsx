@@ -44,6 +44,7 @@ interface UpBoxProps {
               <InputBox  inputError={inputError} calcStatus={calcStatus} tipValue={tipValue}
               setInputError={setInputError}
               setTokenValue={setTokenValue}
+              tokenValue={tokenValue}
               inObj={inObj} outObj={outObj}
                /></Col>
             <Col className="col-auto">

@@ -495,6 +495,9 @@
   "Common":{
     "connectionFailed":"Wallet login failed",
     "about":"about",
+    "rejectText":"Transaction rejected by user",
+    "notEnoughTip":"Insufficient funds for gas",
+    "droppedText":"Transaction dropped",
     "donationText":"donate",
     "title":"DeVal-DAism",
     "tokensTitle":"Honor Tokens - DAism",
