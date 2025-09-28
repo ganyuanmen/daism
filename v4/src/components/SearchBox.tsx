@@ -1,4 +1,4 @@
-import { Row, Col, Container, Tooltip, OverlayTrigger } from "react-bootstrap";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import React, { useRef } from "react";
 
 import cssStyle from "@/styles/topSearch.module.css";

@@ -3,8 +3,12 @@ import React, { useImperativeHandle, useRef, forwardRef, useState } from "react"
 import Media, { type MediaRef } from "./Media";
 import SCProperty, { type SCPropertyRef } from "./SCProperty";
 import dynamic from "next/dynamic";
+import Loading from "../Loadding";
 // 使用动态导入并禁用 SSR
-const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { 
+  ssr: false,
+  loading: () => <Loading />, // 加载中显示
+});
 
 interface RichEditorProps {
   currentObj?: EnkiMessType|null;

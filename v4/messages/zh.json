@@ -103,6 +103,8 @@
     "noVoteText":"提案已经不能投票！"
   },
   "ff": {
+    "realyPastText":"直接粘贴",
+    "selectCopytext":"选择粘贴",
     "remainingText":"剩余字符",
     "contenText":"内容",
     "eventArtice":"活动嗯文",
@@ -306,7 +308,7 @@
     "selectTokenText":"选择通证",
     "noselectTokenText":"请选择兑换的通证",
     "rateText":"兑换比率",
-    "swapText":"兑换",
+    "swapText":"Forge",
     "balanceText":"余额",
     "unauthorizedText":"未授权！",
     "authorizeText":"授权",
@@ -319,7 +321,7 @@
     "selectText":"选择",
     "seachTokenText":"搜索token",
     "authorizingText":"正在授权，请稍等......",
-    "transactionText":"IADD估值网络",
+    "transactionText":"ETH锻造工厂",
     "notTipText":"不够打赏",
     "tipText":"打赏",
     "tipTextE2U":"锻造荣誉通证",
@@ -473,7 +475,7 @@
   },
   "Navigation": {
     "home": "首页",
-    "iadd": "去估值",
+    "iadd": "锻造",
     "smarcommon": "智能公器",
     "nft":"荣誉通证",
     "my": "我的工作室",

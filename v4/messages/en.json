@@ -107,6 +107,8 @@
   },
   
   "ff": {
+    "realyPastText":"Paste directly",
+    "selectCopytext":"Choose Paste",
     "remainingText":"Remaining characters",
     "contenText":"Content",
     "eventArtice":"Event posting",
@@ -311,7 +313,7 @@
     "selectTokenText":"Select token",
     "noselectTokenText":"Please select the token to be redeemed",
     "rateText":"Exchange rate",
-    "swapText":"Swap",
+    "swapText":"Forge",
     "balanceText":"Balance",
     "unauthorizedText":"Unauthorized!",
     "authorizeText":"Authorize",
@@ -324,7 +326,7 @@
     "selectText":"Select",
     "seachTokenText":"Search token",
     "authorizingText":"Authorizing, please wait...",
-    "transactionText":"IADD Network",
+    "transactionText":"ETH Forging Factory",
     "notTipText":"Not enough to give a tip",
     "tipText":"give a tip",
     "tipTextE2U":"Burn Honor Token",
@@ -478,7 +480,7 @@
   },
   "Navigation": {
     "home": "Home",
-    "iadd": "DeVal",
+    "iadd": "Forge",
     "smarcommon": "Smart Commons",
     "nft":"Honor Tokens",
     "my": "My Workroom",
