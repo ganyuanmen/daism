@@ -6,13 +6,13 @@ import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { Contract, ethers, type FeeData } from 'ethers';
 import SubmitButton from './SubmitButton';
-import StatusBar from '@/app/[locale]/deval/StatusBar';
+import StatusBar from '@/app/[locale]/forge/StatusBar';
 import usePrice from "@/hooks/usePrice";
 import ShowErrorBar from "@/components/ShowErrorBar";
 import { useTranslations } from 'next-intl'
 import {type RootState} from '@/store/store';
-import {type tipType } from '@/app/[locale]/deval/TipWin';
-import {type StatusBarState }  from '@/app/[locale]/deval/StatusBar';
+import {type tipType } from '@/app/[locale]/forge/TipWin';
+import {type StatusBarState }  from '@/app/[locale]/forge/StatusBar';
 import { getDaismContract } from '@/lib/globalStore';
 import ImageWithFallback from '@/components/ImageWithFallback';
 

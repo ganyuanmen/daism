@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
  return {
    title: t('title'),
    alternates: {
-     canonical: `https://daism.io/${locale}/deval`, 
+     canonical: `https://daism.io/${locale}/forge`, 
    },
  };
 }

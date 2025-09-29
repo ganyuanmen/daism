@@ -44,16 +44,16 @@ export default function Home() {
 				<p>{t('xuanyan-06')}</p>				
 				<p>{t('xuanyan-07')}</p>				
                 <h2>💓 Breakthroughs of PoL 1.0</h2>
-                    <p>{t('pol-01')} <a href={`https://daism.io/${locale==='zh'?'zh/':''}deval`} rel="noreferrer" target="_blank">IADD {t('networkName')}</a>{t('pol-02')}</p>
+                    <p>{t('pol-01')} <a href={`https://daism.io/${locale==='zh'?'zh/':''}forge`} rel="noreferrer" target="_blank">IADD {t('networkName')}</a>{t('pol-02')}</p>
                     <ul>
                         <li>
-                            <a href={`https://daism.io/${locale==='zh'?'zh/':''}deval`} rel="noreferrer" target="_blank">Smart Creative Commons 0 License(SCC0 License)</a>
+                            <a href={`https://daism.io/${locale==='zh'?'zh/':''}forge`} rel="noreferrer" target="_blank">Smart Creative Commons 0 License(SCC0 License)</a>
                         </li>
                         <p>{t('pol-03')}</p>
-                        <li><a href="https://daism.io/deval" rel="noreferrer" target="_blank">Incentive: ETH forging</a></li>
+                        <li><a href="https://daism.io/forge" rel="noreferrer" target="_blank">Incentive: ETH forging</a></li>
                         <p>
                             {t('pol-04')}
-                            <a href={`https://daism.io/${locale==='zh'?'zh/':''}deval`} rel="noreferrer" target="_blank">{t('pol-05')}</a>
+                            <a href={`https://daism.io/${locale==='zh'?'zh/':''}forge`} rel="noreferrer" target="_blank">{t('pol-05')}</a>
                             {t('pol-06')}
                             <a href="https://learn.daism.io/docs/whitepaper.html#ethforging" rel="noreferrer" target="_blank">DAism Whitepaper</a>.
                         </p>

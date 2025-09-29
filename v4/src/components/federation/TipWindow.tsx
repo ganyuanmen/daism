@@ -183,8 +183,8 @@ export default function TipWindow({ owner, messageObj }: TipWindowProps) {
           <div className="daism-tip-text">
             {t("InsufficientBalance")}
             <p>
-              {/* 这里我注释掉 locale，因为你没传递 */}
-              <a href={`/deval`}>{t("swapUTOText")}</a>
+   
+              <a href={`/forge`}>{t("swapUTOText")}</a>
             </p>
           </div>
         </Modal.Body>

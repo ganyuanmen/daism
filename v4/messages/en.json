@@ -310,6 +310,7 @@
   "iadd": {
     "inputText":"Input",
     "outputText":"Output",
+    "swapSelectText":"Irreversible forge",
     "selectTokenText":"Select token",
     "noselectTokenText":"Please select the token to be redeemed",
     "rateText":"Exchange rate",
@@ -501,7 +502,7 @@
     "notEnoughTip":"Insufficient funds for gas",
     "droppedText":"Transaction dropped",
     "donationText":"donate",
-    "title":"DeVal-DAism",
+    "title":"forge-DAism",
     "tokensTitle":"Honor Tokens - DAism",
     "smartTitle":"Smart Commons - DAism",
     "enkiTitle":"My Community - DAism",

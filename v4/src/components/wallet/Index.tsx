@@ -113,7 +113,7 @@ const updateLoginData=async (tempAccount:string,walletProvider:WalletProviderTyp
   provider.getBalance(tempAccount).then((balance:bigint) => { dispatch(setEthBalance(ethers.formatEther(balance))); });
   
   // 获取代币数据
-  // if(pathname==='/deval')  getTokens(tempAccount);
+  // if(pathname==='/forge')  getTokens(tempAccount);
 
   // 保存到 sessionStorage
   window.sessionStorage.setItem("providerinfoname", (walletProvider.info.name));

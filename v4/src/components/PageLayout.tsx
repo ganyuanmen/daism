@@ -149,7 +149,7 @@ const PageLayout = memo(({ children }: Props) => {
           <Nav.Link className={pathname === '/honortokens' ? 'pnavactive' : ''} href={`/${locale}/honortokens`} onClick={onClick}>
             <div className="no-wrap">{t('nft')}</div>
           </Nav.Link>
-          <Nav.Link className={pathname === '/deval' ? 'pnavactive' : ''} href={`/${locale}/deval`} onClick={onClick}>
+          <Nav.Link className={pathname === '/forge' ? 'pnavactive' : ''} href={`/${locale}/forge`} onClick={onClick}>
             <div className="no-wrap">{t('iadd')}</div>
           </Nav.Link>
           <Nav.Link className={pathname === '/workroom' ? 'pnavactive' : ''} href={`/${locale}/workroom`} onClick={onClick}>
@@ -193,7 +193,7 @@ const PageLayout = memo(({ children }: Props) => {
           <Nav.Link className={pathname === '/honortokens' ? 'pnavactive' : ''} href={`/${locale}/honortokens`}>
             <div className="no-wrap">{t('nft')}</div>
           </Nav.Link>
-          <Nav.Link className={pathname === '/deval' ? 'pnavactive' : ''} href={`/${locale}/deval`}>
+          <Nav.Link className={pathname === '/forge' ? 'pnavactive' : ''} href={`/${locale}/forge`}>
             <div className="no-wrap">{t('iadd')}</div>
           </Nav.Link>
           <NavDropdown title={t('college')} id="nav-dropdown-college">

@@ -47,7 +47,7 @@ export default function SwapWindow({ workspace, show, setShow,selectToken }: Swa
             <Modal.Header style={{padding:0,margin:0}} >
                 <div style={{width:'100%'}} >
                     <div className="mb-2 mt-2 d-flex justify-content-between align-items-center" style={{padding:'4px 18px 4px 18px'}}  >
-                        <div> Token {t('selectText')} </div>
+                        <div> {t('swapSelectText')} </div>
                         <CloseButton onClick={()=>{setShow(false)}} />
                     </div>
                     <div style={{backgroundColor:'white',width:'100%',padding:'10px'}} >
