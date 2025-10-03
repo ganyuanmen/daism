@@ -19,7 +19,7 @@ interface ClientEnkiProps {
 export default function ClientEnki({ openObj, accountAr }: ClientEnkiProps) {
   const [activeTab, setActiveTab] = useState<number>(2)
   const [currentObj, setCurrentObj] = useState<EnkiMessType | null>(openObj)
-
+  const actor = useSelector((state: RootState) => state.valueData.actor)
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe) ;
   const daoActor = useSelector((state: RootState) => state.valueData.daoActor ) as DaismDao[];
   const t = useTranslations('ff')
@@ -41,6 +41,43 @@ export default function ClientEnki({ openObj, accountAr }: ClientEnkiProps) {
     }
   }
  
+  
+  const geneDom=()=>{
+    if(!currentObj?.message_id) return (<ShowErrorBar errStr={t("noPostingText")} />);
+    if(currentObj.account_at){
+      if(!loginsiwe)  return (<ShowErrorBar errStr={t("noAuthText")} />); //权限不够
+      if(!actor?.actor_account) return (<ShowErrorBar errStr={t("noAuthText")} />); //权限不够
+      if(currentObj.self_account!==actor.actor_account){ //不是作者，查看是否@ 对象
+        const ar=JSON.parse(currentObj.account_at);
+        if(!ar.includes(actor.actor_name)) return (<ShowErrorBar errStr={t("noAuthText")} />); //权限不够
+      }
+    
+    }
+
+    return ( <>
+      {activeTab === 2 ? (
+        <MessagePage
+          path="enki"
+          enkiMessObj={currentObj}
+          tabIndex={3}
+          refreshPage={delCallBack}
+          setActiveTab={setActiveTab}
+          daoData={daoActor}
+        />
+      ) : (
+        <EnkiCreateMessage
+          daoData={daoActor}
+          callBack={callBack}
+          currentObj={currentObj}
+          afterEditCall={afterEditCall}
+          accountAr={accountAr}
+        />
+      )}
+    </>);
+    
+
+  }
+
 
   return (<>{isShowBtn?
     <>
@@ -49,30 +86,7 @@ export default function ClientEnki({ openObj, accountAr }: ClientEnkiProps) {
         {!loginsiwe && <Loginsign />}
       </div>
 
-      {currentObj?.message_id ? (
-        <>
-          {activeTab === 2 ? (
-            <MessagePage
-              path="enki"
-              enkiMessObj={currentObj}
-              tabIndex={3}
-              refreshPage={delCallBack}
-              setActiveTab={setActiveTab}
-              daoData={daoActor}
-            />
-          ) : (
-            <EnkiCreateMessage
-              daoData={daoActor}
-              callBack={callBack}
-              currentObj={currentObj}
-              afterEditCall={afterEditCall}
-              accountAr={accountAr}
-            />
-          )}
-        </>
-      ) : (
-        <ShowErrorBar errStr={t('noPostingText')} />
-      )}
+      {geneDom()}
     </>:<Loading />
   }</>
   )

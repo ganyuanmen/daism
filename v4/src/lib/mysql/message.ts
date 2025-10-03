@@ -61,7 +61,6 @@ export async function messagePageData(params: any): Promise<any[]> {
     re = await getData(sql1, []); 
   }
   
-  console.log(w,"000000000000000000000000000000000000000:",sql1)
 
   re = re.filter(obj => obj.is_top === 0);
 

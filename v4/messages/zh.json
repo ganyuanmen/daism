@@ -104,6 +104,8 @@
   },
   "ff": {
     "realyPastText":"直接粘贴",
+    "noAuthText":"权限不够！",
+    "onlyPublicText":"只有公共的嗯文才能被转发",
     "selectCopytext":"选择粘贴",
     "remainingText":"剩余字符",
     "contenText":"内容",

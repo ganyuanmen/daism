@@ -113,6 +113,10 @@ export default function EnkiEditItem({
 
   //转发
   const handleAnnounce = async () => {
+    if(messageObj.property_index>1){
+      showClipError(t("onlyPublicText"))
+      return;
+    }
     const upData={
       account: actor?.actor_account,
       toUrl: messageObj.actor_url,

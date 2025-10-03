@@ -108,6 +108,8 @@
   
   "ff": {
     "realyPastText":"Paste directly",
+    "noAuthText":"Not authorized",
+    "onlyPublicText":"Only public Enki articles can be shared.",
     "selectCopytext":"Choose Paste",
     "remainingText":"Remaining characters",
     "contenText":"Content",

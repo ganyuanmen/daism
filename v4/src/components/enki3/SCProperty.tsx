@@ -99,7 +99,7 @@ const SCProperty = forwardRef<SCPropertyRef, SCPropertyProps>(
       <>
         <Row>
           <Col>
-            {!isSC && (
+            {/* {!isSC && ( */}
               <button
                 className="btn btn-light"
                 onClick={() => setShowProperty(true)}
@@ -123,7 +123,7 @@ const SCProperty = forwardRef<SCPropertyRef, SCPropertyProps>(
                   </div>
                 )}
               </button>
-            )}
+            {/* )} */}
           </Col>
           <Col className="col-auto">{children}</Col>
         </Row>

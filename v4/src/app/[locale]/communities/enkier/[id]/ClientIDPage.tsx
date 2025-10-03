@@ -21,6 +21,7 @@ export default function ClientIDPage({ openObj, accountAr }: MessageProps) {
   const [activeTab, setActiveTab] = useState<number>(2);
   const [currentObj,setCurrentObj]=useState<EnkiMessType|null>(openObj)
   const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe); 
+  const actor = useSelector((state: RootState) => state.valueData.actor)
   const {isShowBtn}=useLayout();
   const t = useTranslations("ff");
 
@@ -36,6 +37,41 @@ export default function ClientIDPage({ openObj, accountAr }: MessageProps) {
     }
   };
 
+
+  const geneDom=()=>{
+    if(!currentObj?.message_id) return (<ShowErrorBar errStr={t("noPostingText")} />);
+    if(currentObj.account_at){
+      if(!loginsiwe)  return (<ShowErrorBar errStr={t("noAuthText")} />); //权限不够
+      if(!actor?.actor_account) return (<ShowErrorBar errStr={t("noAuthText")} />); //权限不够
+      if(currentObj.actor_account!==actor.actor_account){ //不是作者，查看是否@ 对象
+        const ar=JSON.parse(currentObj.account_at);
+        if(!ar.includes(actor.actor_name)) return (<ShowErrorBar errStr={t("noAuthText")} />); //权限不够
+      }
+    
+    }
+
+    return (<>
+      {activeTab === 2 ? (
+        <MessagePage
+          path="enkier"
+          enkiMessObj={currentObj}
+          refreshPage={refreshPage}
+          setActiveTab={setActiveTab}
+          tabIndex={3}
+        />
+      ) : (
+        <CreateMess
+          accountAr={accountAr}
+          currentObj={currentObj}
+          afterEditCall={afterEditCall}
+          refreshPage={() => setActiveTab(2)}
+        />
+      )}
+    </>);
+    
+
+  }
+
   return (<>{isShowBtn?
     <>
       <div className="mb-3 mt-3 d-flex flex-row align-items-center ">
@@ -43,28 +79,7 @@ export default function ClientIDPage({ openObj, accountAr }: MessageProps) {
         {!loginsiwe && <Loginsign />}
       </div>
 
-      {currentObj?.message_id ? (
-        <>
-          {activeTab === 2 ? (
-            <MessagePage
-              path="enkier"
-              enkiMessObj={currentObj}
-              refreshPage={refreshPage}
-              setActiveTab={setActiveTab}
-              tabIndex={3}
-            />
-          ) : (
-            <CreateMess
-              accountAr={accountAr}
-              currentObj={currentObj}
-              afterEditCall={afterEditCall}
-              refreshPage={() => setActiveTab(2)}
-            />
-          )}
-        </>
-      ) : (
-        <ShowErrorBar errStr={t("noPostingText")} />
-      )}
+      {geneDom()}
     </>
     :<Loading />
 }</>
