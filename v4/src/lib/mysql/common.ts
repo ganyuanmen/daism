@@ -27,9 +27,9 @@ async function createConnection(): Promise<Pool> {
 export async function getData(sql: string,sqlParams: any[] = [],single = false): Promise<any | any[]> {
   const pool = await createConnection();
 
-  // if (Number(process.env.IS_DEBUGGER??'0') === 1) {
-  //   console.info(`${new Date().toLocaleString()}: getData: ${sql} --> ${sqlParams.join()}`);
-  // }
+  if (Number(process.env.IS_DEBUGGER??'0') === 1) {
+    console.info(`${new Date().toLocaleString()}: getData: ${sql} --> ${sqlParams.join()}`);
+  }
     
 
   try {

@@ -74,9 +74,9 @@ export async function GET(req: NextRequest) {
     if (!method || !(method in methods)) {
       console.info("not method:",method)
       return NextResponse.json({ errMsg: 'Invalid Method' }, { status: 400 });
-    }
+    } else {
 
-
+   
     // ------------------ messagePageData 跨域情况 ------------------
     if (method === 'messagePageData' && query.account && query.account.includes('@')) {
       const { account, pi, menutype, daoid, actorid, w, order, eventnum, v } = query;
@@ -94,13 +94,13 @@ export async function GET(req: NextRequest) {
           response.forEach((obj: any) => { obj.httpNetWork = true; });
           return NextResponse.json(response);
         } else {
-          return NextResponse.json({ errMsg: 'fail' }, { status: 500 });
+          return NextResponse.json([]);
         }
       }
-    }
+    } 
 
     // ------------------ replyPageData 跨域情况 ------------------
-    if (method === 'replyPageData' && query.account && query.account.includes('@')) {
+    else if (method === 'replyPageData' && query.account && query.account.includes('@')) {
       const { account, pi, ppid, sctype } = query;
       const [, domain] = (account as string).split('@');
 
@@ -116,13 +116,16 @@ export async function GET(req: NextRequest) {
           response.forEach((obj: any) => { obj.httpNetWork = true; });
           return NextResponse.json(response);
         } else {
-          return NextResponse.json({ errMsg: 'fail' }, { status: 500 });
+          return NextResponse.json([]);
         }
       }
     }
 
     // ------------------ 其它方法 ------------------
-    return NextResponse.json(await methods[method](query));
+    else return NextResponse.json(await methods[method](query));
+       
+
+   }
 
   } catch (err) {
     console.error('get: /api/getData:', err);

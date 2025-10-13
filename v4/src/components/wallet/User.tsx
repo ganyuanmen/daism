@@ -46,7 +46,7 @@ const closeTip=()=> { dispatch(setTipText(''));}
         router.push(`/smartcommons/mySC`, { scroll: false });
         break;
       case '4':
-        router.push(`/workroom/dividend`, { scroll: false });
+        router.push(`/honortokens`, { scroll: false });
         break;
       case '5':
       case '7':
