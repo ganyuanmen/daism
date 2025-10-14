@@ -13,25 +13,30 @@ const Nftlist: React.FC<NftlistProps> = ({ mynftData }) => {
   const [show, setShow] = useState(false);
   const [nftObj, setNftObj] = useState<NftObjType | null>(null);
 
- const Tips=[,"DAism Deployment","Honor Tokens Deployment","ETH Forging","Love's Cowriting Plan",
-  "EnKi Deployment",
-  
-  
-  
-  ]
+ const Tips=["DAism Deployment","EnKi Deployment","Honor Tokens Deployment","Love's Cowriting Plan"]
+
+//  1,发布时NFT（50个中本聪 ）：Issuance of Satoshi UTO Fund
+// 2,兑换打赏 已丢弃： Tipping
+// 3.建智能公器产生NFT:  DAism Deployment
+// 4.锻造时NFT:  ETH Forging
+// 5.enki 打赏给个人： Love's Cowriting Plan
+// 6. 捐赠NFT:  Donation
+
 
   const geneTips=(nftObj:NftObjType)=>{
     if(nftObj._type===0) return "Issuance of Satoshi UTO Fund"; //50个中本聪
-    if(nftObj._type===2) return "Tipping";  //兑换打赏 已丢弃
-    if(nftObj._type===3) return "DAism Deployment"; // 建公器
     if(nftObj._type===4) return "ETH Forging"; // 锻造UTO
-    if(nftObj._type===5) return "Love's Cowriting Plan"; // enki 中打赏给个人
+    if(nftObj._type===5) return "Tip Author"; // 个人打赏
+
+    if(nftObj.dao_id>0 && nftObj.dao_id<5) return Tips[nftObj.dao_id-1];
+    
     if(nftObj._type===1) 
     {
       if(nftObj.tips?.startsWith("Donation in support of Proof of Love")) return "Donation";  //捐赠
       else return nftObj.Tips  //
     }
 
+    return `${nftObj.dao_name} Deployment`
      
 
   }

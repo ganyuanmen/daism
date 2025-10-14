@@ -236,6 +236,7 @@ interface WalletProviderType {
     block_num: string | number;
     contract_address: string;
     _time: string;
+    dao_id:number;
     dao_name?: string;
     [key:string]:any;
   }
