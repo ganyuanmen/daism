@@ -121,11 +121,13 @@ export default function EnkiCreateMessage({
             formData.append('account', currentObj.actor_account!);
             formData.append('actorName', currentObj.actor_name!);
             formData.append('avatar', currentObj.avatar!);
+            formData.append('daoid', currentObj.dao_id.toString());
         } else {
             const selectDao = daoData?.find(obj => obj.dao_id === parseInt(selectedDaoid));
             formData.append('account', actor.actor_account);
             formData.append('avatar', selectDao?.dao_logo ?? '');
             formData.append('actorName', selectDao?.dao_name ?? '');
+            formData.append('daoid', selectedDaoid);
         }
 
         if (showEvent) {
@@ -144,7 +146,7 @@ export default function EnkiCreateMessage({
         formData.append('propertyIndex', editor!.getProperty()); //1 公开 2关注 3@
         formData.append('accountAt', editor?.getAccount()??'');
         formData.append('actorid', actor.id.toString());
-        formData.append('daoid', selectedDaoid);
+        
         formData.append('_type', showEvent ? '1' : '0');  //1 活动
         formData.append('title', titleRef.current!.getData());
         formData.append('content', contentHTML);
