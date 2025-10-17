@@ -60,7 +60,9 @@ export async function saveImage(file:File)
 
 //非a标签 img 标签中的第一个URI
 export  function findFirstURI(code:string) {
-  const regex = /(?<!<img[^>]*src=["'])(?<!<a[^>]*href=["'])(https?:\/\/[^\s"'<>)]+)\s*/i;
+  // const regex = /(?<!<img[^>]*src=["'])(?<!<a[^>]*href=["'])(https?:\/\/[^\s"'<>)]+)\s*/i;
+  const regex = /(?<!<(?:img|a|image|use|feimage)[^>]*(?:src|href|xlink:href)=["'])(https?:\/\/[^\s"'<>)]+)\s*/i;
+
   const match = code.match(regex);
   return match ? match[0] : null;
 }

@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 import { useLayout } from "@/contexts/LayoutContext";
 
   interface ChildProps { 
-    connectWallet:(provider: WalletProviderType)=>void;
+    connectWallet:(provider: WalletProviderType,v:boolean)=>void;
     providers: WalletProviderType[];
     connecting:boolean;
     recorLogin:()=>void,
@@ -29,7 +29,7 @@ import { useLayout } from "@/contexts/LayoutContext";
       }
 
       if(providerRef.current){
-        connectWallet(providerRef.current);
+        connectWallet(providerRef.current,false);
         if (window.sessionStorage.getItem("loginsiwe") === '1') recorLogin()
       } else
       {
@@ -63,7 +63,7 @@ import { useLayout } from "@/contexts/LayoutContext";
                 {providers.map(p => (
                   <Dropdown.Item 
                     key={p.info.uuid} 
-                    onClick={() => connectWallet(p)}
+                    onClick={() => connectWallet(p,true)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',

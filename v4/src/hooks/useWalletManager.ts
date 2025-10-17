@@ -39,10 +39,10 @@ export const useWalletManager = (opts: UseWalletManagerOptions = {}) => {
   // ============================
   // 连接钱包
   // ============================
-  const connectWallet = useCallback(async (provider: WalletProviderType) => {
+  const connectWallet = useCallback(async (provider: WalletProviderType,v:boolean) => {
     setConnecting(true);
     try {
-      return await walletManagerRef.current.connectWallet(provider);
+      return await walletManagerRef.current.connectWallet(provider,v);
     } finally {
       setConnecting(false);
     }

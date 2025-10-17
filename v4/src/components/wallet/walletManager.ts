@@ -158,12 +158,20 @@ private async switchOrAddTargetChain(provider: any) {
   /** ============================
  * 连接钱包
  * ============================ */
-async connectWallet(providerWithInfo: WalletProviderType) {
+async connectWallet(providerWithInfo: WalletProviderType,v:boolean) {
   this.connecting = true;
   this.providerRef.current = providerWithInfo;
   this.log("🔗 Connecting wallet:", providerWithInfo.info.name);
 
   try {
+  console.log("-------------------------",v)
+    if(providerWithInfo.info.name.toLowerCase()==='metamask' && v){
+      await providerWithInfo.provider.request({
+        method: "wallet_requestPermissions",
+        params: [{ eth_accounts: {} }],
+      });
+    }
+  
     const accounts: string[] = await providerWithInfo.provider.request({
       method: "eth_requestAccounts",
     });
