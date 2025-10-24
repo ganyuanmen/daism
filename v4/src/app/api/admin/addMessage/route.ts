@@ -162,13 +162,19 @@ export async function POST(req: NextRequest) {
 }
 
 async function addLink(content:string, id:string,sctype:string,flag:string) {
+
   const furl = findFirstURI(content)
   const sql = `update a_message${sctype} set content_link=? where message_id=?`
   if (furl) {
+
       const tootContent = await getTootContent(furl, process.env.NEXT_PUBLIC_DOMAIN as string)
+      
       if (tootContent) {
-           execute(sql, [tootContent, id]);
-      } 
+        execute(sql, [tootContent, id]);
+      } else 
+      {
+        if(flag==='update')   execute(sql, ['', id]);
+      }
   }else { //没有了，表示取消
       if(flag==='update')   execute(sql, ['', id]);
   }

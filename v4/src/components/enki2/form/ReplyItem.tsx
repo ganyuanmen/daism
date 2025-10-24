@@ -2,14 +2,15 @@ import TimesItem_m from "../../federation/TimesItem_m";
 import EnkiMember from "./EnkiMember"
 import ShowVedio from "./ShowVedio";
 import EnKiFollow from "./EnKiFollow";
-import { useState,useEffect } from "react";
+import { useState,useEffect, useRef } from "react";
 import { useSelector } from 'react-redux';
-import { DeleteSvg, ReplySvg } from "@/lib/jssvg/SvgCollection";
+import { DeleteSvg, Down, ReplySvg, Up } from "@/lib/jssvg/SvgCollection";
 import { type RootState } from "@/store/store";
 import { useTranslations } from "next-intl";
 import ConfirmWin from "@/components/federation/ConfirmWin";
 // import Image from "next/image";
 import ImageWithFallback from "@/components/ImageWithFallback";
+import { Button, Fade } from "react-bootstrap";
 
 
 /**
@@ -34,11 +35,21 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 
     const [show,setShow]=useState(false)
     const [isFollow, setIsFollow] = useState(true); // 默认已关注
-
+    const [exPandID,setExPandID]=useState(''); //扩展的ID
     const myFollow = useSelector((state: RootState) => state.valueData.myFollow);
     const loginsiwe = useSelector((state: RootState) => state.valueData.loginsiwe);
     const actor = useSelector((state: RootState) => state.valueData.actor);
     const t = useTranslations('ff')
+    const [showToggle, setShowToggle] = useState(false);
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const el = contentRef.current;
+      if (el && el.scrollHeight > 200) {
+        setShowToggle(true);
+      }
+    }, []);
+  
     
     //回复 该评论
     const replyHandle = (reply_index:number, bid: string) => {
@@ -114,13 +125,24 @@ import ImageWithFallback from "@/components/ImageWithFallback";
           </div>
         </div>
         <div className="daism-reply-item" style={{ paddingBottom: "10px" }}>
-          <div
-            style={{ minHeight: "40px" }}
+          <div ref={contentRef} className={replyObj.message_id===exPandID?'':'daism-expand'} style={{ minHeight: "40px", }}
             dangerouslySetInnerHTML={{ __html: replyObj.content }}
-          ></div>
-          {replyObj?.content_link && (
+          />
+        
+          {showToggle && (
+          <Button
+            variant="light"
+            onClick={() => setExPandID(exPandID?'':replyObj.message_id)}
+            style={{ position: "absolute", right: 0, bottom: 0 }}
+            title={t("showmore")}
+          >
+           {exPandID?<Up size={24} />:<Down size={24}/> }
+            
+          </Button>
+        )}
+          {/* {replyObj?.content_link && (
             <div dangerouslySetInnerHTML={{ __html: replyObj.content_link }}></div>
-          )}
+          )} */}
           {replyObj?.top_img &&<ImageWithFallback src={replyObj?.top_img}  className="mt-2 mb-2"  alt=""  style={{ maxWidth: "100%" }} />}
         
           {replyObj?.vedio_url && <ShowVedio videoUrl={replyObj.vedio_url} />}

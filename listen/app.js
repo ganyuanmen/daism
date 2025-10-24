@@ -357,6 +357,9 @@ function mintEvent()
       if(process.env.IS_DEBUGGER==='1') console.info(obj)
       const {data}=obj
       let tokenSvg=await server1.daoapi.DaismNft.getNFT(data['tokenId'])
+      console.log("------------------------------")
+      console.log(tokenSvg)
+      console.log("------------------------------")
       let _tips;
       if(tokenSvg[1].length===6 && tokenSvg[1][5]==='events: Donation in support of Proof of Love')
       {

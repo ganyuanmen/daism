@@ -6,13 +6,13 @@
 				.suft3{text-anchor: middle; font-size:2em;fill:#000000;}
 				.suft4{text-anchor: middle; font-size:2em;fill:#6BB427;}
 				.suft5{text-anchor: middle; font-size:1.6em;fill:#F2A438;}
-				.sufb{font-size:3.2em;text-anchor:middle;font-weight:bold; stroke:#D44117;}@keyframes stroke{100% {stroke-dashoffset:-400;}}
+				.sufb{font-size:3.2em;text-anchor:middle;font-weight:bold; stroke:#D44117;text-shadow:-9px -5px 9px #FFFF00;}@keyframes stroke{100% {stroke-dashoffset:-400;}}
 				
-				.svg01{font-size:2.5em;font-weight:bold;}
-				.svg02{font-size:2em;font-weight:bold; }
-				.svg03{font-size:2em; }
-				.svg04{font-size:1.6em; }
-				.svg05{font-size:2em;font-weight:bold;}
+				.svg01{text-align: center; font-size:2.5em;font-weight:bold;text-shadow:-9px -5px 9px #FFFF00; padding:285px 0 0 0;}
+				.svg02{text-align: center; font-size:2em;font-weight:bold; padding:0 0 40px 0;}
+				.svg03{text-align: center; font-size:2em; }
+				.svg04{text-align: center; font-size:1.6em; }
+				.svg05{text-align: center; font-size:2em;font-weight:bold; padding:40px 0 420px 0;}
 			</style>
 			<g id="250s">
 				<use href="#50s" x="-3" y="0" class="st1" />
@@ -75,10 +75,10 @@
 			<use href="#250s" x="8" y="325" transform="rotate(-28)" class="st4" />
 			<use href="#250s" x="-292" y="524" transform="rotate(-43)" class="st5" />
 			<text x="50%" y="30%" class="sufb"><a target="_blank" xlink:href="https://learn.daism.io/coreblog/138-pol.html"  fill="#D44117" >Proof of Love</a></text>
-			<text x="50%" y="36%" class="suft">11Leading to PoL Civilization by Joining Blockchain and AI Together!</text>
+			<text x="50%" y="36%" class="suft">Leading to PoL Civilization by Joining Blockchain and AI Together!</text>
 			<text x="50%" y="44%" class="suft2"><a target="_blank" xlink:href="https://github.com/DAism2019/SCC0" fill="#D44117" >Smart Creative Commons 0 (SCC0)</a></text>
 			<text x="50%" y="48%" class="suft3">A governance license for Smart Commons (public dAIpps and dApps).</text>
 			<text x="50%" y="52%" class="suft2"><a target="_blank" xlink:href="https://etherscan.io/token/0xe40b05570d2760102c59bf4ffc9b47f921b67a1f" fill="#D44117" >Satoshi UTO Fund</a></text>
 			<text x="50%" y="56%" class="suft3">1.15792 × 10^69 UTO for Universal Love Engine.</text>
-			<text x="50%" y="64%" class="suft4"><a target="_blank" xlink:href="https://daism.io/communities/enkier" fill="green">Join the lovely Enki community with ease!</a></text>
+			<text x="50%" y="64%" class="suft4"><a target="_blank" xlink:href="https://daism.io/zh/communities/enki/1e36583749de482d9860248a09b56229" fill="green">Welcome to the LLMs' discussion on Proof of Love!</a></text>
 		</svg>

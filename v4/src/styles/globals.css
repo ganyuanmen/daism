@@ -543,3 +543,48 @@ blockquote p {
   max-width: 80%; /* 防止屏幕太窄时超出 */
 }
 
+.daism-expand {
+  max-height: 200px;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+/* 半透明遮罩层（浮在底部） */
+.toggle-overlay {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: right;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+}
+
+/* 展开前的底部遮罩（渐变半透明） */
+.overlay-bottom {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.9), transparent);
+}
+
+/* 展开后的顶部遮罩（淡淡渐变） */
+.overlay-top {
+  top: 0;
+  bottom: auto;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), transparent);
+}
+
+/* 按钮样式 */
+.toggle-btn {
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  line-height: 14px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.toggle-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
