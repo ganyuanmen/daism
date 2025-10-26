@@ -126,8 +126,7 @@ import { Button, Fade } from "react-bootstrap";
         </div>
         <div className="daism-reply-item" style={{ paddingBottom: "10px" }}>
           <div ref={contentRef} className={replyObj.message_id===exPandID?'':'daism-expand'} style={{ minHeight: "40px", }}
-            dangerouslySetInnerHTML={{ __html: replyObj.content }}
-          />
+            dangerouslySetInnerHTML={{ __html: replyObj.content }}/>
         
           {showToggle && (
           <Button

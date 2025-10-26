@@ -77,7 +77,7 @@ body {
   border-radius: 6px;
 }
 
-.daism-reply-item{background-color: white; padding: 8px 4px 0px 22px; }
+.daism-reply-item{background-color: white; padding: 8px 4px 0px 22px;position: relative;; }
 
 .daism-reply-item p{
   margin: 2px !important;
