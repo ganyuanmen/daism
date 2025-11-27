@@ -8,7 +8,7 @@ const crypto = require('node:crypto');
 
 dotenv.config();
 
-let start_block=21232473n  //Start listening for block numbers
+let start_block=23881913n  //Start listening for block numbers
 if(process.env.BLOCKCHAIN_NETWORK!='mainnet') start_block=0n
 var monitor = 0; //Restart every 10 minutes 
 var server1=new Server();
@@ -99,7 +99,7 @@ async function hand() {
    schedule.scheduleJob("*/5 * * * * *",async() => {
       // console.log("monitor:",monitor,server1.daoapi.eventQueue.length)
       server1.daoapi.processQueue();
-      if (monitor > 60*12 && server1.daoapi.eventQueue.length===0 && !server1.daoapi.isProcessing) daoListenStart();
+      if (monitor > 15*12 && server1.daoapi.eventQueue.length===0 && !server1.daoapi.isProcessing) daoListenStart();
       monitor++;  
    });  
 }
@@ -304,7 +304,8 @@ function p(str) {
 function domain()
 {
   server1.daoapi.Domain.RecordEvent(maxData[15], (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj)
       const {data}=obj
       let sql ="INSERT IGNORE INTO t_domain(dao_id,block_num,domain,pubkey,privkey,_time) VALUES(?,?,?,?,?,?)";
       crypto.generateKeyPair('rsa', {
@@ -329,7 +330,8 @@ function domain()
 function domainsing()
 {
   server1.daoapi.Domain.recordInfoEvent(maxData[17], (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj)
       const {data}=obj
       let sql ="insert IGNORE into t_domainsing(block_num,addr,domain,nick_name,pubkey,privkey,_time) values(?,?,?,?,?,?,?)";
       crypto.generateKeyPair('rsa', {
@@ -354,12 +356,10 @@ function domainsing()
 function mintEvent()
 {
   server1.daoapi.DaismNft.mintEvent(maxData[16], async (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1')
+          console.info(obj)
       const {data}=obj
       let tokenSvg=await server1.daoapi.DaismNft.getNFT(data['tokenId'])
-      console.log("------------------------------")
-      console.log(tokenSvg)
-      console.log("------------------------------")
       let _tips;
       if(tokenSvg[1].length===6 && tokenSvg[1][5]==='events: Donation in support of Proof of Love')
       {
@@ -382,7 +382,8 @@ function mintTipEvent()
 {
   
     server1.daoapi.Daismnftsing.mintTipEvent(maxData[24], async (obj) => {
-         if(process.env.IS_DEBUGGER==='1') console.info(obj)
+         // if(process.env.IS_DEBUGGER==='1') 
+            console.info(obj)
          const {data}=obj;
          let svg='';
          if(data['tokenId']>0){
@@ -409,7 +410,8 @@ function mintTipEvent()
 function mintBurnEvent()
 {
   server1.daoapi.Daismnftsing.mintBurnEvent(maxData[18], async (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj)
       const {data}=obj
       if(parseInt(data['tokenId'])===0) return;
       let tokenSvg=await server1.daoapi.Daismnftsing.getNFT(data['tokenId'])
@@ -437,7 +439,8 @@ function nftsing()
 function daoCreate()
 {
   server1.daoapi.DaoRegistrar.daoCreateEvent0(maxData[0],async (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj)
       const {data}=obj
       let sql ="INSERT IGNORE INTO t_dao(sctype,dao_id,block_num,dao_name,dao_symbol,dao_desc,dao_manager,dao_time,dao_exec,creator,delegator,strategy,lifetime,cool_time,dao_logo,dapp_owner) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       let params = [data['sctype'],data['daoId'],obj.blockNumber,data['name'],data['symbol'],data['describe'],data['manager']
@@ -451,7 +454,8 @@ function daoCreate()
 
 
    server1.daoapi.DaoRegistrar.daoCreateEvent(maxData[0],async (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj)
       const {data}=obj
       let sql ="INSERT IGNORE INTO t_dao(sctype,dao_id,block_num,dao_name,dao_symbol,dao_desc,dao_manager,dao_time,dao_exec,creator,delegator,strategy,lifetime,cool_time,dao_logo,dapp_owner) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       let params = [data['sctype'],data['daoId'],obj.blockNumber,data['name'],data['symbol'],data['describe'],data['manager']
@@ -468,7 +472,8 @@ function publishTolen()
 {
    server1.daoapi.DaoToken.publishTokenEvent(maxData[3], async obj => {
       const {data}=obj
-      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj);
       let sql = "call i_token(?,?,?,?)";
       let params = [data['daoId'],data['tokenId'],obj.blockNumber, data['timestamp']];
       maxData[23] = obj.blockNumber+1n ; //Cache last block number
@@ -481,7 +486,8 @@ function DonationReceived()
 {
    server1.daoapi.Donate.DonationReceived(maxData[23], async obj => {
       const {data}=obj
-      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      // if(process.env.IS_DEBUGGER==='1')
+          console.info(obj);
       let sql = "INSERT INTO t_donate(block_num,donor_address,donationAmount,uTokenAmount,totalDonationETH,donationTime,tokenid) VALUES(?,?,?,?,?,?,?)";
       let params = [obj.blockNumber,data['donor'],data['donationAmount'],data['uTokenAmount'],data['totalDonationETH'], data['donationTime'], data['tokenId']];
       maxData[23] = obj.blockNumber+1n ; //Cache last block number
@@ -508,7 +514,8 @@ function DonationReceived()
 
 async function geneU2t(obj)
 {
-   if(process.env.IS_DEBUGGER==='1') console.info(obj);
+   // if(process.env.IS_DEBUGGER==='1') 
+      console.info(obj);
    const {data}=obj
    let sql = "call i_u2t(?,?,?,?,?,?,?,?,?,?,?)";
    let cost = await server1.daoapi.IADD.getPool(data.tokenId); // 流动池中 dao 的当前币值（utoken）
@@ -528,7 +535,8 @@ function utoken2tokenex(){
 
 async function geneT2U(obj)
 {
-   if(process.env.IS_DEBUGGER==='1') console.info(obj);
+   // if(process.env.IS_DEBUGGER==='1') 
+      console.info(obj);
    const {data}=obj
    let sql = "call i_t2u(?,?,?,?,?,?,?,?,?,?,?)";
    let cost = await server1.daoapi.IADD.getPool(data.tokenId);// 流动池中 dao 的当前币值（utoken）
@@ -577,7 +585,8 @@ function token2tokenex()
 
 async function geneE2t(obj)
 {
-   if(process.env.IS_DEBUGGER==='1') console.info(obj);
+   // if(process.env.IS_DEBUGGER==='1')
+       console.info(obj);
    const {data}=obj
    let sql = "INSERT IGNORE INTO t_e2t (block_num,from_address,to_address,in_amount,out_amount,swap_time,tran_hash,token_id,utoken_cost,swap_gas,tipAmount) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
    let cost = await server1.daoapi.IADD.getPool(data.tokenId); // 流动池中 dao 的当前币值（utoken）
@@ -598,7 +607,8 @@ function eth2tokenex(){
 function eth2utoken()
 {
    server1.daoapi.UnitToken.swapEvent(maxData[7], async obj => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      // if(process.env.IS_DEBUGGER==='1')
+          console.info(obj);
       const {data}=obj
       let sql = "call i_swap(?,?,?,?,?,?,?)";
       let params = [obj.blockNumber, data['address'], data['timestamp'], data['ethAmount'], data['utokenAmount'],obj.transactionHash,0];
@@ -610,7 +620,8 @@ function eth2utoken()
 function changeLogo()
 {
    server1.daoapi.DaoLogo.changeLogoEvent(maxData[2], async obj => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1')
+          console.info(obj)
       const {data}=obj
       let sql = "call i_changelogo(?,?,?,?,?)";
       let params = [data['daoId'], obj.blockNumber, data['_time'],data['logo_id'],data['src']];
@@ -622,7 +633,8 @@ function changeLogo()
 function mintSmartCommon()  // mint smart common
 {
    server1.daoapi.Daismnftsing.mintBatchEvent(maxData[12], async (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1')
+          console.info(obj)
       const {data}=obj
       let tokenSvg=await server1.daoapi.DaoLogo.getLogo(data['daoId'])
       let sql ="INSERT IGNORE INTO t_nft_mint(block_num,dao_id,token_id,token_to,tokensvg,_time,contract_address) VALUES(?,?,?,?,?,?,?)";
@@ -641,7 +653,8 @@ function mintSmartCommon()  // mint smart common
 function updateSCEvent()
 {
    server1.daoapi.DaoRegistrar.updateSCEvent(maxData[21],async (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1')
+          console.info(obj)
       const {data}=obj
       let sql ="INSERT IGNORE INTO t_updatedaocreator(block_num,dao_id,creator,_time) VALUES(?,?,?,?) ";
       let params = [obj.blockNumber,data['daoId'],data['newCreator'],data['timestamp']];
@@ -653,7 +666,8 @@ function updateSCEvent()
 function addCreatorCEvent()
 {
    server1.daoapi.DaoRegistrar.addCreatorCEvent(maxData[1], async (obj) => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj)
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj)
       const {data}=obj
       let sql ="INSERT IGNORE INTO t_createversion(block_num,dao_id,creator,dao_version,_time) VALUES(?,?,?,?,?) ";
       let params = [obj.blockNumber,data['daoId'],data['newCreator'],data['SC_Version'],data['timestamp']];
@@ -665,7 +679,8 @@ function addCreatorCEvent()
 function addProEvent()
 {
    server1.daoapi.EventSum.addProposal(maxData[9], async obj => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      // if(process.env.IS_DEBUGGER==='1')
+          console.info(obj);
       const {data}=obj
       let imgstr=''
       if(data['dividendRights']==1){
@@ -683,7 +698,8 @@ function addProEvent()
 function voteEvent()
 {
    server1.daoapi.EventSum.voteEvent(maxData[10],async obj => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj);
       const {data}=obj
       // let sql = "INSERT INTO t_provote(block_num,delegator,createTime,creator,antirights,rights,_time,proposalType) VALUES(?,?,?,?,?,?,?,?)";
       // let params = [obj.blockNumber, data['delegator'],data['createTime'],data['creator'],data['antirights'],data['rights'],data['_time'],data['proposalType']];
@@ -708,7 +724,8 @@ function voteEvent()
 function execEvent()
 {
    server1.daoapi.EventSum.execEvent(maxData[8], async obj => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj);
       const {data}=obj
       let sql = "INSERT IGNORE INTO t_proexcu(block_num,delegator,account,dividendRights,_time,proposalType) VALUES(?,?,?,?,?,?)";
       let params = [obj.blockNumber, data['delegator'],data['account'],data['dividendRights'],data['_time'],data['proposalType']];
@@ -741,7 +758,8 @@ function execEvent()
 function getDividendEvent()
 {
    server1.daoapi.EventSum.getDividendEvent(maxData[13],async obj => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj);
       const {data}=obj
       let sql = "INSERT IGNORE INTO t_getdaoutoken(block_num,delegator,account,utoken_amount,_time,dao_owner,pre_time) VALUES(?,?,?,?,?,?,?)";
       let params = [obj.blockNumber, data['delegator'],data['account'],data['utoken_amount'],data['_time'],data['dao_owner'],data['pre_time']];
@@ -753,7 +771,8 @@ function getDividendEvent()
 function accountDividendRight()
 {
    server1.daoapi.EventSum.accountDividendRight(maxData[14],async obj => {
-      if(process.env.IS_DEBUGGER==='1') console.info(obj);
+      // if(process.env.IS_DEBUGGER==='1') 
+         console.info(obj);
       const {data}=obj
       let sql = "call i_daoaccount(?,?,?,?)";
       let params = [obj.blockNumber, data['delegator'],data['account'],data['dividendRights']];
