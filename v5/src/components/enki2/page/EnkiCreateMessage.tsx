@@ -1,0 +1,308 @@
+import { useState, forwardRef, useEffect, useImperativeHandle,  useRef } from 'react';
+import { Button, Card, Row, Col, Form, InputGroup } from "react-bootstrap";
+import DaismInputGroup,{type DaismInputGroupHandle} from '../../form/DaismInputGroup';
+import { SendSvg, BackSvg } from '@/lib/jssvg/SvgCollection';
+import DateTimeItem,{type DateTimeItemRef} from '../../form/DateTimeItem';
+import { useDispatch, useSelector } from 'react-redux';
+import { type RootState, type AppDispatch, setTipText, setErrText } from '@/store/store';
+import RichEditor, { type RichEditorRef } from "../../enki3/RichEditor";
+import Editor, { type EditorRef } from "../form/Editor";
+import { useTranslations } from 'next-intl';
+import ShowLogin,{type ShowLoginRef} from '../../enki3/ShowLogin';
+
+interface Actor {
+    actor_account: string;
+    id: string | number;
+}
+
+interface EnkiCreateMessageProps {
+    daoData: DaismDao[]|null;
+    currentObj: EnkiMessType|null;
+    afterEditCall?: (obj: any) => void;
+    addCallBack?: () => void;
+    accountAr: AccountType[];
+    callBack?: () => void;
+}
+
+export default function EnkiCreateMessage({
+    daoData,
+    currentObj,
+    afterEditCall,
+    addCallBack,
+    accountAr,
+    callBack
+}: EnkiCreateMessageProps) {
+    
+    const [typeIndex, setTypeIndex] = useState(currentObj?.type_index ?? 0);
+    const [showEvent, setShowEvent] = useState(false);
+    const [selectedDaoid, setSelectedDaoid] = useState<string>("");
+    const [errorSelect, setErrorSelect] = useState(false);
+    const [loginDomain, setLoginDomain] = useState("");
+    const t = useTranslations('ff');
+    const tc = useTranslations('Common');
+    const actor = useSelector((state: RootState) => state.valueData.actor) as Actor;
+    const dispatch = useDispatch<AppDispatch>();
+
+    const nums = 500;
+    const loginRef=useRef<ShowLoginRef>(null);
+    const richEditorRef = useRef<RichEditorRef>(null);
+    const editorRef = useRef<EditorRef>(null);
+    const discussionRef = useRef<HTMLInputElement>(null);
+    const sendRef = useRef<HTMLInputElement>(null);
+    const startDateRef = useRef<DateTimeItemRef>(null);
+    const endDateRef = useRef<DateTimeItemRef>(null);
+    const urlRef = useRef<DaismInputGroupHandle>(null);
+    const addressRef = useRef<DaismInputGroupHandle>(null);
+    const timeRef = useRef<{ getData: () => number }>(null);
+    const selectRef = useRef<HTMLSelectElement>(null);
+    const titleRef = useRef<DaismInputGroupHandle>(null);
+
+    const showTip = (str: string) => dispatch(setTipText(str));
+    const closeTip = () => dispatch(setTipText(''));
+    const showClipError = (str: string) => dispatch(setErrText(str));
+
+    useEffect(() => {
+        if (Array.isArray(daoData)) {
+            const selectDao = daoData.find(obj => obj.domain === process.env.NEXT_PUBLIC_DOMAIN);
+            if (selectDao) setSelectedDaoid(selectDao.dao_id.toString());
+        }
+    }, [daoData]);
+
+    useEffect(() => {
+        if (currentObj && currentObj.start_time) setShowEvent(true);
+    }, [currentObj]);
+
+    const getHTML = (): string => {
+        if (typeIndex === 0) {
+            const contentText = editorRef.current?.getData() ?? '';
+            if (!contentText || contentText.length < 10) {
+                showClipError(t('contenValidText'));
+                return '';
+            }
+            if (contentText.length > nums) {
+                showClipError(t('wordNotLess', { nums }));
+                return '';
+            }
+            return `<p>${contentText.replaceAll('\n', '</p><p>')}</p>`;
+        } else {
+            const contentHTML = richEditorRef.current?.getData() ?? '';
+            if (!contentHTML || contentHTML.length < 10) {
+                showClipError(t('contenValidText'));
+                return '';
+            }
+            return contentHTML;
+        }
+    };
+
+    const submit = async () => {
+        if(!loginRef.current?.checkLogin()) return;
+        if (!currentObj?.message_id) {
+            if (errorSelect) return showClipError(t('loginDomainText', { domain: loginDomain }));
+            if (!selectedDaoid) return showClipError(t('notSelect'));
+        }
+
+        const contentHTML = getHTML();
+        if (!contentHTML) return;
+
+        let eventUrl = '';
+        if (showEvent) {
+            eventUrl = urlRef.current?.getData() ?? '';
+            if (eventUrl && !/^((https|http)?:\/\/)[^\s]+/.test(eventUrl)) {
+                urlRef.current?.notValid(t('uriValidText'));
+                return;
+            }
+        }
+
+        showTip(t('submittingText'));
+        const formData = new FormData();
+
+        if (currentObj?.message_id) {
+            formData.append('messageId', currentObj.message_id);
+            formData.append('account', currentObj.actor_account!);
+            formData.append('actorName', currentObj.actor_name!);
+            formData.append('avatar', currentObj.avatar!);
+            formData.append('daoid', currentObj.dao_id.toString());
+        } else {
+            const selectDao = daoData?.find(obj => obj.dao_id === parseInt(selectedDaoid));
+            formData.append('account', actor.actor_account);
+            formData.append('avatar', selectDao?.dao_logo ?? '');
+            formData.append('actorName', selectDao?.dao_name ?? '');
+            formData.append('daoid', selectedDaoid);
+        }
+
+        if (showEvent) {
+            formData.append('startTime', startDateRef.current?.getData()??'');
+            formData.append('endTime', endDateRef.current?.getData()??'');
+            formData.append('eventUrl', eventUrl);
+            formData.append('eventAddress', addressRef.current!.getData());
+            formData.append('time_event', timeRef.current!.getData().toString());
+        }
+
+        const editor = typeIndex === 0 ? editorRef.current : richEditorRef.current;
+
+        formData.append('textContent', typeIndex === 0 ? contentHTML : richEditorRef.current!.getTextContent());
+        formData.append('typeIndex', typeIndex.toString()); //1长文
+        formData.append('vedioURL', editor!.getVedioUrl());
+        formData.append('propertyIndex', editor!.getProperty()); //1 公开 2关注 3@
+        formData.append('accountAt', editor?.getAccount()??'');
+        formData.append('actorid', actor.id.toString());
+        
+        formData.append('_type', showEvent ? '1' : '0');  //1 活动
+        formData.append('title', titleRef.current!.getData());
+        formData.append('content', contentHTML);
+        formData.append('file', editor?.getImg()??'');
+        // formData.append('fileType', editor!.getFileType());
+        formData.append('isSend', sendRef.current!.checked ? '1' : '0');
+        formData.append('isDiscussion', discussionRef.current!.checked ? '1' : '0');
+
+        try {
+            const response = await fetch('/api/admin/addMessage', {
+                method: 'POST',
+                // headers: { encType: 'multipart/form-data' },
+                body: formData
+            });
+            closeTip();
+            const re = await response.json();
+            if (re.errMsg) { showClipError(re.errMsg); return; }
+            if (currentObj) afterEditCall?.({ ...currentObj, ...re });
+            else addCallBack?.();
+        } catch (error) {
+            closeTip();
+            showClipError(`${tc('dataHandleErrorText')}!${error}`);
+        }
+    };
+
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedDaoid(event.target.value);
+        const _account = selectRef.current?.options[selectRef.current.selectedIndex].text ?? '';
+        const [, accounDomain] = _account.split('@');
+        if (accounDomain !== process.env.NEXT_PUBLIC_DOMAIN) {
+            setErrorSelect(true);
+            setLoginDomain(accounDomain);
+        } else {
+            setErrorSelect(false);
+            setLoginDomain('');
+        }
+    };
+
+    return (
+        <>
+            <div style={{ padding: '20px' }}>
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>{t('publishCompany')}:</InputGroup.Text>
+                    {currentObj?.message_id ?
+                        <Form.Control readOnly disabled defaultValue={currentObj.actor_account} /> :
+                        <Form.Select ref={selectRef} value={selectedDaoid} onChange={handleSelectChange} isInvalid={errorSelect} onFocus={() => setErrorSelect(false)}>
+                            <option value=''>{t('selectText')}</option>
+                            {daoData?.map(option => (
+                                <option key={option.dao_id} value={option.dao_id.toString()}>{option.actor_account}</option>
+                            ))}
+                        </Form.Select>
+                    }
+                    <Form.Control.Feedback type="invalid">{t('loginDomainText', { domain: loginDomain })}</Form.Control.Feedback>
+                </InputGroup>
+
+                <Form>
+                    <Form.Check inline label={t('shortText')} name="group1" type='radio' defaultChecked={typeIndex === 0} onClick={e => { if ((e.target as HTMLInputElement).checked) setTypeIndex(0) }} id='inline-2' />
+                    <Form.Check inline label={t('longText')} name="group1" type='radio' defaultChecked={typeIndex === 1} onClick={e => { if ((e.target as HTMLInputElement).checked) setTypeIndex(1) }} id='inline-1' />
+                </Form>
+              
+                <DaismInputGroup horizontal title={t('htmlTitleText')} ref={titleRef} defaultValue={currentObj?.title ?? ''} />
+                {typeIndex === 0 
+                    ?
+                    <Editor ref={editorRef} currentObj={currentObj} nums={nums} isSC={true} accountAr={accountAr} showProperty={true} /> 
+                    :
+                    <RichEditor ref={richEditorRef} currentObj={currentObj} isSC={true} accountAr={accountAr} />
+                }
+
+                <Form.Check className='mt-3' type="switch" checked={showEvent} onChange={() => setShowEvent(!showEvent)} id="ssdsd_swith1" label={t('eventArtice')} />
+                {showEvent &&
+                    <Card className='mb-3'>
+                        <Card.Body>
+                            <Row>
+                                <Col md><DateTimeItem defaultValue={currentObj?.start_time ?? ''} title={t('startDateText')} ref={startDateRef} /></Col>
+                                <Col md><DateTimeItem defaultValue={currentObj?.end_time ?? ''} title={t('endDateText')} ref={endDateRef} /></Col>
+                            </Row>
+                            <Row>
+                                <Col lg><DaismInputGroup defaultValue={currentObj?.event_url ?? ''} title={t('urlText')} ref={urlRef} horizontal /></Col>
+                                <Col lg><DaismInputGroup defaultValue={currentObj?.event_address ?? ''} title={t('addressText')} ref={addressRef} horizontal /></Col>
+                            </Row>
+                            <Timedevent ref={timeRef}  currentObj={currentObj} />
+                        </Card.Body>
+                    </Card>
+                }
+
+                <div className="form-check form-switch mt-3">
+                    <input ref={discussionRef} className="form-check-input" type="checkbox" id="isSendbox" defaultChecked={(currentObj?.is_discussion??1) === 1 } />
+                    <label className="form-check-label" htmlFor="isSendbox">{t('emitDiscussion')}</label>
+                </div>
+                <div className="form-check form-switch mb-3 mt-3">
+                    <input disabled ref={sendRef} className="form-check-input" type="checkbox" id="isDiscussionbox" defaultChecked={(currentObj?.is_send??1) === 1} />
+                    <label className="form-check-label" htmlFor="isDiscussionbox">{t('sendToFollow')}</label>
+                </div>
+
+                <div style={{ textAlign: 'center' }}>
+                    <Button onClick={callBack} variant="light"><BackSvg size={24} /> {t('esctext')}</Button>{' '}
+                    <Button onClick={submit} variant="primary"><SendSvg size={24} /> {t('submitText')}</Button>
+                </div>
+            </div>
+            <ShowLogin ref={loginRef} />
+        </>
+    );
+}
+
+// 定时活动
+interface TimedeventProps {
+    currentObj?: EnkiMessType|null;
+}
+
+ const Timedevent = forwardRef<{ getData: () => number }, TimedeventProps>((props, ref) => {
+    const [onLine, setOnLine] = useState(false);
+    const [vstyle, setVstyle] = useState<React.CSSProperties>({});
+    const t=useTranslations('ff');
+
+    useEffect(() => {
+        if (props.currentObj && props.currentObj.time_event !== undefined && props.currentObj.time_event > -1) {
+            setOnLine(true);
+            const ele = document.getElementById(`inlineRadio${props.currentObj.time_event}`) as HTMLInputElement;
+            if (ele) ele.checked = true;
+        } else {
+            const ele = document.getElementById(`inlineRadio7`) as HTMLInputElement;
+            if (ele) ele.checked = true;
+        }
+    }, [props.currentObj]);
+
+    useEffect(() => { setVstyle(onLine ? {} : { display: 'none' }); }, [onLine]);
+
+    const getData = (): number => {
+        if (!onLine) return -1;
+        for (let i = 1; i <= 7; i++) {
+            const ele = document.getElementById(`inlineRadio${i}`) as HTMLInputElement;
+            if (ele?.checked) return i;
+        }
+        return 7;
+    };
+
+    useImperativeHandle(ref, () => ({ getData }));
+
+    const handleChange = () => setOnLine(!onLine);
+
+    return (
+        <>
+            <div className="form-check form-switch">
+                <input className="form-check-input" type="checkbox" id="onLineBox" checked={onLine} onChange={handleChange} />
+                <label className="form-check-label" htmlFor="onLineBox">{t('timeText')}</label>
+            </div>
+            <div style={vstyle}>
+                {[1, 2, 3, 4, 5, 6, 7].map((idx) => (
+                    <div key={idx} className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name='inlineRadioOptions' id={`inlineRadio${idx}`} value={idx} />
+                        <label className="form-check-label" htmlFor={`inlineRadio${idx}`}> {t('weekText').split(',')[idx - 1]}</label>
+                    </div>
+                ))}
+            </div>
+            <br />
+        </>
+    );
+});
+Timedevent.displayName="Timedevent";

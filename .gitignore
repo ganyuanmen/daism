@@ -3,9 +3,11 @@
 # dependencies
 /v3/uploads
 /v4/uploads
+/v5/uploads
 /listen/uploads
 /v3/node_modules
 /v4/node_modules
+/v5/node_modules
 /listen/node_modules
 /nginx
 /发布费用
@@ -16,12 +18,13 @@
 /Lightsail
 /mysql/data
 /v3/enki
-
+/v5_b
 
 
 # next.js
 /v3/.next/
 /v4/.next/
+/v5/.next/
 # debug
 npm-debug.log*
 yarn-debug.log*

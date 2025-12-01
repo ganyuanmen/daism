@@ -14,7 +14,7 @@ const Daismnft=require("./api/Daismnft")
 const Daismnftsing=require("./api/Daismnftsing")
 const Donate=require("./api/Donate")
 const ethers=require('ethers')
-const utils = require("./utils");
+// const utils = require("./utils");
 const abiDecoder = require('abi-decoder'); // NodeJS
 const fabi=require('./abi/SC_abi.json')
 const f_abi=require("./abi/ForSCRegister_abi.json")
@@ -26,7 +26,7 @@ console.log(daismAddress);
 const dotenv=require('dotenv');
 dotenv.config();
 
-const PROCESSING_INTERVAL = 2000; // 处理间隔（毫秒）
+const PROCESSING_INTERVAL = 500; // 处理间隔（毫秒）
 
 const rpcProviders = [
     `https://${process.env.BLOCKCHAIN_NETWORK}.infura.io/v3/2e68e4d6017344cd89bab57981783954`,

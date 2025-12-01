@@ -1,0 +1,40 @@
+.noborder {
+    border: none;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+
+  .autocompleteitems {
+    position: relative;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    max-height: 400px;
+    overflow-y: auto;
+    right: 0;
+    background-color: #fff;
+  }
+  
+  .autocompleteitem {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+  }
+  
+  .autocompleteitem:hover {
+    background-color: #e9e9e9;
+  }
+  
+  .charcount {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #888;
+  }

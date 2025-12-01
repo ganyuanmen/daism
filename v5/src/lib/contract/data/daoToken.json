@@ -1,0 +1,6 @@
+[
+  "function allowanceGlobal(address,address) view returns (bool)",
+  "function approveGlobal(address,bool) returns (bool)",
+  "function balanceOf(uint256,address) view returns (uint256)",
+  "function transferWithCallback(uint256,address,uint256,bytes) returns (bool)"
+]
