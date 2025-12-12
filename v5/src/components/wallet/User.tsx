@@ -191,7 +191,7 @@ export default function User({onDisconnect}: ChildProps) {
           </div>
           <hr />
           <div className="mb-3 mt-3">
-            <strong>Version:{process.env.NEXT_PUBLIC_VERSION}</strong>
+            <strong>Version:2.0</strong>
           </div>
         </Modal.Body>
       </Modal>

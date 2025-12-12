@@ -333,7 +333,8 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
                     </div> 
             }
             {/* 回复列表 */}
-          {enkiMessObj.is_discussion===1 &&  <InfiniteScroll
+          {/* {enkiMessObj.is_discussion===1 &&   */}
+          <InfiniteScroll
                     dataLength={data.length}
                     next={fetchMoreData}
                     hasMore={hasMore}
@@ -342,7 +343,7 @@ const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
                     {renderedArrays}
             </InfiniteScroll>
 
-          }
+          {/* } */}
             { footerdiv()}
         </Card.Footer>
         </Card>

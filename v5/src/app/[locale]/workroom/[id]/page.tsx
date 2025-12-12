@@ -13,21 +13,21 @@ import { cache } from 'react';
  * 个人荣誉通证
  */
 
-interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
+// interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
 
 const getCachedDaoDetail = cache(async (id: string) => {
   return await getMyDaoDetail(id);
 });
 
-export default async function DaoDetailPage({ params }: HonorPageProps) {
-    const { id } = await params;
+export default async function DaoDetailPage({ params }: any) {
+    const { id } =  params;
     const daoDetail= await getCachedDaoDetail(id) ;
     return ( <ClientId daoData={daoDetail} />);
 }
 
 
-export async function generateMetadata({ params }: HonorPageProps) {
-    const { locale,id } = await params; 
+export async function generateMetadata({ params }: any) {
+    const { locale,id } =  params; 
     const t = await getTranslations('Common');
 
     const daoDetail= await getCachedDaoDetail(id);

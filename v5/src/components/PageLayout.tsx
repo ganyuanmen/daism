@@ -74,21 +74,21 @@ const PageLayout = memo(({ children }: Props) => {
                 >
                   <Nav.Link
                     className={pathname === '/communities/enki' ? 'pnavactive' : ''}
-                    href={`/${locale}/communities/enki?v=${process.env.NEXT_PUBLIC_VERSION}`}
+                    href={`/${locale}/communities/enki`}
                     onClick={onClick}
                   >
                     {t('myCommunity')}
                   </Nav.Link>
                   <Nav.Link
                     className={pathname === '/communities/SC' ? 'pnavactive' : ''}
-                    href={`/${locale}/communities/SC?v=${process.env.NEXT_PUBLIC_VERSION}`}
+                    href={`/${locale}/communities/SC`}
                     onClick={onClick}
                   >
                     {t('publicCommunities')}
                   </Nav.Link>
                   <Nav.Link
                     className={pathname === '/communities/enkier' ? 'pnavactive' : ''}
-                    href={`/${locale}/communities/enkier?v=${process.env.NEXT_PUBLIC_VERSION}`}
+                    href={`/${locale}/communities/enkier`}
                     onClick={onClick}
                   >
                     {t('personalSocial')}
@@ -176,21 +176,21 @@ const PageLayout = memo(({ children }: Props) => {
             <NavDropdown.Item
               style={{ paddingLeft: '20px' }}
               className={pathname === '/communities/enki' ? 'pnavactive' : ''}
-              href={`/${locale}/communities/enki?v=${process.env.NEXT_PUBLIC_VERSION}`}
+              href={`/${locale}/communities/enki`}
             >
               {t('myCommunity')}
             </NavDropdown.Item>
             <NavDropdown.Item
               style={{ paddingLeft: '20px' }}
               className={pathname === '/communities/SC' ? 'pnavactive' : ''}
-              href={`/${locale}/communities/SC?v=${process.env.NEXT_PUBLIC_VERSION}`}
+              href={`/${locale}/communities/SC`}
             >
               {t('publicCommunities')}
             </NavDropdown.Item>
             <NavDropdown.Item
               style={{ paddingLeft: '20px' }}
               className={pathname === '/communities/enkier' ? 'pnavactive' : ''}
-              href={`/${locale}/communities/enkier?v=${process.env.NEXT_PUBLIC_VERSION}`}
+              href={`/${locale}/communities/enkier`}
             >
               {t('personalSocial')}
             </NavDropdown.Item>

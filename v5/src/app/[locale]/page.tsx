@@ -8,6 +8,7 @@ export default function Home() {
   const locale: string = useLocale().toString().toLowerCase();
 
 
+
     return (
         <Imgsvg locale={locale} />
     )
@@ -18,8 +19,6 @@ export default function Home() {
         
     const obj=await getData("SELECT * FROM a_home where id=1",[],true);
     
-
-
         return(
             <>
             {/* 桌面端 */}

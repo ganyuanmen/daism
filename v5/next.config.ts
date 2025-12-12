@@ -6,6 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 const config: NextConfig = {
   output: 'standalone',
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -34,10 +35,10 @@ const config: NextConfig = {
         },
     },
 
-    serverRuntimeConfig: {
-        maxRequestBodySize: 10 * 1024 * 1024,
-    },
-    reactStrictMode: true,
+    // serverRuntimeConfig: {
+    //     maxRequestBodySize: 10 * 1024 * 1024,
+    // },
+    // reactStrictMode: true,
 
     // 让前端可以访问 env 中的变量
     env: {

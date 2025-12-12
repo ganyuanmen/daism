@@ -27,6 +27,11 @@ const promisePool = mysql.createPool({
    keepAliveInitialDelay: 0
  });
 
+ console.log(process.env.MYSQL_HOST,
+    process.env.MYSQL_USER,
+   process.env.MYSQL_PASSWORD,
+   process.env.MYSQL_DATABASE,
+    process.env.MYSQL_PORT)
  promisePool.on('error', (err) => {
    console.error('Database connection error:', err);
  });
@@ -62,6 +67,7 @@ if (server1.web3 && server1.web3.currentProvider && server1.web3.currentProvider
  }
 
 async function hand() {
+   console.log("bein00000000")
     //Obtain the maximum block number that needs to be monitored from the database
    let sql = 'SELECT IFNULL(MAX(block_num),0)+1 s FROM t_dao'  //0 
         + ' UNION ALL SELECT IFNULL(MAX(block_num),0)+1 FROM t_createversion'  //1 dapp 地址改变
@@ -119,19 +125,30 @@ async function daoListen() {
    // 使用数组定义所有订阅方法和参数
    const subscribeMethods = [
      { method: daoCreate, name: 'daoCreate', delay: true },
+
      { method: domainsing, name: 'domainsing', delay: true },
+
      { method: domain, name: 'domain', delay: true },
+
      { method: DonationReceived, name: 'DonationReceived', delay: true },
+
      { method: addProEvent, name: 'addProEvent', delay: true },
+
      { method: voteEvent, name: 'voteEvent', delay: true },
+
      { method: execEvent, name: 'execEvent', delay: true },
      { method: changeLogo, name: 'changeLogo', delay: true },
+
      { method: mintEvent, name: 'mintEvent', delay: true },
+
      { method: mintTipEvent, name: 'mintTipEvent', delay: true },
+
      { method: mintSmartCommon, name: 'mintSmartCommon', delay: true },
      { method: updateSCEvent, name: 'updateSCEvent', delay: true },
      { method: addCreatorCEvent, name: 'addCreatorCEvent', delay: true },
+
      { method: accountDividendRight, name: 'accountDividendRight', delay: true },
+     
      { method: publishTolen, name: 'publishTolen', delay: true },
      { method: getDividendEvent, name: 'getDividendEvent', delay: true },
      { method: eth2utoken, name: 'eth2utoken', delay: true },

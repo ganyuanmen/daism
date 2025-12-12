@@ -3,7 +3,7 @@ import { UploadSvg } from '@/lib/jssvg/SvgCollection';
 import { useRef } from 'react';
 import { fetchJson } from '@/lib/utils/fetcher';
 import { useSelector, useDispatch } from 'react-redux';
-import {type RootState,type AppDispatch,setUser,setErrText,setTipText, setLoginsiwe, setActor} from '@/store/store';
+import {type RootState,type AppDispatch,setUser,setErrText,setTipText, setLoginsiwe} from '@/store/store';
 import { useTranslations } from 'next-intl';
 import { getDaismContract } from '@/lib/globalStore';
 import { type UserRegister } from '@/lib/mysql/daism';

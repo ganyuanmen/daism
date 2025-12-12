@@ -1,0 +1,175 @@
+services:     
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "443:443"
+      - "80:80"
+
+    volumes:
+      - ./data/config/default.conf:/etc/nginx/conf.d/default.conf
+      - ./data/ssl/:/etc/nginx/conf.d/
+      - ./data/images:/home
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - next-app
+#      - next-app1
+    networks:
+      - dev_network
+
+  next-app:
+#    image: fhtcgym123/daism-next-app:latest
+    image: myapp:latest
+    container_name: next-app
+#    build:
+#      context: ./next-app
+#      dockerfile: prod.Dockerfile
+    restart: always
+#    env_file: .env.sepolia_bak
+    env_file: .env.production
+    volumes:
+      - ./data/images/uploads:/app/daismup
+      - ./data/config/address.json:/app/config/address.json
+    ports:
+      - 3000:3000   #host:docker
+    links:
+      - daism-mysql
+    networks:
+      - dev_network
+
+#  next-app1:
+#    image: fhtcgym123/daism-next-app:latest
+#    container_name: next-app1
+#
+#    container_name: next-app1
+#    build:
+#      context: ./next-app
+#      dockerfile: prod.Dockerfile
+#    restart: always
+#    env_file: .env.bak
+#    volumes:
+#      - ./data/images/uploads1:/app/uploads
+#      - ./data/config/address.json:/app/config/address.json
+#    ports:
+#      - 3001:3000   #host:docker
+#    links:
+#      - daism-mysql
+#    networks:
+#      - dev_network
+
+#  next-app2:
+#    container_name: next-app2
+#    build:
+#      context: ./next-app50
+#      dockerfile: prod.Dockerfile
+#    restart: always
+#    env_file: .env.sepolia50
+#    volumes:
+#      - ./data/images/uploads2:/app/uploads
+#      - ./data/config/address2.json:/app/config/address.json
+#    ports:
+#      - 3002:3000   #host:docker
+#    links:
+#      - daism-mysql
+#    networks:
+#      - dev_network
+
+  certbot:
+    image: certbot/certbot
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+      - ./scripts/reload-nginx.sh:/scripts/reload-nginx.sh
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do echo \"[Certbot] Trying renewal at $(date)\"; certbot renew --webroot -w /var/www/certbot --quiet --deploy-hook \"/scripts/reload-nginx.sh\"  && echo \"[Certbot] Renewal attempt complete at $(date)\"; sleep 12h & wait $${!}; done'"
+    restart: always
+    networks:
+      - dev_network
+
+  daism-mysql:
+    container_name: mysqldb
+    build:
+      context: ./mysql
+      dockerfile: prod.Dockerfile
+    restart: always
+#    command: [
+#            '--character-set-server=utf8mb4',
+#            '--collation-server=utf8mb4_unicode_ci',
+#            '--default-authentication-plugin=caching_sha2_password'            
+#            ]
+    environment:
+      MYSQL_ROOT_PASSWORD: 'Dao..123'
+    volumes:
+      - ./data/mysqldata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      retries: 10
+      interval: 3s
+      timeout: 30s
+    networks:
+      - dev_network
+
+  daoserver:
+    image: fhtcgym123/daoserver:latest
+    container_name: daoserver
+
+##    container_name: daoserver
+##    build:
+##      context: ./daolisten
+##      dockerfile: prod.Dockerfile
+    volumes:
+      - ./data/config/address.json:/app/config/address.json
+      - ./data/images/uploads/logo:/app/images
+    links:
+      - daism-mysql
+    restart: always
+    env_file: .env.production
+    networks:
+      - dev_network
+
+#  daism-daoserver1:
+#    image: fhtcgym123/daoserver:latest
+#    container_name: daoserver1
+
+ ##   container_name: daoserver1
+ ##   build:
+ ##     context: ./daolisten
+ ##     dockerfile: prod.Dockerfile
+ #   volumes:
+ #     - ./data/config/address.json:/app/config/address.json
+ #     - ./data/images/uploads1/logo:/app/images
+ #   links:
+ #     - daism-mysql
+ #   restart: always
+ #   env_file: .env.holesky
+ #   networks:
+ #     - dev_network
+
+
+ # daism-daoserver2:
+ #   container_name: daoserver2
+ #   build:
+ #     context: ./daolisten
+ #     dockerfile: prod.Dockerfile
+ #   volumes:
+ #     - ./data/config/address2.json:/app/config/address.json
+ #     - ./data/images/uploads2/logo:/app/images
+ #   links:
+ #     - daism-mysql
+ #   restart: always
+ #   env_file: .env.sepolia50
+ #   networks:
+ #     - dev_network
+
+
+
+networks:
+  dev_network:
+    driver: bridge
+

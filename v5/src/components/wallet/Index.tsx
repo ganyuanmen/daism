@@ -15,30 +15,35 @@ import { useWalletManager } from '@/hooks/useWalletManager';
 import ShowAddress from '../ShowAddress';
 import LocaleSwitcher from '../LocaleSwitcher';
 
-
-// const TARGET_CHAIN = {
-//   chainId: 11155111, // Sepolia
-//   chainName: "Sepolia Testnet",
-//   rpcUrls: [process.env.NEXT_PUBLIC_HTTPS_URL as string],
-//   nativeCurrency: { name: "Sepolia ETH", symbol: "SEP", decimals: 18 },
-//   blockExplorerUrls: ["https://sepolia.etherscan.io"],
-// };
-const TARGET_CHAIN = {
-  chainId: 1,
-  chainName: "Ethereum Mainnet",
-  rpcUrls: [
-    "https://ethereum.publicnode.com",
-    "https://cloudflare-eth.com",
-    "https://rpc.ankr.com/eth"
-  ],
-  nativeCurrency: {
-    name: "Ether",
-    symbol: "ETH",
-    decimals: 18
+const WALLETPROVIDERS={
+  mainnet:{
+    chainId: 1,
+    chainName: "Ethereum Mainnet",
+    rpcUrls: [
+      "https://ethereum.publicnode.com",
+      "https://cloudflare-eth.com",
+      "https://rpc.ankr.com/eth"
+    ],
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18
+    },
+    blockExplorerUrls: ["https://etherscan.io"]
   },
-  blockExplorerUrls: ["https://etherscan.io"]
-};
+  sepolia:{
+      chainId: 11155111, // Sepolia
+      chainName: "Sepolia Testnet",
+      rpcUrls: [process.env.NEXT_PUBLIC_HTTPS_URL as string],
+      nativeCurrency: { name: "Sepolia ETH", symbol: "SEP", decimals: 18 },
+      blockExplorerUrls: ["https://sepolia.etherscan.io"],
+  }
+}
 
+const NETWORKS = ["mainnet", "sepolia"] as const;
+type NetworkKey = typeof NETWORKS[number];
+const envKey = process.env.NEXT_PUBLIC_BLOCKCHAIN_NETWORK as NetworkKey;
+const TARGET_CHAIN = WALLETPROVIDERS[envKey];
 
 /**
  * 钱包登录管理组件

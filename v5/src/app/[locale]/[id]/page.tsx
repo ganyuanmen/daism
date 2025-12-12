@@ -9,7 +9,11 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 
-interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
+// interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
+// interface HonorPageProps {
+//   params: { locale: string; id: string };
+// }
+
 
 const getActor = cache(async (id:string):Promise<DaismActor> => {
  return await getUser(
@@ -18,8 +22,8 @@ const getActor = cache(async (id:string):Promise<DaismActor> => {
   ) as DaismActor;
   });
 
-export default async function UserIDPage({ params }: HonorPageProps) {
-    const { id } = await params;
+export default async function UserIDPage({ params }: any) {
+    const { id } =  params;
     const headersList =await headers();
     const acceptHeader = headersList.get('Accept')?.toLowerCase();
     const contentTypeHeader = headersList.get('content-type')?.toLowerCase();
@@ -36,8 +40,8 @@ export default async function UserIDPage({ params }: HonorPageProps) {
 }
 
 
-export async function generateMetadata({ params }: HonorPageProps) {
-    const {id } = await params; 
+export async function generateMetadata({ params }: any) {
+    const {id } =  params; 
     const t = await getTranslations('Common');
   
     const actor:DaismActor = await getActor(id);

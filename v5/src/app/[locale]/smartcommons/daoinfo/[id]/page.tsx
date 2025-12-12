@@ -10,14 +10,14 @@ const getDaoData = cache(async (id: string) => {
   return await getJsonArray("daodatabyid",[id],true) as DaismDao;
 });
 
-interface HonorPageProps {
-    params: Promise<{ locale: string;id:string;}>
-  }
+// interface HonorPageProps {
+//     params: Promise<{ locale: string;id:string;}>
+//   }
 
-export default async function DaoInfoPage({ params }: HonorPageProps) {
-    const { id } = await params;
+export default async function DaoInfoPage({ params }: any) {
+    const { id } =  params;
     const daoData=await getDaoData(id);
-    if(!daoData?.dao_id)   return {notFound: true};
+    // if(!daoData?.dao_id)   return {notFound: true};
     const daoMember=await getJsonArray('daomember',[id]) as DaoMember[];
     const follower=await getJsonArray('fllower',[id]) as ActorInfo[]
    
@@ -26,8 +26,8 @@ export default async function DaoInfoPage({ params }: HonorPageProps) {
 
 
  
-export async function generateMetadata({ params }: HonorPageProps) {
-    const { locale,id } = await params; 
+export async function generateMetadata({ params }: any) {
+    const { locale,id } =  params; 
     const t = await getTranslations('Common');
     const daoData=await getDaoData(id);
    

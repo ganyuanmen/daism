@@ -11,12 +11,12 @@ import { getMynft } from '@/lib/mysql/daism';
  * 个人荣誉通证
  */
 
-interface HonorPageProps {
-    params: Promise<{ locale: string;id:string;}>
-}
+// interface HonorPageProps {
+//     params: Promise<{ locale: string;id:string;}>
+// }
 
-export default async function HonorPage({ params }: HonorPageProps) {
-    const { id } = await params;
+export default async function HonorPage({ params }: any) {
+    const { id } =  params;
     const NFTData= await getMynft({did:id}) ;
    
     return (<Nftlist mynftData={NFTData} />);
@@ -24,8 +24,8 @@ export default async function HonorPage({ params }: HonorPageProps) {
 
 
  
-export async function generateMetadata({ params }: HonorPageProps) {
-    const { locale,id } = await params; 
+export async function generateMetadata({ params }: any) {
+    const { locale,id } =  params; 
     const t = await getTranslations('Common');
    
     return {

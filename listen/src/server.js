@@ -21,7 +21,7 @@ class Server {
 
             // 初始化 Web3 实例
             this.web3 = new Web3(WSS_URL.replace('${BLOCKCHAIN_NETWORK}', BLOCKCHAIN_NETWORK));
-
+             console.log(WSS_URL.replace('${BLOCKCHAIN_NETWORK}', BLOCKCHAIN_NETWORK))
             // 初始化 Daoapi 实例
             this.daoapi = new Daoapi(this.web3, ADMINISTRUTOR_ADDRESS, BLOCKCHAIN_NETWORK);
         } catch (error) {

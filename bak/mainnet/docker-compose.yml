@@ -1,0 +1,126 @@
+services:     
+  nginx:
+    image: nginx:latest
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "5"
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/config/default.conf:/etc/nginx/conf.d/default.conf:ro      # 只读
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - ./data/html:/usr/share/nginx/html:ro
+      - ./data/images:/home:ro        # 如果不需要写，设成只读；若需要写，改为命名卷并最小化
+    depends_on:
+      - next-app
+      - certbot
+    networks:
+      - dev_network
+
+  certbot:
+    image: certbot/certbot
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot:rw
+      - ./certbot/conf:/etc/letsencrypt:rw
+      - ./scripts/reload-nginx.sh:/scripts/reload-nginx.sh:ro
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do echo \"[Certbot] Trying renewal at $(date)\"; certbot renew --webroot -w /var/www/certbot --quiet --deploy-hook \"/scripts/reload-nginx.sh\"  && echo \"[Certbot] Renewal attempt complete at $(date)\"; sleep 12h & wait $${!}; done'"
+    restart: always
+    networks:
+      - dev_network
+
+
+  next-app:
+    #    container_name: next-app
+    #    build:
+    #      context: ./next-app
+    #      dockerfile: prod.Dockerfile
+    image: fhtcgym123/daismapp:latest
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20k"
+        max-file: "5"
+    container_name: next-app  
+    restart: always
+    env_file: .env.production
+    volumes:
+      - ./data/images/uploads:/app/uploads:rw
+      - ./data/images/enki:/app/enki:rw
+      - ./data/config/address.json:/app/config/address.json:ro
+    links:
+      - daism-mysql
+    networks:
+      - dev_network
+
+  daism-mysql:
+    container_name: mysqldb
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "5"
+    build:
+      context: ./mysql
+      dockerfile: prod.Dockerfile
+    restart: always
+#    command: [
+#            '--character-set-server=utf8mb4',
+#            '--collation-server=utf8mb4_unicode_ci',
+#            '--default-authentication-plugin=caching_sha2_password'            
+#            ]
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password   # 使用 Docker secret
+    secrets:
+      - mysql_root_password
+    volumes:
+      - ./data/mysqldata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      retries: 10
+      interval: 3s
+      timeout: 30s
+    networks:
+      - dev_network
+
+  daism-daoserver:
+    image: fhtcgym123/daoserver:latest
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "2m"
+        max-file: "5"
+    container_name: daoserver
+
+    #    container_name: daoserver
+    #    build:
+    #      context: ./daolisten
+    #      dockerfile: prod.Dockerfile
+    volumes:
+      - ./data/config/address.json:/app/config/address.json:ro
+      - ./data/images/uploads/logo:/app/images:rw
+    links:
+      - daism-mysql
+    restart: always
+    env_file: .env.production
+    networks:
+      - dev_network
+
+secrets:
+  mysql_root_password:
+    file: ./secrets/mysql_root_password.txt
+
+networks:
+  dev_network:
+    driver: bridge
+

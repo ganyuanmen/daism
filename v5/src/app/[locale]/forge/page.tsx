@@ -22,6 +22,7 @@ export default function IADD() {
     const [gasPrice,setGasPrice]=useState(0)  //gas基本费用
     const [priorty,setPriority]=useState(0)  //矿工费用
 
+
     //上层和下层选择的token
     const [inObj, setInObj] = useState<DaismToken>({dao_id:-2,dao_logo:'/eth.png',dao_name:'ETH',dao_symbol:'ETH',delegator:'',token_cost:0,token_id:-2});
     const [outObj, setOutObj] = useState<DaismToken>({dao_id:-1,dao_logo:'/vita.svg',dao_name:'UTO',dao_symbol:'UTO',delegator:'',token_cost:0,token_id:-1});
