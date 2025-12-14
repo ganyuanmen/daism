@@ -7,7 +7,9 @@ import parse from 'node-html-parser';
 import { cache } from 'react';
 import { getData, getJsonArray } from '@/lib/mysql/common';
 
-// interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
+interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
+
+
 
 const getOpenObj = cache(async (id: string) => {
 
@@ -23,16 +25,16 @@ const getAccount = cache(async () => {
   return await getJsonArray('accountAr',[process.env.NEXT_PUBLIC_DOMAIN]);
   });
 
-export default async function EnkierIDPage({ params }: any) {
-    const { id } =  params;
+export default async function EnkierIDPage({ params }: HonorPageProps) {
+     const { id } = await params;
     const openObj=await getOpenObj(id);
     const accountAr=await getAccount();
     return ( <ClientIDPage openObj={openObj?.message_id?openObj:null} accountAr={accountAr} />);
 }
 
 
-export async function generateMetadata({ params }: any) {
-    const {locale, id } =  params; 
+export async function generateMetadata({ params }: HonorPageProps) {
+    const {locale, id } = await params; 
     const openObj=await getOpenObj(id);
     const t = await getTranslations('Common');
 

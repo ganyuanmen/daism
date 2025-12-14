@@ -7,13 +7,13 @@ import { getJsonArray } from '@/lib/mysql/common';
 import { getUser } from '@/lib/mysql/user';
 import EnkiView from '@/components/enki3/EnkiView';
 
-// interface HonorPageProps {
-//   params: Promise<{ locale: string;id:string;}>
-// }
+interface HonorPageProps {
+  params: Promise<{ locale: string;id:string;}>
+}
 
 
-export default async function MyIDActor({ params }: any) {
-  const { id } =  params;
+export default async function MyIDActor({ params }: HonorPageProps) {
+  const { id } = await params;
 
   const accountAr=await getJsonArray('accountAr',[process.env.NEXT_PUBLIC_DOMAIN]);
   const actor=await getUser('actor_account',id,'id,dao_id,actor_name,domain,manager,actor_account,actor_url,avatar,actor_desc');
@@ -29,8 +29,8 @@ export default async function MyIDActor({ params }: any) {
 }
 
  
-export async function generateMetadata({ params }: any) {
- const { locale,id } =  params; 
+export async function generateMetadata({ params }: HonorPageProps) {
+ const { locale,id } = await params; 
  const t = await getTranslations('Common');
 
  return {

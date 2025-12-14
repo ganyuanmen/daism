@@ -4,7 +4,24 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin();
 
 const config: NextConfig = {
+    /** ---------------- 基础 ---------------- */
+  reactStrictMode: true,
+  poweredByHeader: false,
+
+  /** ---------------- App Router ---------------- */
+  experimental: {
+    /**
+     * Server Actions
+     * Next 16 中这是最安全的写法
+     */
+    serverActions: {
+      bodySizeLimit: '20mb',
+    },
+  },
+
   output: 'standalone',
+   productionBrowserSourceMaps: false,
+   
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -29,16 +46,7 @@ const config: NextConfig = {
         ]
       },
        
-    experimental: {
-        serverActions: {
-        bodySizeLimit: '20mb',
-        },
-    },
 
-    // serverRuntimeConfig: {
-    //     maxRequestBodySize: 10 * 1024 * 1024,
-    // },
-    // reactStrictMode: true,
 
     // 让前端可以访问 env 中的变量
     env: {
