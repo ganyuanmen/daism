@@ -23,25 +23,39 @@ export default function Home() {
             <>
             {/* 桌面端 */}
             <div className="desktop-only">
-            <Image
+                <object 
+                data={locale==='en'?`${obj.svg_big_en}`:`${obj.svg_big_zh}`}
+                type="image/svg+xml"
+    //   width="1200"
+    //   height="500"
+         style={{ width: '100%', height: 'auto' }}
+    ></object>
+            {/* <Image
                 src={locale==='en'?`${obj.svg_big_en}`:`${obj.svg_big_zh}`}
                 alt="PoL Civ desktop"
                 width={1200} // 实际宽度
                 height={400} // 实际高度
                 style={{ width: '100%', height: 'auto' }}
                 priority
-            />
+            /> */}
             </div>
             
              {/* 移动端 */}
             <div className="mobile-only">
-            <Image
+                  <object 
+                data={locale==='en'?`${obj.svg_sm_en}`:`${obj.svg_sm_zh}`}
+                type="image/svg+xml"
+    //   width="1200"
+    //   height="500"
+         style={{ width: '100%', height: 'auto' }}
+    ></object>
+            {/* <Image
                  src={locale==='en'?`${obj.svg_sm_en}`:`${obj.svg_sm_zh}`}
                 alt="PoL Civ mobile"
                 width={600}
                 height={300}
                 style={{ width: '100%', height: 'auto' }}
-            />
+            /> */}
             </div>
             <div dangerouslySetInnerHTML={{__html:locale==='en'?obj.var_en:obj.var_zh}}></div>
             </>

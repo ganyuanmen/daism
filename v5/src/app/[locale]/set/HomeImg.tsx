@@ -30,7 +30,7 @@ export default function HomeImg({srcimg,title,field,t,tc}:PropsTye) {
     const closeTip = () => dispatch(setTipText(""));
     const showTip = (str: string) => dispatch(setTipText(str));
     
-    const handleFile = (selectedFile: File) => {
+    const handleFile = async (selectedFile: File) => {
       if (!selectedFile) return;
       setFile(selectedFile);
       const validTypes = [
@@ -47,6 +47,7 @@ export default function HomeImg({srcimg,title,field,t,tc}:PropsTye) {
   
       const url = URL.createObjectURL(selectedFile);
       setPreviewURL(url);
+      await submit();
     
     };
 
@@ -100,7 +101,7 @@ export default function HomeImg({srcimg,title,field,t,tc}:PropsTye) {
     <Card.Footer>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',width:'100%'}} >
         <Button onClick={triggerClick} >{t('updateText')}</Button>
-        <Button disabled={previewURL===srcimg}  onClick={submit} >{t('uploadText')}</Button>
+        {/* <Button disabled={previewURL===srcimg}  onClick={submit} >{t('uploadText')}</Button> */}
       </div>
     </Card.Footer>
 </Card>
