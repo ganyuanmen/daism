@@ -119,6 +119,7 @@
   },
   
   "ff": {
+        "comSubmitText":"Post Comment",
     "noHourText":"The previous on-chain registration was successful. You cannot register again within one hour.",
     "realyPastText":"Paste directly",
     "noAuthText":"Not authorized",
@@ -508,7 +509,8 @@
     "publicCommunities":"Public Communities",
     "personalSocial":"Personal Social",
     "switchLocale": "简体中文",
-    "accountlistText":"Local Account List"
+    "accountlistText":"Local Account List",
+        "commentText":"Post a Comment with Link"
   },
 
   "Common":{

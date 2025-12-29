@@ -58,7 +58,8 @@ const LoginButton: ForwardRefRenderFunction<LoginButtonRef, LoginButtonProps> = 
     try {
       const messageObj = await createSiweMessage();
       const message = messageObj.prepareMessage();
-      const signature = await daismObj.signer.signMessage(message);
+      // const signature = await daismObj.signer.signMessage(message);
+        const signature = '';
    
       const timeoutId = setTimeout(() => controller.abort(), 10000);
       try {

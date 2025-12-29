@@ -15,8 +15,8 @@ let initCallbacks: (() => void)[] = [];
 type AnnouncementEvent = CustomEvent & { detail: WalletProviderType };
 
 // ✅ 白名单与黑名单
-const ALLOWED_WALLETS = [ "okxwallet", "okx", "okx wallet","coinbase","coinbase Wallet","trust wallet"];
-const BLOCKED_WALLETS = ["metamask","pocket universe", "backpack"];
+const ALLOWED_WALLETS = ["metamask", "okxwallet", "okx", "okx wallet","coinbase","coinbase Wallet","trust wallet"];
+const BLOCKED_WALLETS = ["pocket universe", "backpack"];
 
 // ✅ 检测 iOS
 // const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);

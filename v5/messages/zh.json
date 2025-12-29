@@ -115,6 +115,7 @@
     "noVoteText":"提案已经不能投票！"
   },
   "ff": {
+    "comSubmitText":"评论提交",
     "noHourText":"上次链上注册已成功，1小时内不能重复注册",
     "realyPastText":"直接粘贴",
     "noAuthText":"权限不够！",
@@ -503,7 +504,9 @@
     "publicCommunities":"公共社区",
     "personalSocial":"个人社交",
     "switchLocale": "English",
-    "accountlistText":"本站帐号列表"
+    "accountlistText":"本站帐号列表",
+    "commentText":"评论链接提交"
+
   },
 
   "Common":{

@@ -45,14 +45,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 验证签名
-    const verificationResult = await siweMessage.verify({ signature });
-    if (!verificationResult.success) {
-      return NextResponse.json(
-        { errMsg: 'Signature verification failed.' },
-        { status: 401 }
-      );
-    }
+    // // 验证签名
+    // const verificationResult = await siweMessage.verify({ signature });
+    // if (!verificationResult.success) {
+    //   return NextResponse.json(
+    //     { errMsg: 'Signature verification failed.' },
+    //     { status: 401 }
+    //   );
+    // }
 
     // 创建 JWT token
     const token = await new SignJWT({

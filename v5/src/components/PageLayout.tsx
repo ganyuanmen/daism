@@ -102,6 +102,15 @@ const PageLayout = memo(({ children }: Props) => {
                     {t('accountlistText')}
                   </Nav.Link>
 
+                      <Nav.Link
+                    className={pathname === '/comment' ? 'pnavactive' : ''}
+                    href={`/${locale}/comment`}
+                    onClick={onClick}
+                  >
+                    {t('commentText')}
+                  </Nav.Link>
+
+
                 </motion.div>
               )}
             </AnimatePresence>
@@ -201,6 +210,13 @@ const PageLayout = memo(({ children }: Props) => {
                href={`/${locale}/accountlist`}
             >
               {t('accountlistText')}
+            </NavDropdown.Item>
+              <NavDropdown.Item
+              style={{ paddingLeft: '20px' }}
+              className={pathname === '/comment' ? 'pnavactive' : ''}
+               href={`/${locale}/comment`}
+            >
+              {t('commentText')}
             </NavDropdown.Item>
           </NavDropdown>
 

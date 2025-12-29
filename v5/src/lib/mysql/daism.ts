@@ -191,3 +191,18 @@ export async function getDaoVote({ daoId, delegator, createTime }: any): Promise
   const re = await getData(sql, [daoId, delegator, createTime]);
   return re || [];
 }
+
+
+export async function messagePageDataLove(params: any): Promise<any> {
+  const ps=20;
+  const { pi,order } = params;
+
+  let sql="SELECT * FROM a_messagesc_commont WHERE  pid='07e7888a76234abe9b3f88ff128e5f5d'";
+  let sqltotal="SELECT count(*) as c FROM a_messagesc_commont WHERE  pid='07e7888a76234abe9b3f88ff128e5f5d'";;
+  const rows= await getData(`${sql} order by total_score ${order} limit ${pi*ps},${ps}`, []);
+  const re= await getData(sqltotal, [],true);
+  const total=re.c;
+//  console.log(pi,total,Math.ceil(total/ps),ps);
+//  console.log(`${sql} order by total_score ${order} limit ${pi*ps},${ps}`)
+  return { rows,total,pages:Math.ceil(total/ps)};
+}

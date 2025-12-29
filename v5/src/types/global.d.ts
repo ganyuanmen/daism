@@ -6,6 +6,19 @@ declare global {
     __MY_CACHE__?: Record<string, { value: any; expire: number }>;
   }
 
+  interface LoveType{
+    manager:string;
+    content:string;
+    actor_name:string;
+    avatar:string;
+    total_score:number;
+    result_text:string;
+    actor_url:string;
+    actor_account:string;
+    message_id:string;
+
+  }
+
   interface EnkiMessType { //嗯文
     id:number;
     send_type:number; //message 类型，0 发送，1 关注接收，2 私下推送，9 转发
