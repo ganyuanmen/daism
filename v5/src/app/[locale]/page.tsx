@@ -1,7 +1,7 @@
 
 import { getData } from '@/lib/mysql/common';
 import { useLocale } from 'next-intl';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 export default function Home() {
   

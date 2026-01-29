@@ -109,7 +109,7 @@ export  async function getTootContent(tootUrl:string,domain:string) {
       }
       const uc=`<a href="${tootUrl}" target="_blank" class="daism-a daism-linka" >
       <div class="daism-image"  >
-          <img src='${image?image:localimg}' alt="" class='daism-linkimg' >
+          <img src='${image?image:localimg}' alt="" class='daism-linkimg' onerror="this.onerror=null; this.src='/article.svg';" />
       </div>
       <div  >
           <div class='daism-line0' >${targetDomain}</div>
