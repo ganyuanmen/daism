@@ -44,12 +44,12 @@ export default function ClientId({daoData}:{daoData:DaoRecord}) {
 
   useEffect(() => {
     let ignore = false;
-    if (user.connected === 1 && daoData.delegator){
+    if (user.connected === 1 && daoData?.delegator && Array.isArray(daoData?.child)){
         const _is = daoData.child.find(
             (obj) => obj.member_address.toLowerCase() === user.account.toLowerCase()
           );
           setIsmember(!!_is);
-          
+
         const daismObj=getDaismContract();
         daismObj?.Dao.dividend(daoData.delegator, user.account).then((e: any) => {
             if (!ignore) setDivdend(parseFloat(ethers.formatUnits(e, 8)).toFixed(4));

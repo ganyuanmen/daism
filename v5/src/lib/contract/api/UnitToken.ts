@@ -31,11 +31,19 @@ export default class UnitToken {
    */
    async balanceOf(_address: string): Promise<{ utoken: string; utokenWei: string }> {
     this.genegateContract();
-    const result: bigint = await this.contract?.balanceOf(_address);
+    try {
+         const result: bigint = await this.contract?.balanceOf(_address);
     return {
       utoken: ethers.formatUnits(result, 8),
       utokenWei: result.toString(),
     };
+    } catch (error) {
+       return {
+      utoken: "0",
+      utokenWei: "0",
+    };
+    }
+ 
      
   }
 

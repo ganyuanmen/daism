@@ -155,14 +155,41 @@ export interface DaoRecord {
   dao_desc: string;
   creator: string;
 }
+// export async function getMyDaoDetail(daoid : number|string): Promise<DaoRecord> {
+//   const re = await getData('SELECT * FROM v_dao WHERE dao_id=?', [daoid]);
+//   if (re?.length) {
+//     re[0].child = await getData('SELECT member_address,member_votes,member_type FROM t_daodetail WHERE dao_id=?', [daoid]);
+//     re[0].version = await getData('SELECT _time,creator,dao_version FROM v_createversion WHERE dao_id=? ORDER BY dao_version', [daoid]);
+//   }
+//   return re[0] || {};
+// }
+
 export async function getMyDaoDetail(daoid : number|string): Promise<DaoRecord> {
   const re = await getData('SELECT * FROM v_dao WHERE dao_id=?', [daoid]);
   if (re?.length) {
     re[0].child = await getData('SELECT member_address,member_votes,member_type FROM t_daodetail WHERE dao_id=?', [daoid]);
     re[0].version = await getData('SELECT _time,creator,dao_version FROM v_createversion WHERE dao_id=? ORDER BY dao_version', [daoid]);
+    return re[0];
   }
-  return re[0] || {};
+  // 返回带默认值的空结构，避免 undefined 错误
+  return {
+    dao_id: '',
+    dao_name: '',
+    dao_symbol: '',
+    sctype: '',
+    strategy: 0,
+    dao_manager: '',
+    delegator: '',
+    child: [],
+    version: [],
+    lifetime: 0,
+    cool_time: 0,
+    dao_desc: '',
+    creator: ''
+  } as DaoRecord;
 }
+
+
 
 // Token 信息
 export async function getToken({ did }: any): Promise<any[]> {
