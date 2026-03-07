@@ -5,6 +5,7 @@
 import Nftlist from '../Nftlist';
 import { getTranslations } from 'next-intl/server';
 import { getMynft } from '@/lib/mysql/daism';
+import { type NftObjType } from '@/lib/mysql/daism';
 
 
 /**
@@ -17,7 +18,7 @@ interface HonorPageProps {
 
 export default async function HonorPage({ params }: HonorPageProps) {
     const { id } =await  params;
-    const NFTData= await getMynft({did:id}) ;
+    const NFTData:NftObjType[]= await getMynft({did:id}) ;
    
     return (<Nftlist mynftData={NFTData} />);
 }

@@ -9,7 +9,7 @@ export interface SummaryItem {
 }
 
 async function getSummaryList(): Promise<SummaryItem[]> {
- return await getData("SELECT register_time as id,COUNT(*) count FROM v_account GROUP BY register_time ORDER BY register_time DESC",[]);
+ return await getData<any>("SELECT register_time as id,COUNT(*) count FROM v_account GROUP BY register_time ORDER BY register_time DESC",[]);
 }
 
 export default async function Page() {

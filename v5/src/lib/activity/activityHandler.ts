@@ -241,12 +241,14 @@ export async function follow(postbody:ActivityPubBody,name:string,domain:string,
         const thebody=createAccept(postbody,name,domain);
         const follow=await getFollow({actorAccount:user.account,userAccount:actor?.account}); // 注：是actor 关注user
         // let localUser=await getUser('actor_account',user.account,'privkey,dao_id')
-        if(follow['follow_id']) { 
-        console.info("已关注"); //已关注
-        await removeFollow(follow['follow_id'])
+        
+        // Type-safe check for follow record
+        if ('follow_id' in follow && follow.follow_id) { 
+          console.info("已关注"); //已关注
+          await removeFollow(follow.follow_id);
         } 
         
-        const lok=await saveFollow({actor:user,user:actor,followId:postbody.id});// 被他人关注 
+        const lok=await saveFollow({actor:user,user:actor,followId:postbody.id || ''});// 被他人关注 
         if(lok)
         {
             console.info("follow save is ok")
@@ -361,4 +363,3 @@ export async function verifySignature(request: NextRequest, actor: ActorInfo, re
       return false;
     }
   }
-  

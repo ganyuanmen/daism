@@ -39,3 +39,16 @@ export function daism_getTime(seconds: number, t: TFunction): string {
   
   return result.trim();
 }
+
+  export function wrapLinksWithATag(html:string) {
+    // 你的正则表达式
+    const regex = /(?<!<(?:img|a|image|use|feimage|svg)[^>]*(?:src|href|xlink:href|xmlns)=["'])(?<!url\(["']?)(https?:\/\/[^\s"'<>)]+)(?!["']?\))/gi;
+    
+    // 替换匹配到的链接，添加a标签
+    const processedHtml = html.replace(regex, (match) => {
+        // 为链接添加a标签，可自定义target和rel属性提升安全性
+        return `<a href="${match}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+    });
+    
+    return processedHtml;
+}

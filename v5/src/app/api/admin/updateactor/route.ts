@@ -35,11 +35,11 @@ export async function POST(request: NextRequest) {
     const imagePath = await saveImage(file);
 
     // 更新用户信息
-    const updateSuccess = await updateActor({ 
+    const updateSuccess = await updateActor( 
       account, 
-      actorDesc: actorDesc || '', 
-      path: imagePath 
-    });
+       actorDesc || '', 
+       imagePath 
+    );
     
     if (!updateSuccess) {
       return NextResponse.json(

@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import ShowAddress from "../ShowAddress";
 // import Image from "next/image";
 import ImageWithFallback from "../ImageWithFallback";
+import { wrapLinksWithATag } from "@/lib/utils/windowjs";
 
 // ========== 类型定义 ==========
 interface ActorType {
@@ -215,7 +216,7 @@ export default function Contentdiv({
               ? { paddingLeft: "90px", minHeight: "80px", maxHeight: "400px", overflow: "hidden" }
               : { maxHeight: "400px", overflow: "hidden" }
           }
-          dangerouslySetInnerHTML={{ __html: replacedText }}
+          dangerouslySetInnerHTML={{ __html: wrapLinksWithATag(replacedText) }}
         />
         {messageObj._type === 1 && (
           <div className="border" style={bStyle}>

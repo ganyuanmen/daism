@@ -1,4 +1,4 @@
-import { getData, execute} from './common';
+import { getData, execute } from './common';
 import { getSigneActor, httpGet } from "../net"; 
 import { getUser } from './user';
 import { getFollowers_send } from './folllow';
@@ -6,6 +6,138 @@ import { createAnnounce } from '../activity';
 import { sendfollow } from '../utils/sendfollow';
 import { sendcommont } from '../utils/sendcommont';
 import { sendSignedActivity } from '../activity/sendSignedActivity';
+
+// Type definitions for function parameters
+interface MessagePageParams {
+  pi: number | string;
+  menutype: number | string;
+  daoid: number | string;
+  w?: string;
+  actorid: number | string;
+  account?: string;
+  order?: string;
+  eventnum: number | string;
+  v?: number | string;
+}
+
+interface EnkiTotalParams {
+  account: string;
+  actorid: number | string;
+  t?: number | string;
+}
+
+interface DaoPageParams {
+  pi: number | string;
+  w?: string;
+}
+
+interface InsertMessageParams {
+  account: string;
+  message_id: string;
+  pathtype: string;
+  contentType: string;
+  idx: number | string;
+}
+
+interface ReplyTotalParams {
+  sctype: string;
+  pid: string;
+}
+
+interface GetAccountParams {
+  id: string | number;
+}
+
+interface UpdateNoticeParams {
+  manager: string;
+}
+
+interface UpdateSetParams {
+  text: string;
+  local: string;
+  id: number | string;
+}
+
+interface RegisterLogParams {
+  did: string;
+}
+
+interface ReplyPageParams {
+  pi: number | string;
+  sctype: string;
+  pid: string;
+}
+
+interface SetTopMessageParams {
+  id: string;
+  sctype: string;
+  flag: number | string;
+}
+
+interface MessageDelParams {
+  mid: string;
+  type: number | string;
+  path: string;
+  sctype: string;
+  pid?: string;
+  rAccount?: string;
+  account?: string;
+}
+
+interface HeartAndBookParams {
+  pid: string;
+  account: string;
+  table: string;
+  sctype: string;
+}
+
+interface HandleHeartAndBookParams {
+  account: string;
+  pid: string;
+  flag: number | string;
+  table: string;
+  sctype: string;
+}
+
+interface SetAnnounceParams {
+  account: string;
+  id: string;
+  content: string;
+  sctype: string;
+  topImg?: string;
+  vedioUrl?: string;
+  toUrl?: string;
+  linkurl?: string;
+}
+
+interface GetOneParams {
+  id: string;
+  sctype: string;
+}
+
+interface GetOneByMessageIdParams {
+  id1: string;
+  id2: string;
+  sctype: string;
+}
+
+interface GetAnnoceParams {
+  id: string;
+  account: string;
+}
+
+interface FromAccountParams {
+  actor_account: string;
+  user_account: string;
+}
+
+interface GetNoticeParams {
+  manager: string;
+}
+
+interface GetLastDonateParams {
+  did: string;
+}
 
 ////pi,menutype,daoid,w,actorid:嗯文人ID,account,order,eventnum
 // menutype 1 我的社区，2 公区社区 3 个人社区
@@ -65,15 +197,16 @@ export async function messagePageData(params: any): Promise<any[]> {
   }
 
  if(
-  (parseInt(menutype)===2 && parseInt(eventnum)>1 && parseInt(eventnum)<4)
+  (parseInt(menutype)===2 && parseInt(eventnum)>1 && parseInt(eventnum)<4  )
     ||  (parseInt(menutype)===3 && (parseInt(eventnum)===3 || parseInt(eventnum)===6))
   ){
     return re;
   }
 
-  re = re.filter(obj => obj.is_top === 0);
-
-  if(parseInt(pi) === 0) {
+ 
+//处理置顶
+  if(parseInt(pi) === 0 && parseInt(eventnum)===2) {
+     re = re.filter(obj => obj.is_top === 0);
     let re1:any[]=[];
     if(w){
       sql1=`${sql} and a.is_top=1 and (a.title like ? or a.content like ?) order by ${order} desc`;

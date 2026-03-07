@@ -52,7 +52,7 @@ export default function Home() {
                 )
         }
         
-    const data:HomeDataType[]=await getData("SELECT * FROM a_home",[]);
+    const data:HomeDataType[]=await getData<any>("SELECT * FROM a_home",[]);
 
 
 

@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     // 获取用户数据
     const _actor = await getActor(siweMessage.address);
     const daoActor = await getJsonArray('daoactor', [siweMessage.address.toLowerCase()]);
-    const myFollow = _actor ? await getJsonArray('getFollow', [_actor.actor_account.toLowerCase()]) : [];
+    const myFollow = _actor ? await getJsonArray('getFollow', [_actor?.actor_account?.toLowerCase()||'']) : [];
 
     // 设置 cookie 并返回响应
     const response = NextResponse.json({

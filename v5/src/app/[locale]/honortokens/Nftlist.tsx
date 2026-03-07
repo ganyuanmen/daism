@@ -4,8 +4,9 @@ import { Card, Row, Col, Modal, Table } from 'react-bootstrap';
 import ShowAddress from '@/components/ShowAddress';
 import { useState } from 'react';
 import { SvgImage } from '@/components/SvgImage';
+import { type NftObjType } from '@/lib/mysql/daism';
 
-interface NftlistProps {
+export interface NftlistProps {
   mynftData: NftObjType[];
 }
 

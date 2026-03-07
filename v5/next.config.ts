@@ -33,7 +33,7 @@ const config: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;"
           }
         ]
       }
@@ -50,8 +50,7 @@ const config: NextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: '20mb',
-      // 2. 如果你的网站有多个域名或通过代理访问，建议显式允许来源
-      // allowedOrigins: ['your-domain.com', 'localhost:3000'], 
+      allowedOrigins: ['daism.io', '*.daism.io', 'sepolia.50satoshis.com'],
     },
   },
 
