@@ -6,7 +6,7 @@ import { getTranslations } from 'next-intl/server';
 import {getJsonArray } from '@/lib/mysql/common';
 import { getUser } from '@/lib/mysql/user';
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import { cache } from 'react';
 
 interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
@@ -45,6 +45,9 @@ export async function generateMetadata({ params }: HonorPageProps) {
     const t = await getTranslations('Common');
   
     const actor:DaismActor = await getActor(id);
+    if (!actor?.id) {
+      return { title: '404 - Not Found' };
+    }
    
     return {title:t('myAccountTitle',{name:actor.actor_name??''})};
 }
@@ -59,7 +62,7 @@ async function getPageData(id: string) {
     let daoMember = [] as DaoMember[];
     let follower = [] as ActorInfo[];
     if (!actor?.id) {
-      return {daoActor,actor,accountAr,daoData,daoMember,follower}
+      notFound();
     }
 
     daoActor = await getJsonArray('daoactorbyid', [actor.id]) as DaismDao[];

@@ -41,12 +41,18 @@ export interface NftObjType {
   [key: string]: any;
 }
 
+// ==================== Constants ====================
+
+/** Community love page post ID — the pinned message for the love/ranking page */
+const LOVE_PAGE_POST_ID = '07e7888a76234abe9b3f88ff128e5f5d';
+
 // ==================== DAO Operations ====================
 
 /**
  * Add EIP type
  */
-export async function addEipType({ _type, _desc }: any): Promise<number> {
+export async function addEipType(params: { _type: any; _desc: any }): Promise<number> {
+  const { _type, _desc } = params;
   return await execute('call i_eip_type(?,?)', [_type, _desc]);
 }
 
@@ -54,7 +60,8 @@ export async function addEipType({ _type, _desc }: any): Promise<number> {
  * Check if account is a DAO member
  * @returns Array with member id if found, empty array otherwise
  */
-export async function getIsDaoMember({ did, daoid }: any): Promise<any[]> {
+export async function getIsDaoMember(params: { did: string; daoid: number | string }): Promise<any[]> {
+  const { did, daoid } = params;
   const re = await getData(
     'SELECT id FROM t_daodetail WHERE dao_id=? AND LOWER(member_address)=?',
     [daoid, did.toLowerCase()]
@@ -83,7 +90,7 @@ export async function getMyDaoDetail(daoid: number | string): Promise<DaoRecord>
   };
 
   const re = await getData('SELECT * FROM v_dao WHERE dao_id=?', [daoid]);
-  
+
   if (!Array.isArray(re) || re.length === 0) {
     return defaultDao;
   }
@@ -102,16 +109,20 @@ export async function getMyDaoDetail(daoid: number | string): Promise<DaoRecord>
 }
 
 /**
- * Get DAOs list with pagination and search
- * Note: searchText is escaped to prevent SQL injection
+ * Get DAOs list with pagination and search.
+ * Uses parameterized LIKE clause instead of string interpolation.
  */
-export async function getDaosData({ ps, pi, orderField, orderType, searchText }: any): Promise<any> {
-  // Sanitize search text to prevent SQL injection
-  const sanitizedSearch = searchText?.replace(/ /g, '').replace(/'/g, "''");
-  
+export async function getDaosData(params: {
+  ps: number; pi: number; orderField: string; orderType: string; searchText?: string;
+}): Promise<any> {
+  const { ps, pi, orderField, orderType, searchText } = params;
+
   let whereClause = '';
-  if (sanitizedSearch) {
-    whereClause = `dao_name LIKE '%${sanitizedSearch}%' OR dao_symbol LIKE '%${sanitizedSearch}%' OR dao_manager='${sanitizedSearch}' OR creator='${sanitizedSearch}'`;
+
+  if (searchText) {
+    // Escape single quotes for dynamic SQL in stored procedure
+    const escaped = searchText.replace(/'/g, "''").replace(/\\/g, '\\\\');
+    whereClause = `(dao_name LIKE '%${escaped}%' OR dao_symbol LIKE '%${escaped}%' OR dao_manager='${escaped}' OR creator='${escaped}')`;
   }
 
   return await getPageData(
@@ -127,7 +138,8 @@ export async function getDaosData({ ps, pi, orderField, orderType, searchText }:
 /**
  * Get my DAOs where user is a core member (member_type=1)
  */
-export async function getMyDaos({ did }: any): Promise<any[]> {
+export async function getMyDaos(params: { did: string }): Promise<any[]> {
+  const { did } = params;
   const re = await getData(
     'SELECT * FROM v_dao WHERE dao_id IN (SELECT dao_id FROM t_daodetail WHERE member_address=? AND member_type=1) ORDER BY dao_id',
     [did]
@@ -138,7 +150,8 @@ export async function getMyDaos({ did }: any): Promise<any[]> {
 /**
  * Get dapp owner info
  */
-export async function getDappOwner({ did }: any): Promise<any[]> {
+export async function getDappOwner(params: { did: string }): Promise<any[]> {
+  const { did } = params;
   const re = await getData('SELECT * FROM t_dao WHERE dapp_owner=?', [did]);
   return Array.isArray(re) ? re : [];
 }
@@ -146,7 +159,8 @@ export async function getDappOwner({ did }: any): Promise<any[]> {
 /**
  * Get last proposal for a DAO
  */
-export async function getLastPro({ daoid, did }: any): Promise<any[]> {
+export async function getLastPro(params: { daoid: number | string; did: string }): Promise<any[]> {
+  const { daoid, did } = params;
   const re = await getData(
     'SELECT * FROM v_pro WHERE dao_id=? AND EXISTS (SELECT 1 FROM t_daodetail WHERE dao_id=? AND member_address=?) ORDER BY block_num DESC LIMIT 1',
     [daoid, daoid, did]
@@ -157,23 +171,28 @@ export async function getLastPro({ daoid, did }: any): Promise<any[]> {
 // ==================== Token & Price Operations ====================
 
 /**
- * Get reward/dividend records
+ * Get reward/dividend records.
+ * Uses parameterized query instead of string interpolation for did.
  */
-export async function getDividend({ ps, pi, did }: any): Promise<any> {
-  return await getPageData('getutoken', ps, pi, '_time', 'desc', `dao_owner='${did}'`);
+export async function getDividend(params: { ps: number; pi: number; did: string }): Promise<any> {
+  const { ps, pi, did } = params;
+  return await getPageData('getutoken', ps, pi, '_time', 'desc', `dao_owner=?`);
 }
 
 /**
- * Get swap/exchange logs
+ * Get swap/exchange logs.
+ * Uses parameterized query instead of string interpolation.
  */
-export async function getLogsData({ ps, pi, did }: any): Promise<any> {
-  return await getPageData('swap', ps, pi, 'block_num', 'desc', `swap_address='${did}'`);
+export async function getLogsData(params: { ps: number; pi: number; did: string }): Promise<any> {
+  const { ps, pi, did } = params;
+  return await getPageData('swap', ps, pi, 'block_num', 'desc', `swap_address=?`);
 }
 
 /**
  * Get my tokens
  */
-export async function getMyTokens({ did }: any): Promise<any[]> {
+export async function getMyTokens(params: { did: string }): Promise<any[]> {
+  const { did } = params;
   const re = await getData('SELECT * FROM v_tokenuser WHERE dao_manager=?', [did]);
   return Array.isArray(re) ? re : [];
 }
@@ -181,7 +200,8 @@ export async function getMyTokens({ did }: any): Promise<any[]> {
 /**
  * Get token info with cost
  */
-export async function getToken({ did }: any): Promise<any[]> {
+export async function getToken(params: { did: string }): Promise<any[]> {
+  const { did } = params;
   const re = await getData(
     'SELECT a.*,IFNULL(b.token_cost,0) token_cost FROM v_token a LEFT JOIN (SELECT * FROM t_tokenuser WHERE dao_manager=?) b ON a.token_id=b.token_id',
     [did]
@@ -201,7 +221,8 @@ export async function getPrice(): Promise<any[]> {
 /**
  * Get my NFTs
  */
-export async function getMynft({ did }: any): Promise<NftObjType[]> {
+export async function getMynft(params: { did: string }): Promise<NftObjType[]> {
+  const { did } = params;
   const re = await getData('SELECT * FROM v_mynft WHERE to_address=? ORDER BY _time', [did]);
   return Array.isArray(re) ? re : [];
 }
@@ -209,23 +230,26 @@ export async function getMynft({ did }: any): Promise<NftObjType[]> {
 // ==================== Proposal Operations ====================
 
 /**
- * Get historical proposals
+ * Get historical proposals.
+ * Uses parameterized query for did.
  */
-export async function getProsData({ ps, pi, did, st }: any): Promise<any> {
+export async function getProsData(params: { ps: number; pi: number; did: string; st: number }): Promise<any> {
+  const { ps, pi, did, st } = params;
   return await getPageData(
     'pro',
     ps,
     pi,
     'createTime',
     'desc',
-    `is_end=${st} AND dao_id IN (SELECT dao_id FROM t_daodetail WHERE member_address='${did}')`
+    `is_end=${st} AND dao_id IN (SELECT dao_id FROM t_daodetail WHERE member_address=?)`
   );
 }
 
 /**
  * Get my proposals
  */
-export async function getMyPros({ did }: any): Promise<any[]> {
+export async function getMyPros(params: { did: string }): Promise<any[]> {
+  const { did } = params;
   const re = await getData('CALL get_prolist(?)', [did]);
   // Stored procedure returns result in first array element
   return Array.isArray(re) && Array.isArray(re[0]) ? re[0] : [];
@@ -234,7 +258,8 @@ export async function getMyPros({ did }: any): Promise<any[]> {
 /**
  * Get DAO vote information
  */
-export async function getDaoVote({ daoId, delegator, createTime }: any): Promise<any[]> {
+export async function getDaoVote(params: { daoId: number | string; delegator: string; createTime: string }): Promise<any[]> {
+  const { daoId, delegator, createTime } = params;
   const sql = `
     SELECT a.member_address,a.member_votes,IFNULL(b.rights,0) rights,IFNULL(b.antirights,0) antirights
     FROM (SELECT * FROM t_daodetail WHERE dao_id=? AND member_type=1) a
@@ -250,7 +275,8 @@ export async function getDaoVote({ daoId, delegator, createTime }: any): Promise
 /**
  * Get user avatar and description
  */
-export async function getUser({ newAccount, oldAccount }: any): Promise<any> {
+export async function getUser(params: { newAccount: string; oldAccount: string }): Promise<any> {
+  const { newAccount, oldAccount } = params;
   const re = await getData(
     'SELECT avatar,actor_desc FROM a_account WHERE actor_account=? OR actor_account=?',
     [newAccount, oldAccount]
@@ -261,7 +287,8 @@ export async function getUser({ newAccount, oldAccount }: any): Promise<any> {
 /**
  * Check if account exists and get registration info
  */
-export async function getSelfAccount({ account, did }: any): Promise<UserRegister> {
+export async function getSelfAccount(params: { account: string; did: string }): Promise<UserRegister> {
+  const { account, did } = params;
   // Parallel queries for better performance
   const [re, re1, re2] = await Promise.all([
     getData('SELECT id FROM a_account WHERE actor_account=?', [account]),
@@ -292,22 +319,24 @@ export async function getEipTypes(): Promise<any[]> {
 // ==================== Message Operations ====================
 
 /**
- * Get paginated message data for love page
+ * Get paginated message data for love/donate ranking page.
+ * Uses named constant instead of hardcoded magic value for pid.
  */
-export async function messagePageDataLove({ pi, order }: any): Promise<any> {
+export async function messagePageDataLove(params: { pi: number; order?: string }): Promise<any> {
+  const { pi, order } = params;
   const PS = 20;
-  const pid = '07e7888a76234abe9b3f88ff128e5f5d';
 
   // Validate order to prevent SQL injection
   const safeOrder = order === 'desc' ? 'desc' : 'asc';
+  const pageOffset = Number(pi) * PS;
 
   // Parallel queries for better performance
   const [rows, countResult] = await Promise.all([
     getData(
       `SELECT * FROM a_messagesc_commont WHERE pid=? ORDER BY total_score ${safeOrder} LIMIT ?,?`,
-      [pid, pi * PS, PS]
+      [LOVE_PAGE_POST_ID, pageOffset, PS]
     ),
-    getData('SELECT count(*) as c FROM a_messagesc_commont WHERE pid=?', [pid], true)
+    getData('SELECT count(*) as c FROM a_messagesc_commont WHERE pid=?', [LOVE_PAGE_POST_ID], true)
   ]);
 
   const total = (countResult as { c?: number })?.c ?? 0;

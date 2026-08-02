@@ -4,6 +4,7 @@
 import  ClientDaoinfoPage from './ClientDaoinfoPage'
 import { getTranslations } from 'next-intl/server';
 import { cache } from 'react';
+import { notFound } from 'next/navigation';
 import { getJsonArray } from '@/lib/mysql/common';
 
 const getDaoData = cache(async (id: string) => {
@@ -17,7 +18,9 @@ interface HonorPageProps {
 export default async function DaoInfoPage({ params }: HonorPageProps) {
     const { id } =await  params;
     const daoData=await getDaoData(id);
-    // if(!daoData?.dao_id)   return {notFound: true};
+    if (!daoData?.dao_id) {
+      notFound();
+    }
     const daoMember=await getJsonArray('daomember',[id]) as DaoMember[];
     const follower=await getJsonArray('fllower',[id]) as ActorInfo[]
    

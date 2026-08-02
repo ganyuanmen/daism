@@ -8,11 +8,11 @@ export async function POST(request: NextRequest) {
     const session = await getSession();
     // const currentIp = getClientIp(request);
     if (!session ||  session.userAgent !== request.headers.get('user-agent')) {
-        return NextResponse.json({ errMsg: 'No wallet signature login'  }, { status: 500 });
+        return NextResponse.json({ errMsg: 'No wallet signature login'  }, { status: 401 });
     }
    
     if(session.did.toLowerCase()!==process.env.NEXT_PUBLIC_SITEMANAGER?.toLowerCase() && session.did.toLowerCase()!==process.env.NEXT_PUBLIC_ADMI_ACTOR?.toLowerCase()){
-      return NextResponse.json({ errMsg: 'unauthorized'  }, { status: 500 });
+      return NextResponse.json({ errMsg: 'unauthorized'  }, { status: 403 });
     }
 
   try {

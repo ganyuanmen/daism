@@ -48,7 +48,7 @@ export async function generateMetadata({ params }:Props) {
       type: 'article',
     },
     alternates: {
-      canonical: `https://daism.io/${locale}`, 
+      canonical: `https://${process.env.NEXT_PUBLIC_DOMAIN || 'daism.io'}/${locale}`, 
     },
   };
 }

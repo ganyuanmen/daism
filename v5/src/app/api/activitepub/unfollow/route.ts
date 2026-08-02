@@ -14,7 +14,12 @@ interface UnfollowRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: UnfollowRequestBody = await req.json();
+    let body: UnfollowRequestBody;
+    try {
+      body = await req.json() as UnfollowRequestBody;
+    } catch {
+      return NextResponse.json({ errMsg: "Invalid JSON in request body" }, { status: 400 });
+    }
     const { account, url, id,inbox } = body;
 
     if (!account || !account.includes('@') || !url || !id) {

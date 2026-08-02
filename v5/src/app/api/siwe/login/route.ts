@@ -23,7 +23,15 @@ export async function POST(req: NextRequest) {
       }
     }
   try {
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { errMsg: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
     if (!body.message) {
       return NextResponse.json(
         { errMsg: 'Expected prepareMessage object as body.' },

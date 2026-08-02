@@ -74,7 +74,7 @@ export default function Donation() {
   return (
     <div style={{maxWidth:'700px',margin:'0 auto',fontSize:'1.2em'}} >
      
-        <h1 style={{color:'#e74c3c',textAlign:'center'}} ><Image src="/logo.svg" alt="道易程" className="logo" /> {t('donateTitle')}</h1>
+        <h1 style={{color:'#e74c3c',textAlign:'center'}} ><Image src="/logo.svg" alt="道易程" className="logo" width={80} height={80} /> {t('donateTitle')}</h1>
       
 
       <div style={{backgroundColor:'#f9f9f9',padding:'10px',borderRadius:'10px'}}>
@@ -125,7 +125,7 @@ export default function Donation() {
       
         <div className='mt-3'  style={{backgroundColor:'#f0f0f0',textAlign:'center',padding:'10px',borderRadius:'10px'}} >
         <p>{t('donatrQcodeText')}：</p>
-        <Image src='/donate.png' alt=''  /> 
+        <Image src='/donate.png' alt='donation QR code' width={300} height={300} /> 
 
         <div className='mt-3 mb-t' >
           <div> {t('donateAddress')}:{' '} <ShowAddress address={process.env.NEXT_PUBLIC_DONATION as string} /></div>

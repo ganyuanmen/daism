@@ -52,271 +52,236 @@ export interface SaveFollowParams {
 }
 
 /**
- * 查询单条关注记录
- * @param params 包含 actorAccount 和 userAccount 的参数对象
- * @returns 关注记录对象，未找到时返回空对象
+ * Validate that all required user fields are present for saveFollow.
  */
-export async function getFollow(params: FollowParams): Promise<FollowRecord | {}> {
-  const { actorAccount, userAccount } = params;
-  
-  if (!actorAccount || !userAccount) {
-    console.warn('getFollow: Missing required parameters');
-    return {};
-  }
-  
-  try {
-    const re = await getData<FollowRecord>(
-      'SELECT id, follow_id, actor_account, actor_url, actor_inbox, actor_avatar, ' +
-      'user_account, user_url, user_avatar, user_inbox, user_domain, createtime ' +
-      'FROM a_follow WHERE actor_account=? AND user_account=?',
-      [actorAccount, userAccount]
-    );
-    
-    return Array.isArray(re) && re.length ? re[0] : {};
-  } catch (error) {
-    console.error('getFollow error:', error);
-    return {};
-  }
+function validateSaveFollowUser(user: SaveFollowParams['user']): string | null {
+  if (!user.account || typeof user.account !== 'string') return 'Missing user.account';
+  if (!user.url || typeof user.url !== 'string') return 'Missing user.url';
+  if (!user.avatar || typeof user.avatar !== 'string') return 'Missing user.avatar';
+  if (!user.inbox || typeof user.inbox !== 'string') return 'Missing user.inbox';
+  return null;
 }
 
 /**
- * 查询 actor 的粉丝集（谁关注我）
- * @param params 包含 account 的参数对象
- * @returns 粉丝记录数组
+ * Query a single follow record.
+ * Returns null if no matching record is found.
+ */
+export async function getFollow(params: FollowParams): Promise<FollowRecord | null> {
+  const { actorAccount, userAccount } = params;
+
+  if (!actorAccount || !userAccount) {
+    console.warn('getFollow: Missing required parameters');
+    return null;
+  }
+
+  const re = await getData<FollowRecord>(
+    'SELECT id, follow_id, actor_account, actor_url, actor_inbox, actor_avatar, ' +
+    'user_account, user_url, user_avatar, user_inbox, user_domain, createtime ' +
+    'FROM a_follow WHERE actor_account=? AND user_account=?',
+    [actorAccount, userAccount]
+  );
+
+  return Array.isArray(re) && re.length ? re[0] : null;
+}
+
+/**
+ * Query followers of an actor (who follows me).
  */
 export async function getFollowers(params: FollowParams): Promise<FollowRecord[]> {
   const { account } = params;
-  
+
   if (!account) {
     console.warn('getFollowers: Missing account parameter');
     return [];
   }
-  
-  try {
-    const sql = 'SELECT id, follow_id, actor_account, actor_url, actor_inbox, actor_avatar, ' +
-                'user_account, user_url, user_avatar, user_inbox, user_domain, createtime ' +
-                'FROM a_follow WHERE actor_account=?';
-    const re = await getData<FollowRecord>(sql, [account]);
-    return Array.isArray(re) ? re : [];
-  } catch (error) {
-    console.error('getFollowers error:', error);
-    return [];
-  }
+
+  const sql = 'SELECT id, follow_id, actor_account, actor_url, actor_inbox, actor_avatar, ' +
+              'user_account, user_url, user_avatar, user_inbox, user_domain, createtime ' +
+              'FROM a_follow WHERE actor_account=?';
+  const re = await getData<FollowRecord>(sql, [account]);
+  return Array.isArray(re) ? re : [];
 }
 
 /**
- * 查询 actor 的粉丝集（排除本域名）
- * @param params 包含 account 的参数对象
- * @returns 粉丝记录数组（排除本域名）
+ * Query followers of an actor, excluding records from the local domain.
  */
-export async function getFollowers_send(params: FollowParams): Promise<FollowRecord[]> {
+export async function getFollowersExcludeDomain(params: FollowParams): Promise<FollowRecord[]> {
   const { account } = params;
-  
+
   if (!account) {
-    console.warn('getFollowers_send: Missing account parameter');
+    console.warn('getFollowersExcludeDomain: Missing account parameter');
     return [];
   }
-  
-  try {
-    const domain = process.env.NEXT_PUBLIC_DOMAIN;
-    const sql = 'SELECT id, follow_id, actor_account, actor_url, actor_inbox, actor_avatar, ' +
-                'user_account, user_url, user_avatar, user_inbox, user_domain, createtime ' +
-                'FROM a_follow WHERE actor_account=? AND user_domain!=?';
-    const re = await getData<FollowRecord>(sql, [account, domain || '']);
-    return Array.isArray(re) ? re : [];
-  } catch (error) {
-    console.error('getFollowers_send error:', error);
-    return [];
+
+  const domain = process.env.NEXT_PUBLIC_DOMAIN;
+
+  if (!domain) {
+    // Environment variable missing — log warning and fall back to no domain filter
+    console.warn('getFollowersExcludeDomain: NEXT_PUBLIC_DOMAIN not set, falling back to no domain filter');
+    return getFollowers(params);
   }
+
+  const sql = 'SELECT id, follow_id, actor_account, actor_url, actor_inbox, actor_avatar, ' +
+              'user_account, user_url, user_avatar, user_inbox, user_domain, createtime ' +
+              'FROM a_follow WHERE actor_account=? AND user_domain!=?';
+  const re = await getData<FollowRecord>(sql, [account, domain]);
+  return Array.isArray(re) ? re : [];
 }
 
 /**
- * 查询我关注谁（动态 SQL）
- * @param params 包含 account 的参数对象
- * @returns 动态查询结果
+ * Query who I follow (dynamic SQL from aux_tree).
  */
-export async function getFollow0(params: FollowParams): Promise<any> {
+export async function getFolloweesDynamic(params: FollowParams): Promise<any> {
   const { account } = params;
-  
+
   if (!account) {
-    console.warn('getFollow0: Missing account parameter');
+    console.warn('getFolloweesDynamic: Missing account parameter');
     return [];
   }
-  
-  try {
-    return await getJsonArray('follow0', [account]);
-  } catch (error) {
-    console.error('getFollow0 error:', error);
-    return [];
-  }
+
+  return await getJsonArray('follow0', [account]);
 }
 
 /**
- * 查询谁关注我（动态 SQL）
- * @param params 包含 account 的参数对象
- * @returns 动态查询结果
+ * Query who follows me (dynamic SQL from aux_tree).
  */
-export async function getFollow1(params: FollowParams): Promise<any> {
+export async function getFollowersDynamic(params: FollowParams): Promise<any> {
   const { account } = params;
-  
+
   if (!account) {
-    console.warn('getFollow1: Missing account parameter');
+    console.warn('getFollowersDynamic: Missing account parameter');
     return [];
   }
-  
-  try {
-    return await getJsonArray('follow1', [account]);
-  } catch (error) {
-    console.error('getFollow1 error:', error);
-    return [];
-  }
+
+  return await getJsonArray('follow1', [account]);
 }
 
 /**
- * 我打赏谁
- * @param params 包含 manager 的参数对象
- * @returns 打赏记录数组
+ * Query tips I've sent (who I tipped).
  */
 export async function getTipFrom(params: FollowParams): Promise<TipRecord[]> {
   const { manager } = params;
-  
+
   if (!manager) {
     console.warn('getTipFrom: Missing manager parameter');
     return [];
   }
-  
-  try {
-    const re = await getData<TipRecord>(
-      'SELECT id, token_to, utoken, actor_account, avatar, message_id, dao_id, _time ' +
-      'FROM v_tip WHERE token_to=? ORDER BY id DESC', 
-      [manager]
-    );
-    return Array.isArray(re) ? re : [];
-  } catch (error) {
-    console.error('getTipFrom error:', error);
-    return [];
-  }
+
+  const re = await getData<TipRecord>(
+    'SELECT id, token_to, utoken, actor_account, avatar, message_id, dao_id, _time ' +
+    'FROM v_tip WHERE token_to=? ORDER BY id DESC',
+    [manager]
+  );
+  return Array.isArray(re) ? re : [];
 }
 
 /**
- * 谁打赏我
- * @param params 包含 manager 的参数对象
- * @returns 打赏记录数组
+ * Query tips I've received (who tipped me).
  */
 export async function getTipToMe(params: FollowParams): Promise<TipRecord[]> {
   const { manager } = params;
-  
+
   if (!manager) {
     console.warn('getTipToMe: Missing manager parameter');
     return [];
   }
-  
-  try {
-    const re = await getData<TipRecord>(
-      'SELECT id, tip_to, utoken, actor_account, avatar, message_id, dao_id, _time ' +
-      'FROM v_tip_tome WHERE tip_to=? ORDER BY id DESC', 
-      [manager]
-    );
-    return Array.isArray(re) ? re : [];
-  } catch (error) {
-    console.error('getTipToMe error:', error);
-    return [];
-  }
+
+  const re = await getData<TipRecord>(
+    'SELECT id, tip_to, utoken, actor_account, avatar, message_id, dao_id, _time ' +
+    'FROM v_tip_tome WHERE tip_to=? ORDER BY id DESC',
+    [manager]
+  );
+  return Array.isArray(re) ? re : [];
 }
 
 /**
- * 查询我关注的偶像集
- * @param params 包含 account 的参数对象
- * @returns 关注记录数组
+ * Query the list of people I follow.
  */
 export async function getFollowees(params: FollowParams): Promise<FollowRecord[]> {
   const { account } = params;
-  
+
   if (!account) {
     console.warn('getFollowees: Missing account parameter');
     return [];
   }
-  
-  try {
-    const sql = 'SELECT id, follow_id, actor_account, actor_url, actor_inbox, actor_avatar, ' +
-                'user_account, user_url, user_avatar, user_inbox, user_domain, createtime ' +
-                'FROM v_follow WHERE user_account=?';
-    const re = await getData<FollowRecord>(sql, [account]);
-    return Array.isArray(re) ? re : [];
-  } catch (error) {
-    console.error('getFollowees error:', error);
-    return [];
-  }
+
+  const sql = 'SELECT id, follow_id, actor_account, actor_url, actor_inbox, actor_avatar, ' +
+              'user_account, user_url, user_avatar, user_inbox, user_domain, createtime ' +
+              'FROM v_follow WHERE user_account=?';
+  const re = await getData<FollowRecord>(sql, [account]);
+  return Array.isArray(re) ? re : [];
 }
 
 /**
- * 保存关注
- * @param params 包含 actor, user 和 followId 的参数对象
- * @returns 影响的行数
+ * Save a follow relationship.
+ * Validates all required fields in the user object.
+ *
+ * @param params - Contains actor, user, and followId
+ * @returns Number of affected rows
+ * @throws Error if required fields are missing
  */
 export async function saveFollow(params: SaveFollowParams): Promise<number> {
   const { actor, user, followId } = params;
-  
-  if (!user?.account || !followId) {
-    console.warn('saveFollow: Missing required parameters');
-    return 0;
+
+  // Validate all required user fields, not just account
+  const validationError = validateSaveFollowUser(user);
+  if (validationError) {
+    throw new Error(`saveFollow: ${validationError}`);
   }
-  
+
+  if (!followId) {
+    throw new Error('saveFollow: Missing followId');
+  }
+
   // Validate and extract domain from user account
   const accountParts = user.account.split('@');
   if (accountParts.length < 2) {
-    console.warn('saveFollow: Invalid user account format');
-    return 0;
+    throw new Error('saveFollow: Invalid user account format (expected username@domain)');
   }
-  
+
   const domain = accountParts[1];
-  
-  try {
-    const affectedRows = await execute(
-      `INSERT INTO a_follow(
-        follow_id, actor_account, actor_url, actor_inbox, actor_avatar,
-        user_account, user_url, user_avatar, user_inbox, user_domain
-      ) VALUES(?,?,?,?,?,?,?,?,?,?)`,
-      [
-        followId,
-        actor?.account || '',
-        actor?.url || '',
-        actor?.inbox || '',
-        actor?.avatar || '',
-        user.account,
-        user.url,
-        user.avatar,
-        user.inbox,
-        domain,
-      ]
-    );
-    
-    return affectedRows;
-  } catch (error) {
-    console.error('saveFollow error:', error);
-    return 0;
-  }
+
+  const affectedRows = await execute(
+    `INSERT INTO a_follow(
+      follow_id, actor_account, actor_url, actor_inbox, actor_avatar,
+      user_account, user_url, user_avatar, user_inbox, user_domain
+    ) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+    [
+      followId,
+      actor?.account || '',
+      actor?.url || '',
+      actor?.inbox || '',
+      actor?.avatar || '',
+      user.account,
+      user.url,
+      user.avatar,
+      user.inbox,
+      domain,
+    ]
+  );
+
+  return affectedRows;
 }
 
 /**
- * 删除关注
- * @param followId 关注ID
- * @returns 影响的行数
+ * Remove a follow relationship.
+ *
+ * @param followId - The follow ID to remove
+ * @returns Number of affected rows
  */
 export async function removeFollow(followId: string): Promise<number> {
   if (!followId) {
-    console.warn('removeFollow: Missing followId parameter');
-    return 0;
+    throw new Error('removeFollow: Missing followId parameter');
   }
-  
-  try {
-    const affectedRows = await execute('DELETE FROM a_follow WHERE follow_id=?', [followId]);
-    return affectedRows;
-  } catch (error) {
-    console.error('removeFollow error:', error);
-    return 0;
-  }
+
+  const affectedRows = await execute('DELETE FROM a_follow WHERE follow_id=?', [followId]);
+  return affectedRows;
 }
 
 // Export types for external use
 export type { FollowRecord as FollowType, TipRecord as TipType };
+
+// Backward-compatible aliases for existing imports
+export { getFollowersExcludeDomain as getFollowers_send };
+export { getFolloweesDynamic as getFollow0 };
+export { getFollowersDynamic as getFollow1 };

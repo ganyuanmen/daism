@@ -21,7 +21,8 @@ import {
 import { httpGet } from '@/lib/net';
 
 // 定义 methods 类型
-type MethodFn = (params: Record<string, any>) => Promise<any>;
+// type MethodFn = (params: Record<string, any>) => Promise<any>;
+type MethodFn = (params: any) => Promise<any>;
 
 const methods: Record<string, MethodFn> = {
   getDaosData,

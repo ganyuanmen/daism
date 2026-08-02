@@ -76,15 +76,23 @@ export async function createMess(postbody:ActivityPubBody,name:string,actor:Acto
         else { //回复
             let sctype='';
             let re:EnkiMessType;
-            if(replyType.includes('communities/enki')){ //是enki 服务推送的
-            const ids=replyType.split('/');
-            const id=ids[ids.length-1];
-                sctype=ids[ids.length-2]==='enki'?'sc':'';
-                re=await getOneByMessageId(id,replyType,sctype) as EnkiMessType;
-            }
-            else { // 非enki 服务推送的
-                re=await getOne({id:replyType,sctype:''}) as EnkiMessType;
-            }
+            // if(replyType.includes('communities/enki')){ //是enki 服务推送的
+            // const ids=replyType.split('/');
+            // const id=ids[ids.length-1];
+            //     sctype=ids[ids.length-2]==='enki'?'sc':'';
+            //     re=await getOneByMessageId(id,replyType,sctype) as EnkiMessType;
+            // }
+            if (replyType.includes('communities/enki')) {
+            const ids = replyType.split('/');
+            const id = ids[ids.length - 1];
+            sctype = ids[ids.length - 2] === 'enki' ? 'sc' : '';
+            re = await getOneByMessageId({ id1: id, id2: replyType, sctype }) as EnkiMessType;
+          } else {
+            re = await getOne({ id: replyType, sctype: '' }) as EnkiMessType;
+          }
+            // else { // 非enki 服务推送的
+            //     re=await getOne({id:replyType,sctype:''}) as EnkiMessType;
+            // }
                 
             if(re.message_id && re?.is_discussion===1 ) //允许讨论
             {
@@ -239,15 +247,21 @@ export async function follow(postbody:ActivityPubBody,name:string,domain:string,
         if(!actor.inbox) return  `no found for ${postbody.actor}`;
         if(user?.name?.toLowerCase()!==name.toLowerCase() || user?.domain?.toLowerCase()!==domain.toLowerCase()) return 'activity error ';
         const thebody=createAccept(postbody,name,domain);
-        const follow=await getFollow({actorAccount:user.account,userAccount:actor?.account}); // 注：是actor 关注user
+        // const follow=await getFollow({actorAccount:user.account,userAccount:actor?.account}); // 注：是actor 关注user
         // let localUser=await getUser('actor_account',user.account,'privkey,dao_id')
         
         // Type-safe check for follow record
-        if ('follow_id' in follow && follow.follow_id) { 
+        // if ('follow_id' in follow && follow.follow_id) { 
+          // console.info("已关注"); //已关注
+          // await removeFollow(follow.follow_id);
+        // } 
+        const follow = await getFollow({actorAccount:user.account,userAccount:actor?.account});
+
+// Type-safe check for follow record
+        if (follow?.follow_id) { 
           console.info("已关注"); //已关注
           await removeFollow(follow.follow_id);
-        } 
-        
+        }
         const lok=await saveFollow({actor:user,user:actor,followId:postbody.id || ''});// 被他人关注 
         if(lok)
         {

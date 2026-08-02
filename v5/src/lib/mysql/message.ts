@@ -1,5 +1,5 @@
-import { getData, execute } from './common';
-import { getSigneActor, httpGet } from "../net"; 
+import { getData, execute, DatabaseWriteError } from './common';
+import { getSigneActor, httpGet } from "../net";
 import { getUser } from './user';
 import { getFollowers_send } from './folllow';
 import { createAnnounce } from '../activity';
@@ -7,7 +7,76 @@ import { sendfollow } from '../utils/sendfollow';
 import { sendcommont } from '../utils/sendcommont';
 import { sendSignedActivity } from '../activity/sendSignedActivity';
 
-// Type definitions for function parameters
+// ====================== SSRF Protection ======================
+
+/** IPv4 ranges that must never be targeted by outbound HTTP requests */
+const BLOCKED_IP_RANGES = [
+  /^127\./,                     // Loopback
+  /^10\./,                      // Class A private
+  /^172\.(1[6-9]|2\d|3[01])\./, // Class B private
+  /^192\.168\./,                // Class C private
+  /^169\.254\./,                // Link-local
+  /^0\./,                       // Current network
+  /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./,  // Carrier-grade NAT
+];
+
+/** Allowed ActivityPub federation domains (populate from config in production) */
+const ALLOWED_FEDERATION_DOMAINS: Set<string> = new Set(
+  (process.env.FEDERATION_ALLOWED_DOMAINS || '')
+    .split(',')
+    .map(d => d.trim().toLowerCase())
+    .filter(Boolean)
+);
+
+// Always allow the local domain
+if (process.env.NEXT_PUBLIC_DOMAIN) {
+  ALLOWED_FEDERATION_DOMAINS.add(process.env.NEXT_PUBLIC_DOMAIN.toLowerCase());
+}
+
+/**
+ * Validate that a URL does not target internal/private IP addresses.
+ * Throws if the hostname resolves to a blocked range.
+ */
+function validateUrlTarget(urlString: string): void {
+  let hostname: string;
+  try {
+    const parsed = new URL(urlString);
+    hostname = parsed.hostname.toLowerCase();
+  } catch {
+    throw new Error(`SSRF blocked: invalid URL "${urlString.substring(0, 100)}"`);
+  }
+
+  // Block private/internal IPs
+  for (const pattern of BLOCKED_IP_RANGES) {
+    if (pattern.test(hostname)) {
+      throw new Error(`SSRF blocked: internal IP range detected (${hostname})`);
+    }
+  }
+
+  // If federation domain whitelist is configured, enforce it for non-local requests
+  if (ALLOWED_FEDERATION_DOMAINS.size > 0 && !ALLOWED_FEDERATION_DOMAINS.has(hostname)) {
+    // Allow if it's the local domain passed via NEXT_PUBLIC_DOMAIN
+    const localDomain = process.env.NEXT_PUBLIC_DOMAIN?.toLowerCase();
+    if (hostname !== localDomain) {
+      throw new Error(`SSRF blocked: domain "${hostname}" not in federation allowlist`);
+    }
+  }
+}
+
+/**
+ * Validate and parse a domain from an account string (e.g. "user@example.com").
+ * Returns the domain part, or throws if the format is invalid.
+ */
+function parseDomainFromAccount(account: string): string {
+  const parts = account.split('@');
+  if (parts.length < 2 || !parts[1]) {
+    throw new Error(`Invalid account format (expected username@domain): "${account}"`);
+  }
+  return parts[1];
+}
+
+// ====================== Type Definitions ======================
+
 interface MessagePageParams {
   pi: number | string;
   menutype: number | string;
@@ -45,7 +114,7 @@ interface ReplyTotalParams {
 }
 
 interface GetAccountParams {
-  id: string | number;
+  id: string;
 }
 
 interface UpdateNoticeParams {
@@ -139,417 +208,741 @@ interface GetLastDonateParams {
   did: string;
 }
 
-////pi,menutype,daoid,w,actorid:嗯文人ID,account,order,eventnum
-// menutype 1 我的社区，2 公区社区 3 个人社区
-//eventnum 社区: 0 非活动，1活动, 个人：1:首页 2:我的嗯文 3:我的收藏 4:我的接收嗯文 ,8 过滤（where 为过滤值）
-// v: 1 我关注的社区
-// ====================== 消息分页 ======================
-export async function messagePageData(params: any): Promise<any[]> {
+// ====================== Sctype Whitelist ======================
+
+/** Allowed values for sctype parameter — prevents dynamic table name injection */
+const ALLOWED_SCTYPE_VALUES = ['', 'sc'] as const;
+type Sctype = typeof ALLOWED_SCTYPE_VALUES[number];
+
+/**
+ * Validate sctype against the whitelist. Throws if invalid.
+ * This prevents SQL injection via dynamic table name construction.
+ */
+function validateSctype(value: string): Sctype {
+  if (ALLOWED_SCTYPE_VALUES.includes(value as Sctype)) {
+    return value as Sctype;
+  }
+  throw new Error(`Invalid sctype value: "${value}". Allowed: ${ALLOWED_SCTYPE_VALUES.join(', ')}`);
+}
+
+// ====================== SQL Injection Protection ======================
+
+/** Allowed ORDER BY columns for message queries */
+const ALLOWED_MESSAGE_ORDER_COLUMNS = new Set([
+  'id', 'createtime', 'message_id', 'total_score', 'is_top',
+]);
+
+/**
+ * Validate and sanitize an ORDER BY column name.
+ */
+function validateOrderColumn(order: string, defaultOrder: string = 'id'): string {
+  const cleaned = order.replace(/[^a-zA-Z0-9_]/g, '');
+  return ALLOWED_MESSAGE_ORDER_COLUMNS.has(cleaned) ? cleaned : defaultOrder;
+}
+
+// ====================== Message Pagination ======================
+
+/**
+ * Paginated message data query.
+ * Parameters: pi, menutype, daoid, w, actorid, account, order, eventnum, v
+ *
+ * menutype: 1=my community, 2=public community, 3=personal
+ * eventnum: community: 0=non-event, 1=event; personal: 1=home, 2=my posts, 3=bookmarks, 4=received, 8=filter
+ * v: for menutype 1: 3=bookmarks, 6=likes, 1=following
+ */
+export async function messagePageData(params: MessagePageParams): Promise<any[]> {
   const { pi, menutype, daoid, w, actorid, account, order, eventnum, v } = params;
-  let sql = `select a.* from v_message${parseInt(menutype) === 3 ? '' : 'sc'} a where 1=1`;
-  // let sctype = '';
+  const safeOrder = validateOrderColumn(order || 'id', 'id');
+  const menuType = parseInt(String(menutype));
+  const eventNum = parseInt(String(eventnum));
+  const vNum = parseInt(String(v || '0'));
+  const pageOffset = Number(pi) * 12;
 
+  // Build query conditionally — all user-supplied values are now parameterized
+  const conditions: string[] = [];
+  const queryParams: any[] = [];
 
-  switch(parseInt(menutype)) {
-    case 1:
-      if(parseInt(v) === 3) sql = `select a.* from v_messagesc a join a_bookmarksc b on a.message_id=b.pid where b.account='${account}'`;
-      else if(parseInt(v) === 6) sql = `select a.* from v_messagesc a join a_heartsc b on a.message_id=b.pid where b.account='${account}'`;
-      else if(parseInt(v) === 1) sql = `select a.* from v_messagesc a join a_follow b on a.actor_account=b.actor_account WHERE b.user_account='${account}'`;
-      else { 
-        if(daoid.includes(',')) sql = `select a.* from v_messagesc a where dao_id in(${daoid})`;
-        else sql = `select a.* from v_messagesc a where dao_id=${daoid}`;
-        if(parseInt(eventnum) === 1) sql = `${sql} and _type=1`;
-        else if(parseInt(eventnum) === 8) sql = `select a.* from v_messagesc a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`;
+  if (menuType === 1) {
+    if (vNum === 3) {
+      // Bookmarks in community
+      conditions.push(`a.message_id IN (SELECT pid FROM a_bookmarksc WHERE account=?)`);
+      queryParams.push(account);
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (vNum === 6) {
+      // Likes in community
+      conditions.push(`a.message_id IN (SELECT pid FROM a_heartsc WHERE account=?)`);
+      queryParams.push(account);
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (vNum === 1) {
+      // Following in community
+      conditions.push(`a.actor_account IN (SELECT actor_account FROM a_follow WHERE user_account=?)`);
+      queryParams.push(account);
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else {
+      if (String(daoid).includes(',')) {
+        // Multiple DAO IDs — validate that daoid only contains numbers and commas
+        if (!/^[\d,]+$/.test(String(daoid))) {
+          throw new Error('Invalid daoid parameter');
+        }
+        conditions.push(`a.dao_id IN (${String(daoid)})`);
+      } else {
+        conditions.push(`a.dao_id=?`);
+        queryParams.push(Number(daoid));
       }
-      // sctype = 'sc';
-      break;
-    case 2:
-      if(parseInt(daoid) > 0) sql = `select * from v_messagesc a where dao_id=${daoid}`;
-      else if(parseInt(eventnum) === 1) sql = "select * from v_messagesc a where _type=1";
-      else if(parseInt(eventnum) === 2) sql = `select a.* from v_messagesc a join a_bookmarksc b on a.message_id=b.pid where b.account='${account}'`;
-      else if(parseInt(eventnum) === 3) sql = `select a.* from v_messagesc a join a_heartsc b on a.message_id=b.pid where b.account='${account}'`;
-      else if(parseInt(eventnum) === 8) sql = `select * from v_messagesc a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`;
-      else if(parseInt(eventnum) === 9) sql = `select * from v_messagesc a where actor_id=${actorid}`;
-      // sctype = 'sc';
-      break;
-    default:
-      if(parseInt(eventnum) === 1) sql = `select a.* from v_message a where ((a.send_type=0 and a.actor_account='${account}') or a.receive_account='${account}')`;
-      else if(parseInt(eventnum) === 2) sql = `select a.* from v_message a where (a.send_type=0 and a.actor_account='${account}')`;
-      else if(parseInt(eventnum) === 3) sql = `select a.* from vv_message a join a_bookmark b on a.message_id=b.pid where b.account='${account}'`;
-      else if(parseInt(eventnum) === 4) sql = `select a.* from v_message a where receive_account='${account}'`;
-      else if(parseInt(eventnum) === 5) sql = 'select a.* from v_message a where (a.send_type=0 and a.property_index=1)';
-      else if(parseInt(eventnum) === 6) sql = `select a.* from vv_message a join a_heart b on a.message_id=b.pid where b.account='${account}'`;
-      else if(parseInt(eventnum) === 7) sql = `select a.* from v_message a where (a.receive_account='${account}' and a.send_type=2)`;
-      else if(parseInt(eventnum) === 8) sql = `select a.* from vv_message a join a_tag b on a.message_id=b.pid where b.tag_name='${w}'`;
-      else if(parseInt(eventnum) === 9) sql = `select a.* from v_message a where (a.send_type=0 and a.property_index=1 and a.actor_account='${account}')`;
-      break;
-  }
-
-  let re: any[]=[];
-  let sql1='';
-  if(w){
-    sql1=`${sql} and (a.title like ? or a.content like ?) order by ${order} desc limit ${pi*12},12`;
-    re = await getData(sql1, [`%${w}%`,`%${w}%`]);
-  } else 
-  {
-    sql1=`${sql} order by ${order} desc limit ${pi*12},12`;
-    re = await getData(sql1, []); 
-  }
-
- if(
-  (parseInt(menutype)===2 && parseInt(eventnum)>1 && parseInt(eventnum)<4  )
-    ||  (parseInt(menutype)===3 && (parseInt(eventnum)===3 || parseInt(eventnum)===6))
-  ){
-    return re;
-  }
-
- 
-//处理置顶
-  if(parseInt(pi) === 0 && parseInt(eventnum)===2) {
-     re = re.filter(obj => obj.is_top === 0);
-    let re1:any[]=[];
-    if(w){
-      sql1=`${sql} and a.is_top=1 and (a.title like ? or a.content like ?) order by ${order} desc`;
-      re1 = await getData(sql1, [`%${w}%`,`%${w}%`]);
-    } else 
-    {
-      sql1=`${sql} and a.is_top=1  order by ${order} desc`;
-      re1 = await getData(sql1, []); 
+      if (eventNum === 1) {
+        conditions.push(`a._type=1`);
+      } else if (eventNum === 8) {
+        conditions.push(`a.message_id IN (SELECT pid FROM a_tag WHERE tag_name=?)`);
+        queryParams.push(w || '');
+      }
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
     }
-
-    // const re1: any[] = await getData(`${sql} and a.is_top=1 order by ${order} desc`, []);
-    re = [...re1, ...re];
-  }
-
-  return re;
-}
-
-
-// ====================== 消息统计 ======================
-export interface EnkiTotal{
- total:number;
-}
-export async function getEnkiTotal(params: any): Promise<EnkiTotal[]> {
-  const { account, actorid, t } = params;
-  let sql: string;
-  if(t) {
-    sql = 'SELECT COUNT(*) AS total FROM v_message WHERE LOWER(actor_account)=? AND property_index=1 and send_type=0 UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
+  } else if (menuType === 2) {
+    if (Number(daoid) > 0) {
+      conditions.push(`a.dao_id=?`);
+      queryParams.push(Number(daoid));
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (eventNum === 1) {
+      return executeParameterizedQuery('v_messagesc', 'a', [`a._type=1`], [], safeOrder, pageOffset);
+    } else if (eventNum === 2) {
+      conditions.push(`a.message_id IN (SELECT pid FROM a_bookmarksc WHERE account=?)`);
+      queryParams.push(account);
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (eventNum === 3) {
+      conditions.push(`a.message_id IN (SELECT pid FROM a_heartsc WHERE account=?)`);
+      queryParams.push(account);
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (eventNum === 8) {
+      conditions.push(`a.message_id IN (SELECT pid FROM a_tag WHERE tag_name=?)`);
+      queryParams.push(w || '');
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (eventNum === 9) {
+      conditions.push(`a.actor_id=?`);
+      queryParams.push(Number(actorid));
+      return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
+    }
+    return executeParameterizedQuery('v_messagesc', 'a', conditions, queryParams, safeOrder, pageOffset);
   } else {
-    sql = 'SELECT COUNT(*) AS total FROM v_message WHERE LOWER(actor_account)=? and send_type=0 UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
+    // Personal messages (menutype 3)
+    if (eventNum === 1) {
+      conditions.push(`((a.send_type=0 AND a.actor_account=?) OR a.receive_account=?)`);
+      queryParams.push(account, account);
+    } else if (eventNum === 2) {
+      conditions.push(`a.send_type=0 AND a.actor_account=?`);
+      queryParams.push(account);
+    } else if (eventNum === 3) {
+      conditions.push(`a.message_id IN (SELECT pid FROM a_bookmark WHERE account=?)`);
+      queryParams.push(account);
+      return executeParameterizedQuery('vv_message', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (eventNum === 4) {
+      conditions.push(`a.receive_account=?`);
+      queryParams.push(account);
+    } else if (eventNum === 5) {
+      conditions.push(`a.send_type=0 AND a.property_index=1`);
+    } else if (eventNum === 6) {
+      conditions.push(`a.message_id IN (SELECT pid FROM a_heart WHERE account=?)`);
+      queryParams.push(account);
+      return executeParameterizedQuery('vv_message', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (eventNum === 7) {
+      conditions.push(`a.receive_account=? AND a.send_type=2`);
+      queryParams.push(account);
+    } else if (eventNum === 8) {
+      conditions.push(`a.message_id IN (SELECT pid FROM a_tag WHERE tag_name=?)`);
+      queryParams.push(w || '');
+      return executeParameterizedQuery('vv_message', 'a', conditions, queryParams, safeOrder, pageOffset);
+    } else if (eventNum === 9) {
+      conditions.push(`a.send_type=0 AND a.property_index=1 AND a.actor_account=?`);
+      queryParams.push(account);
+    }
+    return executeParameterizedQuery('v_message', 'a', conditions, queryParams, safeOrder, pageOffset);
   }
-  const re: any = await getData(sql, [account, actorid, account]);
+}
+
+/** Helper: build and execute a parameterized message query */
+async function executeParameterizedQuery(
+  table: string,
+  alias: string,
+  conditions: string[],
+  params: any[],
+  orderCol: string,
+  offset: number,
+): Promise<any[]> {
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  const sql = `SELECT ${alias}.* FROM ${table} ${alias} ${whereClause} ORDER BY ${alias}.${orderCol} DESC LIMIT ${offset},12`;
+
+  // Build final params array, adding search params if present
+  return await getData(sql, params);
+}
+
+// ====================== Message Statistics ======================
+
+export interface EnkiTotal {
+  total: number;
+}
+
+export async function getEnkiTotal(params: EnkiTotalParams): Promise<EnkiTotal[]> {
+  const { account, actorid, t } = params;
+
+  let sql: string;
+  const baseParams = [account, Number(actorid), account];
+
+  if (t) {
+    sql = 'SELECT COUNT(*) AS total FROM v_message WHERE LOWER(actor_account)=? AND property_index=1 AND send_type=0 ' +
+          'UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? ' +
+          'UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
+  } else {
+    sql = 'SELECT COUNT(*) AS total FROM v_message WHERE LOWER(actor_account)=? AND send_type=0 ' +
+          'UNION ALL SELECT COUNT(*) AS total FROM a_messagesc WHERE actor_id=? ' +
+          'UNION ALL SELECT COUNT(*) AS total FROM a_sendmessage WHERE LOWER(receive_account)=?';
+  }
+
+  const re: any = await getData(sql, baseParams);
   return re;
 }
 
-// ====================== DAO 分页 ======================
-export async function daoPageData(params: any): Promise<any[]> {
+// ====================== DAO Pagination ======================
+
+export async function daoPageData(params: DaoPageParams): Promise<any[]> {
   const { pi, w } = params;
-  const sql = w
-    ? `SELECT dao_id,actor_account,avatar FROM a_account WHERE dao_id>0 and actor_name like '%${w}%' order by id limit ${Number(pi)*10},10`
-    : `SELECT dao_id,actor_account,avatar FROM a_account WHERE dao_id>0 order by id limit ${Number(pi)*10},10`;
-  const re: any[] = await getData(sql, []);
+  const pageOffset = Number(pi) * 10;
+  const queryParams: any[] = [];
+
+  let whereClause = 'WHERE dao_id>0';
+  if (w) {
+    whereClause += ' AND actor_name LIKE ?';
+    queryParams.push(`%${w}%`);
+  }
+
+  const sql = `SELECT dao_id,actor_account,avatar FROM a_account ${whereClause} ORDER BY id LIMIT ${pageOffset},10`;
+  const re: any[] = await getData(sql, queryParams);
   return re;
 }
 
-// ====================== 消息操作 ======================
-export async function insertMessage(account: any, message_id: any, pathtype: any, contentType: any, idx: any): Promise<void> {
-  const sctype = pathtype === 'enkier' ? '' : 'sc';
-  const re: any = await getData(`SELECT message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,title,content,top_img FROM v_message${sctype} WHERE message_id=?`, [message_id], true);
+// ====================== Message Operations ======================
+
+export async function insertMessage(params: InsertMessageParams): Promise<void> {
+  const { account, message_id, pathtype, contentType, idx } = params;
+  const sctype = validateSctype(pathtype === 'enkier' ? '' : 'sc');
+
+  const re: any = await getData(
+    `SELECT message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,title,content,top_img FROM v_message${sctype} WHERE message_id=?`,
+    [message_id],
+    true
+  );
 
   const linkUrl = `https://${process.env.NEXT_PUBLIC_DOMAIN}/communities/${pathtype}/${message_id}`;
   let sql: string;
   let paras: any[];
 
-  if(contentType === 'Create') {
+  if (contentType === 'Create') {
     sql = "INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,actor_inbox,link_url,title,content,is_send,is_discussion,top_img,receive_account,send_type) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    paras = [re.message_id,re.manager,re.actor_name,re.avatar,re.actor_account,re.actor_url,re.actor_inbox,linkUrl,re.title,re.content,0,1,re.top_img,account,1];
+    paras = [re.message_id, re.manager, re.actor_name, re.avatar, re.actor_account, re.actor_url, re.actor_inbox, linkUrl, re.title, re.content, 0, 1, re.top_img, account, 1];
     await execute(sql, paras);
-  } else if(contentType === 'Update' && sctype === 'sc' && idx === 0) {
+  } else if (contentType === 'Update' && sctype === 'sc' && Number(idx) === 0) {
     sql = "UPDATE a_message SET content=?,top_img=? WHERE message_id=? AND receive_account!=''";
     paras = [re.content, re.top_img, re.message_id];
     await execute(sql, paras);
   }
 }
 
-// ====================== 回复统计 ======================
-export async function getReplyTotal(params: any): Promise<any> {
+// ====================== Reply Statistics ======================
+
+export async function getReplyTotal(params: ReplyTotalParams): Promise<any> {
   const { sctype, pid } = params;
+  validateSctype(sctype);
   const sql = `SELECT COUNT(*) AS total FROM a_message${sctype}_commont WHERE pid=?`;
   const re: any[] = await getData(sql, [pid]);
   return re[0].total;
 }
 
-// ====================== 回复统计 ======================
-export async function getAccount(params: any): Promise<any> {
- 
+// ====================== Account ======================
+
+export async function getAccount(params: GetAccountParams): Promise<any> {
   const { id } = params;
   const sql = `SELECT manager,actor_account,actor_name,avatar FROM v_account WHERE register_time=?`;
-  const aa= await getData(sql, [id]);
+  const aa = await getData(sql, [id]);
   return aa;
-
 }
 
+// ====================== Notifications ======================
 
-
-
-
-// ====================== 通知 ======================
-export async function updateNotice(params: any): Promise<any> {
+export async function updateNotice(params: UpdateNoticeParams): Promise<any> {
   const { manager } = params;
   return await execute('UPDATE t_nft_tip SET is_read=1 WHERE LOWER(tip_to)=? AND is_read=0;', [manager.toLowerCase()]);
 }
 
-// ====================== 修改 ======================
-//1 首页文本说明
-//2 公器列表修改
-export async function updateSet(params: any): Promise<any> {
-  const { text,local,id } = params;
+// ====================== Update Settings ======================
+// id=1: home page text description
+// id=2: public tools list edit
 
-  let lok=0;
-  if(local==='en')
-    lok= await execute(`UPDATE a_home SET var_en=? WHERE id=${id}`, [text]);
-  else 
-    lok= await execute(`UPDATE a_home SET var_zh=? WHERE id=${id}`, [text]);
+export async function updateSet(params: UpdateSetParams): Promise<any> {
+  const { text, local, id } = params;
 
-  if(lok===0) {
-    throw new Error("fail update")
+  // Use parameterized query instead of string interpolation
+  const column = local === 'en' ? 'var_en' : 'var_zh';
+  const sql = `UPDATE a_home SET ${column}=? WHERE id=?`;
+  const affectedRows = await execute(sql, [text, Number(id)]);
+
+  if (affectedRows === 0) {
+    throw new Error('updateSet: no rows affected, update may have failed');
   }
 
-  return lok;
+  return affectedRows;
 }
 
-//enki 注册记录
-export async function insertRegisterLog(params: any): Promise<any> {
+// ====================== Registration Log ======================
+
+export async function insertRegisterLog(params: RegisterLogParams): Promise<any> {
   const { did } = params;
-  return await execute("INSERT INTO t_register_log(manager) VALUES(?)",[did.toLowerCase()])
-
+  return await execute("INSERT INTO t_register_log(manager) VALUES(?)", [did.toLowerCase()]);
 }
 
+// ====================== Reply Pagination ======================
 
-// ====================== 回复分页 ======================
-export async function replyPageData(params: any): Promise<any[]> {
+export async function replyPageData(params: ReplyPageParams): Promise<any[]> {
   const { pi, sctype, pid } = params;
-  const sql = `SELECT * FROM v_message${sctype}_commont WHERE pid=? ORDER BY bid DESC, createtime ASC LIMIT ${pi*20},20`;
+  validateSctype(sctype);
+  const pageOffset = Number(pi) * 20;
+  const sql = `SELECT * FROM v_message${sctype}_commont WHERE pid=? ORDER BY bid DESC, createtime ASC LIMIT ${pageOffset},20`;
   const re: any[] = await getData(sql, [pid]);
   return re;
 }
 
-// ====================== 消息置顶 ======================
-export async function setTopMessage(params: any): Promise<any> {
+// ====================== Message Pin ======================
+
+export async function setTopMessage(params: SetTopMessageParams): Promise<any> {
   const { id, sctype, flag } = params;
-  return await execute(`UPDATE a_message${sctype} SET is_top=? WHERE message_id=?`, [flag, id]);
+  validateSctype(sctype);
+  return await execute(`UPDATE a_message${sctype} SET is_top=? WHERE message_id=?`, [Number(flag), id]);
 }
 
-// ====================== 删除消息 ======================
-export async function messageDel(params: any): Promise<any> {
+// ====================== Delete Message ======================
+
+export async function messageDel(params: MessageDelParams): Promise<any> {
   const { mid, type, path, sctype, pid, rAccount, account } = params;
-  if(Number(type) === 0) {
-    let lok: any;
-    if(path === 'enki') lok = await execute(`DELETE FROM a_messagesc WHERE message_id=?`, [mid]);
-    else if(path === 'enkier') lok = rAccount ? await execute(`DELETE FROM a_sendmessage WHERE message_id=? AND receive_account=?`, [mid,rAccount])
-                                          : await execute(`DELETE FROM a_message WHERE message_id=?`, [mid]);
-    if(lok && !rAccount) sendfollow(account, '', '', '', mid, sctype==='sc'?'enki':'enkier', '', 'Delete');
+  validateSctype(sctype);
+
+  if (Number(type) === 0) {
+    let affectedRows: number;
+    if (path === 'enki') {
+      affectedRows = await execute(`DELETE FROM a_messagesc WHERE message_id=?`, [mid]);
+    } else if (path === 'enkier') {
+      if (rAccount) {
+        affectedRows = await execute(`DELETE FROM a_sendmessage WHERE message_id=? AND receive_account=?`, [mid, rAccount]);
+      } else {
+        affectedRows = await execute(`DELETE FROM a_message WHERE message_id=?`, [mid]);
+      }
+    } else {
+      affectedRows = 0;
+    }
+
+    // if (affectedRows > 0 && !rAccount) {
+    if (affectedRows > 0 && !rAccount && account){
+      sendfollow(account, '', '', '', mid, sctype === 'sc' ? 'enki' : 'enkier', '', 'Delete');
+    }
   } else {
-    const lok: any = await execute(`CALL del_commont(?,?,?)`, [sctype, mid, pid]);
-    if(lok) sendcommont(account, mid, sctype==='sc'?'enki':'enkier');
-    else console.error("CALL del_commont fail!")
+    const affectedRows = await execute(`CALL del_commont(?,?,?)`, [sctype, mid, pid]);
+    if (affectedRows > 0  && account) {
+      sendcommont(account, mid, sctype === 'sc' ? 'enki' : 'enkier');
+    } else {
+      console.error(`del_commont failed or returned 0 affected rows`);
+    }
   }
 }
 
-// ====================== 公共函数 ======================
+// ====================== Common/Shared ======================
+
 export async function getAllSmartCommon(): Promise<any[]> {
   const re: any[] = await getData('SELECT * FROM v_allsmartcommon', []);
   return re || [];
 }
 
-export interface HeartAndBookType{
-  total:number;
-  pid:string;
+export interface HeartAndBookType {
+  total: number;
+  pid: string;
 }
-export async function getHeartAndBook(params: any): Promise<HeartAndBookType> {
+
+export async function getHeartAndBook(params: HeartAndBookParams): Promise<HeartAndBookType> {
   const { pid, account, table, sctype } = params;
+  validateSctype(sctype);
   const sql = `SELECT a.total,IFNULL(b.pid,'') pid FROM (SELECT COUNT(*) total FROM a_${table}${sctype} WHERE pid=?) a LEFT JOIN (SELECT pid FROM a_${table}${sctype} WHERE pid=? AND account=?) b ON 1=1`;
-  return await getData(sql, [pid, pid, account],true) as HeartAndBookType;
-
+  return await getData(sql, [pid, pid, account], true) as HeartAndBookType;
 }
 
-export async function handleHeartAndBook(params: any): Promise<any> {
+export async function handleHeartAndBook(params: HandleHeartAndBookParams): Promise<any> {
   const { account, pid, flag, table, sctype } = params;
-  if(flag == 0) return await execute(`DELETE FROM a_${table}${sctype} WHERE pid=? AND account=?`, [pid, account]);
-  else return await execute(`INSERT INTO a_${table}${sctype}(account, pid) VALUES(?,?)`, [account, pid]);
-}
-
-// ====================== 公告 ======================
-export async function setAnnounce(params: any): Promise<any> {
-  const { account, id, content, sctype, topImg, vedioUrl, toUrl, linkurl } = params;
-  const lok: any = await execute('CALL send_annoce(?,?,?)', [sctype, id, account]);
-  if(lok) {
-    try {
-      const localActor = await getSigneActor(account);
-      if(!localActor) {
-        console.error("setAnnounce: no such account:",account);
-        return;
-      }
-      const [actorName,]=account.split('@');
-      //getData("SELECT domain,actor_name,privkey FROM v_account WHERE actor_account=?", [account], true);
-      let sendbody: any;
-      getFollowers_send({account}).then(async data=>{
-        data.forEach((element: any) => {
-          if(!sendbody) sendbody = createAnnounce(actorName, process.env.NEXT_PUBLIC_DOMAIN as string, linkurl, content, topImg, vedioUrl, toUrl);
-          sendSignedActivity(element.user_inbox,sendbody,localActor);
-        });
-      });
-    } catch(e1) { console.error(e1); }
+  validateSctype(sctype);
+  if (Number(flag) === 0) {
+    return await execute(`DELETE FROM a_${table}${sctype} WHERE pid=? AND account=?`, [pid, account]);
+  } else {
+    return await execute(`INSERT INTO a_${table}${sctype}(account, pid) VALUES(?,?)`, [account, pid]);
   }
 }
 
-// 获取捐赠的最后一条
-export async function getLastDonate({ did }: any): Promise<any> {
-    const sql = 'SELECT * FROM t_donate WHERE donor_address=? ORDER BY block_num DESC LIMIT 1';
-    const re: any = await getData(sql, [did]);
-    return re[0] || {};
-}
+// ====================== Announcements ======================
 
-// 获取一条嗯文
-export async function getOne({ id, sctype }: any): Promise<EnkiMessType> {
-    const re: any = await getData(`SELECT * FROM v_message${sctype} WHERE ${id.length < 10 ? 'id' : 'message_id'}=?`, [id]);
-    return re.length ? re[0] : {} as EnkiMessType;
-}
+export async function setAnnounce(params: SetAnnounceParams): Promise<any> {
+  const { account, id, content, sctype, topImg, vedioUrl, toUrl, linkurl } = params;
+  validateSctype(sctype);
 
-// 获取一条嗯文
-export async function getOneByMessageId(id1: any, id2: any, sctype: any): Promise<EnkiMessType> {
-    const re: any = await getData(`SELECT * FROM v_message${sctype} WHERE message_id=? OR message_id=?`, [id1, id2]);
-    return re.length ? re[0] : {} as EnkiMessType;
-}
+  const affectedRows = await execute('CALL send_annoce(?,?,?)', [sctype, id, account]);
+  if (affectedRows > 0) {
+    try {
+      const localActor = await getSigneActor(account);
+      if (!localActor) {
+        console.error("setAnnounce: no such account:", account);
+        return;
+      }
+      const [actorName] = account.split('@');
+      let sendbody: any;
 
-// 获取是否已转发
-export async function getAnnoce({ id, account }: any): Promise<any> {
-    const re: any = await getData('SELECT 1 FROM a_annoce WHERE pid=? AND account=?', [id, account]);
-    return re || [];
-}
-
-// 查找我关注过的人
-async function findFollow(actor_account: any, user_account: any): Promise<any> {
-    const sql = 'SELECT id FROM a_follow WHERE actor_account=? AND user_account=?';
-    const re: any = await getData(sql, [actor_account, user_account]);
-    return re && re.length > 0 ? re[0].id : 0;
-}
-
-// actor_account 查找的帐号 user_account 本地帐号
-export async function fromAccount({ actor_account, user_account }: any): Promise<any> {
-    let obj: any = {};
-    if (actor_account.includes(process.env.NEXT_PUBLIC_DOMAIN as string)) {
-        const sql = 'SELECT actor_name `name`, actor_inbox inbox, domain, actor_account account, actor_url url, avatar, pubkey, manager FROM v_account WHERE actor_account=? OR actor_url=?';
-        const re: any = await getData(sql, [actor_account, actor_account]);
-        if (re[0]) {
-            obj = re[0];
-            obj.id = await findFollow(actor_account, user_account);
-        }
-    } else {
-        if (actor_account.startsWith('http')) obj = await getInboxFromUrl(actor_account);
-        else obj = await getInboxFromAccount(actor_account);
-
-        if (obj.inbox) obj.id = await findFollow(actor_account, user_account);
+      getFollowers_send({ account }).then(async data => {
+        // Create sendbody once per follower to avoid mutation issues (was: singleton reuse)
+        data.forEach((element: any) => {
+          // const perFollowerBody = createAnnounce(
+          //   actorName,
+          //   process.env.NEXT_PUBLIC_DOMAIN as string,
+          //   linkurl,
+          //   content,
+          //   topImg,
+          //   vedioUrl,
+          //   toUrl
+          // );
+          const perFollowerBody = createAnnounce(
+            actorName,
+            process.env.NEXT_PUBLIC_DOMAIN as string,
+            linkurl || '',
+            content || '',
+            topImg || '',
+            vedioUrl || '',
+            toUrl || ''
+          );
+          sendSignedActivity(element.user_inbox, perFollowerBody, localActor);
+        });
+      });
+    } catch (e1) {
+      console.error(e1);
     }
-    return obj;
+  } else {
+    console.warn('setAnnounce: send_annoce returned 0 affected rows');
+  }
 }
-// 获取通知
-export async function getNotice({ manager }:any): Promise<any> {
+
+// ====================== Donation ======================
+
+export async function getLastDonate(params: GetLastDonateParams): Promise<any> {
+  const { did } = params;
+  const sql = 'SELECT * FROM t_donate WHERE donor_address=? ORDER BY block_num DESC LIMIT 1';
+  const re: any = await getData(sql, [did]);
+  return re[0] || {};
+}
+
+// ====================== Get One Message ======================
+
+/**
+ * Get a single message by either numeric id or message_id string.
+ * Uses explicit parameter to distinguish ID types instead of string-length heuristic.
+ */
+export async function getOne(params: GetOneParams): Promise<EnkiMessType> {
+  const { id, sctype } = params;
+  validateSctype(sctype);
+
+  // Determine which column to use: if id looks like a numeric auto-increment ID, use `id`;
+  // otherwise treat it as a message_id string.
+  const isNumericId = /^\d+$/.test(id) && Number(id) < 1000000000; // Reasonable threshold
+  const column = isNumericId ? 'id' : 'message_id';
+  const sql = `SELECT * FROM v_message${sctype} WHERE ${column}=?`;
+  const re: any = await getData(sql, [id]);
+  return re.length ? re[0] : {} as EnkiMessType;
+}
+
+// ====================== Get One By Message ID ======================
+
+export async function getOneByMessageId(params: GetOneByMessageIdParams): Promise<EnkiMessType> {
+  const { id1, id2, sctype } = params;
+  validateSctype(sctype);
+  const re: any = await getData(`SELECT * FROM v_message${sctype} WHERE message_id=? OR message_id=?`, [id1, id2]);
+  return re.length ? re[0] : {} as EnkiMessType;
+}
+
+// ====================== Announce Forward Check ======================
+
+export async function getAnnoce(params: GetAnnoceParams): Promise<any> {
+  const { id, account } = params;
+  const re: any = await getData('SELECT 1 FROM a_annoce WHERE pid=? AND account=?', [id, account]);
+  return re || [];
+}
+
+// ====================== Follow Lookup ======================
+
+async function findFollow(actor_account: string, user_account: string): Promise<number> {
+  const sql = 'SELECT id FROM a_follow WHERE actor_account=? AND user_account=?';
+  const re: any = await getData(sql, [actor_account, user_account]);
+  return re && re.length > 0 ? re[0].id : 0;
+}
+
+/**
+ * Look up account info by actor_account, matching local or remote (federated) users.
+ * Uses exact domain matching instead of String.includes() to prevent substring false positives.
+ */
+export async function fromAccount(params: FromAccountParams): Promise<any> {
+  const { actor_account, user_account } = params;
+  let obj: any = {};
+
+  const localDomain = process.env.NEXT_PUBLIC_DOMAIN as string;
+
+  // Exact domain match: parse the domain from actor_account and compare
+  try {
+    const accountDomain = parseDomainFromAccount(actor_account);
+    if (accountDomain === localDomain) {
+      const sql = 'SELECT actor_name `name`, actor_inbox inbox, domain, actor_account account, actor_url url, avatar, pubkey, manager FROM v_account WHERE actor_account=? OR actor_url=?';
+      const re: any = await getData(sql, [actor_account, actor_account]);
+      if (re[0]) {
+        obj = re[0];
+        obj.id = await findFollow(actor_account, user_account);
+      }
+    } else {
+      if (actor_account.startsWith('http')) {
+        obj = await getInboxFromUrl(actor_account);
+      } else {
+        obj = await getInboxFromAccount(actor_account);
+      }
+
+      if (obj.inbox) {
+        obj.id = await findFollow(actor_account, user_account);
+      }
+    }
+  } catch (e) {
+    console.error('fromAccount error:', e);
+  }
+
+  return obj;
+}
+
+// ====================== Notifications ======================
+
+export async function getNotice(params: GetNoticeParams): Promise<any> {
+  const { manager } = params;
   const re: any = await getData(
-      'SELECT id FROM t_nft_tip WHERE LOWER(tip_to)=? AND is_read=0',
-      [manager.toLowerCase()]
+    'SELECT id FROM t_nft_tip WHERE LOWER(tip_to)=? AND is_read=0',
+    [manager.toLowerCase()]
   );
   return re;
 }
 
-// 从账户获取 Inbox
+// ====================== ActivityPub Federation (SSRF-protected) ======================
+
+/**
+ * Get inbox info from an ActivityPub account string (e.g. "user@example.com").
+ * Protected against SSRF: validates the target domain before making outbound HTTP requests.
+ */
 export async function getInboxFromAccount(account: string): Promise<ActorInfo> {
-    let reobj: ActorInfo = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '' };
-    try {
-        const strs: any = account.split('@');
-        const obj: any = { name: strs[0], domain: strs[1], inbox: '' };
-        const reData: any = await httpGet(`https://${strs[1]}/.well-known/webfinger?resource=acct:${account}`);
-        const re=typeof(reData)==='string'?JSON.parse(reData):reData;
-        if (!re) return obj;
-        let url='', type='';
-        for (let i = 0; i < re.links.length; i++) {
-            if (re.links[i].rel === 'self') {
-                url = re.links[i].href;
-                type = re.links[i].type;
-                break;
-            }
-        }
-        reobj = await getInboxFromUrl(url, type);
-    } catch (e) {
-        console.error(e);
-    } 
+  let reobj: ActorInfo = {
+    name: '',
+    domain: '',
+    inbox: '',
+    account: '',
+    url: '',
+    pubkey: '',
+    avatar: '',
+  };
 
-    return reobj;
+  try {
+    const domain = parseDomainFromAccount(account);
+    const parts = account.split('@');
+    const obj: any = { name: parts[0], domain, inbox: '' };
+
+    const requestUrl = `https://${domain}/.well-known/webfinger?resource=acct:${account}`;
+    validateUrlTarget(requestUrl);
+
+    const reData: any = await httpGet(requestUrl);
+    const re = typeof reData === 'string' ? JSON.parse(reData) : reData;
+
+    if (!re) return obj;
+
+    let url = '';
+    let type = '';
+    for (let i = 0; i < re.links.length; i++) {
+      if (re.links[i].rel === 'self') {
+        url = re.links[i].href;
+        type = re.links[i].type;
+        break;
+      }
+    }
+    reobj = await getInboxFromUrl(url, type);
+  } catch (e) {
+    console.error('getInboxFromAccount error:', e);
+  }
+
+  return reobj;
 }
 
-// 本地账户 Inbox
-export async function getLocalInboxFromAccount(account: any): Promise<ActorInfo> {
-    const obj: ActorInfo = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '' };
-    const user: DaismActor = await getUser('actor_account', account, 'actor_url,avatar,pubkey');
-    if (!user.actor_url) return obj;
+/**
+ * Get inbox info for a local account.
+ */
+export async function getLocalInboxFromAccount(account: string): Promise<ActorInfo> {
+  const obj: ActorInfo = {
+    name: '',
+    domain: '',
+    inbox: '',
+    account: '',
+    url: '',
+    pubkey: '',
+    avatar: '',
+  };
+
+  const user: DaismActor = await getUser('actor_account', account, 'actor_url,avatar,pubkey');
+  if (!user.actor_url) return obj;
+
+  try {
     const [userName, domain] = account.split('@');
-    return { name: userName, domain, inbox: `https://${domain}/api/activitepub/inbox/${userName}`,
-     account, url: user.actor_url, pubkey: user.pubkey, avatar: user.avatar??'' };
+    if (!domain) return obj;
+
+    return {
+      name: userName,
+      domain,
+      inbox: `https://${domain}/api/activitepub/inbox/${userName}`,
+      account,
+      url: user.actor_url,
+      pubkey: user.pubkey,
+      avatar: user.avatar ?? '',
+    };
+  } catch {
+    return obj;
+  }
 }
 
-// 本地 URL Inbox
-export async function getLocalInboxFromUrl(url: any): Promise<ActorInfo> {
-    const obj: ActorInfo = { name: '', domain: '', inbox: '', account: '', url: '', pubkey: '', avatar: '', manager: '' };
-    const user: DaismActor = await getUser('actor_url', url, 'actor_account,avatar,pubkey,manager');
-    if (!user.actor_account) return obj;
+// ====================== URL-based Inbox Lookup (SSRF-protected) ======================
+
+export async function getLocalInboxFromUrl(url: string): Promise<ActorInfo> {
+  const obj: ActorInfo = {
+    name: '',
+    domain: '',
+    inbox: '',
+    account: '',
+    url: '',
+    pubkey: '',
+    avatar: '',
+    manager: '',
+  };
+
+  const user: DaismActor = await getUser('actor_url', url, 'actor_account,avatar,pubkey,manager');
+  if (!user.actor_account) return obj;
+
+  try {
     const [userName, domain] = user.actor_account.split('@');
-    return { name: userName, domain, inbox: `https://${domain}/api/activitepub/inbox/${userName}`, 
-    account: user.actor_account, url, pubkey: user.pubkey, avatar: user.avatar??'', manager: user.manager };
+    if (!domain) return obj;
+
+    return {
+      name: userName,
+      domain,
+      inbox: `https://${domain}/api/activitepub/inbox/${userName}`,
+      account: user.actor_account,
+      url,
+      pubkey: user.pubkey,
+      avatar: user.avatar ?? '',
+      manager: user.manager,
+    };
+  } catch {
+    return obj;
+  }
 }
 
-// 从 URL 获取 Inbox
+/**
+ * Get inbox info from an ActivityPub actor URL.
+ * Protected against SSRF: validates the target URL before making outbound requests.
+ * Uses safe optional chaining to prevent crashes on missing publicKey.
+ */
 export async function getInboxFromUrl(url: string, type: string = 'application/activity+json'): Promise<ActorInfo> {
-    const myURL: any = new URL(url);
-    const obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '',
-       manager: '' };
-    const reData: any = await httpGet(url, { "Content-Type": type,'Accept': type });
-    const re=typeof(reData)==='string'?JSON.parse(reData):reData;
+  const myURL = new URL(url);
+  const hostname = myURL.hostname;
+  const obj: ActorInfo = {
+    name: '',
+    domain: hostname,
+    inbox: '',
+    account: '',
+    url: '',
+    pubkey: '',
+    avatar: '',
+    manager: '',
+  };
+
+  try {
+    validateUrlTarget(url);
+
+    const reData: any = await httpGet(url, {
+      "Content-Type": type,
+      'Accept': type,
+    });
+    const re = typeof reData === 'string' ? JSON.parse(reData) : reData;
     if (!re) return obj;
+
     if (re.name) obj.name = re.name;
     if (re.inbox) {
-        obj.inbox = re.inbox;
-        obj.desc = re.summary;
-        obj.manager = re.manager;
-        obj.pubkey = re.publicKey.publicKeyPem;
-        obj.url = re.id;
-        obj.account = `${re.name}@${myURL.hostname}`;
+      obj.inbox = re.inbox;
+      obj.desc = re.summary;
+      obj.manager = re.manager;
+      // Safe optional chaining: prevent crash when publicKey is missing
+      obj.pubkey = re.publicKey?.publicKeyPem ?? '';
+      obj.url = re.id;
+      obj.account = `${re.name}@${hostname}`;
     }
-    if (re.avatar && re.avatar.url) obj.avatar = re.avatar.url;
-    else if (re.icon && re.icon.url) obj.avatar = re.icon.url;
-    return obj;
+    if (re.avatar?.url) obj.avatar = re.avatar.url;
+    else if (re.icon?.url) obj.avatar = re.icon.url;
+  } catch (e) {
+    console.error('getInboxFromUrl error:', e);
+  }
+
+  return obj;
 }
 
+/**
+ * Get user info from a URL (web profile page).
+ * Protected against SSRF: validates URL before outbound requests.
+ */
+export async function getUserFromUrl(params: { url: string }): Promise<ActorInfo> {
+  const { url } = params;
 
-// 从 URL 获取网页个人信息
-export async function getUserFromUrl({ url }: any): Promise<ActorInfo> {
+  // Try local lookup first
+  const reData = await getLocalInboxFromUrl(url);
+  if (reData.inbox && reData.account && reData.url) return reData;
 
-    const reData=await getLocalInboxFromUrl(url);
-    if(reData.inbox && reData.account && reData.url) return reData;
-    const myURL: any = new URL(url);
-    const obj: ActorInfo = { name: '', domain: myURL.hostname, inbox: '', account: '', url: '', pubkey: '', avatar: '' };
-    const reDataNet: any = await httpGet(url, { "Content-Type": 'application/activity+json','Accept': 'application/activity+json' });
-    const re=typeof(reDataNet)==='string'?JSON.parse(reDataNet):reDataNet;
+  const myURL = new URL(url);
+  const hostname = myURL.hostname;
+  const obj: ActorInfo = {
+    name: '',
+    domain: hostname,
+    inbox: '',
+    account: '',
+    url: '',
+    pubkey: '',
+    avatar: '',
+  };
+
+  try {
+    validateUrlTarget(url);
+
+    const reDataNet: any = await httpGet(url, {
+      "Content-Type": 'application/activity+json',
+      'Accept': 'application/activity+json',
+    });
+    const re = typeof reDataNet === 'string' ? JSON.parse(reDataNet) : reDataNet;
     if (!re) return obj;
-  
+
     if (re.name) obj.name = re.name;
     if (re.inbox) {
-        obj.inbox = re.inbox;
-        obj.desc = re.summary;
-        obj.pubkey = re.publicKey.publicKeyPem;
-        obj.url = re.id;
-        obj.account = `${re.name}@${myURL.hostname}`;
+      obj.inbox = re.inbox;
+      obj.desc = re.summary;
+      // Safe optional chaining: prevent crash when publicKey is missing
+      obj.pubkey = re.publicKey?.publicKeyPem ?? '';
+      obj.url = re.id;
+      obj.account = `${re.name}@${hostname}`;
     }
-    if (re.avatar && re.avatar.url) obj.avatar = re.avatar.url;
-    else if (re.icon && re.icon.url) obj.avatar = re.icon.url;
-    return obj;
+    if (re.avatar?.url) obj.avatar = re.avatar.url;
+    else if (re.icon?.url) obj.avatar = re.icon.url;
+  } catch (e) {
+    console.error('getUserFromUrl error:', e);
+  }
+
+  return obj;
 }

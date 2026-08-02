@@ -128,10 +128,11 @@ export default function ClientContent({accountAr}:ClientContentProps) {
   },[locale,t]);
 
   
-  const homeHandle=useCallback(()=>{ //首页
+  const homeHandle=useCallback((account?:string)=>{ //首页
+      const ac=account?account:(actorRef.current?.actor_account?actorRef.current.actor_account:'')
       setCurrentObj(null);
       window.history.replaceState({}, '', `/${locale}/communities/enkier`);
-      setFetchWhere(pre=>({ ...pre, currentPageNum: 0,where:'', eventnum: 1,account: actorRef.current?.actor_account?actorRef.current.actor_account:'' }));
+      setFetchWhere(pre=>({ ...pre, currentPageNum: 0,where:'', eventnum: 1,account: ac }));
       setActiveTab(0);
       setTopText(t('scHomeText'));
       setNavIndex(Paras.home);
@@ -140,10 +141,12 @@ export default function ClientContent({accountAr}:ClientContentProps) {
 
       useEffect(() => {
         if (actor?.id) actorRef.current = actor;
-        if (window.sessionStorage.getItem('loginsiwe') === '1' && actor?.id) {
-          setTimeout(() => {
-            homeHandle();
-          }, 200);
+        if (window.sessionStorage.getItem('loginsiwe') === '1' && actor?.actor_account) {
+          //   actorRef.current = actor;
+          // setTimeout(() => {
+        
+            homeHandle(actor?.actor_account);
+          // }, 200);
         } else {
           allHandle();
         }
@@ -328,7 +331,8 @@ export default function ClientContent({accountAr}:ClientContentProps) {
                         {!loginsiwe && <Loginsign />}
                     </div>
                     <ul >
-                        <li className={navIndex===Paras.all?'scli':''} ><span onClick={()=>allHandle()} >{svgs.all} {t('allPostText')}</span></li>
+                        {loginsiwe && actor?.actor_account && <li className={navIndex === Paras.home ? 'scli' : ''}><span onClick={() => homeHandle()}>{svgs.home} {t('scHomeText')}</span> </li>
+                        }<li className={navIndex===Paras.all?'scli':''} ><span onClick={()=>allHandle()} >{svgs.all} {t('allPostText')}</span></li>
                         
                         {loginsiwe && actor?.actor_account && <>
                         
@@ -378,10 +382,11 @@ export default function ClientContent({accountAr}:ClientContentProps) {
                    
                     </div>  
                   {leftHidden && <NavDropdown className='daism-a' title="..." >
-                    <NavDropdown.Item  className={navIndex===Paras.all?'scli':''}><span onClick={()=>allHandle()} >{svgs.all} {t('allPostText')}</span></NavDropdown.Item>
+                     {loginsiwe && actor?.actor_account && <NavDropdown.Item className={navIndex===Paras.home?'scli':''}><span onClick={()=>homeHandle()} >{svgs.home} {t('scHomeText')}</span></NavDropdown.Item>
+                     }<NavDropdown.Item  className={navIndex===Paras.all?'scli':''}><span onClick={()=>allHandle()} >{svgs.all} {t('allPostText')}</span></NavDropdown.Item>
                     {loginsiwe && actor?.actor_account && <>
                     <NavDropdown.Item className={navIndex===Paras.create?'scli':''}><span onClick={()=>createHandle()} >{svgs.create} {t('createPostText')}</span></NavDropdown.Item>
-                    <NavDropdown.Item className={navIndex===Paras.home?'scli':''}><span onClick={()=>homeHandle()} >{svgs.home} {t('scHomeText')}</span></NavDropdown.Item>
+                   
                     <NavDropdown.Item className={navIndex===Paras.mypost?'scli':''}><span onClick={()=>myPostHandle()} >{svgs.mypost} {t('myPostText')}</span></NavDropdown.Item>
                     <NavDropdown.Item className={navIndex===Paras.myreceive?'scli':''}><span onClick={()=>myReceiveHandle()} >{svgs.myreceive} {t('myReceiveText')}</span></NavDropdown.Item>
                     <NavDropdown.Item className={navIndex===Paras.at?'scli':''}><span onClick={()=>myAtHandle()} >{svgs.at} {t('atSomeOne')}</span></NavDropdown.Item>
@@ -447,9 +452,7 @@ interface NavItemProps {
   }: NavItemProps) {
     return (
       <>
-        <li className={navIndex === Paras.home ? 'scli' : ''}>
-          <span onClick={() => homeHandle()}>{svgs.home} {t('scHomeText')}</span>
-        </li>
+      
         <li className={navIndex === Paras.mypost ? 'scli' : ''}>
           <span onClick={() => myPostHandle()}>{svgs.mypost} {t('myPostText')}</span>
         </li>

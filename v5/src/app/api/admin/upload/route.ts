@@ -1,6 +1,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { saveImage } from '@/lib/utils';
+import { getSession } from '@/lib/session';
 
 interface JoditUploadResponse {
   success: boolean;
@@ -21,6 +22,14 @@ const ALLOWED_MIME_TYPES = [
 const MAX_FILE_SIZE = 1 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
+    const session = await getSession();
+    if (!session || session.userAgent !== request.headers.get('user-agent')) {
+        const response: JoditUploadResponse = {
+            success: false,
+            error: 'No wallet signature login'
+        };
+        return NextResponse.json(response, { status: 401 });
+    }
   try {
     const formData = await request.formData();
     const files = formData.getAll('files[0]') as File[];

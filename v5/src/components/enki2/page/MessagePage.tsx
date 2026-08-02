@@ -343,13 +343,13 @@ export default function MessagePage({
           <div dangerouslySetInnerHTML={{ __html: enkiMessObj.content_link }} />
         )}
         {/* 首页图片 */}
-        {enkiMessObj?.top_img && (
+        {enkiMessObj?.top_img && ( <div className="image-container">
           <ImageWithFallback
             src={enkiMessObj?.top_img}
             alt=""
             className="daism-a mt-2 mb-2"
             style={{ maxWidth: "100%" }}
-          />
+          /></div>
         )}
         {/* 首页视频 */}
         {enkiMessObj?.vedio_url && <ShowVedio videoUrl={enkiMessObj.vedio_url} />}

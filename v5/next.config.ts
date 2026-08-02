@@ -44,7 +44,7 @@ const config: NextConfig = {
   // 1. 固定 Build ID，确保多次构建（或多容器部署）时 Action ID 尽可能一致
   generateBuildId: async () => {
     // 建议使用 Git 的 Hash 或者环境变量中的版本号
-    return process.env.NEXT_PUBLIC_VERSION || 'build-' + Date.now();
+    return  '0xb7e2af903dd5c6df32cfd1069c76f3af8025d65faef25156d23cbe1dccb1d8e1';
   },
 
   experimental: {

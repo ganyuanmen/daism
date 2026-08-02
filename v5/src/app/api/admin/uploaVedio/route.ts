@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { getSession } from '@/lib/session';
 
 export async function POST(request: NextRequest) {
+    const session = await getSession();
+    if (!session || session.userAgent !== request.headers.get('user-agent')) {
+        return NextResponse.json({ errMsg: 'No wallet signature login' }, { status: 401 });
+    }
   try {
     const _path=new Date().toISOString().slice(0, 10);
     const uploadDir = path.join(process.cwd(), 'public', process.env.IMGDIRECTORY as string, _path);

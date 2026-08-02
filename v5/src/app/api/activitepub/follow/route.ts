@@ -14,7 +14,12 @@ interface FollowRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: FollowRequestBody = await req.json();
+    let body: FollowRequestBody;
+    try {
+      body = await req.json() as FollowRequestBody;
+    } catch {
+      return NextResponse.json({ errMsg: "Invalid JSON in request body" }, { status: 400 });
+    }
     const { account, url,inbox } = body;
     if (!account || !account.includes('@') || !url) return NextResponse.json({ errMsg: "missing params" }, { status: 400 });
 

@@ -8,7 +8,15 @@ export async function POST(request: NextRequest) {
 
   try {
   
-    const formData = await request.formData();
+    let formData;
+    try {
+      formData = await request.formData();
+    } catch {
+      return NextResponse.json(
+        { errMsg: 'Expected multipart/form-data' },
+        { status: 400 }
+      );
+    }
    
      const typeIndex= formData.get('typeIndex') as string;
      const pid= formData.get('pid') as string;

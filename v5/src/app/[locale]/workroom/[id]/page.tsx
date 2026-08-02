@@ -4,6 +4,7 @@
 
 import ClientId from './ClientId';
 import { getTranslations } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import { getMyDaoDetail } from '@/lib/mysql/daism';
 import { cache } from 'react';
 
@@ -22,6 +23,9 @@ const getCachedDaoDetail = cache(async (id: string) => {
 export default async function DaoDetailPage({ params }: HonorPageProps) {
     const { id } = await params;
     const daoDetail= await getCachedDaoDetail(id) ;
+    if (!daoDetail?.dao_id) {
+      notFound();
+    }
     return ( <ClientId daoData={daoDetail} />);
 }
 

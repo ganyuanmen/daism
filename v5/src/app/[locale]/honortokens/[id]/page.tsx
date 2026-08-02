@@ -1,11 +1,12 @@
 
 
 
-// const Nftlist = dynamic(() => import('../Nftlist'), { ssr: false });
+
 import Nftlist from '../Nftlist';
 import { getTranslations } from 'next-intl/server';
 import { getMynft } from '@/lib/mysql/daism';
 import { type NftObjType } from '@/lib/mysql/daism';
+import { notFound } from 'next/navigation';
 
 
 /**
@@ -19,6 +20,9 @@ interface HonorPageProps {
 export default async function HonorPage({ params }: HonorPageProps) {
     const { id } =await  params;
     const NFTData:NftObjType[]= await getMynft({did:id}) ;
+    if (!NFTData || NFTData.length === 0) {
+      notFound();
+    }
    
     return (<Nftlist mynftData={NFTData} />);
 }

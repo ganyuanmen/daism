@@ -9,7 +9,7 @@ export async function GET(request:NextRequest) {
     const session = await getSession();
     // const currentIp = getClientIp(request);
     if (!session ||  session.userAgent !== request.headers.get('user-agent')) {
-        return NextResponse.json({ errMsg: 'No wallet signature login'  }, { status: 500 });
+        return NextResponse.json({ errMsg: 'No wallet signature login'  }, { status: 401 });
     }
     return NextResponse.json({
         daoActor:await getJsonArray('daoactor',[session.did]), //dao帐号列表

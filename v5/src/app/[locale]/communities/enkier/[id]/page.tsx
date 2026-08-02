@@ -6,6 +6,7 @@ import { getTranslations } from 'next-intl/server';
 import parse from 'node-html-parser';
 import { cache } from 'react';
 import { getData, getJsonArray } from '@/lib/mysql/common';
+import { notFound } from 'next/navigation';
 
 interface HonorPageProps {params: Promise<{ locale: string;id:string;}>}
 
@@ -28,8 +29,11 @@ const getAccount = cache(async () => {
 export default async function EnkierIDPage({ params }: HonorPageProps) {
      const { id } = await params;
     const openObj=await getOpenObj(id);
+    if (!openObj?.message_id) {
+      notFound();
+    }
     const accountAr=await getAccount();
-    return ( <ClientIDPage openObj={openObj?.message_id?openObj:null} accountAr={accountAr} />);
+    return ( <ClientIDPage openObj={openObj} accountAr={accountAr} />);
 }
 
 
@@ -53,18 +57,18 @@ export async function generateMetadata({ params }: HonorPageProps) {
           siteName: process.env.NEXT_PUBLIC_DOMAIN,
           title:
             openObj?.title ??
-            `${openObj.actor_name} (${openObj.actor_account})`,
+            `${openObj?.actor_name ?? ''} (${openObj?.actor_account ?? ''})`,
           description: content,
-          images: [openObj?.top_img ?? openObj.avatar],
+          images: [openObj?.top_img ?? openObj?.avatar ?? ''],
           url: `https://${process.env.NEXT_PUBLIC_DOMAIN}/${locale}/communities/enkier/${id}`,
         },
         twitter: {
           card: "summary",
           title:
             openObj?.title ??
-            `${openObj.actor_name} (${openObj.actor_account})`,
+            `${openObj?.actor_name ?? ''} (${openObj?.actor_account ?? ''})`,
           description: content,
-          images: [openObj?.top_img ?? openObj.avatar],
+          images: [openObj?.top_img ?? openObj?.avatar ?? ''],
         },
         alternates: {
             canonical: `https://${process.env.NEXT_PUBLIC_DOMAIN}/${locale}/communities/enkier/${id}`,
@@ -72,10 +76,10 @@ export async function generateMetadata({ params }: HonorPageProps) {
         other: {
           "wechat:title":
             openObj?.title ??
-            `${openObj.actor_name} (${openObj.actor_account})`,
-          "wechat:image": openObj?.top_img ?? openObj.avatar,
+            `${openObj?.actor_name ?? ''} (${openObj?.actor_account ?? ''})`,
+          "wechat:image": openObj?.top_img ?? openObj?.avatar ?? '',
           "wechat:description": content,
-          "profile:username": openObj.actor_account,
+          "profile:username": openObj?.actor_account ?? '',
           "fragment": "!",
         },
       };

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const session = await getSession();
     // const currentIp = getClientIp(req);
     if (!session ||  session.userAgent !== req.headers.get('user-agent')) {
-        return NextResponse.json({ errMsg: 'No wallet signature login'  }, { status: 500 });
+        return NextResponse.json({ errMsg: 'No wallet signature login'  }, { status: 401 });
     }
     
   const formData = await req.formData();

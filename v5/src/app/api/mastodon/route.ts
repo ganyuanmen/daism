@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const session = await getSession();
     // const currentIp = getClientIp(req);
     if (!session ||  session.userAgent !== req.headers.get('user-agent')) {
-        return NextResponse.json({ errMsg: 'No wallet signature login'  }, { status: 500 });
+        return NextResponse.json({ errMsg: 'No wallet signature login'  }, { status: 401 });
     }
   try {
     // 解析 formData
@@ -28,6 +28,10 @@ export async function POST(req: NextRequest) {
       'select dao_id,domain,actor_name,avatar,actor_url,actor_inbox,actor_account from v_account where manager=?',
       [session.did]
     );
+
+    if (!rows || !Array.isArray(rows) || rows.length === 0) {
+      return NextResponse.json({ errMsg: 'No account found' }, { status: 404 });
+    }
 
     const sql =
       'INSERT INTO a_message(message_id,manager,actor_name,avatar,actor_account,actor_url,title,content,is_send,is_discussion,top_img,actor_inbox) values(?,?,?,?,?,?,?,?,?,?,?,?)';

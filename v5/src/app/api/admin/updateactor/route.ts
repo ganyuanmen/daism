@@ -3,8 +3,13 @@ import { updateActor, getActor } from '@/lib/mysql/user';
 // import { saveImageFromBuffer } from "@/lib/utils"; // 需要修改 saveImage 函数
 import { execute } from '@/lib/mysql/common';
 import { saveImage } from '@/lib/utils';
+import { getSession } from '@/lib/session';
 
 export async function POST(request: NextRequest) {
+    const session = await getSession();
+    if (!session || session.userAgent !== request.headers.get('user-agent')) {
+        return NextResponse.json({ errMsg: 'No wallet signature login' }, { status: 401 });
+    }
   try {
     const domain = process.env.NEXT_PUBLIC_DOMAIN;
     const imgDirectory = process.env.IMGDIRECTORY;
