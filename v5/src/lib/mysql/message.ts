@@ -562,6 +562,8 @@ export interface HeartAndBookType {
   pid: string;
 }
 
+
+
 export async function getHeartAndBook(params: HeartAndBookParams): Promise<HeartAndBookType> {
   const { pid, account, table, sctype } = params;
   validateSctype(sctype);

@@ -16,7 +16,7 @@ import EnkiEditItem from "../form/EnkiEditItem";
 import { useTranslations } from "next-intl";
 import Loadding from "../../Loadding";
 import ShowAddress from "../../ShowAddress";
-
+import HeartAc from "./HeartAc";
 import { fetchJson } from "@/lib/utils/fetcher";
 import { type RootState, setTipText, setErrText, type AppDispatch } from "@/store/store";
 import { Noreplay } from "@/lib/jssvg/SvgCollection";
@@ -425,6 +425,9 @@ export default function MessagePage({
             />
           )}
         </div>
+     
+          <HeartAc currentObj={enkiMessObj} />
+   
 
         {/* 其它服务器推送的回复显示原文链接 */}
         {showOriginalLink && (

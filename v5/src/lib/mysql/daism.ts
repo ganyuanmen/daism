@@ -1,3 +1,4 @@
+import { unknown } from 'zod';
 import { getData, execute, getPageData } from './common';
 
 // ==================== Type Definitions ====================
@@ -7,7 +8,9 @@ export interface DaoChild {
   member_votes: number;
   member_type: number | string;
 }
-
+export interface HeartMyAccount {
+  username: string;
+}
 export interface DaoVersion {
   _time: string;
   creator: string;
@@ -254,6 +257,14 @@ export async function getMyPros(params: { did: string }): Promise<any[]> {
   // Stored procedure returns result in first array element
   return Array.isArray(re) && Array.isArray(re[0]) ? re[0] : [];
 }
+
+export async function getMyHeart(params: { pid: string,table:string }): Promise<HeartMyAccount> {
+  const { pid,table } = params;
+  const re = await getData<HeartMyAccount>(`SELECT GROUP_CONCAT(SUBSTRING_INDEX(account, '@', 1) SEPARATOR ',') AS username FROM a_heart${table} WHERE pid =?`, [pid]);
+  return Array.isArray(re) && re[0] ? re[0]  : {username:''};
+}
+
+;
 
 /**
  * Get DAO vote information

@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  getUser, getIsDaoMember, getEipTypes, getDividend, getDappOwner,
+  getUser, getIsDaoMember, getEipTypes, getDividend, getDappOwner,getMyHeart,
   getProsData, getMynft, getSelfAccount, getDaoVote, getLastPro, getDaosData,
   getPrice, getToken, getMyPros, getLogsData, getMyDaos, getMyTokens,messagePageDataLove
 } from '@/lib/mysql/daism';
@@ -62,7 +62,7 @@ const methods: Record<string, MethodFn> = {
   getTipFrom,
   getTipToMe,
   getNotice,
-  getAccount,messagePageDataLove,
+  getAccount,messagePageDataLove,getMyHeart,
 };
 
 // ⚠️ 这里建议用 x-method 避免和 HTTP method 混淆
