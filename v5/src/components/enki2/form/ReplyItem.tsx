@@ -44,14 +44,36 @@ import { wrapLinksWithATag } from "@/lib/utils/windowjs";
     const [showToggle, setShowToggle] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-      const el = contentRef.current;
-      if (el && el.scrollHeight > 200) {
-        setShowToggle(true);
-      }
-    }, []);
+    // useEffect(() => {
+    //   const el = contentRef.current;
+    //   if (el && el.scrollHeight > 200) {
+    //     setShowToggle(true);
+    //   }
+    // }, []);
   
-    
+    useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+
+    // 使用 ResizeObserver 监听 DOM 尺寸的真实变化
+    const observer = new ResizeObserver(() => {
+      // 动态判断内容实际高度是否超过 200
+      if (el.scrollHeight > 200) {
+        setShowToggle(true);
+      } else {
+        setShowToggle(false); // 如果内容变少，可以重置状态
+      }
+    });
+
+    // 开始监听该 div
+    observer.observe(el);
+
+    // 组件卸载或内容变化时清理监听器
+    return () => {
+      observer.disconnect();
+    };
+  }, [replyObj.content]); // 当内容发生彻底改变时重新绑定
+  
     //回复 该评论
     const replyHandle = (reply_index:number, bid: string) => {
         replyCallBack(reply_index,bid);
